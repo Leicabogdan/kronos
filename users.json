@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "username": "leica",
+      "password_hash": "e794f4fb2e1046278e1e035c816e1bf33cae7ffb0086457a99d455e111837011",
+      "name": "Leica Bogdan",
+      "role": "APP OWNER"
+    },
+    {
+      "username": "vali",
+      "password_hash": "30e374baf550c80e5f56ddb34d54a35040cc76fc43af19c5fd857ec8edfc8e8e",
+      "name": "Vuculescu Valentin",
+      "role": "COORDINATOR"
+    },
+    {
+      "username": "alex",
+      "password_hash": "4135aa9dc1b842a653dea846903ddb95bfb8c5a10c504a7fa16e10bc31d1fdf0",
+      "name": "Dan Alexandru",
+      "role": "OPERATOR"
+    },
+    {
+      "username": "catalin",
+      "password_hash": "8a84602811a8049988848babd8ded0a764daaea62a26c212bff091c20180a466",
+      "name": "Stan Catalin",
+      "role": "MANAGEMENT"
+    },
+    {
+      "username": "ana",
+      "password_hash": "24d4b96f58da6d4a8512313bbd02a28ebf0ca95dec6e4c86ef78ce7f01e788ac",
+      "name": "Petrisor Ana",
+      "role": "RAZA DE SOARE"
+    }
+  ]
+}

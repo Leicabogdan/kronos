@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<script>
+(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KRONOS — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
+  --border:#1a1d28;--border2:#252836;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --sidebar:220px;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
+
+/* ── LAYOUT ── */
+.app{display:flex;height:100svh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  height:100svh;overflow:hidden;
+  position:relative;z-index:50;
+  transition:width .25s ease;
+}
+.sidebar.collapsed{width:60px;}
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .sidebar-footer-text,
+.sidebar.collapsed .nav-section-label{display:none;}
+
+/* logo */
+.sidebar-logo{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 16px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sidebar-logo canvas{flex-shrink:0;}
+.logo-text{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
+.logo-main{font-family:var(--title);font-size:15px;font-weight:900;letter-spacing:.16em;color:#fff;white-space:nowrap;}
+.logo-main span{color:var(--teal);}
+.logo-sub{font-family:var(--mono);font-size:7px;color:var(--teal);letter-spacing:.2em;font-weight:700;white-space:nowrap;}
+
+/* nav */
+.sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:none;}
+.sidebar-nav::-webkit-scrollbar{display:none;}
+.nav-section-label{
+  font-family:var(--mono);font-size:9px;color:var(--teal);
+  letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+  padding:12px 8px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 10px;border-radius:8px;
+  cursor:pointer;transition:all .18s;
+  margin-bottom:2px;text-decoration:none;color:#fff;
+}
+.nav-item:hover{background:rgba(255,255,255,.05);}
+.nav-item.active{background:rgba(0,220,180,.1);border:1px solid rgba(0,220,180,.2);}
+.nav-item.active .nav-icon{color:var(--teal);}
+.nav-item.active .nav-label{color:var(--teal);}
+.nav-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+.nav-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;white-space:nowrap;overflow:hidden;}
+.nav-sub{padding-left:24px!important;}
+.nav-sub-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,220,180,.5);flex-shrink:0;margin-right:4px;}
+.sidebar-group-toggle{cursor:pointer;}
+.sidebar-group-toggle:hover{background:rgba(255,255,255,.05);}
+.nav-badge{
+  margin-left:auto;min-width:18px;height:18px;border-radius:9px;
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;font-family:var(--mono);
+  display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0;
+}
+
+/* sidebar footer */
+.sidebar-footer{
+  padding:12px 8px;border-top:1px solid var(--border);flex-shrink:0;
+}
+.sidebar-user{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:8px;
+  background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.12);
+}
+.sidebar-user-av{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:#0d2420;border:1.5px solid var(--teal);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--title);font-size:10px;font-weight:900;color:var(--teal);
+}
+.sidebar-footer-text{overflow:hidden;}
+.sidebar-user-name{font-family:var(--raj);font-size:15px;font-weight:700;color:#fff;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar-user-role{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.1em;font-weight:700;white-space:nowrap;}
+
+/* collapse btn */
+.sidebar-collapse{
+  position:absolute;top:50%;right:-12px;transform:translateY(-50%);
+  width:24px;height:24px;border-radius:50%;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:51;transition:all .2s;
+}
+.sidebar-collapse:hover{border-color:var(--teal);color:var(--teal);}
+.sidebar-collapse svg{transition:transform .25s;}
+.sidebar.collapsed .sidebar-collapse svg{transform:rotate(180deg);}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* topbar */
+.topbar{
+  height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;padding:0 clamp(16px,2.5vw,28px);
+  gap:12px;flex-shrink:0;
+}
+.topbar-title{font-family:var(--title);font-size:clamp(14px,2vw,17px);font-weight:900;color:#fff;letter-spacing:.12em;}
+.topbar-sub{font-family:var(--mono);font-size:clamp(11px,1.5vw,13px);color:#fff;letter-spacing:.08em;font-weight:700;margin-top:2px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-date{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;letter-spacing:.06em;}
+.topbar-time{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;}
+.notif-btn{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;position:relative;
+}
+.notif-btn:hover{border-color:rgba(0,220,180,.4);}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:7px;height:7px;
+  border-radius:50%;background:var(--red);
+  box-shadow:0 0 8px var(--red);
+}
+
+/* content */
+.content{flex:1;overflow-y:auto;padding:clamp(16px,2.5vw,24px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+
+/* ── QUICK ACTIONS ── */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.qa-col{display:flex;flex-direction:column;gap:12px;}
+.qa-btn{
+  display:flex;align-items:center;gap:14px;
+  padding:clamp(14px,2vw,18px) clamp(16px,2.5vw,22px);
+  border-radius:12px;border:none;cursor:pointer;
+  transition:all .2s;text-decoration:none;
+}
+.qa-btn.primary{background:var(--teal);color:#04050a;}
+.qa-btn.primary:hover{background:#00f0c8;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,220,180,.3);}
+.qa-btn.danger{background:rgba(224,80,80,.12);border:1.5px solid rgba(224,80,80,.35);color:#fff;}
+.qa-btn.danger:hover{background:rgba(224,80,80,.2);border-color:var(--red);transform:translateY(-1px);box-shadow:0 8px 24px rgba(224,80,80,.2);}
+.qa-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.qa-btn.primary .qa-icon{background:rgba(4,5,10,.15);}
+.qa-btn.danger .qa-icon{background:rgba(224,80,80,.12);}
+.qa-text{text-align:left;}
+.qa-title{font-family:var(--title);font-size:clamp(11px,1.6vw,13px);font-weight:900;letter-spacing:.1em;display:block;line-height:1;}
+.qa-desc{font-family:var(--mono);font-size:clamp(9px,1.3vw,10px);font-weight:600;opacity:.7;margin-top:4px;display:block;letter-spacing:.06em;}
+.qa-btn.primary .qa-desc{opacity:.6;}
+
+/* ── ELEVATOR DROPDOWN ── */
+.elev-wrapper{
+  border:1.5px solid rgba(0,220,180,.25);
+  border-radius:12px;
+  background:var(--bg3);
+  margin-bottom:24px;
+  overflow:hidden;
+  transition:border-color .2s;
+}
+.elev-wrapper:hover{border-color:rgba(0,220,180,.4);}
+.elev-header{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid transparent;
+  transition:border-color .25s;
+}
+.elev-wrapper.open .elev-header{border-bottom-color:rgba(0,220,180,.15);}
+.elev-toggle-btn{
+  display:flex;align-items:center;gap:10px;
+  background:none;border:none;cursor:pointer;padding:0;
+  font-family:var(--title);font-size:clamp(11px,1.7vw,13px);font-weight:900;
+  color:#fff;letter-spacing:.14em;text-transform:uppercase;
+  flex-shrink:0;
+}
+.elev-toggle-btn:hover{color:var(--teal);}
+.elev-eq-icon{
+  width:32px;height:32px;border-radius:7px;
+  background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .18s;
+}
+.elev-toggle-btn:hover .elev-eq-icon{background:rgba(0,220,180,.15);border-color:rgba(0,220,180,.4);}
+.elev-header-title{font-family:var(--title);font-size:clamp(11px,1.7vw,13px);font-weight:900;letter-spacing:.14em;}
+.dt-btn{
+  margin-left:auto;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:8px;
+  background:rgba(0,220,180,.1);border:1.5px solid rgba(0,220,180,.35);
+  color:var(--teal);text-decoration:none;
+  font-family:var(--mono);font-size:clamp(10px,1.5vw,12px);font-weight:700;letter-spacing:.08em;
+  white-space:nowrap;flex-shrink:0;
+  transition:all .18s;
+}
+.dt-btn:hover{background:rgba(0,220,180,.2);border-color:var(--teal);box-shadow:0 0 14px rgba(0,220,180,.15);}
+.elev-dropdown-panel{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .3s ease;
+}
+.elev-dropdown-panel.open{
+  max-height:800px;
+}
+.elev-subgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:10px;
+  padding:14px 16px;
+}
+.elev-unit{
+  display:flex;align-items:center;justify-content:center;
+  padding:16px 8px;border-radius:8px;
+  background:var(--bg4);
+  border:1px solid var(--border2);
+  text-decoration:none;transition:all .18s;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.elev-unit:hover{background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);}
+.elev-unit-code{font-family:var(--title);font-size:clamp(12px,1.8vw,14px);font-weight:900;color:#fff;letter-spacing:.1em;}
+.elev-unit:hover .elev-unit-code{color:var(--teal);}
+
+/* ── CC SUBGROUPS ── */
+.cc-subgroup{
+  padding:12px 16px 14px;
+}
+.cc-subgroup-main{
+  padding-bottom:10px;
+}
+.cc-subgroups-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  border-top:1px solid rgba(0,220,180,.12);
+}
+.cc-sub-block{
+  padding:14px 14px 16px;
+}
+.cc-sub-block+.cc-sub-block{border-left:1px solid var(--border);}
+.amber-block{border-top:2px solid rgba(240,165,0,.4);}
+.blue-block{border-top:2px solid rgba(80,144,224,.4);}
+.purple-block{border-top:2px solid rgba(155,109,255,.4);}
+.cc-subgroup-label{
+  font-family:var(--title);font-size:clamp(11px,1.7vw,13px);font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.cc-subgroup-label::after{content:'';flex:1;height:1px;}
+.cc-subgroup-label.amber{color:var(--amber);}
+.cc-subgroup-label.amber::after{background:rgba(240,165,0,.2);}
+.cc-subgroup-label.blue{color:var(--blue);}
+.cc-subgroup-label.blue::after{background:rgba(80,144,224,.2);}
+.cc-subgroup-label.purple{color:var(--purple);}
+.cc-subgroup-label.purple::after{background:rgba(155,109,255,.2);}
+
+
+.cc-subgroup-label.teal-label{color:var(--teal);}
+.cc-subgroup-label.teal-label::after{background:rgba(0,220,180,.2);}
+
+/* ── TOOLTIP ── */
+.tt-wrap{position:relative;display:inline-flex;}
+.tt-wrap .tooltip{
+  display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:#0d2420;border:1px solid rgba(0,220,180,.35);border-radius:6px;
+  padding:5px 10px;white-space:nowrap;z-index:200;
+  font-family:var(--mono);font-size:10px;color:var(--teal);font-weight:700;letter-spacing:.08em;
+  pointer-events:none;
+}
+.tt-wrap .tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:rgba(0,220,180,.35);}
+.tt-wrap:hover .tooltip{display:block;}
+
+/* Icon-as-arrow: chevron inside icon box */
+.elev-eq-icon{position:relative;}
+.elev-eq-icon .icon-chevron{
+  position:absolute;bottom:2px;right:2px;
+  transition:transform .25s;
+}
+.elev-wrapper.open .icon-chevron{transform:rotate(180deg);}
+
+/* ── WIDGET CARDS ── */
+.widget-card{
+  background:var(--bg4);border-radius:10px;padding:14px 16px;
+  border:1.5px solid var(--border2);
+  position:relative;overflow:hidden;
+}
+.widget-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.widget-label{
+  font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);
+  letter-spacing:.18em;text-transform:uppercase;font-weight:700;
+}
+.widget-val{font-family:var(--title);font-size:28px;font-weight:900;line-height:1;}
+.widget-sub{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);font-weight:700;letter-spacing:.1em;margin-top:4px;}
+.widget-half{flex:1;text-align:center;padding:10px 8px;border-radius:8px;}
+
+/* Schimb ulei — bicolor static border, pulse the numbers */
+.widget-bicolor{
+  background:var(--bg3);
+  border-top:1.5px solid var(--border2)!important;
+  border-left:1.5px solid rgba(240,165,0,.55)!important;
+  border-right:1.5px solid rgba(224,80,80,.55)!important;
+  border-bottom:1.5px solid var(--border2)!important;
+  box-shadow:
+    -4px 0 14px rgba(240,165,0,.18),
+    4px 0 14px rgba(224,80,80,.18),
+    0 4px 14px rgba(224,80,80,.08),
+    0 -1px 8px rgba(240,165,0,.08)!important;
+  position:relative;
+}
+/* top bar: amber left, red right */
+.widget-bicolor::before{
+  background:linear-gradient(90deg,var(--amber) 0%,var(--amber) 50%,var(--red) 50%,var(--red) 100%);
+}
+/* bottom bar: amber left, red right */
+.widget-bicolor::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,rgba(240,165,0,.6) 0%,rgba(240,165,0,.6) 50%,rgba(224,80,80,.6) 50%,rgba(224,80,80,.6) 100%);
+}
+.widget-amber{background:rgba(240,165,0,.08);border:1.5px solid rgba(240,165,0,.4);box-shadow:0 0 12px rgba(240,165,0,.18),inset 0 0 8px rgba(240,165,0,.05);}
+.widget-amber .widget-val{color:var(--amber);animation:pulse-amber 2s ease-in-out infinite;}
+.widget-red{background:rgba(224,80,80,.08);border:1.5px solid rgba(224,80,80,.4);box-shadow:0 0 12px rgba(224,80,80,.18),inset 0 0 8px rgba(224,80,80,.05);}
+.widget-red .widget-val{color:var(--red);animation:pulse-red 2s ease-in-out infinite;}
+@keyframes pulse-amber{0%,100%{text-shadow:0 0 0 rgba(240,165,0,0);}50%{text-shadow:0 0 16px rgba(240,165,0,.8);}}
+@keyframes pulse-red{0%,100%{text-shadow:0 0 0 rgba(224,80,80,0);}50%{text-shadow:0 0 16px rgba(224,80,80,.8);}}
+
+/* Red border card — pulsing (ISCIR) */
+.widget-red-border{
+  background:rgba(224,80,80,.04);
+  animation:red-pulse 2.5s ease-in-out infinite;
+}
+.widget-red-border::before{background:var(--red);}
+@keyframes red-pulse{
+  0%,100%{border-color:rgba(224,80,80,.3);box-shadow:0 0 6px rgba(224,80,80,.1);}
+  50%{border-color:rgba(224,80,80,.65);box-shadow:0 0 18px rgba(224,80,80,.25);}
+}
+
+/* Green border card — static, no pulse */
+.widget-green-border{
+  background:rgba(74,175,112,.04);
+  border-color:rgba(74,175,112,.4)!important;
+  box-shadow:0 0 12px rgba(74,175,112,.08);
+}
+.widget-green-border::before{background:var(--green);}
+.widget-green-border .kpi-val{color:var(--green);}
+.widget-green-border .kpi-lbl{color:rgba(255,255,255,.5);}
+
+/* ── SURVEILLANCE TABLE ── */
+.surv-row:hover td{background:rgba(240,165,0,.04)!important;}
+
+/* ── AVARII ALARM ── */
+.avarii-alarm{
+  background:rgba(224,80,80,.08)!important;
+  border:1.5px solid rgba(224,80,80,.5)!important;
+  border-radius:12px;
+  box-shadow:0 0 0 0 rgba(224,80,80,.4);
+  animation:avarii-pulse 2.5s ease-in-out infinite;
+  position:relative;overflow:hidden;
+}
+.avarii-alarm::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--red),rgba(224,80,80,.3),var(--red));
+  background-size:200% 100%;
+  animation:avarii-sweep 2s linear infinite;
+}
+@keyframes avarii-pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(224,80,80,.3);}
+  50%{box-shadow:0 0 18px 4px rgba(224,80,80,.15);}
+}
+@keyframes avarii-sweep{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.avarii-alarm .kpi-lbl{color:rgba(255,255,255,.7)!important;}
+.avarii-alarm .kpi-val{color:var(--red)!important;}
+
+/* ── HOTSPOT ── */
+.hotspot-row{display:flex;align-items:center;gap:8px;}
+.hotspot-eq{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;min-width:140px;white-space:nowrap;}
+.hotspot-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.hotspot-bar{height:100%;border-radius:3px;transition:width .8s ease;}
+.hotspot-count{font-family:var(--mono);font-size:10px;font-weight:700;min-width:50px;text-align:right;white-space:nowrap;}
+
+/* ── MNT ITEMS ── */
+.mnt-item{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;border-radius:8px;
+  background:var(--bg4);border:1px solid var(--border);
+  text-decoration:none;transition:all .18s;cursor:pointer;color:#fff;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em;
+}
+.mnt-item:hover{background:rgba(0,220,180,.07);border-color:rgba(0,220,180,.3);color:var(--teal);}
+.mnt-icon{width:22px;height:22px;border-radius:5px;background:rgba(0,220,180,.08);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--teal);}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+.kpi-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:clamp(14px,2vw,18px);
+  position:relative;overflow:hidden;transition:border-color .2s;
+}
+.kpi-card:hover{border-color:var(--border2);}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.teal::before{background:linear-gradient(90deg,var(--teal),transparent);}
+.kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
+.kpi-card.red::before{background:linear-gradient(90deg,var(--red),transparent);}
+.kpi-card.green::before{background:linear-gradient(90deg,var(--green),transparent);}
+.kpi-lbl{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.kpi-val{font-family:var(--title);font-size:clamp(22px,3.5vw,32px);font-weight:900;line-height:1;margin-bottom:6px;}
+.kpi-card.teal .kpi-val{color:var(--teal);}
+.kpi-card.amber .kpi-val{color:var(--amber);}
+.kpi-card.red .kpi-val{color:var(--red);}
+.kpi-card.green .kpi-val{color:var(--green);}
+.kpi-sub{font-family:var(--mono);font-size:10px;color:#fff;font-weight:600;letter-spacing:.06em;}
+.kpi-trend{display:flex;align-items:center;gap:4px;margin-top:8px;}
+.kpi-trend-val{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;}
+.trend-up{color:var(--green);}
+.trend-down{color:var(--red);}
+.trend-neutral{color:var(--amber);}
+.kpi-ring{position:absolute;right:14px;top:50%;transform:translateY(-50%);}
+
+/* ── MAIN GRID ── */
+.dash-grid{display:grid;grid-template-columns:1fr 340px;gap:16px;}
+@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}}
+@media(max-width:1100px){[style*="grid-template-columns:1fr 340px"]{grid-template-columns:1fr!important;}}
+
+/* section header */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-title{font-family:var(--title);font-size:clamp(10px,1.5vw,12px);font-weight:900;color:#fff;letter-spacing:.15em;text-transform:uppercase;}
+.sec-line{flex:1;height:1px;background:var(--border);}
+.sec-count{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);font-weight:700;white-space:nowrap;}
+
+/* panel */
+.panel{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:clamp(14px,2vw,18px);margin-bottom:16px;}
+
+/* ── EQUIPMENT TABLE ── */
+.eq-table{width:100%;border-collapse:collapse;}
+.eq-table th{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:0 10px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.eq-table td{padding:10px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.eq-table tr:last-child td{border-bottom:none;}
+.eq-table tr{transition:background .15s;cursor:pointer;}
+.eq-table tr:hover td{background:rgba(255,255,255,.025);}
+.eq-name{font-family:var(--mono);font-size:12px;color:#fff;font-weight:700;letter-spacing:.04em;}
+.eq-code{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:2px;letter-spacing:.06em;}
+.eq-hours{font-family:var(--mono);font-size:12px;color:#fff;font-weight:700;}
+.eq-hours-sub{font-size:9px;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:2px;}
+.status-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.status-badge.ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.25);}
+.status-badge.warn{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.25);}
+.status-badge.err{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.25);}
+.status-badge.off{background:rgba(255,255,255,.06);color:rgba(255,255,255,.45);border:1px solid var(--border);}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.next-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;}
+.next-soon{background:rgba(240,165,0,.1);color:var(--amber);}
+.next-ok{background:rgba(74,175,112,.1);color:var(--green);}
+.next-over{background:rgba(224,80,80,.1);color:var(--red);}
+
+/* ── ALERTS ── */
+.alert-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px;border-radius:8px;margin-bottom:8px;
+  background:var(--bg4);border:1px solid var(--border);
+  transition:border-color .15s;cursor:pointer;
+}
+.alert-item:last-child{margin-bottom:0;}
+.alert-item:hover{border-color:var(--border2);}
+.alert-item.urgent{border-color:rgba(224,80,80,.25);background:rgba(224,80,80,.05);}
+.alert-item.warn{border-color:rgba(240,165,0,.2);background:rgba(240,165,0,.04);}
+.alert-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.alert-item.urgent .alert-icon{background:rgba(224,80,80,.15);}
+.alert-item.warn .alert-icon{background:rgba(240,165,0,.12);}
+.alert-item.info .alert-icon{background:rgba(80,144,224,.12);}
+.alert-title{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;line-height:1.4;}
+.alert-sub{font-size:11px;color:rgba(255,255,255,.55);font-weight:600;margin-top:3px;line-height:1.4;}
+.alert-time{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);font-weight:700;margin-top:5px;letter-spacing:.08em;}
+.alert-chip{
+  margin-left:auto;flex-shrink:0;
+  font-family:var(--mono);font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:4px;white-space:nowrap;align-self:flex-start;
+}
+.chip-red{background:rgba(224,80,80,.15);color:var(--red);border:1px solid rgba(224,80,80,.25);}
+.chip-amber{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.2);}
+.chip-blue{background:rgba(80,144,224,.12);color:var(--blue);border:1px solid rgba(80,144,224,.2);}
+
+/* ── ACTIVITY ── */
+.act-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.act-item:last-child{border-bottom:none;}
+.act-dot-col{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0;padding-top:4px;}
+.act-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.act-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+.act-dot.warn{background:var(--amber);box-shadow:0 0 6px var(--amber);}
+.act-dot.err{background:var(--red);box-shadow:0 0 6px var(--red);}
+.act-dot.info{background:var(--blue);box-shadow:0 0 6px var(--blue);}
+.act-line{width:1px;flex:1;background:var(--border);margin-top:3px;}
+.act-content{flex:1;min-width:0;}
+.act-title{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;line-height:1.4;}
+.act-eq{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;margin-top:2px;}
+.act-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.act-user{font-family:var(--mono);font-size:9px;color:var(--teal);font-weight:700;letter-spacing:.08em;}
+.act-time{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:.06em;}
+
+/* ── ISCIR PANEL ── */
+.iscir-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.iscir-item:last-child{border-bottom:none;}
+.iscir-name{flex:1;min-width:0;}
+.iscir-eq{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.iscir-type{font-size:10px;color:rgba(255,255,255,.4);font-weight:600;font-family:var(--mono);margin-top:1px;}
+.iscir-days{text-align:right;flex-shrink:0;}
+.iscir-days-val{font-family:var(--title);font-size:14px;font-weight:900;}
+.iscir-days-lbl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;}
+.days-ok .iscir-days-val,.days-ok .iscir-days-lbl{color:var(--green);}
+.days-warn .iscir-days-val,.days-warn .iscir-days-lbl{color:var(--amber);}
+.days-crit .iscir-days-val,.days-crit .iscir-days-lbl{color:var(--red);}
+
+/* mobile sidebar overlay */
+@media(max-width:700px){
+  .sidebar{position:fixed;top:0;left:0;height:100%;z-index:200;transform:translateX(-100%);transition:transform .25s ease,width .25s ease;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;}
+  .sidebar-overlay.show{display:block;}
+  .main{width:100%;}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <canvas id="sgear" width="64" height="64" style="width:32px;height:32px;flex-shrink:0;"></canvas>
+      <div class="logo-text">
+        <div class="logo-main">KR<span>O</span>NOS</div>
+        <div class="logo-sub">Maintenance System</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section-label">PRINCIPAL</div>
+      <a class="nav-item active" href="dashboard.html">        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg></div>
+        <span class="nav-label">DASHBOARD</span>
+      </a>
+      <a class="nav-item" href="ore_functionare.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">ORE DE FUNCTIONARE</span>
+      </a>
+      <a class="nav-item" href="#">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">AVARII</span>
+        <span class="nav-badge">3</span>
+      </a>
+
+      <!-- Mentenanta Echipamente Sidebar Dropdown -->
+      <div class="nav-item sidebar-group-toggle" onclick="toggleSbMnt()">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M3.1 12.9l1.4-1.4M11.5 4.5l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        <span class="nav-label" style="white-space:normal;line-height:1.35;">MENTENANTA ECHIPAMENTE</span>
+        <svg id="sb-mnt-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:auto;transition:transform .25s;flex-shrink:0;"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div id="sb-mnt-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
+        <a class="nav-item nav-sub" href="mnt_compresoare.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="8" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M9 6.5h3a.8.8 0 010 1.6H9" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg></div><span class="nav-label">Compresoare</span></a>
+        <a class="nav-item nav-sub" href="mnt_uscatoare.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 11v2M9 11v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M4 6c1-1.5 5-1.5 6 0" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="7" cy="7.5" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg></div><span class="nav-label">Uscatoare</span></a>
+        <a class="nav-item nav-sub" href="mnt_aere_cond.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 9v3M7 9v3M10 9v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3 6h8" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5"/></svg></div><span class="nav-label">Aere conditionate</span></a>
+        <a class="nav-item nav-sub" href="mnt_cutii_deviere.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 7l4-3 3 3 5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="nav-label">Cutii deviere</span></a>
+        <a class="nav-item nav-sub" href="mnt_sibare.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="5" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 5V3M7 5V2M10 5V3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><span class="nav-label">Sibare</span></a>
+        <a class="nav-item nav-sub" href="mnt_tub_praf.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12c0-3 1.5-5 3-6.5M12 2c-2 1-4 3-4 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="4.5" cy="11" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="11" cy="3" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg></div><span class="nav-label">Tubulatura praf</span></a>
+        <a class="nav-item nav-sub" href="mnt_tub_produs.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 1h6v12H4z" stroke="currentColor" stroke-width="1.2"/><path d="M4 5h6M4 9h6" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg></div><span class="nav-label">Tubulatura produs</span></a>
+        <a class="nav-item nav-sub" href="mnt_frane_produs.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 4.5l5 5M9.5 4.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div><span class="nav-label">Frane de produs</span></a>
+        <a class="nav-item nav-sub" href="mnt_SL1.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;color:var(--blue);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="4" y1="13" x2="4" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="4" y1="3" x2="12" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="12" y1="6" x2="12" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="2" y1="13" x2="6" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="8" y1="6" x2="8" y2="11" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5" stroke-dasharray="1,1.5"/></svg></div><span class="nav-label" style="color:var(--blue);">Shiploader 1</span></a>
+        <a class="nav-item nav-sub" href="mnt_SL2.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;color:var(--purple);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="4" y1="13" x2="4" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="4" y1="3" x2="12" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="12" y1="6" x2="12" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="2" y1="13" x2="6" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="8" y1="6" x2="8" y2="11" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5" stroke-dasharray="1,1.5"/></svg></div><span class="nav-label" style="color:var(--purple);">Shiploader 2</span></a>
+        <a class="nav-item nav-sub" href="mnt_buncar_barja.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;color:var(--amber);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10v6a2 2 0 01-2 2H4a2 2 0 01-2-2V4z" stroke="currentColor" stroke-width="1.2"/><path d="M1 4h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><span class="nav-label" style="color:var(--amber);">Buncar Barja</span></a>
+        <a class="nav-item nav-sub" href="mnt_cuve_receptie.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 6L7 1l3 5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 6h10v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" stroke="currentColor" stroke-width="1.2"/><path d="M7 9v3" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".5"/></svg></div><span class="nav-label">Cuve receptie</span></a>
+        <a class="nav-item nav-sub" href="schimb_ulei.html" style="gap:6px;"><div class="nav-icon" style="width:16px;height:16px;color:var(--teal);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1c0 0-4 4-4 7a4 4 0 008 0c0-3-4-7-4-7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 10c0 1.1.9 2 2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><span class="nav-label" style="color:var(--teal);">Schimb ulei</span></a>
+      </div>
+
+      <div class="nav-section-label">DATE TEHNICE</div>
+      <a class="nav-item" href="moto_reductoare.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="9" height="8" rx="1.2" stroke="currentColor" stroke-width="1.3"/><path d="M10 7h3.5a1 1 0 010 2H10" stroke="currentColor" stroke-width="1.3"/><circle cx="5.5" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="5.5" cy="8" r=".8" fill="currentColor"/></svg></div>
+        <span class="nav-label">MOTO-REDUCTOARE</span>
+      </a>
+      <a class="nav-item" href="celule_receptie.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 8v5.5a.5.5 0 00.5.5h7a.5.5 0 00.5-.5V8" stroke="currentColor" stroke-width="1.3"/><path d="M3 8h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8 2L3 8h10L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 11h4M6 13h4" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".6"/></svg></div>
+        <span class="nav-label">CELULE DE RECEPTIE</span>
+      </a>
+
+      <div class="nav-section-label">CONFORMITATE</div>
+      <a class="nav-item" href="#">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="nav-label">ISCIR</span>
+        <span class="nav-badge">2</span>
+      </a>
+      <a class="nav-item" href="#">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">RAPOARTE</span>
+      </a>
+
+      <div class="nav-section-label">RESURSE</div>
+      <a class="nav-item" href="stoc_piese.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">STOC PIESE</span>
+      </a>
+      <a class="nav-item" href="analize_ulei.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2c0 0-4 4-4 7a4 4 0 008 0c0-3-4-7-4-7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 11c0 1.1.9 2 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">ANALIZE DE ULEI</span>
+      </a>
+      <a class="nav-item" href="manuale_documentatie.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 2h7l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M10 2v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">MANUALE SI DOCUMENTATIE</span>
+      </a>
+      <a class="nav-item" href="utilizatori.html">
+        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="nav-label">UTILIZATORI</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-av" id="user-av">LB</div>
+        <div class="sidebar-footer-text">
+          <div class="sidebar-user-name" id="user-name">Leica Bogdan</div>
+          <div class="sidebar-user-role" id="user-role">APP OWNER</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-collapse" id="sidebar-toggle" onclick="toggleSidebar()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <!-- mobile menu -->
+      <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="openMobileSidebar()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="topbar-title">DASHBOARD</div>
+        <div class="topbar-sub" style="color:#fff;">Terminal Cereale Socep · Port Constanta</div>
+      </div>
+      <div class="topbar-right">
+        <div>
+          <div class="topbar-date" id="top-date"></div>
+          <div class="topbar-time" id="top-time"></div>
+        </div>
+        <div class="notif-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6v4l-1.5 2h11L12 10V6c0-2.2-1.8-4-4-4z" stroke="#fff" stroke-width="1.4"/><path d="M6.5 14a1.5 1.5 0 003 0" stroke="#fff" stroke-width="1.4"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="content">
+
+      <!-- LAYOUT GRID: left=main, right=widgets from top -->
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
+
+        <!-- LEFT COL -->
+        <div>
+          <!-- QUICK ACTIONS -->
+          <div class="quick-actions">
+            <!-- LEFT: Inregistrare fisa + Verificare flux + Mentenanta zilnica -->
+            <div class="qa-col">
+              <a class="qa-btn primary" href="kronos_register.html">
+                    <div class="qa-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#04050a" stroke-width="2" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="qa-text">
+                      <span class="qa-title">INREGISTRARE FISA</span>
+                      <span class="qa-desc">Adauga raport interventie</span>
+                    </div>
+              </a>
+              <a class="qa-btn" style="background:rgba(0,220,180,.06);border:1.5px solid rgba(0,220,180,.25);" href="verificare_flux_operational.html">
+                    <div class="qa-icon" style="background:rgba(0,220,180,.1);">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h10M3 15h7" stroke="#00dcb4" stroke-width="1.6" stroke-linecap="round"/><circle cx="16" cy="14.5" r="3" stroke="#00dcb4" stroke-width="1.4"/><path d="M14.5 14.5l1 1 2-2" stroke="#00dcb4" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="qa-text">
+                      <span class="qa-title" style="color:var(--teal);">VERIFICARE FLUX OPERATIONAL</span>
+                      <span class="qa-desc" style="color:rgba(255,255,255,.6);">Fisa verificare zilnica flux</span>
+                    </div>
+              </a>
+              <a class="qa-btn" style="background:rgba(240,165,0,.06);border:1.5px solid rgba(240,165,0,.25);" href="mentenanta_zilnica_compresoare.html">
+                    <div class="qa-icon" style="background:rgba(240,165,0,.1);">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="7" width="10" height="8" rx="1.5" stroke="#f0a500" stroke-width="1.5"/><path d="M12 10h4a1 1 0 010 2h-4" stroke="#f0a500" stroke-width="1.4"/><circle cx="7" cy="11" r="2" stroke="#f0a500" stroke-width="1.3"/><path d="M5 7V5.5A2.5 2.5 0 0110 5.5V7" stroke="#f0a500" stroke-width="1.3" stroke-linecap="round"/><path d="M14 6l1.5-1.5M14 4l1.5 1.5" stroke="#f0a500" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="qa-text">
+                      <span class="qa-title" style="color:var(--amber);">MENTENANTA ZILNICA</span>
+                      <span class="qa-desc" style="color:rgba(255,255,255,.6);">Compresoare si magneti</span>
+                    </div>
+              </a>
+            </div>
+            <!-- RIGHT: Raporteaza avarie + Revizie golire -->
+            <div class="qa-col">
+              <a class="qa-btn danger" href="avarie.html">
+                    <div class="qa-icon">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3L2 17h16L10 3z" stroke="#e05050" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9v4M10 14.5v.5" stroke="#e05050" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="qa-text">
+                      <span class="qa-title">RAPORTEAZA AVARIE</span>
+                      <span class="qa-desc">Interventie de urgenta</span>
+                    </div>
+              </a>
+              <a class="qa-btn" style="background:rgba(155,109,255,.1);border:1.5px solid rgba(155,109,255,.35);" href="revizie_golire_celula.html">
+                    <div class="qa-icon" style="background:rgba(155,109,255,.12);">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="1" y1="10" x2="19" y2="10" stroke="#9b6dff" stroke-width="1.8" stroke-linecap="round"/><path d="M3 10 Q5 7 7 10 Q9 13 11 10 Q13 7 15 10 Q17 13 19 10" stroke="#9b6dff" stroke-width="1.4" stroke-linecap="round" fill="none"/><rect x="1" y="1" width="18" height="18" rx="3" stroke="#9b6dff" stroke-width="1" opacity=".3"/></svg>
+                    </div>
+                    <div class="qa-text">
+                      <span class="qa-title" style="color:#9b6dff;">REVIZIE DUPA GOLIRE CELULA</span>
+                      <span class="qa-desc" style="color:rgba(255,255,255,.6);">Revizie programata post-golire</span>
+                    </div>
+              </a>
+            </div>
+          </div>
+
+          <!-- ELEVATOARE GROUP DROPDOWN -->
+          <div class="elev-wrapper">
+            <div class="elev-header">
+              <button class="elev-toggle-btn" onclick="toggleElevDropdown()">
+                    <div class="elev-eq-icon">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <line x1="6" y1="1" x2="6" y2="17" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/>
+                        <line x1="12" y1="1" x2="12" y2="17" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/>
+                        <rect x="4" y="3" width="4" height="3" rx="1" fill="#00dcb4" opacity=".9"/>
+                        <rect x="10" y="8" width="4" height="3" rx="1" fill="#00dcb4" opacity=".9"/>
+                        <rect x="4" y="13" width="4" height="3" rx="1" fill="#00dcb4" opacity=".9"/>
+                        <line x1="6" y1="1" x2="12" y2="1" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/>
+                        <line x1="6" y1="17" x2="12" y2="17" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/>
+                      </svg>
+                      <svg class="icon-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="elev-header-title">ELEVATOARE</span>
+              </button>
+              <a href="elevatoare_date_tehnice.html" class="dt-btn">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4.5h6M4 7h6M4 9.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    DATE TEHNICE
+              </a>
+            </div>
+            <div id="elev-dropdown" class="elev-dropdown-panel">
+              <div class="elev-subgrid">
+                    <a class="elev-unit" href="E01.html"><span class="elev-unit-code">E01</span></a>
+                    <a class="elev-unit" href="E02.html"><span class="elev-unit-code">E02</span></a>
+                    <a class="elev-unit" href="E03.html"><span class="elev-unit-code">E03</span></a>
+                    <a class="elev-unit" href="E04.html"><span class="elev-unit-code">E04</span></a>
+                    <a class="elev-unit" href="E81.html"><span class="elev-unit-code">E81</span></a>
+                    <a class="elev-unit" href="E82.html"><span class="elev-unit-code">E82</span></a>
+                    <a class="elev-unit" href="E31.html"><span class="elev-unit-code">E31</span></a>
+                    <a class="elev-unit" href="E51.html"><span class="elev-unit-code">E51</span></a>
+                    <a class="elev-unit" href="E201.html"><span class="elev-unit-code">E201</span></a>
+                    <a class="elev-unit" href="E21.html"><span class="elev-unit-code">E21</span></a>
+                    <a class="elev-unit" href="E22.html"><span class="elev-unit-code">E22</span></a>
+                    <a class="elev-unit" href="E23.html"><span class="elev-unit-code">E23</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRANSPORTOARE CU LANT GROUP DROPDOWN -->
+          <div class="elev-wrapper" style="margin-bottom:24px;">
+            <div class="elev-header">
+              <button class="elev-toggle-btn" onclick="toggleCCDropdown()">
+                    <div class="elev-eq-icon">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <rect x="1" y="7" width="16" height="4" rx="1.5" stroke="#00dcb4" stroke-width="1.3"/>
+                        <rect x="2.5" y="7.5" width="3" height="3" rx=".8" fill="#00dcb4" opacity=".8"/>
+                        <rect x="7.5" y="7.5" width="3" height="3" rx=".8" fill="#00dcb4" opacity=".8"/>
+                        <rect x="12.5" y="7.5" width="3" height="3" rx=".8" fill="#00dcb4" opacity=".8"/>
+                        <circle cx="2.5" cy="9" r="2" stroke="#00dcb4" stroke-width="1.3" fill="none"/>
+                        <circle cx="15.5" cy="9" r="2" stroke="#00dcb4" stroke-width="1.3" fill="none"/>
+                      </svg>
+                      <svg class="icon-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="elev-header-title">TRANSPORTOARE CU LANT</span>
+              </button>
+              <a href="transportoare_date_tehnice.html" class="dt-btn">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4.5h6M4 7h6M4 9.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    DATE TEHNICE
+              </a>
+            </div>
+            <div id="cc-dropdown" class="elev-dropdown-panel">
+              <!-- Main CC units -->
+              <div class="cc-subgroup cc-subgroup-main">
+                    <div class="elev-subgrid" style="padding:0;">
+                      <a class="elev-unit" href="CC01.html"><span class="elev-unit-code">CC01</span></a>
+                      <a class="elev-unit" href="CC02.html"><span class="elev-unit-code">CC02</span></a>
+                      <a class="elev-unit" href="CC03.html"><span class="elev-unit-code">CC03</span></a>
+                      <a class="elev-unit" href="CC04.html"><span class="elev-unit-code">CC04</span></a>
+                      <a class="elev-unit" href="CC12.html"><span class="elev-unit-code">CC12</span></a>
+                      <a class="elev-unit" href="CC13.html"><span class="elev-unit-code">CC13</span></a>
+                      <a class="elev-unit" href="CC14.html"><span class="elev-unit-code">CC14</span></a>
+                      <a class="elev-unit" href="CC15.html"><span class="elev-unit-code">CC15</span></a>
+                      <a class="elev-unit" href="CC16.html"><span class="elev-unit-code">CC16</span></a>
+                      <a class="elev-unit" href="CC19.html"><span class="elev-unit-code">CC19</span></a>
+                      <a class="elev-unit" href="CC21.html"><span class="elev-unit-code">CC21</span></a>
+                      <a class="elev-unit" href="CC22.html"><span class="elev-unit-code">CC22</span></a>
+                      <a class="elev-unit" href="CC23.html"><span class="elev-unit-code">CC23</span></a>
+                      <a class="elev-unit" href="CC24.html"><span class="elev-unit-code">CC24</span></a>
+                      <a class="elev-unit" href="CC25.html"><span class="elev-unit-code">CC25</span></a>
+                      <a class="elev-unit" href="CC26.html"><span class="elev-unit-code">CC26</span></a>
+                      <a class="elev-unit" href="CC27.html"><span class="elev-unit-code">CC27</span></a>
+                      <a class="elev-unit" href="CC29.html"><span class="elev-unit-code">CC29</span></a>
+                      <a class="elev-unit" href="CC31.html"><span class="elev-unit-code">CC31</span></a>
+                      <a class="elev-unit" href="CC32.html"><span class="elev-unit-code">CC32</span></a>
+                      <a class="elev-unit" href="CC33.html"><span class="elev-unit-code">CC33</span></a>
+                      <a class="elev-unit" href="CC51.html"><span class="elev-unit-code">CC51</span></a>
+                      <a class="elev-unit" href="CC52.html"><span class="elev-unit-code">CC52</span></a>
+                      <a class="elev-unit" href="CC53.html"><span class="elev-unit-code">CC53</span></a>
+                      <a class="elev-unit" href="CC202.html"><span class="elev-unit-code">CC202</span></a>
+                      <a class="elev-unit" href="CC204.html"><span class="elev-unit-code">CC204</span></a>
+                      <a class="elev-unit" href="CC210.html"><span class="elev-unit-code">CC210</span></a>
+                      <a class="elev-unit" href="CC211.html"><span class="elev-unit-code">CC211</span></a>
+                      <a class="elev-unit" href="CC212.html"><span class="elev-unit-code">CC212</span></a>
+                      <a class="elev-unit" href="CC213.html"><span class="elev-unit-code">CC213</span></a>
+                    </div>
+              </div>
+              <!-- Buncar + SL1 + SL2 in same row -->
+              <div class="cc-subgroups-row">
+                    <!-- Buncar Barja -->
+                    <div class="cc-subgroup cc-sub-block amber-block">
+                      <div class="cc-subgroup-label amber">Buncar Barja</div>
+                      <div class="elev-subgrid" style="padding:0;">
+                        <a class="elev-unit" href="CC213_BJ.html"><span class="elev-unit-code">CC213 (BJ)</span></a>
+                      </div>
+                    </div>
+                    <!-- Shiploader 1 -->
+                    <div class="cc-subgroup cc-sub-block blue-block">
+                      <div class="cc-subgroup-label blue">Shiploader 1</div>
+                      <div class="elev-subgrid" style="padding:0;">
+                        <a class="elev-unit" href="CC10_SL1.html"><span class="elev-unit-code">CC10 (SL1)</span></a>
+                        <a class="elev-unit" href="CC11_SL1.html"><span class="elev-unit-code">CC11 (SL1)</span></a>
+                      </div>
+                    </div>
+                    <!-- Shiploader 2 -->
+                    <div class="cc-subgroup cc-sub-block purple-block">
+                      <div class="cc-subgroup-label purple">Shiploader 2</div>
+                      <div class="elev-subgrid" style="padding:0;">
+                        <a class="elev-unit" href="CC10_SL2.html"><span class="elev-unit-code">CC10 (SL2)</span></a>
+                        <a class="elev-unit" href="CC11_SL2.html"><span class="elev-unit-code">CC11 (SL2)</span></a>
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TRANSPORTOARE CU BANDA GROUP -->
+          <div class="elev-wrapper" style="margin-bottom:24px;">
+            <div class="elev-header">
+              <button class="elev-toggle-btn" onclick="toggleBCDropdown()">
+                    <div class="elev-eq-icon">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <rect x="1" y="6" width="16" height="3" rx="1.5" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+                        <rect x="1" y="10" width="16" height="3" rx="1.5" fill="rgba(0,220,180,.08)" stroke="#00dcb4" stroke-width="1.2" opacity=".5"/>
+                        <circle cx="3" cy="7.5" r="2.5" fill="#0d201c" stroke="#00dcb4" stroke-width="1.3"/>
+                        <circle cx="15" cy="7.5" r="2.5" fill="#0d201c" stroke="#00dcb4" stroke-width="1.3"/>
+                        <circle cx="3" cy="7.5" r="1" fill="#00dcb4"/>
+                        <circle cx="15" cy="7.5" r="1" fill="#00dcb4"/>
+                      </svg>
+                      <svg class="icon-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="elev-header-title">TRANSPORTOARE CU BANDA</span>
+              </button>
+              <a href="banda_date_tehnice.html" class="dt-btn">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4.5h6M4 7h6M4 9.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    DATE TEHNICE
+              </a>
+            </div>
+            <div id="bc-dropdown" class="elev-dropdown-panel">
+              <div class="cc-subgroup cc-subgroup-main">
+                    <div class="elev-subgrid" style="padding:0;">
+                      <a class="elev-unit" href="BC01.html"><span class="elev-unit-code">BC01</span></a>
+                      <a class="elev-unit" href="BC11.html"><span class="elev-unit-code">BC11</span></a>
+                      <a class="elev-unit" href="BC12.html"><span class="elev-unit-code">BC12</span></a>
+                      <a class="elev-unit" href="BC21.html"><span class="elev-unit-code">BC21</span></a>
+                      <a class="elev-unit" href="BC22.html"><span class="elev-unit-code">BC22</span></a>
+                      <a class="elev-unit" href="BC31.html"><span class="elev-unit-code">BC31</span></a>
+                      <a class="elev-unit" href="BC32.html"><span class="elev-unit-code">BC32</span></a>
+                      <a class="elev-unit" href="BC33.html"><span class="elev-unit-code">BC33</span></a>
+                      <a class="elev-unit" href="BC34.html"><span class="elev-unit-code">BC34</span></a>
+                      <a class="elev-unit" href="BC41.html"><span class="elev-unit-code">BC41</span></a>
+                      <a class="elev-unit" href="BC42.html"><span class="elev-unit-code">BC42</span></a>
+                      <a class="elev-unit" href="BC43.html"><span class="elev-unit-code">BC43</span></a>
+                      <a class="elev-unit" href="BC44.html"><span class="elev-unit-code">BC44</span></a>
+                      <a class="elev-unit" href="BC47.html"><span class="elev-unit-code">BC47</span></a>
+                      <a class="elev-unit" href="BC48.html"><span class="elev-unit-code">BC48</span></a>
+                      <a class="elev-unit" href="BC51.html"><span class="elev-unit-code">BC51</span></a>
+                      <a class="elev-unit" href="BC52.html"><span class="elev-unit-code">BC52</span></a>
+                      <a class="elev-unit" href="BC53.html"><span class="elev-unit-code">BC53</span></a>
+                    </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FILTRE GROUP -->
+          <div class="elev-wrapper" style="margin-bottom:24px;">
+            <div class="elev-header">
+              <button class="elev-toggle-btn" onclick="toggleFiltreDropdown()">
+                    <div class="elev-eq-icon">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <path d="M2 3h14l-5.5 6v5.5l-3-1.5V9L2 3z" stroke="#00dcb4" stroke-width="1.3" stroke-linejoin="round" fill="rgba(0,220,180,.1)"/>
+                        <path d="M2 3h14" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                      <svg class="icon-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="elev-header-title">FILTRE</span>
+              </button>
+              <a href="filtre_date_tehnice.html" class="dt-btn">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4.5h6M4 7h6M4 9.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    DATE TEHNICE
+              </a>
+            </div>
+            <div id="filtre-dropdown" class="elev-dropdown-panel">
+              <!-- Filtre rotunde -->
+              <div class="cc-subgroup cc-subgroup-main">
+                    <div class="cc-subgroup-label teal-label">Filtre rotunde</div>
+                    <div class="elev-subgrid" style="padding:0;">
+                      <a class="elev-unit" href="FS01.html"><span class="elev-unit-code">FS01</span></a>
+                      <a class="elev-unit" href="FS02.html"><span class="elev-unit-code">FS02</span></a>
+                      <a class="elev-unit" href="FS03.html"><span class="elev-unit-code">FS03</span></a>
+                      <a class="elev-unit" href="FS04.html"><span class="elev-unit-code">FS04</span></a>
+                      <a class="elev-unit" href="FS06.html"><span class="elev-unit-code">FS06</span></a>
+                      <a class="elev-unit" href="FS07.html"><span class="elev-unit-code">FS07</span></a>
+                      <a class="elev-unit" href="FS09.html"><span class="elev-unit-code">FS09</span></a>
+                      <a class="elev-unit" href="FS10.html"><span class="elev-unit-code">FS10</span></a>
+                      <a class="elev-unit" href="FSCF.html"><span class="elev-unit-code">FSCF</span></a>
+                      <a class="elev-unit" href="SF201.html"><span class="elev-unit-code">SF201</span></a>
+                      <a class="elev-unit" href="SF202.html"><span class="elev-unit-code">SF202</span></a>
+                      <a class="elev-unit" href="SF203.html"><span class="elev-unit-code">SF203</span></a>
+                      <a class="elev-unit" href="SF211.html"><span class="elev-unit-code">SF211</span></a>
+                      <a class="elev-unit" href="SF222.html"><span class="elev-unit-code">SF222</span></a>
+                    </div>
+              </div>
+              <!-- Filtre punctuale -->
+              <div class="cc-subgroup" style="border-top:1px solid var(--border);padding-top:14px;">
+                    <div class="cc-subgroup-label teal-label">Filtre punctuale</div>
+                    <div class="elev-subgrid" style="padding:0;">
+                      <div class="tt-wrap"><a class="elev-unit" href="SFB01.html"><span class="elev-unit-code">SFB01</span></a><span class="tooltip">E201</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SFB02.html"><span class="elev-unit-code">SFB02</span></a><span class="tooltip">E201</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SFB03.html"><span class="elev-unit-code">SFB03</span></a><span class="tooltip">CC211</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF01.html"><span class="elev-unit-code">SF01</span></a><span class="tooltip">BC11</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF02.html"><span class="elev-unit-code">SF02</span></a><span class="tooltip">BC11</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF03.html"><span class="elev-unit-code">SF03</span></a><span class="tooltip">BC12</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF04.html"><span class="elev-unit-code">SF04</span></a><span class="tooltip">BC12</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF05.html"><span class="elev-unit-code">SF05</span></a><span class="tooltip">BC12</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF06.html"><span class="elev-unit-code">SF06</span></a><span class="tooltip">BC12</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF11.html"><span class="elev-unit-code">SF11</span></a><span class="tooltip">BC22</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF12.html"><span class="elev-unit-code">SF12</span></a><span class="tooltip">BC22</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF13.html"><span class="elev-unit-code">SF13</span></a><span class="tooltip">BC22</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF14.html"><span class="elev-unit-code">SF14</span></a><span class="tooltip">BC22</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF15.html"><span class="elev-unit-code">SF15</span></a><span class="tooltip">BC21</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF16.html"><span class="elev-unit-code">SF16</span></a><span class="tooltip">BC21</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF22.html"><span class="elev-unit-code">SF22</span></a><span class="tooltip">E82</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF204.html"><span class="elev-unit-code">SF204</span></a><span class="tooltip">E21 Sus</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF205.html"><span class="elev-unit-code">SF205</span></a><span class="tooltip">E21 Jos</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF206.html"><span class="elev-unit-code">SF206</span></a><span class="tooltip">E22 Sus</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF207.html"><span class="elev-unit-code">SF207</span></a><span class="tooltip">E22 Jos</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF208.html"><span class="elev-unit-code">SF208</span></a><span class="tooltip">E23 Sus</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF209.html"><span class="elev-unit-code">SF209</span></a><span class="tooltip">E23 Jos</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF210.html"><span class="elev-unit-code">SF210</span></a><span class="tooltip">CC27</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF211_punct.html"><span class="elev-unit-code">SF211</span></a><span class="tooltip">CC26</span></div>
+                      <div class="tt-wrap"><a class="elev-unit" href="SF212.html"><span class="elev-unit-code">SF212</span></a><span class="tooltip">CC25</span></div>
+                    </div>
+              </div>
+              <!-- SL1 / SL2 / Buncar / Dulap row -->
+              <div class="cc-subgroups-row" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+                    <div class="cc-subgroup cc-sub-block blue-block">
+                      <div class="cc-subgroup-label blue">Shiploader 1</div>
+                      <div class="elev-subgrid" style="padding:0;grid-template-columns:1fr 1fr;">
+                        <a class="elev-unit" href="SF_CC10_SL1.html"><span class="elev-unit-code" style="font-size:10px;">CC10-1</span></a>
+                        <a class="elev-unit" href="SF_CC11_SL1.html"><span class="elev-unit-code" style="font-size:10px;">CC11-1</span></a>
+                      </div>
+                    </div>
+                    <div class="cc-subgroup cc-sub-block purple-block">
+                      <div class="cc-subgroup-label purple">Shiploader 2</div>
+                      <div class="elev-subgrid" style="padding:0;grid-template-columns:1fr 1fr;">
+                        <a class="elev-unit" href="SF_CC10_SL2.html"><span class="elev-unit-code" style="font-size:10px;">CC10-2</span></a>
+                        <a class="elev-unit" href="SF_CC11_SL2.html"><span class="elev-unit-code" style="font-size:10px;">CC11-2</span></a>
+                      </div>
+                    </div>
+                    <div class="cc-subgroup cc-sub-block amber-block">
+                      <div class="cc-subgroup-label amber">Buncar Barja</div>
+                      <div class="elev-subgrid" style="padding:0;grid-template-columns:1fr;">
+                        <a class="elev-unit" href="SF_BJ.html"><span class="elev-unit-code">SF BJ</span></a>
+                      </div>
+                    </div>
+                    <div class="cc-subgroup cc-sub-block" style="border-top:2px solid rgba(74,175,112,.4);">
+                      <div class="cc-subgroup-label" style="color:var(--green);font-size:11px;white-space:nowrap;">Dulap desprafuitor</div>
+                      <div class="elev-subgrid" style="padding:0;grid-template-columns:1fr 1fr;">
+                        <div class="tt-wrap"><a class="elev-unit" href="HA01.html"><span class="elev-unit-code">HA01</span></a><span class="tooltip">Cuva Auto 1</span></div>
+                        <div class="tt-wrap"><a class="elev-unit" href="HA02.html"><span class="elev-unit-code">HA02</span></a><span class="tooltip">Cuva Auto 2</span></div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SNECURI GROUP DROPDOWN -->
+          <div class="elev-wrapper" style="margin-bottom:24px;">
+            <div class="elev-header">
+              <button class="elev-toggle-btn" onclick="toggleSnecuriDropdown()">
+                    <div class="elev-eq-icon">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                        <line x1="1" y1="9" x2="17" y2="9" stroke="#00dcb4" stroke-width="1.6" stroke-linecap="round"/>
+                        <path d="M2 9 Q4 6 6 9 Q8 12 10 9 Q12 6 14 9 Q16 12 18 9" stroke="#00dcb4" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+                        <rect x="1" y="1" width="16" height="16" rx="3" stroke="#00dcb4" stroke-width="1" opacity=".3"/>
+                      </svg>
+                      <svg class="icon-chevron" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="#00dcb4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <span class="elev-header-title">SNECURI</span>
+              </button>
+              <a href="snecuri_date_tehnice.html" class="dt-btn">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4.5h6M4 7h6M4 9.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                    DATE TEHNICE
+              </a>
+            </div>
+            <div id="snecuri-dropdown" class="elev-dropdown-panel">
+              <!-- S11-S16 -->
+              <div class="cc-subgroup cc-subgroup-main">
+                    <div class="elev-subgrid" style="padding:0;">
+                      <a class="elev-unit" href="S11.html"><span class="elev-unit-code">S11</span></a>
+                      <a class="elev-unit" href="S12.html"><span class="elev-unit-code">S12</span></a>
+                      <a class="elev-unit" href="S13.html"><span class="elev-unit-code">S13</span></a>
+                      <a class="elev-unit" href="S14.html"><span class="elev-unit-code">S14</span></a>
+                      <a class="elev-unit" href="S15.html"><span class="elev-unit-code">S15</span></a>
+                      <a class="elev-unit" href="S16.html"><span class="elev-unit-code">S16</span></a>
+                    </div>
+              </div>
+              <!-- S21-S26 -->
+              <div class="cc-subgroup" style="border-top:1px solid var(--border);padding-top:14px;">
+                    <div class="elev-subgrid" style="padding:0;">
+                      <a class="elev-unit" href="S21.html"><span class="elev-unit-code">S21</span></a>
+                      <a class="elev-unit" href="S22.html"><span class="elev-unit-code">S22</span></a>
+                      <a class="elev-unit" href="S23.html"><span class="elev-unit-code">S23</span></a>
+                      <a class="elev-unit" href="S24.html"><span class="elev-unit-code">S24</span></a>
+                      <a class="elev-unit" href="S25.html"><span class="elev-unit-code">S25</span></a>
+                      <a class="elev-unit" href="S26.html"><span class="elev-unit-code">S26</span></a>
+                    </div>
+              </div>
+            </div>
+          </div>
+          <!-- AVARII HOTSPOT -->
+          <div class="kpi-grid" style="margin-bottom:0;">
+            <!-- AVARII HOTSPOT FULL WIDTH -->
+        <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
+          <div style="flex-shrink:0;min-width:120px;">
+            <div class="kpi-lbl">Avarii luna curenta</div>
+            <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
+            <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
+            <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
+          </div>
+          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu cele mai multe avarii</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;margin-bottom:8px;">ECHIPAMENTE CU &gt;5 AVARII / SAPTAMANA</div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">BC11 <span style="color:rgba(255,255,255,.35);font-size:9px;">Banda transportoare</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:100%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">8 / sapt</div>
+              </div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">CC04 <span style="color:rgba(255,255,255,.35);font-size:9px;">Transportor cu lant</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:80%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">6 / sapt</div>
+              </div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">E01 <span style="color:rgba(255,255,255,.35);font-size:9px;">Elevator</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:65%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">5 / sapt</div>
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+
+          <!-- ECHIPAMENTE DE SUPRAVEGHEAT -->
+          <!-- ECHIPAMENTE DE SUPRAVEGHEAT -->
+          <div class="sec-hdr" style="margin-top:8px;">
+            <div class="sec-title" style="color:var(--amber);">Echipamente de supravegheat</div>
+            <div class="sec-line" style="background:rgba(240,165,0,.2);"></div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;white-space:nowrap;">MONITORIZARE ACTIVA</div>
+          </div>
+          <div class="panel" style="padding:0;overflow:hidden;border-color:rgba(240,165,0,.2);background:rgba(240,165,0,.03);margin-bottom:20px;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;min-width:600px;">
+                    <thead>
+                      <tr style="border-bottom:1px solid rgba(240,165,0,.15);">
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Echipament</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Ce se supravegheaza</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Detalii / Parametri</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Notificare</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="surveillance-body">
+                      <tr class="surv-row" onclick="openSurveillanceModal(0)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">E01</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Lant tractiune, cupe</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Joc lant >12mm · Uzura cupe nivel 2 · Verificare la 12000h</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge warn"><span class="sdot"></span>Supraveghere</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(1)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">CC04</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Tensiune lant, lagarele</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Temperatura lagar stg >70°C · Vibratii crescute</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge err"><span class="sdot"></span>Atentie urgenta</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(2)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">BC11</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Aliniere banda, rulouri</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Dezaliniere >5mm · Sunet anormal rului de intoarcere</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge err"><span class="sdot"></span>Avarie activa</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(3)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">Compresor C-01</div></td>
+                        <td style="padding:11px 14px;font-size:12px;color:#fff;font-weight:600;">Temperatura ulei, presiune</td>
+                        <td style="padding:11px 14px;font-size:11px;color:#fff;font-family:var(--mono);">Tmax=85°C · P=8bar · Vibratii anormale la ultimul control</td>
+                        <td style="padding:11px 14px;"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;"><span class="status-badge warn"><span class="sdot"></span>Supraveghere</span></td>
+                      </tr>
+                    </tbody>
+              </table>
+            </div>
+            <!-- Add row button -->
+            <div style="padding:10px 14px;border-top:1px solid rgba(240,165,0,.1);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);font-weight:600;">3 echipamente monitorizate · Click pe rand pentru detalii</span>
+              <button onclick="openAddSurveillance()" style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);color:var(--amber);font-family:var(--mono);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;" onmouseover="this.style.background='rgba(240,165,0,.2)'" onmouseout="this.style.background='rgba(240,165,0,.1)'">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    ADAUGA ECHIPAMENT
+              </button>
+            </div>
+          </div>
+
+
+
+          <!-- RECENT ACTIVITY -->
+          <div class="sec-hdr" style="margin-top:8px;">
+            <div class="sec-title">Activitate recenta</div>
+            <div class="sec-line"></div>
+            <div class="sec-count">ULTIMELE 5</div>
+          </div>
+          <div class="panel">
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot ok"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Revizie 1500h finalizata</div>
+                <div class="act-eq">Elevator E-01 — ELV-001</div>
+                <div class="act-meta"><span class="act-user">Leica Bogdan</span><span class="act-time">Azi, 10:30</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot err"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Avarie raportata — Blocare banda</div>
+                <div class="act-eq">Banda B-03 — BND-003</div>
+                <div class="act-meta"><span class="act-user">Alex</span><span class="act-time">Azi, 08:15</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot warn"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Revizie depasita — Necesita interventie</div>
+                <div class="act-eq">Compresor C-01 — CMP-001</div>
+                <div class="act-meta"><span class="act-user">KRONOS</span><span class="act-time">Ieri, 22:00</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot ok"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Schimb ulei efectuat</div>
+                <div class="act-eq">Elevator E-02 — ELV-002</div>
+                <div class="act-meta"><span class="act-user">Vali</span><span class="act-time">Ieri, 14:45</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot info"></div></div>
+              <div class="act-content">
+                <div class="act-title">Relubrifiere 800h programata</div>
+                <div class="act-eq">Ventilator V-01 — VNT-001</div>
+                <div class="act-meta"><span class="act-user">Catalin</span><span class="act-time">Ieri, 09:00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COL: widgets stacked top-down -->
+        <div>
+
+          <!-- SCHIMB ULEI WIDGET -->
+          <a href="schimb_ulei.html" style="display:block;text-decoration:none;margin-bottom:16px;" id="schimb-ulei-card">
+            <div class="widget-card widget-bicolor">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:4px;">
+                <svg width="64" height="40" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gearbox body -->
+  <rect x="14" y="8" width="28" height="24" rx="2.5" fill="rgba(0,220,180,.1)" stroke="#00dcb4" stroke-width="1.5"/>
+  <!-- Mounting feet bottom -->
+  <rect x="11" y="30" width="8" height="4" rx="1" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <rect x="37" y="30" width="8" height="4" rx="1" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Mounting feet holes -->
+  <circle cx="15" cy="32" r="1.2" fill="#00dcb4" opacity=".5"/>
+  <circle cx="41" cy="32" r="1.2" fill="#00dcb4" opacity=".5"/>
+  <!-- Output shaft left -->
+  <rect x="1" y="17.5" width="13" height="5" rx="1.5" fill="rgba(0,220,180,.2)" stroke="#00dcb4" stroke-width="1.3"/>
+  <!-- Gear detail inside box -->
+  <circle cx="28" cy="20" r="7" stroke="#00dcb4" stroke-width="1.2" stroke-dasharray="2.5 1.5" opacity=".6"/>
+  <circle cx="28" cy="20" r="3" fill="rgba(0,220,180,.25)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Motor cylinder body -->
+  <rect x="42" y="11" width="18" height="18" rx="9" fill="rgba(0,220,180,.1)" stroke="#00dcb4" stroke-width="1.5"/>
+  <!-- Motor cooling fins -->
+  <line x1="46" y1="11" x2="46" y2="29" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="50" y1="10" x2="50" y2="30" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="54" y1="10" x2="54" y2="30" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="58" y1="11" x2="58" y2="29" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <!-- Motor terminal box on top -->
+  <rect x="48" y="5" width="10" height="7" rx="1.2" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Connection bolt motor-gearbox -->
+  <rect x="40" y="14" width="4" height="12" rx="1" fill="rgba(0,220,180,.2)" stroke="#00dcb4" stroke-width="1"/>
+</svg>
+                <div class="widget-label" style="color:var(--teal);font-size:13px;text-align:center;letter-spacing:.18em;">Schimb ulei</div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:4px;">
+                <div class="widget-half widget-amber">
+                  <div class="widget-val" id="su-soon">—</div>
+                  <div class="widget-sub" style="color:var(--amber);">CURAND</div>
+                </div>
+                <div class="widget-half widget-red">
+                  <div class="widget-val" id="su-late">—</div>
+                  <div class="widget-sub" style="color:var(--red);">DEPASIT</div>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- SCADENTE ISCIR -->
+          <div class="widget-card widget-red-border" style="margin-bottom:16px;padding:0;overflow:hidden;">
+            <div style="padding:12px 16px 10px;border-bottom:1px solid rgba(224,80,80,.12);text-align:center;">
+              <div class="widget-label" style="color:var(--red);font-size:12px;">Scadente ISCIR</div>
+            </div>
+            <div style="padding:4px 8px;">
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Elevator E-01</div>
+                <div class="iscir-type">Autorizatie functionare</div>
+              </div>
+              <div class="iscir-days days-crit"><div class="iscir-days-val">18</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Compresor C-01</div>
+                <div class="iscir-type">Verificare tehnica ISCIR</div>
+              </div>
+              <div class="iscir-days days-warn"><div class="iscir-days-val">45</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Elevator E-02</div>
+                <div class="iscir-type">Autorizatie functionare</div>
+              </div>
+              <div class="iscir-days days-ok"><div class="iscir-days-val">124</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Instalatie Electrica</div>
+                <div class="iscir-type">Revizie anuala autorizata</div>
+              </div>
+              <div class="iscir-days days-ok"><div class="iscir-days-val">198</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            </div>
+          </div>
+
+          <!-- CONFORMITATE -->
+          <div class="widget-card widget-green-border" style="margin-bottom:16px;">
+            <div class="kpi-lbl" style="color:var(--green);">Conformitate planuri mentenanta</div>
+            <div class="kpi-val">98%</div>
+            <div class="kpi-sub">Planuri mentenanta</div>
+            <div class="kpi-trend"><span class="kpi-trend-val trend-up">▲ Optim</span></div>
+            <div class="kpi-ring"><canvas id="kr2" width="70" height="70"></canvas></div>
+          </div>
+
+          <!-- ALERTE ACTIVE -->
+          <div class="sec-hdr">
+            <div class="sec-title" style="color:var(--red);">Alerte active</div>
+            <div class="sec-line"></div>
+            <div class="sec-count" style="color:var(--red);">8 ACTIVE</div>
+          </div>
+          <div class="panel">
+            <div class="alert-item urgent">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Avarie activa — Banda B-03</div>
+                <div class="alert-sub">Blocare mecanica la tambur de actionare</div>
+                <div class="alert-time">Azi 08:15 · In interventie</div>
+              </div>
+              <span class="alert-chip chip-red">URGENT</span>
+            </div>
+            <div class="alert-item urgent">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Revizie depasita — C-01</div>
+                <div class="alert-sub">Compresor la 200h — revizie neefectuata</div>
+                <div class="alert-time">Depasit de 3 zile</div>
+              </div>
+              <span class="alert-chip chip-red">CRITIC</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Scadenta ISCIR — E-01</div>
+                <div class="alert-sub">Autorizatie ISCIR expira in 18 zile</div>
+                <div class="alert-time">Termen: 02.04.2026</div>
+              </div>
+              <span class="alert-chip chip-amber">18 ZILE</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Revizie apropiata — E-01</div>
+                <div class="alert-sub">Elevator E-01 la 180h de revizia 1500h</div>
+                <div class="alert-time">Estimat: 5-7 zile</div>
+              </div>
+              <span class="alert-chip chip-amber">CURAND</span>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#5090e0" stroke-width="1.4"/><path d="M8 7v4M8 5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Stoc piese scazut</div>
+                <div class="alert-sub">Cupe 2L: 4 buc · Sub stoc minim (10)</div>
+                <div class="alert-time">Actualizat ieri</div>
+              </div>
+              <span class="alert-chip chip-blue">STOC</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Filtru FS01 — colmatare avansata</div>
+                <div class="alert-sub">Presiune diferentiala depasita · Curatare necesara</div>
+                <div class="alert-time">Detectat azi, 06:40</div>
+              </div>
+              <span class="alert-chip chip-amber">FILTRU</span>
+            </div>
+            <div class="alert-item urgent">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Temperatura lagar CC04 depasita</div>
+                <div class="alert-sub">Temperatura >70°C · Risc blocare iminent</div>
+                <div class="alert-time">Azi 11:22 · Monitorizare activa</div>
+              </div>
+              <span class="alert-chip chip-red">CRITIC</span>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#5090e0" stroke-width="1.4"/><path d="M8 7v4M8 5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Revizie programata — BC12</div>
+                <div class="alert-sub">Schimb ulei reductor planificat la 01.08.2025</div>
+                <div class="alert-time">In 138 zile</div>
+              </div>
+              <span class="alert-chip chip-blue">PLAN</span>
+            </div>
+          </div>
+
+        </div><!-- /right col -->
+
+      </div><!-- /dash-grid -->
+
+      <!-- SURVEILLANCE MODAL -->
+      <div id="surv-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:var(--bg3);border:1px solid rgba(240,165,0,.3);border-radius:14px;max-width:480px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div style="font-family:var(--title);font-size:14px;font-weight:900;color:var(--amber);letter-spacing:.1em;">SUPRAVEGHERE ECHIPAMENT</div>
+            <button onclick="document.getElementById('surv-modal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:20px;line-height:1;">×</button>
+          </div>
+          <div id="surv-modal-content"></div>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+            <button style="padding:9px 18px;border-radius:7px;background:rgba(224,80,80,.12);border:1px solid rgba(224,80,80,.3);color:var(--red);font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.08em;" onclick="notifySef()">
+              🔔 NOTIFICA SEF IERARHIC
+            </button>
+            <button onclick="document.getElementById('surv-modal').style.display='none'" style="padding:9px 18px;border-radius:7px;background:var(--border);border:1px solid var(--border2);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;">INCHIDE</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- TRADEMARK FOOTER -->
+      <div style="
+        margin-top:32px;padding:16px 0 8px;
+        border-top:1px solid var(--border);
+        display:flex;align-items:center;justify-content:center;
+        flex-direction:column;gap:6px;
+      ">
+        <div style="font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;">
+          <span style="color:var(--teal);">LEICA</span>
+          <span style="color:#fff;"> BOGDAN</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;">leicabogdan@gmail.com</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.45);letter-spacing:2px;font-weight:600;">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+/* ── GEAR ── */
+function drawGear(cv){
+  const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;
+  const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';
+  function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+  c.clearRect(0,0,W,H);
+  const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);
+  grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');
+  c.beginPath();
+  for(let i=0;i<12;i++){
+    const b=(i/12)*Math.PI*2,ta=.18,ra=.26;
+    const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;
+    const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);
+    if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);
+    c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);
+    c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);
+  }
+  c.closePath();c.fillStyle=grd;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';
+  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);
+  const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);
+  ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');
+  c.fillStyle=ig;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2.5*s;c.shadowColor=TC;c.shadowBlur=12*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.7*s;c.stroke();
+  for(let m=0;m<60;m++){
+    const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;
+    const r1=RI-(isQ?4:isH?3:1.5)*s,r2=RI-(isQ?14:isH?11:6)*s;
+    const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);
+    c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
+    c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.7)':'rgba(0,220,180,.28)';
+    c.lineWidth=(isQ?2.2:isH?1.6:.8)*s;c.lineCap='round';
+    c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?6*s:isH?2*s:0;c.stroke();c.shadowBlur=0;
+  }
+  const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;
+  [[RI*.48,(hrs/12)*Math.PI*2,4*s,TC,8*s],[RI*.70,(mins/60)*Math.PI*2,2.5*s,TC,6*s]].forEach(([r,a,lw,col,bl])=>{
+    const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;
+  });
+  const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.75,sA),[scx,scy]=pt(-RI*.2,sA);
+  c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.2*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=6*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,5*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=10*s;c.fill();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,2.5*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
+}
+(function gl(){drawGear(document.getElementById('sgear'));requestAnimationFrame(gl);})();
+
+/* ── KPI MINI RINGS ── */
+function drawKpiRing(id,val,col){
+  const cv=document.getElementById(id);
+  if(!cv)return;
+  const dpr=window.devicePixelRatio||1,disp=cv.offsetWidth||70;
+  cv.width=Math.round(disp*dpr);cv.height=Math.round(disp*dpr);
+  const c=cv.getContext('2d'),CX=cv.width/2,CY=cv.height/2,sc=cv.width/70;
+  const R=26*sc,LW=6*sc;
+  c.clearRect(0,0,cv.width,cv.height);
+  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,Math.PI*2-Math.PI/2);
+  c.strokeStyle='rgba(255,255,255,.07)';c.lineWidth=LW;c.lineCap='round';c.stroke();
+  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,-Math.PI/2+Math.PI*2*val);
+  c.strokeStyle=col;c.lineWidth=LW;c.lineCap='round';c.shadowColor=col;c.shadowBlur=8*sc;c.stroke();c.shadowBlur=0;
+}
+drawKpiRing('kr1',.94,'#00dcb4');
+drawKpiRing('kr2',.98,'#4aaf70');
+
+/* ── CLOCK ── */
+function updateClock(){
+  const now=new Date();
+  const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];
+  const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+}
+updateClock();setInterval(updateClock,1000);
+
+/* ── SIDEBAR ── */
+let sidebarCollapsed=false;
+function toggleSidebar(){
+  sidebarCollapsed=!sidebarCollapsed;
+  document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
+}
+function openMobileSidebar(){
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebar-overlay').classList.add('show');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+/* mobile topbar menu */
+function checkMobile(){
+  const mb=document.getElementById('mobile-menu-btn');
+  if(window.innerWidth<=700)mb.style.display='block';
+  else mb.style.display='none';
+}
+checkMobile();window.addEventListener('resize',checkMobile);
+
+/* ── ELEVATOR DROPDOWN ── */
+let elevOpen=false;
+function toggleElevDropdown(){
+  elevOpen=!elevOpen;
+  document.getElementById('elev-dropdown').classList.toggle('open',elevOpen);
+  document.querySelectorAll('.elev-wrapper')[0].classList.toggle('open',elevOpen);
+}
+
+let ccOpen=false;
+function toggleCCDropdown(){
+  ccOpen=!ccOpen;
+  document.getElementById('cc-dropdown').classList.toggle('open',ccOpen);
+  document.querySelectorAll('.elev-wrapper')[1].classList.toggle('open',ccOpen);
+}
+
+let bcOpen=false;
+function toggleBCDropdown(){
+  bcOpen=!bcOpen;
+  document.getElementById('bc-dropdown').classList.toggle('open',bcOpen);
+  document.querySelectorAll('.elev-wrapper')[2].classList.toggle('open',bcOpen);
+}
+
+let filtreOpen=false;
+function toggleFiltreDropdown(){
+  filtreOpen=!filtreOpen;
+  document.getElementById('filtre-dropdown').classList.toggle('open',filtreOpen);
+  document.querySelectorAll('.elev-wrapper')[3].classList.toggle('open',filtreOpen);
+}
+
+let snecuriOpen=false;
+function toggleSnecuriDropdown(){
+  snecuriOpen=!snecuriOpen;
+  document.getElementById('snecuri-dropdown').classList.toggle('open',snecuriOpen);
+  document.querySelectorAll('.elev-wrapper')[4].classList.toggle('open',snecuriOpen);
+}
+let mntOpen=false;
+function toggleMntDropdown(){
+  mntOpen=!mntOpen;
+  document.getElementById('mnt-dropdown').classList.toggle('open',mntOpen);
+  document.querySelectorAll('.elev-wrapper').forEach((w,i)=>{
+    if(w.querySelector('#mnt-dropdown'))w.classList.toggle('open',mntOpen);
+  });
+}
+
+let sbMntOpen=false;
+function toggleSbMnt(){
+  sbMntOpen=!sbMntOpen;
+  const items=document.getElementById('sb-mnt-items');
+  const arrow=document.getElementById('sb-mnt-arrow');
+  items.style.maxHeight=sbMntOpen?'600px':'0';
+  if(arrow) arrow.style.transform=sbMntOpen?'rotate(180deg)':'rotate(0deg)';
+}
+
+const SURV_DATA=[
+  {eq:'E01',cod:'Elevator · Siloz Nord',watch:'Lant tractiune, uzura cupe',details:'Joc lant >12mm · Uzura cupe nivel 2 detectata · Urmatoarea verificare la 12000h · Relubrifiere in curs',notify:'Leica Bogdan',status:'warn'},
+  {eq:'CC04',cod:'Transportor cu lant · Siloz',watch:'Lagare, tensiune lant',details:'Temperatura lagar stang >70°C · Vibratii crescute · Tensiune lant deviatoare depasita · Interventie planificata',notify:'Leica Bogdan',status:'err'},
+  {eq:'BC11',cod:'Banda transportoare · Incarcare',watch:'Aliniere banda, rulouri de intoarcere',details:'Dezaliniere >5mm detectata · Sunet anormal roul de intoarcere · In interventie activa de la 08:15',notify:'Leica Bogdan',status:'err'},
+  {eq:'Compresor C-01',cod:'CMP-001 · Sala Masini',watch:'Temperatura ulei, presiune de lucru',details:'Tmax=85°C · Presiune=8bar · Vibratii anormale detectate la ultimul control · Revizie programata',notify:'Leica Bogdan',status:'warn'},
+];
+function openSurveillanceModal(idx){
+  const d=SURV_DATA[idx];
+  const sc={ok:'#4aaf70',warn:'#f0a500',err:'#e05050'};
+  const sl={ok:'Monitorizat',warn:'Supraveghere',err:'Avarie activa'};
+  document.getElementById('surv-modal-content').innerHTML=`
+    <div style="margin-bottom:12px;">
+      <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">${d.eq}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;">${d.cod}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;">Ce se supravegheaza</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">${d.watch}</div>
+      </div>
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;">Detalii / Parametri</div>
+        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;">${d.details}</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;">Sef ierarhic notificat</div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);">${d.notify}</div>
+        </div>
+        <div style="background:rgba(${sc[d.status]==='#4aaf70'?'74,175,112':sc[d.status]==='#f0a500'?'240,165,0':'224,80,80'},.12);border:1px solid ${sc[d.status]}44;border-radius:20px;padding:5px 14px;font-family:var(--mono);font-size:11px;font-weight:700;color:${sc[d.status]};">${sl[d.status]}</div>
+      </div>
+    </div>`;
+  document.getElementById('surv-modal').style.display='flex';
+}
+function openAddSurveillance(){alert('Functionalitate in dezvoltare — va fi disponibila in versiunea urmatoare.');}
+function notifySef(){
+  const btn=event.target.closest('button');
+  btn.textContent='✓ Notificare trimisa';btn.style.background='rgba(74,175,112,.15)';btn.style.color='#4aaf70';btn.style.borderColor='rgba(74,175,112,.3)';
+  setTimeout(()=>{btn.innerHTML='🔔 NOTIFICA SEF IERARHIC';btn.style.background='rgba(224,80,80,.12)';btn.style.color='var(--red)';btn.style.borderColor='rgba(224,80,80,.3)';},2500);
+}
+
+// ── SCHIMB ULEI STATUS ──
+(function(){
+  const FALLBACK=[
+    ["","BC11","","","","","24.07.2027"],["","BC12","","","","","01.08.2027"],["","BC32","","","","","01.08.2027"],
+    ["","BC34","","","","","01.08.2027"],["","BC41","","","","","24.07.2027"],["","BC42","","","","","31.07.2027"],
+    ["","BC47","","","","","23.07.2027"],["","BC48","","","","","23.07.2027"],["","CC01","","","","","07.08.2027"],
+    ["","CC02","","","","","07.08.2027"],["","CC03","","","","","28.07.2027"],["","CC04","","","","","28.07.2027"],
+    ["","CC10-1 SL","","","","","01.11.2025"],["","CC10-2 SL","","","","","01.08.2027"],["","CC11","","","","","08.08.2027"],
+    ["","CC11 SL","","","","","01.08.2027"],["","CC12","","","","","25.07.2027"],["","CC13","","","","","08.08.2027"],
+    ["","CC14","","","","","25.07.2027"],["","CC15","","","","","08.08.2027"],["","CC16","","","","","08.08.2027"],
+    ["","CC19","","","","","24.07.2027"],["","CC202","","","","","07.08.2027"],["","CC51","","","","","12.08.2027"],
+    ["","CC52","","","","","07.08.2027"],["","CC53","","","","","31.07.2027"],["","E01","","","","","14.08.2027"],
+    ["","E02","","","","","22.07.2027"],["","E03","","","","","28.07.2027"],["","E51","","","","","12.08.2027"],
+    ["","E81","","","","","23.07.2027"],["","E82","","","","","24.06.2027"],
+  ];
+  function parseD(s){const p=String(s||'').split('.');if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[1]-1,+p[0]);return null;}
+  function getS(r){const d=parseD(r[6]);if(!d)return'new';const diff=(d-new Date())/86400000;return diff<0?'late':diff<90?'soon':'ok';}
+  function applyCount(rows){
+    const statuses=rows.map(r=>getS(r));
+    const late=statuses.filter(s=>s==='late').length;
+    const soon=statuses.filter(s=>s==='soon').length;
+    const el=document.getElementById('su-late');
+    const es=document.getElementById('su-soon');
+    if(el)el.textContent=late;
+    if(es)es.textContent=soon;
+  }
+  // Show fallback immediately
+  applyCount(FALLBACK);
+  // Try to fetch live Excel data
+  if(typeof XLSX!=='undefined'){
+    fetch('edit/schimb_ulei.xlsx?t='+Date.now())
+      .then(r=>r.ok?r.arrayBuffer():null)
+      .then(buf=>{
+        if(!buf)return;
+        const wb=XLSX.read(new Uint8Array(buf),{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        const rows=raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
+        if(rows.length)applyCount(rows);
+      }).catch(()=>{});
+  }
+})();
+
+function initUser(){
+  // read from sessionStorage if available (set by login page)
+  try{
+    const name=sessionStorage.getItem('k_name')||'Leica Bogdan';
+    const role=sessionStorage.getItem('k_role')||'APP OWNER';
+    document.getElementById('user-name').textContent=name;
+    document.getElementById('user-role').textContent=role;
+    const parts=name.split(' ');
+    const initials=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+    document.getElementById('user-av').textContent=initials;
+  }catch(e){}
+}
+initUser();
+</script>
+</body>
+</html>
+          </div>
+
+          <!-- AVARII + echipamente supravegheat wrapped in a kpi-grid for avarii width -->
+          <div class="kpi-grid" style="margin-bottom:0;">
+        <!-- AVARII HOTSPOT FULL WIDTH -->
+        <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
+          <div style="flex-shrink:0;min-width:120px;">
+            <div class="kpi-lbl">Avarii luna curenta</div>
+            <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
+            <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
+            <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
+          </div>
+          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu cele mai multe avarii</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;margin-bottom:8px;">ECHIPAMENTE CU &gt;5 AVARII / SAPTAMANA</div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">BC11 <span style="color:rgba(255,255,255,.35);font-size:9px;">Banda transportoare</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:100%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">8 / sapt</div>
+              </div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">CC04 <span style="color:rgba(255,255,255,.35);font-size:9px;">Transportor cu lant</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:80%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">6 / sapt</div>
+              </div>
+              <div class="hotspot-row">
+                <div class="hotspot-eq">E01 <span style="color:rgba(255,255,255,.35);font-size:9px;">Elevator</span></div>
+                <div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:65%;background:var(--red);"></div></div>
+                <div class="hotspot-count" style="color:var(--red);">5 / sapt</div>
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+
+          <!-- ECHIPAMENTE DE SUPRAVEGHEAT -->
+          <!-- ECHIPAMENTE DE SUPRAVEGHEAT -->
+          <div class="sec-hdr" style="margin-top:8px;">
+            <div class="sec-title" style="color:var(--amber);">Echipamente de supravegheat</div>
+            <div class="sec-line" style="background:rgba(240,165,0,.2);"></div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;white-space:nowrap;">MONITORIZARE ACTIVA</div>
+          </div>
+          <div class="panel" style="padding:0;overflow:hidden;border-color:rgba(240,165,0,.2);background:rgba(240,165,0,.03);margin-bottom:20px;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;min-width:600px;">
+                    <thead>
+                      <tr style="border-bottom:1px solid rgba(240,165,0,.15);">
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Echipament</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Ce se supravegheaza</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Detalii / Parametri</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Notificare</th>
+                        <th style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:10px 14px;text-align:left;">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="surveillance-body">
+                      <tr class="surv-row" onclick="openSurveillanceModal(0)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">E01</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Lant tractiune, cupe</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Joc lant >12mm · Uzura cupe nivel 2 · Verificare la 12000h</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge warn"><span class="sdot"></span>Supraveghere</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(1)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">CC04</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Tensiune lant, lagarele</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Temperatura lagar stg >70°C · Vibratii crescute</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge err"><span class="sdot"></span>Atentie urgenta</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(2)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">BC11</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:12px;color:#fff;font-weight:600;">Aliniere banda, rulouri</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);font-size:11px;color:#fff;font-family:var(--mono);">Dezaliniere >5mm · Sunet anormal rului de intoarcere</td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;border-bottom:1px solid rgba(240,165,0,.08);"><span class="status-badge err"><span class="sdot"></span>Avarie activa</span></td>
+                      </tr>
+                      <tr class="surv-row" onclick="openSurveillanceModal(3)" style="cursor:pointer;">
+                        <td style="padding:11px 14px;"><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">Compresor C-01</div></td>
+                        <td style="padding:11px 14px;font-size:12px;color:#fff;font-weight:600;">Temperatura ulei, presiune</td>
+                        <td style="padding:11px 14px;font-size:11px;color:#fff;font-family:var(--mono);">Tmax=85°C · P=8bar · Vibratii anormale la ultimul control</td>
+                        <td style="padding:11px 14px;"><div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--amber);font-family:var(--mono);font-weight:700;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Leica Bogdan</div></td>
+                        <td style="padding:11px 14px;"><span class="status-badge warn"><span class="sdot"></span>Supraveghere</span></td>
+                      </tr>
+                    </tbody>
+              </table>
+            </div>
+            <!-- Add row button -->
+            <div style="padding:10px 14px;border-top:1px solid rgba(240,165,0,.1);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);font-weight:600;">3 echipamente monitorizate · Click pe rand pentru detalii</span>
+              <button onclick="openAddSurveillance()" style="display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:6px;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);color:var(--amber);font-family:var(--mono);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;" onmouseover="this.style.background='rgba(240,165,0,.2)'" onmouseout="this.style.background='rgba(240,165,0,.1)'">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    ADAUGA ECHIPAMENT
+              </button>
+            </div>
+          </div>
+
+
+
+          <!-- RECENT ACTIVITY -->
+          <div class="sec-hdr" style="margin-top:8px;">
+            <div class="sec-title">Activitate recenta</div>
+            <div class="sec-line"></div>
+            <div class="sec-count">ULTIMELE 5</div>
+          </div>
+          <div class="panel">
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot ok"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Revizie 1500h finalizata</div>
+                <div class="act-eq">Elevator E-01 — ELV-001</div>
+                <div class="act-meta"><span class="act-user">Leica Bogdan</span><span class="act-time">Azi, 10:30</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot err"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Avarie raportata — Blocare banda</div>
+                <div class="act-eq">Banda B-03 — BND-003</div>
+                <div class="act-meta"><span class="act-user">Alex</span><span class="act-time">Azi, 08:15</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot warn"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Revizie depasita — Necesita interventie</div>
+                <div class="act-eq">Compresor C-01 — CMP-001</div>
+                <div class="act-meta"><span class="act-user">KRONOS</span><span class="act-time">Ieri, 22:00</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot ok"></div><div class="act-line"></div></div>
+              <div class="act-content">
+                <div class="act-title">Schimb ulei efectuat</div>
+                <div class="act-eq">Elevator E-02 — ELV-002</div>
+                <div class="act-meta"><span class="act-user">Vali</span><span class="act-time">Ieri, 14:45</span></div>
+              </div>
+            </div>
+            <div class="act-item">
+              <div class="act-dot-col"><div class="act-dot info"></div></div>
+              <div class="act-content">
+                <div class="act-title">Relubrifiere 800h programata</div>
+                <div class="act-eq">Ventilator V-01 — VNT-001</div>
+                <div class="act-meta"><span class="act-user">Catalin</span><span class="act-time">Ieri, 09:00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        </div><!-- /left col -->
+
+        <!-- RIGHT COL: starts from top, aligned with Raporteaza avarie -->
+        <div>
+
+          <!-- SCHIMB ULEI WIDGET -->
+          <a href="schimb_ulei.html" style="display:block;text-decoration:none;margin-bottom:16px;" id="schimb-ulei-card">
+            <div class="widget-card widget-bicolor">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:4px;">
+                <svg width="64" height="40" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gearbox body -->
+  <rect x="14" y="8" width="28" height="24" rx="2.5" fill="rgba(0,220,180,.1)" stroke="#00dcb4" stroke-width="1.5"/>
+  <!-- Mounting feet bottom -->
+  <rect x="11" y="30" width="8" height="4" rx="1" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <rect x="37" y="30" width="8" height="4" rx="1" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Mounting feet holes -->
+  <circle cx="15" cy="32" r="1.2" fill="#00dcb4" opacity=".5"/>
+  <circle cx="41" cy="32" r="1.2" fill="#00dcb4" opacity=".5"/>
+  <!-- Output shaft left -->
+  <rect x="1" y="17.5" width="13" height="5" rx="1.5" fill="rgba(0,220,180,.2)" stroke="#00dcb4" stroke-width="1.3"/>
+  <!-- Gear detail inside box -->
+  <circle cx="28" cy="20" r="7" stroke="#00dcb4" stroke-width="1.2" stroke-dasharray="2.5 1.5" opacity=".6"/>
+  <circle cx="28" cy="20" r="3" fill="rgba(0,220,180,.25)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Motor cylinder body -->
+  <rect x="42" y="11" width="18" height="18" rx="9" fill="rgba(0,220,180,.1)" stroke="#00dcb4" stroke-width="1.5"/>
+  <!-- Motor cooling fins -->
+  <line x1="46" y1="11" x2="46" y2="29" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="50" y1="10" x2="50" y2="30" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="54" y1="10" x2="54" y2="30" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <line x1="58" y1="11" x2="58" y2="29" stroke="#00dcb4" stroke-width=".8" opacity=".4"/>
+  <!-- Motor terminal box on top -->
+  <rect x="48" y="5" width="10" height="7" rx="1.2" fill="rgba(0,220,180,.15)" stroke="#00dcb4" stroke-width="1.2"/>
+  <!-- Connection bolt motor-gearbox -->
+  <rect x="40" y="14" width="4" height="12" rx="1" fill="rgba(0,220,180,.2)" stroke="#00dcb4" stroke-width="1"/>
+</svg>
+                <div class="widget-label" style="color:var(--teal);font-size:13px;text-align:center;letter-spacing:.18em;">Schimb ulei</div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:4px;">
+                <div class="widget-half widget-amber">
+                  <div class="widget-val" id="su-soon">—</div>
+                  <div class="widget-sub" style="color:var(--amber);">CURAND</div>
+                </div>
+                <div class="widget-half widget-red">
+                  <div class="widget-val" id="su-late">—</div>
+                  <div class="widget-sub" style="color:var(--red);">DEPASIT</div>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- SCADENTE ISCIR -->
+          <div class="widget-card widget-red-border" style="margin-bottom:16px;padding:0;overflow:hidden;">
+            <div style="padding:12px 16px 10px;border-bottom:1px solid rgba(224,80,80,.12);text-align:center;">
+              <div class="widget-label" style="color:var(--red);font-size:12px;">Scadente ISCIR</div>
+            </div>
+            <div style="padding:4px 8px;">
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Elevator E-01</div>
+                <div class="iscir-type">Autorizatie functionare</div>
+              </div>
+              <div class="iscir-days days-crit"><div class="iscir-days-val">18</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Compresor C-01</div>
+                <div class="iscir-type">Verificare tehnica ISCIR</div>
+              </div>
+              <div class="iscir-days days-warn"><div class="iscir-days-val">45</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Elevator E-02</div>
+                <div class="iscir-type">Autorizatie functionare</div>
+              </div>
+              <div class="iscir-days days-ok"><div class="iscir-days-val">124</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            <div class="iscir-item">
+              <div class="iscir-name">
+                <div class="iscir-eq">Instalatie Electrica</div>
+                <div class="iscir-type">Revizie anuala autorizata</div>
+              </div>
+              <div class="iscir-days days-ok"><div class="iscir-days-val">198</div><div class="iscir-days-lbl">ZILE</div></div>
+            </div>
+            </div>
+          </div>
+
+          <!-- CONFORMITATE -->
+          <div class="widget-card widget-green-border" style="margin-bottom:16px;">
+            <div class="kpi-lbl" style="color:var(--green);">Conformitate planuri mentenanta</div>
+            <div class="kpi-val">98%</div>
+            <div class="kpi-sub">Planuri mentenanta</div>
+            <div class="kpi-trend"><span class="kpi-trend-val trend-up">▲ Optim</span></div>
+            <div class="kpi-ring"><canvas id="kr2" width="70" height="70"></canvas></div>
+          </div>
+
+          <!-- ALERTE ACTIVE -->
+          <div class="sec-hdr">
+            <div class="sec-title" style="color:var(--red);">Alerte active</div>
+            <div class="sec-line"></div>
+            <div class="sec-count" style="color:var(--red);">8 ACTIVE</div>
+          </div>
+          <div class="panel">
+            <div class="alert-item urgent">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Avarie activa — Banda B-03</div>
+                <div class="alert-sub">Blocare mecanica la tambur de actionare</div>
+                <div class="alert-time">Azi 08:15 · In interventie</div>
+              </div>
+              <span class="alert-chip chip-red">URGENT</span>
+            </div>
+            <div class="alert-item urgent">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Revizie depasita — C-01</div>
+                <div class="alert-sub">Compresor la 200h — revizie neefectuata</div>
+                <div class="alert-time">Depasit de 3 zile</div>
+              </div>
+              <span class="alert-chip chip-red">CRITIC</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Scadenta ISCIR — E-01</div>
+                <div class="alert-sub">Autorizatie ISCIR expira in 18 zile</div>
+                <div class="alert-time">Termen: 02.04.2026</div>
+              </div>
+              <span class="alert-chip chip-amber">18 ZILE</span>
+            </div>
+            <div class="alert-item warn">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Revizie apropiata — E-01</div>
+                <div class="alert-sub">Elevator E-01 la 180h de revizia 1500h</div>
+                <div class="alert-time">Estimat: 5-7 zile</div>
+              </div>
+              <span class="alert-chip chip-amber">CURAND</span>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#5090e0" stroke-width="1.4"/><path d="M8 7v4M8 5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+              <div style="flex:1;min-width:0;">
+                <div class="alert-title">Stoc piese scazut</div>
+                <div class="alert-sub">Cupe 2L: 4 buc · Sub stoc minim (10)</div>
+                <div class="alert-time">Actualizat ieri</div>
+              </div>
+              <span class="alert-chip chip-blue">STOC</span>
+            </div>
+          </div>
+
+
+        </div><!-- /right col -->
+
+      </div><!-- /layout-grid -->
+
+
+
+      <!-- SURVEILLANCE MODAL -->
+      <div id="surv-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:var(--bg3);border:1px solid rgba(240,165,0,.3);border-radius:14px;max-width:480px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div style="font-family:var(--title);font-size:14px;font-weight:900;color:var(--amber);letter-spacing:.1em;">SUPRAVEGHERE ECHIPAMENT</div>
+            <button onclick="document.getElementById('surv-modal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:20px;line-height:1;">×</button>
+          </div>
+          <div id="surv-modal-content"></div>
+          <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+            <button style="padding:9px 18px;border-radius:7px;background:rgba(224,80,80,.12);border:1px solid rgba(224,80,80,.3);color:var(--red);font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.08em;" onclick="notifySef()">
+              🔔 NOTIFICA SEF IERARHIC
+            </button>
+            <button onclick="document.getElementById('surv-modal').style.display='none'" style="padding:9px 18px;border-radius:7px;background:var(--border);border:1px solid var(--border2);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;">INCHIDE</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- TRADEMARK FOOTER -->
+      <div style="
+        margin-top:32px;padding:16px 0 8px;
+        border-top:1px solid var(--border);
+        display:flex;align-items:center;justify-content:center;
+        flex-direction:column;gap:6px;
+      ">
+        <div style="font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;">
+          <span style="color:var(--teal);">LEICA</span>
+          <span style="color:#fff;"> BOGDAN</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;">leicabogdan@gmail.com</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.45);letter-spacing:2px;font-weight:600;">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+/* ── GEAR ── */
+function drawGear(cv){
+  const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;
+  const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';
+  function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+  c.clearRect(0,0,W,H);
+  const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);
+  grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');
+  c.beginPath();
+  for(let i=0;i<12;i++){
+    const b=(i/12)*Math.PI*2,ta=.18,ra=.26;
+    const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;
+    const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);
+    if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);
+    c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);
+    c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);
+  }
+  c.closePath();c.fillStyle=grd;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';
+  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);
+  const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);
+  ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');
+  c.fillStyle=ig;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2.5*s;c.shadowColor=TC;c.shadowBlur=12*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.7*s;c.stroke();
+  for(let m=0;m<60;m++){
+    const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;
+    const r1=RI-(isQ?4:isH?3:1.5)*s,r2=RI-(isQ?14:isH?11:6)*s;
+    const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);
+    c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
+    c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.7)':'rgba(0,220,180,.28)';
+    c.lineWidth=(isQ?2.2:isH?1.6:.8)*s;c.lineCap='round';
+    c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?6*s:isH?2*s:0;c.stroke();c.shadowBlur=0;
+  }
+  const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;
+  [[RI*.48,(hrs/12)*Math.PI*2,4*s,TC,8*s],[RI*.70,(mins/60)*Math.PI*2,2.5*s,TC,6*s]].forEach(([r,a,lw,col,bl])=>{
+    const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;
+  });
+  const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.75,sA),[scx,scy]=pt(-RI*.2,sA);
+  c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.2*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=6*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,5*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=10*s;c.fill();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,2.5*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
+}
+(function gl(){drawGear(document.getElementById('sgear'));requestAnimationFrame(gl);})();
+
+/* ── KPI MINI RINGS ── */
+function drawKpiRing(id,val,col){
+  const cv=document.getElementById(id);
+  if(!cv)return;
+  const dpr=window.devicePixelRatio||1,disp=cv.offsetWidth||70;
+  cv.width=Math.round(disp*dpr);cv.height=Math.round(disp*dpr);
+  const c=cv.getContext('2d'),CX=cv.width/2,CY=cv.height/2,sc=cv.width/70;
+  const R=26*sc,LW=6*sc;
+  c.clearRect(0,0,cv.width,cv.height);
+  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,Math.PI*2-Math.PI/2);
+  c.strokeStyle='rgba(255,255,255,.07)';c.lineWidth=LW;c.lineCap='round';c.stroke();
+  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,-Math.PI/2+Math.PI*2*val);
+  c.strokeStyle=col;c.lineWidth=LW;c.lineCap='round';c.shadowColor=col;c.shadowBlur=8*sc;c.stroke();c.shadowBlur=0;
+}
+drawKpiRing('kr1',.94,'#00dcb4');
+drawKpiRing('kr2',.98,'#4aaf70');
+
+/* ── CLOCK ── */
+function updateClock(){
+  const now=new Date();
+  const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];
+  const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+}
+updateClock();setInterval(updateClock,1000);
+
+/* ── SIDEBAR ── */
+let sidebarCollapsed=false;
+function toggleSidebar(){
+  sidebarCollapsed=!sidebarCollapsed;
+  document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
+}
+function openMobileSidebar(){
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebar-overlay').classList.add('show');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('show');
+}
+
+/* mobile topbar menu */
+function checkMobile(){
+  const mb=document.getElementById('mobile-menu-btn');
+  if(window.innerWidth<=700)mb.style.display='block';
+  else mb.style.display='none';
+}
+checkMobile();window.addEventListener('resize',checkMobile);
+
+/* ── ELEVATOR DROPDOWN ── */
+let elevOpen=false;
+function toggleElevDropdown(){
+  elevOpen=!elevOpen;
+  document.getElementById('elev-dropdown').classList.toggle('open',elevOpen);
+  document.querySelectorAll('.elev-wrapper')[0].classList.toggle('open',elevOpen);
+}
+
+let ccOpen=false;
+function toggleCCDropdown(){
+  ccOpen=!ccOpen;
+  document.getElementById('cc-dropdown').classList.toggle('open',ccOpen);
+  document.querySelectorAll('.elev-wrapper')[1].classList.toggle('open',ccOpen);
+}
+
+let bcOpen=false;
+function toggleBCDropdown(){
+  bcOpen=!bcOpen;
+  document.getElementById('bc-dropdown').classList.toggle('open',bcOpen);
+  document.querySelectorAll('.elev-wrapper')[2].classList.toggle('open',bcOpen);
+}
+
+let filtreOpen=false;
+function toggleFiltreDropdown(){
+  filtreOpen=!filtreOpen;
+  document.getElementById('filtre-dropdown').classList.toggle('open',filtreOpen);
+  document.querySelectorAll('.elev-wrapper')[3].classList.toggle('open',filtreOpen);
+}
+
+let snecuriOpen=false;
+function toggleSnecuriDropdown(){
+  snecuriOpen=!snecuriOpen;
+  document.getElementById('snecuri-dropdown').classList.toggle('open',snecuriOpen);
+  document.querySelectorAll('.elev-wrapper')[4].classList.toggle('open',snecuriOpen);
+}
+let mntOpen=false;
+function toggleMntDropdown(){
+  mntOpen=!mntOpen;
+  document.getElementById('mnt-dropdown').classList.toggle('open',mntOpen);
+  document.querySelectorAll('.elev-wrapper').forEach((w,i)=>{
+    if(w.querySelector('#mnt-dropdown'))w.classList.toggle('open',mntOpen);
+  });
+}
+
+let sbMntOpen=false;
+function toggleSbMnt(){
+  sbMntOpen=!sbMntOpen;
+  const items=document.getElementById('sb-mnt-items');
+  const arrow=document.getElementById('sb-mnt-arrow');
+  items.style.maxHeight=sbMntOpen?'600px':'0';
+  if(arrow) arrow.style.transform=sbMntOpen?'rotate(180deg)':'rotate(0deg)';
+}
+
+const SURV_DATA=[
+  {eq:'E01',cod:'Elevator · Siloz Nord',watch:'Lant tractiune, uzura cupe',details:'Joc lant >12mm · Uzura cupe nivel 2 detectata · Urmatoarea verificare la 12000h · Relubrifiere in curs',notify:'Leica Bogdan',status:'warn'},
+  {eq:'CC04',cod:'Transportor cu lant · Siloz',watch:'Lagare, tensiune lant',details:'Temperatura lagar stang >70°C · Vibratii crescute · Tensiune lant deviatoare depasita · Interventie planificata',notify:'Leica Bogdan',status:'err'},
+  {eq:'BC11',cod:'Banda transportoare · Incarcare',watch:'Aliniere banda, rulouri de intoarcere',details:'Dezaliniere >5mm detectata · Sunet anormal roul de intoarcere · In interventie activa de la 08:15',notify:'Leica Bogdan',status:'err'},
+  {eq:'Compresor C-01',cod:'CMP-001 · Sala Masini',watch:'Temperatura ulei, presiune de lucru',details:'Tmax=85°C · Presiune=8bar · Vibratii anormale detectate la ultimul control · Revizie programata',notify:'Leica Bogdan',status:'warn'},
+];
+function openSurveillanceModal(idx){
+  const d=SURV_DATA[idx];
+  const sc={ok:'#4aaf70',warn:'#f0a500',err:'#e05050'};
+  const sl={ok:'Monitorizat',warn:'Supraveghere',err:'Avarie activa'};
+  document.getElementById('surv-modal-content').innerHTML=`
+    <div style="margin-bottom:12px;">
+      <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">${d.eq}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;">${d.cod}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;">Ce se supravegheaza</div>
+        <div style="font-size:13px;color:#fff;font-weight:600;">${d.watch}</div>
+      </div>
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;">Detalii / Parametri</div>
+        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;">${d.details}</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;">Sef ierarhic notificat</div>
+          <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);">${d.notify}</div>
+        </div>
+        <div style="background:rgba(${sc[d.status]==='#4aaf70'?'74,175,112':sc[d.status]==='#f0a500'?'240,165,0':'224,80,80'},.12);border:1px solid ${sc[d.status]}44;border-radius:20px;padding:5px 14px;font-family:var(--mono);font-size:11px;font-weight:700;color:${sc[d.status]};">${sl[d.status]}</div>
+      </div>
+    </div>`;
+  document.getElementById('surv-modal').style.display='flex';
+}
+function openAddSurveillance(){alert('Functionalitate in dezvoltare — va fi disponibila in versiunea urmatoare.');}
+function notifySef(){
+  const btn=event.target.closest('button');
+  btn.textContent='✓ Notificare trimisa';btn.style.background='rgba(74,175,112,.15)';btn.style.color='#4aaf70';btn.style.borderColor='rgba(74,175,112,.3)';
+  setTimeout(()=>{btn.innerHTML='🔔 NOTIFICA SEF IERARHIC';btn.style.background='rgba(224,80,80,.12)';btn.style.color='var(--red)';btn.style.borderColor='rgba(224,80,80,.3)';},2500);
+}
+
+// ── SCHIMB ULEI STATUS (from embedded data) ──
+(function(){
+  const DATA=[
+    ["Transportor cu banda","BC11","CLP PG 220","10L","20.01.2025","24.07.2025","24.07.2027"],
+    ["Transportor cu banda","BC12","CLP PG 220","17L","27.01.2025","01.08.2025","01.08.2027"],
+    ["Transportor cu banda","BC32","CLP PG 220","10L","15.01.2025","01.08.2025","01.08.2027"],
+    ["Transportor cu banda","BC34","CLP PG 220","17L","15.01.2025","01.08.2025","01.08.2027"],
+    ["Transportor cu banda","BC41","CLP PG 220","6.5L","31.01.2025","24.07.2025","24.07.2027"],
+    ["Transportor cu banda","BC42","CLP PG 220","6.5L","31.01.2025","31.07.2025","31.07.2027"],
+    ["Transportor cu banda","BC47","CLP PG 220","6.5L","31.01.2025","23.07.2025","23.07.2027"],
+    ["Transportor cu banda","BC48","CLP PG 220","6.5L","27.01.2025","23.07.2025","23.07.2027"],
+    ["Transportor cu lant","CC01","CLP PG 220","41L","21.01.2025","07.08.2025","07.08.2027"],
+    ["Transportor cu lant","CC02","CLP PG 220","17L","21.01.2025","07.08.2025","07.08.2027"],
+    ["Transportor cu lant","CC03","CLP PG 220","41L","15.01.2025","28.07.2025","28.07.2027"],
+    ["Transportor cu lant","CC04","CLP PG 220","17L","15.01.2025","28.07.2025","28.07.2027"],
+    ["Transportor cu lant","CC10-1 SL","CLP PG 220","38.5L","27.01.2025","Reductor nou - 11.2023","01.11.2025"],
+    ["Transportor cu lant","CC10-2 SL","CLP PG 220","38.5L","27.01.2025","01.08.2025","01.08.2027"],
+    ["Transportor cu lant","CC11","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027"],
+    ["Transportor cu lant","CC11 SL","CLP PG 220","78L","27.01.2025","01.08.2025","01.08.2027"],
+    ["Transportor cu lant","CC12","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027"],
+    ["Transportor cu lant","CC13","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027"],
+    ["Transportor cu lant","CC14","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027"],
+    ["Transportor cu lant","CC15","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027"],
+    ["Transportor cu lant","CC16","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027"],
+    ["Transportor cu lant","CC19","CLP PG 220","41L","20.01.2025","24.07.2025","24.07.2027"],
+    ["Transportor cu lant","CC202","CLP PG 220","10L","27.01.2025","07.08.2025","07.08.2027"],
+    ["Transportor cu lant","CC51","CLP PG 220","41L","31.01.2025","12.08.2025","12.08.2027"],
+    ["Transportor cu lant","CC52","CLP PG 220","6.5L","31.01.2025","07.08.2025","07.08.2027"],
+    ["Transportor cu lant","CC53","CLP PG 220","10L","15.01.2025","31.07.2025","31.07.2027"],
+    ["Elevator","E01","CLP HC 220","36L","20.01.2025","14.08.2025","14.08.2027"],
+    ["Elevator","E02","CLP HC 220","36L","21.01.2025","22.07.2025","22.07.2027"],
+    ["Elevator","E03","CLP HC 220","35L","15.01.2025","28.07.2025","28.07.2027"],
+    ["Elevator","E51","CLP HC 220","88L","27.01.2025","12.08.2025","12.08.2027"],
+    ["Elevator","E81","CLP PG 220","17L","31.01.2025","23.07.2025","23.07.2027"],
+    ["Elevator","E82","CLP HC 220","59L","15.01.2025","24.06.2025","24.06.2027"],
+  ];
+  function parseD(s){const p=String(s||'').split('.');if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[1]-1,+p[0]);return null;}
+  function getS(r){const d=parseD(r[6]);if(!d)return'new';const diff=(d-new Date())/86400000;return diff<0?'late':diff<90?'soon':'ok';}
+  const statuses=DATA.map(r=>getS(r));
+  const late=statuses.filter(s=>s==='late').length;
+  const soon=statuses.filter(s=>s==='soon').length;
+  const elLate=document.getElementById('su-late');
+  const elSoon=document.getElementById('su-soon');
+  if(elLate)elLate.textContent=late;
+  if(elSoon)elSoon.textContent=soon;
+  // also try fetch for live data
+  if(window.XLSX)return;
+  fetch('edit/schimb_ulei.xlsx?t='+Date.now()).then(r=>r.ok?r.arrayBuffer():null).then(buf=>{
+    if(!buf)return;
+    const wb=window.XLSX?XLSX.read(new Uint8Array(buf),{type:'array'}):null;
+    if(!wb)return;
+    const raw=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});
+    const rows=raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
+    const ss=rows.map(r=>getS(r));
+    if(elLate)elLate.textContent=ss.filter(s=>s==='late').length;
+    if(elSoon)elSoon.textContent=ss.filter(s=>s==='soon').length;
+  }).catch(()=>{});
+})();
+
+function initUser(){
+  // read from sessionStorage if available (set by login page)
+  try{
+    const name=sessionStorage.getItem('k_name')||'Leica Bogdan';
+    const role=sessionStorage.getItem('k_role')||'APP OWNER';
+    document.getElementById('user-name').textContent=name;
+    document.getElementById('user-role').textContent=role;
+    const parts=name.split(' ');
+    const initials=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+    document.getElementById('user-av').textContent=initials;
+  }catch(e){}
+}
+initUser();
+</script>
+</body>
+</html>

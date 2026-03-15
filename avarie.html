@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KRONOS — Inregistrare executie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f1117;--bg2:#13151f;--bg3:#171a24;
+  --border:#1e2130;--border2:#2a2d3a;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--title:'Orbitron',sans-serif;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100svh;}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--bg3);border-bottom:1px solid var(--border2);
+  padding:0 clamp(14px,3vw,28px);height:60px;
+  display:flex;align-items:center;gap:16px;
+  position:sticky;top:0;z-index:100;
+}
+.tlogo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tlogo canvas{display:block;width:44px;height:44px;}
+.tlogo-text{display:flex;flex-direction:column;gap:1px;}
+.tlogo-main{font-family:var(--title);font-size:18px;font-weight:900;letter-spacing:.18em;color:#fff;line-height:1;}
+.tlogo-main .o{color:var(--teal);}
+.tlogo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.22em;font-weight:700;text-transform:uppercase;}
+.bc{display:flex;align-items:center;gap:6px;font-size:11px;color:#fff;font-family:var(--mono);font-weight:700;}
+.bc a{
+  color:#fff;cursor:pointer;text-decoration:none;
+  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--border);border:1px solid var(--border2);
+  padding:6px 14px;border-radius:7px;
+  transition:all .18s;display:flex;align-items:center;gap:7px;
+}
+.bc a:hover{border-color:rgba(0,220,180,.55);color:var(--teal);background:rgba(0,220,180,.08);}
+.bc-current{
+  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);background:rgba(0,220,180,.08);
+  border:1px solid rgba(0,220,180,.35);
+  padding:6px 14px;border-radius:7px;
+}
+.bc-sep{color:var(--border2);margin:0 1px;font-size:14px;font-weight:700;}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.role-badge{
+  font-size:13px;font-family:var(--mono);
+  background:var(--border);border:1px solid var(--border2);
+  color:var(--green);padding:4px 11px;border-radius:4px;
+  letter-spacing:.08em;font-weight:700;
+}
+.coord-name-box{
+  background:#0d2420;border:1.5px solid var(--teal);border-radius:8px;
+  padding:3px 12px;text-align:center;line-height:1.25;
+}
+.coord-name-box .first{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:#fff;display:block;letter-spacing:.1em;}
+.coord-name-box .last{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--teal);display:block;letter-spacing:.12em;}
+
+/* ── PAGE ── */
+.page{padding:clamp(14px,3vw,24px);max-width:960px;margin:0 auto;}
+
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;margin-top:22px;}
+.sec-hdr:first-child{margin-top:0;}
+.sec-num{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#04050a;display:flex;align-items:center;justify-content:center;font-family:var(--title);font-size:11px;font-weight:900;flex-shrink:0;}
+.sec-title{font-family:var(--title);font-size:clamp(11px,2vw,13px);font-weight:900;color:#fff;letter-spacing:.1em;text-transform:uppercase;}
+.sec-line{flex:1;height:1px;background:var(--border2);}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:clamp(14px,2.5vw,20px);margin-bottom:0;}
+
+/* TYPE TOGGLE */
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.type-btn{padding:clamp(14px,2.5vw,18px) 14px;border-radius:10px;border:2px solid var(--border2);background:rgba(255,255,255,.03);cursor:pointer;text-align:center;transition:all .2s;}
+.type-btn:hover{background:rgba(255,255,255,.06);}
+.type-btn.active.preventiv{border-color:var(--teal);background:rgba(0,220,180,.08);}
+.type-btn.active.avarie{border-color:var(--red);background:rgba(224,80,80,.08);}
+.type-icon{font-size:26px;margin-bottom:8px;}
+.type-label{font-family:var(--title);font-size:clamp(11px,2vw,13px);font-weight:900;letter-spacing:.1em;}
+.type-btn.active.preventiv .type-label{color:var(--teal);}
+.type-btn.active.avarie .type-label{color:var(--red);}
+.type-desc{font-size:clamp(10px,1.8vw,12px);color:#fff;margin-top:4px;font-weight:600;}
+
+/* MTYPE */
+.mtype-row{display:flex;gap:8px;}
+.mtype-btn{flex:1;padding:10px 8px;border-radius:8px;border:1.5px solid var(--border2);background:rgba(255,255,255,.03);cursor:pointer;text-align:center;font-family:var(--title);font-size:clamp(10px,1.8vw,11px);font-weight:700;letter-spacing:.08em;color:#fff;transition:all .2s;}
+.mtype-btn.active{border-color:var(--teal);background:rgba(0,220,180,.08);color:var(--teal);}
+.mtype-btn:hover{background:rgba(255,255,255,.06);}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.5vw,12px);}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr;}}
+.form-full{grid-column:1/-1;}
+.f-lbl{font-size:clamp(10px,1.7vw,11px);font-family:var(--mono);color:var(--teal);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.f-req{color:var(--red);font-size:11px;font-weight:900;}
+select,input[type=text],input[type=number],input[type=date],input[type=time],textarea{
+  width:100%;background:rgba(0,220,180,.04);border:1.5px solid rgba(0,220,180,.2);border-radius:8px;
+  padding:clamp(11px,1.8vw,14px) 14px;font-family:var(--mono);font-size:clamp(12px,2vw,13px);
+  color:#fff;letter-spacing:.04em;outline:none;transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;appearance:none;
+}
+select option{background:#13151f;color:#fff;}
+select:focus,input:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,220,180,.1);}
+textarea{resize:vertical;min-height:90px;line-height:1.65;}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.35);}
+
+/* WORKERS */
+.workers-list{display:flex;flex-direction:column;gap:8px;}
+.worker-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px 12px;animation:fadeIn .3s ease;}
+.worker-num{width:22px;height:22px;border-radius:50%;background:var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:var(--teal);font-weight:700;flex-shrink:0;}
+.worker-inp{flex:1;background:none;border:none;padding:4px 0;font-family:var(--mono);font-size:13px;color:#fff;outline:none;letter-spacing:.04em;}
+.worker-inp::placeholder{color:rgba(255,255,255,.35);}
+.worker-del{width:22px;height:22px;border-radius:50%;border:1px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:16px;flex-shrink:0;transition:all .15s;line-height:1;padding:0;}
+.worker-del:hover{background:rgba(224,80,80,.15);border-color:var(--red);}
+.add-worker-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 14px;border-radius:8px;
+  border:1.5px solid rgba(0,220,180,.4);background:rgba(0,220,180,.07);
+  color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;
+  cursor:pointer;transition:all .2s;width:100%;margin-top:8px;letter-spacing:.06em;
+}
+.add-worker-btn:hover{border-color:var(--teal);background:rgba(0,220,180,.14);}
+
+/* CHECKLIST */
+.checklist-note{background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.3);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.checklist-note-text{font-size:clamp(11px,1.9vw,12px);color:#fff;font-weight:700;}
+.checklist{display:flex;flex-direction:column;gap:8px;}
+.check-item{display:flex;align-items:center;gap:12px;padding:clamp(10px,1.8vw,13px) clamp(12px,2vw,16px);background:rgba(224,80,80,.05);border:1.5px solid rgba(224,80,80,.2);border-radius:8px;cursor:pointer;transition:all .18s;user-select:none;}
+.check-item:hover{border-color:rgba(224,80,80,.4);background:rgba(224,80,80,.08);}
+.check-item.checked{border-color:rgba(74,175,112,.4)!important;background:rgba(74,175,112,.07)!important;}
+.check-item.height-item{border-color:rgba(240,165,0,.2);background:rgba(240,165,0,.04);}
+.check-item.height-item:hover{border-color:rgba(240,165,0,.4);}
+.check-item.height-item.checked{border-color:rgba(74,175,112,.4)!important;background:rgba(74,175,112,.07)!important;}
+.check-box{width:22px;height:22px;border-radius:50%;border:2px solid rgba(224,80,80,.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s;}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);}
+.check-item.height-item .check-box{border-color:rgba(240,165,0,.5);}
+.check-num{font-family:var(--mono);font-size:11px;color:var(--red);font-weight:700;min-width:18px;flex-shrink:0;}
+.check-item.checked .check-num{color:var(--green);}
+.check-item.height-item .check-num{color:var(--amber);}
+.check-text{font-size:clamp(11px,1.9vw,13px);color:#fff;font-weight:600;line-height:1.4;flex:1;}
+.chk-status{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.chk-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.chk-bar{height:100%;border-radius:3px;background:var(--red);transition:width .3s ease,background .3s;}
+.chk-label{font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;}
+.height-warn{display:none;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);border-radius:8px;padding:10px 14px;margin-top:8px;}
+.height-warn.show{display:flex;align-items:center;gap:10px;}
+.height-warn-text{font-size:12px;color:#fff;font-weight:700;}
+
+/* LOTO */
+.loto-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.loto-item{text-align:center;}
+.loto-lbl{font-size:10px;font-family:var(--mono);color:var(--teal);letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+.loto-lock{width:44px;height:44px;border-radius:50%;background:rgba(240,165,0,.08);border:2px solid rgba(240,165,0,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;cursor:pointer;transition:all .2s;}
+.loto-lock.set{background:rgba(240,165,0,.2);border-color:var(--amber);box-shadow:0 0 12px rgba(240,165,0,.2);}
+.loto-lock svg{width:20px;height:20px;}
+
+/* TIME */
+.time-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.dt-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-top:8px;}
+.photo-thumb{aspect-ratio:1;border-radius:8px;overflow:hidden;border:1.5px solid rgba(0,220,180,.25);position:relative;background:rgba(0,220,180,.04);cursor:pointer;transition:border-color .2s;}
+.photo-thumb:hover{border-color:var(--teal);}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-del{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;background:rgba(14,5,10,.85);border:1px solid var(--red);color:var(--red);font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;}
+.photo-del:hover{background:var(--red);color:#fff;}
+.photo-add{aspect-ratio:1;border-radius:8px;border:1.5px dashed rgba(0,220,180,.35);background:rgba(0,220,180,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .2s;}
+.photo-add:hover{border-color:var(--teal);background:rgba(0,220,180,.09);}
+.photo-add svg{width:22px;height:22px;}
+.photo-add-label{font-size:10px;font-family:var(--mono);color:var(--teal);font-weight:700;letter-spacing:.06em;text-align:center;}
+#file-input{display:none;}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:100%;max-height:90svh;border-radius:10px;box-shadow:0 0 40px rgba(0,0,0,.8);object-fit:contain;}
+.lb-close{position:absolute;top:16px;right:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;}
+.lb-close:hover{background:var(--red);}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;}
+.lb-nav:hover{background:rgba(0,220,180,.3);}
+.lb-prev{left:16px;}
+.lb-next{right:16px;}
+.lb-counter{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.6);font-weight:700;}
+
+/* INREGISTRARE */
+.sig-panel{
+  background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.2);
+  border-radius:12px;padding:clamp(20px,3.5vw,32px);
+  text-align:center;
+}
+.sig-intocmit{
+  font-family:var(--mono);font-size:11px;color:var(--teal);
+  letter-spacing:.18em;font-weight:700;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.sig-job{
+  font-family:'Rajdhani',sans-serif;
+  font-size:15px;
+  font-weight:700;color:#fff;letter-spacing:.1em;
+  margin-bottom:14px;
+}
+.sig-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:20px;
+  font-weight:700;letter-spacing:.16em;line-height:1.1;
+}
+.sig-name .first{color:#fff;}
+.sig-name .last{color:var(--teal);}
+.sig-divider{width:80px;height:2px;background:rgba(0,220,180,.35);margin:14px auto 16px;}
+
+.legal-note{background:rgba(80,144,224,.06);border:1px solid rgba(80,144,224,.2);border-radius:8px;padding:clamp(12px,2vw,16px);display:flex;gap:12px;align-items:flex-start;margin-top:16px;text-align:left;}
+.note-text{font-size:clamp(11px,1.9vw,12px);color:#fff;font-weight:600;line-height:1.65;font-style:italic;}
+
+/* VALIDITY */
+.validity-bar{background:rgba(0,220,180,.05);border:1px solid rgba(0,220,180,.2);border-radius:8px;padding:clamp(10px,2vw,14px) clamp(14px,2.5vw,18px);display:flex;align-items:center;gap:12px;margin-top:12px;}
+.validity-text{font-size:clamp(11px,2vw,13px);color:#fff;font-weight:700;}
+.validity-sub{font-size:clamp(9px,1.6vw,11px);color:#fff;font-family:var(--mono);font-weight:600;margin-top:2px;}
+
+/* ACTIONS */
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:clamp(16px,3vw,24px);flex-wrap:wrap;}
+.btn{padding:clamp(10px,2vw,13px) clamp(16px,3vw,24px);border-radius:8px;font-family:var(--title);font-weight:700;font-size:clamp(11px,1.9vw,13px);letter-spacing:.08em;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;}
+.btn-teal{background:var(--teal);color:#04050a;}
+.btn-teal:hover{background:#00f0c8;}
+.btn-teal:disabled{background:rgba(0,220,180,.2);color:rgba(4,5,10,.4);cursor:not-allowed;}
+.btn-ghost{background:var(--border);color:#fff;border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
+
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:700;}
+.b-24h{background:rgba(80,144,224,.12);color:var(--blue);border:1px solid rgba(80,144,224,.3);}
+
+.avarie-only{display:none;}
+.avarie-mode .avarie-only{display:block;}
+.preventiv-only{display:block;}
+.avarie-mode .preventiv-only{display:none;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLB(event)">
+  <div class="lb-close" onclick="closeLightbox()">×</div>
+  <div class="lb-nav lb-prev" onclick="lbNav(-1)">&#8249;</div>
+  <img id="lb-img" src="" alt=""/>
+  <div class="lb-nav lb-next" onclick="lbNav(1)">&#8250;</div>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tlogo">
+    <canvas id="gear" width="88" height="88" style="width:44px;height:44px"></canvas>
+    <div class="tlogo-text">
+      <div class="tlogo-main">KR<span class="o">O</span>NOS</div>
+      <div class="tlogo-sub">Maintenance System</div>
+    </div>
+  </div>
+  <div class="bc">
+    <a href="#" style="font-size:16px;">
+      <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M1 5.5L6 1l5 4.5V11H8V8H4v3H1V5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      DASHBOARD
+    </a><span class="bc-sep">/</span>
+    <a href="#">ELEVATOR E-01</a><span class="bc-sep">/</span>
+    <span class="bc-current">INREGISTRARE EXECUTIE</span>
+  </div>
+  <div class="tb-right">
+    <span class="role-badge">COORDONATOR</span>
+    <div class="coord-name-box">
+      <span class="first">Leica</span>
+      <span class="last">BOGDAN</span>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="mainform">
+
+  <!-- 0 TIP RAPORT -->
+  <div class="sec-hdr"><div class="sec-num">0</div><div class="sec-title">Tip raport</div><div class="sec-line"></div></div>
+  <div class="type-toggle">
+    <div class="type-btn preventiv active" onclick="setType('preventiv')">
+      <div class="type-icon">🔧</div>
+      <div class="type-label">MENTENANTA</div>
+      <div class="type-desc">Mentenanta preventiva sau corectiva planificata</div>
+    </div>
+    <div class="type-btn avarie" onclick="setType('avarie')">
+      <div class="type-icon">⚠️</div>
+      <div class="type-label">AVARIE / DEFECTIUNE</div>
+      <div class="type-desc">Defectiune neplanificata — interventie de urgenta</div>
+    </div>
+  </div>
+
+  <!-- 1 PERMIS -->
+  <div class="sec-hdr"><div class="sec-num">1</div><div class="sec-title">Permis de lucru</div><div class="sec-line"></div><span class="badge b-24h">VALABIL 24h</span></div>
+  <div class="card">
+    <div class="form-grid">
+      <div>
+        <div class="f-lbl">Tip mentenanta <span class="f-req">*</span></div>
+        <div class="mtype-row">
+          <div class="mtype-btn active" onclick="setMtype(this)">MECANICA</div>
+          <div class="mtype-btn" onclick="setMtype(this)">ELECTRICA</div>
+          <div class="mtype-btn" onclick="setMtype(this)">AMBELE</div>
+        </div>
+      </div>
+      <div>
+        <div class="f-lbl">Zona de lucru <span class="f-req">*</span></div>
+        <input type="text" placeholder="ex: Siloz Nord — Nivel 3 — Camera motor"/>
+      </div>
+      <div class="form-full">
+        <div class="f-lbl">Lucratori pe teren <span class="f-req">*</span> <span style="color:#fff;font-size:10px;font-weight:600">(max 8)</span></div>
+        <div class="workers-list" id="workers-list">
+          <div class="worker-row">
+            <div class="worker-num">1</div>
+            <input class="worker-inp" placeholder="Nume si prenume"/>
+          </div>
+        </div>
+        <button class="add-worker-btn" id="add-btn" onclick="addWorker()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Adauga lucrator
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 CHECKLIST -->
+  <div class="sec-hdr"><div class="sec-num">2</div><div class="sec-title">Lista verificare siguranta</div><div class="sec-line"></div><div id="chk-count" style="font-family:var(--mono);font-size:11px;color:var(--red);font-weight:700;white-space:nowrap">0 / 6</div></div>
+  <div class="card">
+    <div class="checklist-note" id="chk-note">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><path d="M9 2L1 16h16L9 2z" stroke="#e05050" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v4M9 12.5v.5" stroke="#e05050" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="checklist-note-text" id="chk-note-text">Toate cele 6 puncte sunt obligatorii. Fisa nu poate fi creata fara bifarea completa.</div>
+    </div>
+    <div class="checklist" id="checklist-main">
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">1</div><div class="check-text">Inspectie vizuala instalatie zona de interventie</div></div>
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">2</div><div class="check-text">Retragere din exploatare utilaj — lacatuire (LOTO)</div></div>
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">3</div><div class="check-text">Identificare material inflamabil zona de lucru</div></div>
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">4</div><div class="check-text">Identificare lipsa tensiune confirmata</div></div>
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">5</div><div class="check-text">Identificare alte riscuri — inspectie vizuala, conditii meteo</div></div>
+      <div class="check-item" onclick="toggleCheck(this,false)"><div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="check-num">6</div><div class="check-text">Lucratorii sunt echipati cu EIP — casca, bocanci, manusi, salopeta</div></div>
+    </div>
+    <div class="chk-status">
+      <div class="chk-bar-wrap"><div class="chk-bar" id="chk-bar" style="width:0%"></div></div>
+      <div class="chk-label" id="chk-label" style="color:var(--red)">0 din 6 bifate</div>
+    </div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--amber);font-weight:700;letter-spacing:.1em;margin-bottom:8px;text-transform:uppercase;">Lucru la inaltime</div>
+      <div class="check-item height-item" onclick="toggleCheck(this,true)">
+        <div class="check-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="check-num">7</div>
+        <div class="check-text">Lucratorii sunt echipati cu centura complexa si folosesc echipament specific omologat</div>
+      </div>
+      <div class="height-warn" id="height-warn">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><path d="M9 2L1 16h16L9 2z" stroke="#f0a500" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7v4M9 12.5v.5" stroke="#f0a500" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="height-warn-text">Atentie! Daca se lucreaza la inaltime, punctul 7 este OBLIGATORIU de bifat inainte de inceperea lucrarii.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 LOTO -->
+  <div class="sec-hdr"><div class="sec-num">3</div><div class="sec-title">LOTO — Coduri lacat</div><div class="sec-line"></div></div>
+  <div class="card">
+    <div class="loto-row">
+      <div class="loto-item"><div class="loto-lbl">Lacat 1</div><div class="loto-lock" id="loto1" onclick="toggleLoto(1)"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#f0a500" stroke-width="1.5"/><path d="M7 9V7a3 3 0 016 0v2" stroke="#f0a500" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.2" fill="#f0a500"/></svg></div><input type="text" placeholder="Cod / ID" style="text-align:center;font-size:13px;font-weight:700"/></div>
+      <div class="loto-item"><div class="loto-lbl">Lacat 2</div><div class="loto-lock" id="loto2" onclick="toggleLoto(2)"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#f0a500" stroke-width="1.5"/><path d="M7 9V7a3 3 0 016 0v2" stroke="#f0a500" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.2" fill="#f0a500"/></svg></div><input type="text" placeholder="Cod / ID" style="text-align:center;font-size:13px;font-weight:700"/></div>
+      <div class="loto-item"><div class="loto-lbl">Lacat 3</div><div class="loto-lock" id="loto3" onclick="toggleLoto(3)"><svg viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#f0a500" stroke-width="1.5"/><path d="M7 9V7a3 3 0 016 0v2" stroke="#f0a500" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="13.5" r="1.2" fill="#f0a500"/></svg></div><input type="text" placeholder="Cod / ID" style="text-align:center;font-size:13px;font-weight:700"/></div>
+    </div>
+  </div>
+
+  <!-- 4 DETALII -->
+  <div class="sec-hdr"><div class="sec-num">4</div><div class="sec-title">Detalii interventie</div><div class="sec-line"></div></div>
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-full">
+        <div class="f-lbl">Denumire echipament <span class="f-req">*</span></div>
+        <input type="text" value="Elevator E-01" readonly style="border-color:rgba(0,220,180,.4);color:var(--teal);"/>
+      </div>
+      <div class="form-full preventiv-only">
+        <div class="f-lbl">Tip revizie <span class="f-req">*</span></div>
+        <select required>
+          <option value="">Selecteaza</option>
+          <option>200 ore de functionare</option>
+          <option>800 ore de functionare — Relubrifiere</option>
+          <option>1 500 ore de functionare</option>
+          <option>8 000 ore de functionare</option>
+          <option>Mentenanta si intretinere</option>
+          <option>Schimb ulei</option>
+          <option>Altele</option>
+        </select>
+      </div>
+      <div class="form-full avarie-only">
+        <div class="f-lbl">Descriere scurta avarie <span class="f-req">*</span></div>
+        <input type="text" placeholder="ex: Blocare senzor nivel, supraincalzire motor..."/>
+      </div>
+      <div class="form-full preventiv-only">
+        <div class="f-lbl">Ore de functionare <span class="f-req">*</span></div>
+        <input type="number" placeholder="ex: 11820" value="11820"/>
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-top:7px;background:rgba(80,144,224,.06);border:1px solid rgba(80,144,224,.18);border-radius:7px;padding:8px 12px;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="7" cy="7" r="5.5" stroke="#5090e0" stroke-width="1.3"/><path d="M7 6v3.5M7 4.5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <span style="font-size:11px;color:#fff;font-family:var(--mono);font-weight:600;line-height:1.55;letter-spacing:.02em;">Orele de functionare se preiau de la <span style="color:var(--teal)">Operatorul Camerei de Comanda</span> inainte de inceperea interventiei.</span>
+        </div>
+      </div>
+      <div class="form-full">
+        <div class="f-lbl">Piese utilizate</div>
+        <input type="text" placeholder="ex: Cupa 2L x12, Curea A-82 x1"/>
+      </div>
+      <div class="form-full">
+        <div class="f-lbl">Stare echipament dupa interventie <span class="f-req">*</span></div>
+        <select required id="stare-echip">
+          <option value="">Selecteaza starea echipamentului</option>
+          <option value="apt">✓ Apt de functionare</option>
+          <option value="supraveghere">⚠ Apt de functionare sub supraveghere</option>
+          <option value="interventie">✗ Necesita interventie</option>
+        </select>
+      </div>
+      <div class="form-full">
+        <div class="f-lbl">Descriere interventie <span class="f-req">*</span></div>
+        <textarea rows="5" placeholder="Descrie in detaliu lucrarile efectuate, constatari, masuratori..."></textarea>
+
+        <!-- PHOTOS -->
+        <div style="margin-top:12px;">
+          <div class="f-lbl" style="margin-bottom:8px;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="9" rx="1.5" stroke="var(--teal)" stroke-width="1.3"/><circle cx="7" cy="7.5" r="2" stroke="var(--teal)" stroke-width="1.3"/><path d="M4.5 3V2.5a.5.5 0 01.5-.5h4a.5.5 0 01.5.5V3" stroke="var(--teal)" stroke-width="1.3"/></svg>
+            Fotografii interventie
+            <span id="photo-count-lbl" style="color:#fff;font-size:10px;font-weight:600"></span>
+          </div>
+          <div class="photo-grid" id="photo-grid">
+            <div class="photo-add" onclick="document.getElementById('file-input').click()">
+              <svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="var(--teal)" stroke-width="1.4"/><path d="M11 7v8M7 11h8" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <div class="photo-add-label">Adauga poza</div>
+            </div>
+          </div>
+          <input type="file" id="file-input" accept="image/*" multiple onchange="handlePhotos(this)"/>
+        </div>
+      </div>
+      <div class="form-full">
+        <div class="f-lbl">Observatii si recomandari</div>
+        <textarea rows="3" placeholder="Actiuni de follow-up, piese de comandat, puncte de verificat..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 ORE -->
+  <div class="sec-hdr"><div class="sec-num">5</div><div class="sec-title">Ora scoatere / repunere in functiune</div><div class="sec-line"></div></div>
+  <div class="card">
+    <div class="time-row">
+      <div>
+        <div class="f-lbl">Ora scoatere din functiune <span class="f-req">*</span></div>
+        <div class="dt-pair"><input type="date" id="d-out" oninput="calcDowntime()"/><input type="time" id="t-out" oninput="calcDowntime()"/></div>
+      </div>
+      <div>
+        <div class="f-lbl">Ora repunere in functiune <span class="f-req">*</span></div>
+        <div class="dt-pair"><input type="date" id="d-in" oninput="calcDowntime()"/><input type="time" id="t-in" oninput="calcDowntime()"/></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;background:rgba(74,175,112,.06);border:1px solid rgba(74,175,112,.2);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#4aaf70" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="#4aaf70" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span style="font-family:var(--mono);font-size:12px;color:#fff;font-weight:700">Timp total oprire: <span id="downtime" style="color:var(--green)">—</span></span>
+    </div>
+  </div>
+
+  <!-- 6 INREGISTRARE -->
+  <div class="sec-hdr"><div class="sec-num">6</div><div class="sec-title">Inregistrare raport</div><div class="sec-line"></div></div>
+  <div class="sig-panel">
+    <div class="sig-intocmit">Intocmit de</div>
+    <div class="sig-job">Coordonator Mentenanta</div>
+    <div class="sig-divider"></div>
+    <div class="sig-name">
+      <span class="first">Leica </span><span class="last">BOGDAN</span>
+    </div>
+    <div class="legal-note">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;margin-top:2px"><circle cx="9" cy="9" r="7" stroke="#5090e0" stroke-width="1.4"/><path d="M9 8v4M9 6v.5" stroke="#5090e0" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div class="note-text">* Prin inregistrarea acestui raport, coordonatorul isi asuma ca echipamentele au fost verificate si sunt apte de functionare. In caz contrar va nota ca echipamentele sunt inapte de functionare.</div>
+    </div>
+  </div>
+
+  <div class="validity-bar">
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(0,220,180,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#00dcb4" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+    <div>
+      <div class="validity-text">Prezentul permis de lucru este valabil 24h de la emitere</div>
+      <div class="validity-sub">Executantul isi asuma toate responsabilitatile SSM</div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn-ghost">Anuleaza</button>
+    <button class="btn btn-ghost">Salveaza ciorna</button>
+    <button class="btn btn-teal" id="submit-btn" onclick="submitForm(this)" disabled>Inregistreaza raport →</button>
+  </div>
+</div>
+
+<script>
+/* ── GEAR CLOCK — ORA EXACTA DIN SISTEM ── */
+function drawGear(){
+  const cv=document.getElementById('gear');
+  const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;
+  const RT=126*s,RR=98*s,RI=80*s,TC='#00dcb4',OC='#ff8c00';
+  function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+  c.clearRect(0,0,W,H);
+  /* gear body */
+  const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);
+  grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');
+  c.beginPath();
+  for(let i=0;i<12;i++){
+    const b=(i/12)*Math.PI*2,ta=.18,ra=.26;
+    const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;
+    const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);
+    if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);
+    c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);
+    c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);
+  }
+  c.closePath();c.fillStyle=grd;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';
+  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
+  /* dial */
+  c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);
+  const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);
+  ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');
+  c.fillStyle=ig;c.fill();
+  /* outer ring - very visible */
+  c.strokeStyle=TC;c.lineWidth=2.8*s;
+  c.shadowColor=TC;c.shadowBlur=14*s;c.stroke();c.shadowBlur=0;
+  /* second inner ring */
+  c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);
+  c.strokeStyle='rgba(0,220,180,.3)';c.lineWidth=.8*s;c.stroke();
+  /* ticks */
+  for(let h=0;h<60;h++){
+    const a=(h/60)*Math.PI*2;
+    const mj=h%5===0,q=h%15===0;
+    const r1=RI-(q?5:mj?4:2)*s,r2=RI-(q?16:mj?13:7)*s;
+    const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);
+    c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
+    c.strokeStyle=q?TC:mj?'rgba(0,220,180,.7)':'rgba(0,220,180,.3)';
+    c.lineWidth=(q?2.5:mj?1.8:.9)*s;c.lineCap='round';
+    c.shadowColor=q||mj?TC:'transparent';c.shadowBlur=q?6*s:mj?3*s:0;
+    c.stroke();c.shadowBlur=0;
+  }
+  /* hands — ora exacta din sistem */
+  const now=new Date();
+  const ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000;
+  const mins=now.getMinutes()+secs/60;
+  const hrs=(now.getHours()%12)+mins/60;
+  const sA=(secs/60)*Math.PI*2,mA=(mins/60)*Math.PI*2,hA=(hrs/12)*Math.PI*2;
+  /* hour */
+  const[hx,hy]=pt(RI*.50,hA);
+  c.beginPath();c.moveTo(cx,cy);c.lineTo(hx,hy);
+  c.strokeStyle=TC;c.lineWidth=5*s;c.lineCap='round';
+  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
+  /* minute */
+  const[mx,my]=pt(RI*.72,mA);
+  c.beginPath();c.moveTo(cx,cy);c.lineTo(mx,my);
+  c.strokeStyle=TC;c.lineWidth=3*s;c.lineCap='round';
+  c.shadowColor=TC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;
+  /* second */
+  const[sx,sy]=pt(RI*.78,sA),[scx,scy]=pt(-RI*.22,sA);
+  c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);
+  c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';
+  c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;
+  /* center */
+  c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);
+  c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=12*s;c.fill();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
+  requestAnimationFrame(drawGear);
+}
+drawGear();
+
+/* ── INIT DATE/TIME ── */
+function initDateTime(){
+  const now=new Date();
+  const d=now.toISOString().split('T')[0];
+  const t=now.toTimeString().slice(0,5);
+  document.getElementById('d-out').value=d;
+  document.getElementById('t-out').value=t;
+  document.getElementById('d-in').value=d;
+  document.getElementById('t-in').value=t;
+}
+initDateTime();
+
+/* ── TYPE ── */
+function setType(t){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.type-btn.'+t).classList.add('active');
+  document.getElementById('mainform').classList.toggle('avarie-mode',t==='avarie');
+}
+function setMtype(el){document.querySelectorAll('.mtype-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+
+/* ── WORKERS ── */
+let workerCount=1;
+function addWorker(){
+  if(workerCount>=8)return;
+  workerCount++;
+  const list=document.getElementById('workers-list');
+  const row=document.createElement('div');
+  row.className='worker-row';
+  row.innerHTML=`<div class="worker-num">${workerCount}</div><input class="worker-inp" placeholder="Nume si prenume"/><button class="worker-del" onclick="removeWorker(this)">×</button>`;
+  list.appendChild(row);
+  if(workerCount>=8)document.getElementById('add-btn').disabled=true;
+  row.querySelector('input').focus();
+}
+function removeWorker(btn){
+  btn.closest('.worker-row').remove();workerCount--;
+  document.getElementById('add-btn').disabled=false;
+  document.querySelectorAll('#workers-list .worker-num').forEach((el,i)=>el.textContent=i+1);
+}
+
+/* ── CHECKLIST ── */
+let mandatoryChecked=0;
+function toggleCheck(el,isHeight){
+  el.classList.toggle('checked');
+  if(!isHeight){
+    mandatoryChecked=document.querySelectorAll('#checklist-main .check-item.checked').length;
+    const pct=mandatoryChecked/6*100;
+    const col=mandatoryChecked===6?'var(--green)':mandatoryChecked>=4?'var(--amber)':'var(--red)';
+    document.getElementById('chk-bar').style.width=pct+'%';
+    document.getElementById('chk-bar').style.background=col;
+    document.getElementById('chk-label').textContent=mandatoryChecked+' din 6 bifate';
+    document.getElementById('chk-label').style.color=col;
+    document.getElementById('chk-count').textContent=mandatoryChecked+' / 6';
+    document.getElementById('chk-count').style.color=col;
+    const note=document.getElementById('chk-note');
+    const nt=document.getElementById('chk-note-text');
+    if(mandatoryChecked===6){
+      note.style.background='rgba(74,175,112,.08)';note.style.borderColor='rgba(74,175,112,.3)';
+      nt.textContent='Toate punctele au fost bifate. Fisa poate fi creata.';
+    }else{
+      note.style.background='rgba(224,80,80,.08)';note.style.borderColor='rgba(224,80,80,.3)';
+      nt.textContent='Toate cele 6 puncte sunt obligatorii. Fisa nu poate fi creata fara bifarea completa.';
+    }
+    document.getElementById('submit-btn').disabled=mandatoryChecked<6;
+  }else{
+    const w=document.getElementById('height-warn');
+    if(!el.classList.contains('checked')){w.classList.add('show');setTimeout(()=>w.classList.remove('show'),5000);}
+    else w.classList.remove('show');
+  }
+}
+
+/* ── LOTO ── */
+function toggleLoto(n){document.getElementById('loto'+n).classList.toggle('set');}
+
+/* ── DOWNTIME ── */
+function calcDowntime(){
+  try{
+    const out=new Date(document.getElementById('d-out').value+'T'+document.getElementById('t-out').value);
+    const inT=new Date(document.getElementById('d-in').value+'T'+document.getElementById('t-in').value);
+    const diff=inT-out;
+    if(diff<=0){document.getElementById('downtime').textContent='—';return;}
+    const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);
+    document.getElementById('downtime').textContent=(h>0?h+'h ':'')+m+'min';
+  }catch(e){}
+}
+
+/* ── PHOTOS ── */
+let photos=[];
+let lbIndex=0;
+function handlePhotos(input){
+  Array.from(input.files).forEach(f=>{
+    const url=URL.createObjectURL(f);
+    photos.push({url,name:f.name});
+  });
+  input.value='';renderPhotos();
+}
+function removePhoto(idx){
+  URL.revokeObjectURL(photos[idx].url);
+  photos.splice(idx,1);renderPhotos();
+}
+function openLightbox(idx){
+  lbIndex=idx;
+  document.getElementById('lb-img').src=photos[idx].url;
+  document.getElementById('lb-counter').textContent=(idx+1)+' / '+photos.length;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeLB(e){if(e.target===document.getElementById('lightbox'))closeLightbox();}
+function lbNav(dir){
+  lbIndex=(lbIndex+dir+photos.length)%photos.length;
+  document.getElementById('lb-img').src=photos[lbIndex].url;
+  document.getElementById('lb-counter').textContent=(lbIndex+1)+' / '+photos.length;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLightbox();
+  if(e.key==='ArrowLeft')lbNav(-1);
+  if(e.key==='ArrowRight')lbNav(1);
+});
+function renderPhotos(){
+  const grid=document.getElementById('photo-grid');grid.innerHTML='';
+  photos.forEach((p,i)=>{
+    const div=document.createElement('div');div.className='photo-thumb';
+    div.innerHTML=`<img src="${p.url}" alt="${p.name}" onclick="openLightbox(${i})"/><button class="photo-del" onclick="event.stopPropagation();removePhoto(${i})">×</button>`;
+    grid.appendChild(div);
+  });
+  const add=document.createElement('div');add.className='photo-add';
+  add.onclick=()=>document.getElementById('file-input').click();
+  add.innerHTML=`<svg viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="var(--teal)" stroke-width="1.4"/><path d="M11 7v8M7 11h8" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"/></svg><div class="photo-add-label">Adauga poza</div>`;
+  grid.appendChild(add);
+  document.getElementById('photo-count-lbl').textContent=photos.length>0?`(${photos.length} poze)`:'';
+}
+
+/* ── SUBMIT ── */
+function submitForm(btn){
+  if(mandatoryChecked<6)return;
+  btn.textContent='Se inregistreaza...';btn.style.background='rgba(0,220,180,.5)';
+  setTimeout(()=>{btn.textContent='Raport inregistrat ✓';btn.style.background='var(--green)';},800);
+  setTimeout(()=>{btn.textContent='Inregistreaza raport →';btn.style.background='var(--teal)';},3200);
+}
+</script>
+</body>
+</html>

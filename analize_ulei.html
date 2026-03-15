@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<script>
+(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KRONOS — Analize Ulei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
+  --border:#1a1d28;--border2:#252836;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --sidebar:220px;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;}
+
+.app{display:flex;height:100svh;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border2);display:flex;flex-direction:column;height:100svh;overflow:hidden;position:relative;z-index:50;}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidebar-logo canvas{flex-shrink:0;}
+.logo-text{display:flex;flex-direction:column;gap:1px;}
+.logo-main{font-family:var(--title);font-size:15px;font-weight:900;letter-spacing:.16em;color:#fff;}
+.logo-main span{color:var(--teal);}
+.logo-sub{font-family:var(--mono);font-size:7px;color:var(--teal);letter-spacing:.2em;font-weight:700;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:none;}
+.sidebar-nav::-webkit-scrollbar{display:none;}
+.nav-section-label{font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:12px 8px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;transition:all .18s;text-decoration:none;color:#fff;margin-bottom:2px;}
+.nav-item:hover{background:rgba(255,255,255,.05);}
+.nav-item.active{background:rgba(0,220,180,.1);border:1px solid rgba(0,220,180,.2);}
+.nav-item.active .nav-icon,.nav-item.active .nav-label{color:var(--teal);}
+.nav-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;}
+.nav-label{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);flex-shrink:0;}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.12);}
+.sidebar-user-av{width:30px;height:30px;border-radius:50%;background:#0d2420;border:1.5px solid var(--teal);display:flex;align-items:center;justify-content:center;font-family:var(--title);font-size:10px;font-weight:900;color:var(--teal);flex-shrink:0;}
+.sidebar-user-name{font-family:var(--raj);font-size:15px;font-weight:700;color:#fff;letter-spacing:.06em;}
+.sidebar-user-role{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.1em;font-weight:700;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 clamp(16px,2.5vw,28px);gap:12px;flex-shrink:0;}
+.topbar-bc{display:flex;align-items:center;gap:6px;}
+.bc-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;background:var(--border);border:1px solid var(--border2);color:#fff;font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.1em;text-decoration:none;text-transform:uppercase;transition:all .18s;}
+.bc-btn:hover{border-color:rgba(0,220,180,.45);color:var(--teal);}
+.bc-btn.current{background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);color:var(--teal);}
+.bc-sep{color:var(--border2);font-size:14px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.topbar-time{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;}
+.topbar-date{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;}
+
+.content{flex:1;overflow-y:auto;padding:clamp(16px,2.5vw,24px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+
+/* KPI */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+@media(max-width:800px){.kpi-strip{grid-template-columns:1fr 1fr;}}
+.kpi-mini{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
+.kpi-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-mini.teal::before{background:var(--teal);}
+.kpi-mini.amber::before{background:var(--amber);}
+.kpi-mini.red::before{background:var(--red);}
+.kpi-mini.green::before{background:var(--green);}
+.kpi-mini-lbl{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.kpi-mini-val{font-family:var(--title);font-size:clamp(22px,3vw,30px);font-weight:900;}
+.kpi-mini.teal .kpi-mini-val{color:var(--teal);}
+.kpi-mini.amber .kpi-mini-val{color:var(--amber);}
+.kpi-mini.red .kpi-mini-val{color:var(--red);}
+.kpi-mini.green .kpi-mini-val{color:var(--green);}
+.kpi-mini-sub{font-family:var(--mono);font-size:10px;color:#fff;font-weight:600;margin-top:4px;}
+
+/* SECTION */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:6px;}
+.sec-title{font-family:var(--title);font-size:clamp(11px,1.8vw,13px);font-weight:900;color:#fff;letter-spacing:.1em;text-transform:uppercase;}
+.sec-line{flex:1;height:1px;background:var(--border);}
+.sec-count{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);font-weight:700;white-space:nowrap;}
+
+/* FILTERS */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.filter-btn{padding:6px 14px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.06em;}
+.filter-btn:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
+.filter-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.35);color:var(--teal);}
+.search-input{padding:7px 14px 7px 36px;border-radius:7px;background:rgba(0,220,180,.04);border:1.5px solid rgba(0,220,180,.2);color:#fff;font-family:var(--mono);font-size:12px;outline:none;width:220px;transition:border-color .2s;}
+.search-input:focus{border-color:var(--teal);}
+.search-wrap{position:relative;}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);}
+
+/* TABLE */
+.panel{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.oil-table{width:100%;border-collapse:collapse;}
+.oil-table th{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--bg4);white-space:nowrap;}
+.oil-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+.oil-table tr:last-child td{border-bottom:none;}
+.oil-table tr{transition:background .15s;cursor:pointer;}
+.oil-table tr:hover td{background:rgba(0,220,180,.03);}
+.eq-name{font-family:var(--mono);font-size:12px;color:#fff;font-weight:700;}
+.eq-type{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);margin-top:2px;}
+.oil-type{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;}
+.oil-qty{font-family:var(--mono);font-size:12px;color:#fff;font-weight:700;}
+.date-cell{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;}
+.status-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;}
+.chip-ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.25);}
+.chip-soon{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.25);}
+.chip-late{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.25);}
+.chip-new{background:rgba(80,144,224,.12);color:var(--blue);border:1px solid rgba(80,144,224,.25);}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+/* INFO PANEL */
+.info-panel{background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.15);border-radius:12px;padding:18px 20px;margin-bottom:20px;}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.info-item{display:flex;gap:10px;align-items:flex-start;}
+.info-icon{width:32px;height:32px;border-radius:8px;background:rgba(0,220,180,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.info-title{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.08em;margin-bottom:3px;}
+.info-text{font-size:12px;color:#fff;font-weight:600;line-height:1.55;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:14px;max-width:500px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-title{font-family:var(--title);font-size:14px;font-weight:900;color:var(--teal);letter-spacing:.1em;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:22px;line-height:1;padding:0;}
+.modal-close:hover{color:#fff;}
+.modal-field{margin-bottom:14px;}
+.modal-lbl{font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+.modal-val{font-family:var(--mono);font-size:13px;color:#fff;font-weight:700;background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:10px 13px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+.btn{padding:9px 18px;border-radius:8px;font-family:var(--title);font-weight:700;font-size:11px;letter-spacing:.08em;cursor:pointer;border:none;transition:all .18s;}
+.btn-teal{background:var(--teal);color:#04050a;}
+.btn-teal:hover{background:#00f0c8;}
+.btn-ghost{background:var(--border);color:#fff;border:1px solid var(--border2);}
+.btn-ghost:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
+
+/* TRADEMARK */
+.trademark{text-align:center;padding:16px 0 8px;border-top:1px solid var(--border);margin-top:24px;}
+.tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
+.tm-name .lc{color:var(--teal);}
+.tm-name .bg{color:#fff;}
+.tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:2px;font-weight:600;margin-top:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <canvas id="sgear" width="64" height="64" style="width:32px;height:32px;flex-shrink:0;"></canvas>
+    <div class="logo-text">
+      <div class="logo-main">KR<span>O</span>NOS</div>
+      <div class="logo-sub">Maintenance System</div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">PRINCIPAL</div>
+    <a class="nav-item" href="dashboard.html">
+      <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg></div>
+      <span class="nav-label">DASHBOARD</span>
+    </a>
+    <div class="nav-section-label">RESURSE</div>
+    <a class="nav-item active" href="analize_ulei.html">
+      <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2c0 0-4 4-4 7a4 4 0 008 0c0-3-4-7-4-7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 11c0 1.1.9 2 2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <span class="nav-label">ANALIZE DE ULEI</span>
+    </a>
+    <a class="nav-item" href="stoc_piese.html">
+      <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+      <span class="nav-label">STOC PIESE</span>
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-av" id="user-av">LB</div>
+      <div>
+        <div class="sidebar-user-name" id="user-name">Leica Bogdan</div>
+        <div class="sidebar-user-role" id="user-role">APP OWNER</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">DETALII ULEI</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Inchide</button>
+      <button class="btn btn-teal" onclick="printEntry()">Inregistreaza schimb ulei</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-bc">
+      <a class="bc-btn" href="dashboard.html">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 5.5L6 1l5 4.5V11H8V8H4v3H1V5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        DASHBOARD
+      </a>
+      <span class="bc-sep">/</span>
+      <span class="bc-btn current">ANALIZE ULEI</span>
+    </div>
+    <div class="topbar-right">
+      <div>
+        <div class="topbar-date" id="top-date"></div>
+        <div class="topbar-time" id="top-time"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-mini teal">
+        <div class="kpi-mini-lbl">Total reductoare</div>
+        <div class="kpi-mini-val" id="kpi-total">—</div>
+        <div class="kpi-mini-sub">echipamente monitorizate</div>
+      </div>
+      <div class="kpi-mini green">
+        <div class="kpi-mini-lbl">Schimb efectuat</div>
+        <div class="kpi-mini-val" id="kpi-ok">—</div>
+        <div class="kpi-mini-sub">in termen</div>
+      </div>
+      <div class="kpi-mini amber">
+        <div class="kpi-mini-lbl">Schimb curand</div>
+        <div class="kpi-mini-val" id="kpi-soon">—</div>
+        <div class="kpi-mini-sub">in urmatoarele 90 zile</div>
+      </div>
+      <div class="kpi-mini red">
+        <div class="kpi-mini-lbl">Depasit / Urgent</div>
+        <div class="kpi-mini-val" id="kpi-late">—</div>
+        <div class="kpi-mini-sub">necesita interventie</div>
+      </div>
+    </div>
+
+    <!-- INFO BOX -->
+    <div class="info-panel">
+      <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.2em;font-weight:700;text-transform:uppercase;margin-bottom:12px;">De ce este recomandata analiza uleiului?</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#00dcb4" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="info-title">Detectarea uzurii interne</div><div class="info-text">Identifica particule metalice (Fe, Cu, Al) din uzura lagarelor, angrenajelor si axelor — diagnosticare timpurie a defectiunilor mecanice.</div></div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2c0 0-3 3-3 5.5a3 3 0 006 0C11 5 8 2 8 2z" stroke="#00dcb4" stroke-width="1.4"/></svg></div>
+          <div><div class="info-title">Calitatea lubrifiantului</div><div class="info-text">Verificare viscozitate, indice TBN/oxidare. Detecteaza degradarea termica, oxidarea sau contaminarea cu apa.</div></div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="12" height="6" rx="1.5" stroke="#00dcb4" stroke-width="1.4"/><path d="M5 8V6a3 3 0 016 0v2" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <div><div class="info-title">Identificarea contaminantilor</div><div class="info-text">Detecteaza apa (condens, scurgeri), praf, funingine sau alte fluide industriale — contamintarea duce la uzura accelerata.</div></div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#00dcb4" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="#00dcb4" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <div><div class="info-title">Mentenanta predictiva</div><div class="info-text">Inlocuirea uleiului pe baza de stare, nu dupa intervale fixe. Reduce costurile si previne opriri neplanificate.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="color:rgba(0,220,180,.5);"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9.5 9.5l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        <input class="search-input" id="search-input" type="text" placeholder="Cauta echipament..." oninput="filterTable()"/>
+      </div>
+      <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">Toate</button>
+      <button class="filter-btn" data-filter="banda" onclick="setFilter(this)">Trans. cu banda</button>
+      <button class="filter-btn" data-filter="lant" onclick="setFilter(this)">Trans. cu lant</button>
+      <button class="filter-btn" data-filter="late" onclick="setFilter(this,'status')">Depasit</button>
+      <button class="filter-btn" data-filter="soon" onclick="setFilter(this,'status')">Curand</button>
+      <button class="filter-btn" data-filter="ok" onclick="setFilter(this,'status')">In termen</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="sec-hdr">
+      <div class="sec-title">Schimb ulei reductoare</div>
+      <div class="sec-line"></div>
+      <div class="sec-count" id="visible-count">— intrari</div>
+    </div>
+    <div class="panel" style="overflow-x:auto;">
+      <table class="oil-table" id="oil-table">
+        <thead>
+          <tr>
+            <th onclick="sortTable('eq')" style="cursor:pointer;">Echipament ↕</th>
+            <th>Tip utilaj</th>
+            <th>Tip ulei</th>
+            <th>Cantitate</th>
+            <th onclick="sortTable('sample')" style="cursor:pointer;">Prelevare proba ↕</th>
+            <th onclick="sortTable('change')" style="cursor:pointer;">Data schimb ulei ↕</th>
+            <th onclick="sortTable('next')" style="cursor:pointer;">Urmatorul schimb ↕</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="oil-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- TRADEMARK -->
+    <div class="trademark">
+      <div class="tm-name"><span class="lc">LEICA</span> <span class="bg">BOGDAN</span></div>
+      <div class="tm-email">leicabogdan@gmail.com</div>
+      <div class="tm-copy">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ── GEAR ── */
+function drawGear(cv){
+  const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;
+  const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';
+  function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}
+  c.clearRect(0,0,W,H);
+  const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);
+  grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');
+  c.beginPath();
+  for(let i=0;i<12;i++){
+    const b=(i/12)*Math.PI*2,ta=.18,ra=.26;
+    const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;
+    const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);
+    if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);
+    c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);
+    c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);
+  }
+  c.closePath();c.fillStyle=grd;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';
+  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);
+  const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);
+  ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');
+  c.fillStyle=ig;c.fill();
+  c.strokeStyle=TC;c.lineWidth=2.5*s;c.shadowColor=TC;c.shadowBlur=14*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.7*s;c.stroke();
+  for(let m=0;m<60;m++){
+    const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;
+    const r1=RI-(isQ?4:isH?3:1.5)*s,r2=RI-(isQ?14:isH?11:6)*s;
+    const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);
+    c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
+    c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.7)':'rgba(0,220,180,.28)';
+    c.lineWidth=(isQ?2.2:isH?1.6:.8)*s;c.lineCap='round';
+    c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?6*s:isH?2*s:0;c.stroke();c.shadowBlur=0;
+  }
+  const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;
+  [[RI*.48,(hrs/12)*Math.PI*2,4*s,TC,8*s],[RI*.70,(mins/60)*Math.PI*2,2.5*s,TC,6*s]].forEach(([r,a,lw,col,bl])=>{
+    const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;
+  });
+  const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.75,sA),[scx,scy]=pt(-RI*.2,sA);
+  c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.2*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=6*s;c.stroke();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,5*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=10*s;c.fill();c.shadowBlur=0;
+  c.beginPath();c.arc(cx,cy,2.5*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
+}
+(function gl(){drawGear(document.getElementById('sgear'));requestAnimationFrame(gl);})();
+
+/* ── CLOCK ── */
+function updateClock(){
+  const now=new Date();
+  const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];
+  const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+}
+updateClock();setInterval(updateClock,1000);
+
+/* ── USER ── */
+function initUser(){
+  try{
+    const name=sessionStorage.getItem('k_name')||'Leica Bogdan';
+    const role=sessionStorage.getItem('k_role')||'APP OWNER';
+    document.getElementById('user-name').textContent=name;
+    document.getElementById('user-role').textContent=role;
+    const parts=name.split(' ');
+    document.getElementById('user-av').textContent=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+  }catch(e){}
+}
+initUser();
+
+/* ── DATA ── */
+const DATA=[
+  {eq:'BC11',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'10L',proba:'20.01.2025',schimb:'24.07.2025',urm:'24.07.2027'},
+  {eq:'BC12',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'17L',proba:'27.01.2025',schimb:'01.08.2025',urm:'01.08.2027'},
+  {eq:'BC32',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'10L',proba:'15.01.2025',schimb:'01.08.2025',urm:'01.08.2027'},
+  {eq:'BC34',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'17L',proba:'15.01.2025',schimb:'01.08.2025',urm:'01.08.2027'},
+  {eq:'BC41',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'6.5L',proba:'31.01.2025',schimb:'24.07.2025',urm:'24.07.2027'},
+  {eq:'BC42',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'6.5L',proba:'31.01.2025',schimb:'31.07.2025',urm:'31.07.2027'},
+  {eq:'BC47',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'6.5L',proba:'31.01.2025',schimb:'23.07.2025',urm:'23.07.2027'},
+  {eq:'BC48',tip:'Transportor cu banda',ulei:'CLP PG 220',cant:'6.5L',proba:'27.01.2025',schimb:'23.07.2025',urm:'23.07.2027'},
+  {eq:'CC01',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'21.01.2025',schimb:'07.08.2025',urm:'07.08.2027'},
+  {eq:'CC02',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'21.01.2025',schimb:'07.08.2025',urm:'07.08.2027'},
+  {eq:'CC03',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'15.01.2025',schimb:'28.07.2025',urm:'28.07.2027'},
+  {eq:'CC04',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'15.01.2025',schimb:'28.07.2025',urm:'28.07.2027'},
+  {eq:'CC10-1 SL',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'38.5L',proba:'27.01.2025',schimb:'Reductor nou - 11.2023',urm:'01.11.2025'},
+  {eq:'CC10-2 SL',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'38.5L',proba:'27.01.2025',schimb:'01.08.2025',urm:'01.08.2027'},
+  {eq:'CC11',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'20.01.2025',schimb:'08.08.2025',urm:'08.08.2027'},
+  {eq:'CC11 SL',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'78L',proba:'27.01.2025',schimb:'01.08.2025',urm:'01.08.2027'},
+  {eq:'CC12',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'20.01.2025',schimb:'25.07.2025',urm:'25.07.2027'},
+  {eq:'CC13',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'20.01.2025',schimb:'08.08.2025',urm:'08.08.2027'},
+  {eq:'CC14',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'20.01.2025',schimb:'25.07.2025',urm:'25.07.2027'},
+  {eq:'CC15',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'15.01.2025',schimb:'08.08.2025',urm:'08.08.2027'},
+  {eq:'CC16',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'17L',proba:'15.01.2025',schimb:'08.08.2025',urm:'08.08.2027'},
+  {eq:'CC19',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'20.01.2025',schimb:'24.07.2025',urm:'24.07.2027'},
+  {eq:'CC202',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'10L',proba:'27.01.2025',schimb:'07.08.2025',urm:'07.08.2027'},
+  {eq:'CC51',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'41L',proba:'31.01.2025',schimb:'12.08.2025',urm:'12.08.2027'},
+  {eq:'CC52',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'6.5L',proba:'31.01.2025',schimb:'07.08.2025',urm:'07.08.2027'},
+  {eq:'CC53',tip:'Transportor cu lant',ulei:'CLP PG 220',cant:'10L',proba:'15.01.2025',schimb:'31.07.2025',urm:'31.07.2027'},
+];
+
+function parseDate(str){
+  if(!str||str.includes('Reductor'))return null;
+  const p=str.split('.');
+  if(p.length!==3)return null;
+  return new Date(+p[2],+p[1]-1,+p[0]);
+}
+
+function getStatus(row){
+  const next=parseDate(row.urm);
+  if(!next){
+    // special case - new reducer
+    if(row.schimb&&row.schimb.includes('Reductor')){
+      const urmDate=parseDate(row.urm);
+      if(urmDate){const diff=(urmDate-new Date())/86400000;if(diff<0)return'late';if(diff<90)return'soon';return'new';}
+      return'new';
+    }
+    return'new';
+  }
+  const diff=(next-new Date())/86400000;
+  if(diff<0)return'late';
+  if(diff<90)return'soon';
+  return'ok';
+}
+
+function statusBadge(s){
+  const map={ok:['chip-ok','In termen'],soon:['chip-soon','Curand'],late:['chip-late','Depasit'],new:['chip-new','Reductor nou']};
+  const[cls,lbl]=map[s]||map.ok;
+  return`<span class="status-chip ${cls}"><span class="sdot"></span>${lbl}</span>`;
+}
+
+let currentFilter='all';
+let currentFilterType='type';
+let currentSort={col:'eq',dir:1};
+let searchVal='';
+let activeRow=null;
+
+function getFilteredData(){
+  return DATA.filter(r=>{
+    const s=getStatus(r);
+    let typeOk=true;
+    if(currentFilterType==='type'){
+      if(currentFilter==='banda')typeOk=r.tip.includes('banda');
+      else if(currentFilter==='lant')typeOk=r.tip.includes('lant');
+    } else {
+      if(currentFilter!=='all')typeOk=s===currentFilter;
+    }
+    const q=searchVal.toLowerCase();
+    const searchOk=!q||(r.eq.toLowerCase().includes(q)||r.tip.toLowerCase().includes(q));
+    return typeOk&&searchOk;
+  });
+}
+
+function renderTable(){
+  const rows=getFilteredData().sort((a,b)=>{
+    const col=currentSort.col;
+    const map={eq:'eq',tip:'tip',sample:'proba',change:'schimb',next:'urm'};
+    const k=map[col]||col;
+    return currentSort.dir*(a[k]||'').localeCompare(b[k]||'');
+  });
+  document.getElementById('visible-count').textContent=rows.length+' intrari';
+  const tbody=document.getElementById('oil-tbody');
+  tbody.innerHTML=rows.map((r,i)=>{
+    const s=getStatus(r);
+    return`<tr onclick="openModal(${DATA.indexOf(r)})">
+      <td><div class="eq-name">${r.eq}</div></td>
+      <td><div class="eq-type">${r.tip}</div></td>
+      <td><div class="oil-type">${r.ulei}</div></td>
+      <td><div class="oil-qty">${r.cant}</div></td>
+      <td><div class="date-cell">${r.proba}</div></td>
+      <td><div class="date-cell">${r.schimb}</div></td>
+      <td><div class="date-cell">${r.urm}</div></td>
+      <td>${statusBadge(s)}</td>
+    </tr>`;
+  }).join('');
+
+  // KPI
+  const all=DATA.map(r=>getStatus(r));
+  document.getElementById('kpi-total').textContent=DATA.length;
+  document.getElementById('kpi-ok').textContent=all.filter(s=>s==='ok').length;
+  document.getElementById('kpi-soon').textContent=all.filter(s=>s==='soon').length;
+  document.getElementById('kpi-late').textContent=all.filter(s=>s==='late').length;
+}
+
+function setFilter(btn,type='type'){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter=btn.dataset.filter;
+  currentFilterType=type;
+  renderTable();
+}
+
+function filterTable(){
+  searchVal=document.getElementById('search-input').value;
+  renderTable();
+}
+
+function sortTable(col){
+  if(currentSort.col===col)currentSort.dir*=-1;
+  else{currentSort.col=col;currentSort.dir=1;}
+  renderTable();
+}
+
+function openModal(idx){
+  const r=DATA[idx];
+  const s=getStatus(r);
+  const next=parseDate(r.urm);
+  const daysLeft=next?Math.round((next-new Date())/86400000):null;
+  document.getElementById('modal-title').textContent='DETALII — '+r.eq;
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-grid">
+      <div class="modal-field"><div class="modal-lbl">Echipament</div><div class="modal-val">${r.eq}</div></div>
+      <div class="modal-field"><div class="modal-lbl">Tip utilaj</div><div class="modal-val">${r.tip}</div></div>
+      <div class="modal-field"><div class="modal-lbl">Tip ulei</div><div class="modal-val">${r.ulei}</div></div>
+      <div class="modal-field"><div class="modal-lbl">Cantitate</div><div class="modal-val">${r.cant}</div></div>
+      <div class="modal-field"><div class="modal-lbl">Data prelevare proba</div><div class="modal-val">${r.proba}</div></div>
+      <div class="modal-field"><div class="modal-lbl">Data schimb ulei</div><div class="modal-val">${r.schimb}</div></div>
+    </div>
+    <div class="modal-field"><div class="modal-lbl">Data programare schimb urmator</div><div class="modal-val">${r.urm}</div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;">
+      <div><div class="modal-lbl" style="margin-bottom:4px;">Status</div>${statusBadge(s)}</div>
+      ${daysLeft!==null?`<div style="text-align:right;"><div class="modal-lbl" style="margin-bottom:4px;">Zile ramase</div><div style="font-family:var(--title);font-size:20px;font-weight:900;color:${daysLeft<0?'var(--red)':daysLeft<90?'var(--amber)':'var(--green)'};">${Math.abs(daysLeft)}<span style="font-size:11px;font-family:var(--mono);font-weight:700;"> zile${daysLeft<0?' intarziere':''}</span></div></div>`:''}
+    </div>`;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function printEntry(){closeModal();window.location.href='kronos_register.html';}
+
+renderTable();
+</script>
+</body>
+</html>
