@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KRONOS — Moto-reductoare</title>
+<script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
+  --border:#1a1d28;--border2:#252836;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100svh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border2);height:60px;
+  padding:0 clamp(14px,3vw,28px);display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
+.tlogo-wrap{display:flex;align-items:center;gap:clamp(10px,2vw,20px);}
+.tlogo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.tlogo canvas{display:block;width:44px;height:44px;}
+.tlogo-text{display:flex;flex-direction:column;}
+.tlogo-main{font-family:var(--title);font-size:17px;font-weight:900;letter-spacing:.18em;color:#fff;line-height:1;}
+.tlogo-main .o{color:var(--teal);}
+.tlogo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.22em;font-weight:700;margin-top:2px;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-link{color:#fff;text-decoration:none;font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;background:var(--border);border:1px solid var(--border2);
+  padding:6px 14px;border-radius:7px;transition:all .18s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.nav-link:hover{border-color:rgba(0,220,180,.55);color:var(--teal);background:rgba(0,220,180,.08);}
+.nav-link.active{color:var(--teal);background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.35);}
+.nav-link.dashboard{font-size:16px;}
+.topbar-center{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.topbar-time{font-family:var(--title);font-size:clamp(16px,2.5vw,22px);font-weight:900;color:var(--teal);letter-spacing:.12em;line-height:1;}
+.topbar-date{font-family:var(--mono);font-size:clamp(9px,1.4vw,11px);color:#fff;font-weight:600;letter-spacing:.08em;}
+.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.role-badge{font-size:13px;font-family:var(--mono);background:var(--border);border:1px solid var(--border2);
+  color:var(--green);padding:4px 11px;border-radius:4px;letter-spacing:.08em;font-weight:700;}
+.coord-name-box{background:#0d2420;border:1.5px solid var(--teal);border-radius:8px;padding:3px 12px;text-align:center;line-height:1.25;}
+.coord-name-box .first{font-family:var(--raj);font-size:12px;font-weight:600;color:#fff;display:block;letter-spacing:.1em;}
+.coord-name-box .last{font-family:var(--raj);font-size:15px;font-weight:700;color:var(--teal);display:block;letter-spacing:.12em;}
+
+/* ── PAGE ── */
+.page{padding:clamp(16px,2.5vw,28px);max-width:1400px;margin:0 auto;}
+
+/* ── KPI ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+@media(max-width:700px){.kpi-strip{grid-template-columns:1fr 1fr;}}
+.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.c-teal::before{background:var(--teal);}
+.kpi-card.c-blue::before{background:var(--blue);}
+.kpi-card.c-amber::before{background:var(--amber);}
+.kpi-card.c-green::before{background:var(--green);}
+.kpi-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.kpi-val{font-family:var(--title);font-size:clamp(27px,3.7vw,37px);font-weight:900;line-height:1;}
+.kpi-card.c-teal .kpi-val{color:var(--teal);}
+.kpi-card.c-teal .kpi-lbl{color:var(--teal);}
+.kpi-card.c-blue .kpi-val{color:var(--blue);}
+.kpi-card.c-blue .kpi-lbl{color:var(--blue);}
+.kpi-card.c-amber .kpi-val{color:var(--amber);}
+.kpi-card.c-amber .kpi-lbl{color:var(--amber);}
+.kpi-card.c-green .kpi-val{color:var(--green);}
+.kpi-card.c-green .kpi-lbl{color:var(--green);}
+.kpi-sub{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;margin-top:5px;}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.search-wrap{position:relative;}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(0,220,180,.5);}
+.search-input{padding:7px 14px 7px 34px;border-radius:7px;background:rgba(0,220,180,.04);
+  border:1.5px solid rgba(0,220,180,.2);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;
+  outline:none;width:240px;transition:border-color .2s;}
+.search-input:focus{border-color:var(--teal);}
+.search-input::placeholder{color:rgba(255,255,255,.35);}
+.filter-btn{padding:7px 18px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);
+  color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  transition:all .18s;letter-spacing:.02em;white-space:nowrap;}
+.filter-btn:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
+.filter-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.4);color:var(--teal);}
+.export-btns{margin-left:auto;display:flex;gap:8px;}
+.exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:7px;
+  font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  transition:all .18s;letter-spacing:.02em;white-space:nowrap;border:1.5px solid;}
+.exp-btn.pdf{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
+.exp-btn.pdf:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
+.exp-btn.xls{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
+.exp-btn.xls:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
+
+/* ── TABLE — 3-section Excel style ── */
+.table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;min-width:1400px;font-family:'IBM Plex Sans',sans-serif;table-layout:fixed;}
+
+/* Section header row — styled as buttons/pills */
+thead .sec-row th{
+  font-family:var(--title);font-size:15px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 18px;text-align:center;
+  border-right:3px solid rgba(0,220,180,.4);
+}
+.sec-id{
+  background:rgba(0,220,180,.18);color:var(--teal);
+  border-right:3px solid rgba(0,220,180,.5)!important;
+  text-shadow:0 0 12px rgba(0,220,180,.4);
+}
+.sec-motor{
+  background:rgba(80,144,224,.18);color:var(--blue);
+  border-right:3px solid rgba(80,144,224,.35)!important;
+  border-left:3px solid rgba(80,144,224,.35)!important;
+}
+.sec-reduct{
+  background:rgba(155,109,255,.18);color:var(--purple);
+  border-right:none!important;
+  border-left:3px solid rgba(155,109,255,.6)!important;
+  border-bottom:2px solid var(--purple)!important;
+}
+
+/* Section header bottom border line per section */
+.sec-id{border-bottom:2px solid var(--teal)!important;}
+.sec-motor{border-bottom:2px solid var(--blue)!important;}
+
+/* Sub-header row */
+thead .sub-row th{
+  font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#fff;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:700;padding:10px 13px;text-align:left;white-space:nowrap;
+  cursor:pointer;user-select:none;transition:all .15s;
+  border-bottom:1.5px solid rgba(255,255,255,.1);
+  border-right:1px solid rgba(255,255,255,.07);
+  background:#081410;
+}
+thead .sub-row th:hover{color:var(--teal);background:rgba(0,220,180,.06);}
+thead .sub-row th.sort-asc::after{content:' ↑';color:var(--teal);font-size:12px;}
+thead .sub-row th.sort-desc::after{content:' ↓';color:var(--teal);font-size:12px;}
+thead .sub-row th.th-motor{background:#07101a;border-right:1px solid rgba(80,144,224,.2);color:var(--blue);}
+thead .sub-row th.th-reduct{background:#0c0a20;border-right:1px solid rgba(155,109,255,.2);color:var(--purple);}
+thead .sub-row th:last-child{border-right:none;}
+
+/* Section column delimiters in body */
+.col-motor-first{border-left:3px solid rgba(80,144,224,.2)!important;}
+.col-reduct-first{border-left:3px solid rgba(155,109,255,.2)!important;}
+.col-expand{border-left:2px solid rgba(0,220,180,.1)!important;}
+
+/* Body */
+tbody tr.data-row{transition:background .12s;cursor:pointer;}
+tbody tr.data-row:nth-child(4n+1),tbody tr.data-row:nth-child(4n+2){background:var(--bg3);}
+tbody tr.data-row:nth-child(4n+3),tbody tr.data-row:nth-child(4n){background:var(--bg4);}
+tbody tr.data-row:hover{background:rgba(0,220,180,.05)!important;}
+tbody tr.data-row.expanded{background:rgba(0,220,180,.04)!important;}
+td{
+  padding:10px 12px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  border-right:1px solid rgba(255,255,255,.04);
+  vertical-align:middle;font-size:15px;
+  font-family:'IBM Plex Sans',sans-serif;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+td:last-child{border-right:none;}
+.td-id{font-family:var(--mono);font-weight:900;color:var(--teal);font-size:16px;letter-spacing:.08em;white-space:nowrap;}
+.td-motor{font-size:15px;color:#fff;font-weight:500;}
+.td-motor.prod{color:var(--blue);font-size:15px;font-weight:700;}
+.td-reduct{font-size:15px;color:#fff;font-weight:500;}
+.td-reduct.prod{color:var(--purple);font-size:15px;font-weight:700;}
+.td-expand{text-align:center;white-space:nowrap;}
+/* Expand arrow — clear chevron button style */
+.expand-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:6px;
+  background:rgba(0,220,180,.1);border:1.5px solid rgba(0,220,180,.3);
+  color:var(--teal);font-size:13px;font-weight:700;
+  transition:all .2s;cursor:pointer;
+}
+.data-row:hover .expand-btn{background:rgba(0,220,180,.2);border-color:var(--teal);}
+.expanded .expand-btn{background:rgba(0,220,180,.18);border-color:var(--teal);transform:rotate(180deg);}
+
+/* Expanded details row */
+tbody tr.detail-row{display:none;}
+tbody tr.detail-row.open{display:table-row;}
+tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rgba(0,220,180,.15);padding:16px 20px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.detail-section-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.detail-section-title.motor{color:var(--blue);}
+.detail-section-title.reduct{color:var(--purple);}
+
+.detail-field{display:flex;flex-direction:column;gap:2px;align-items:center;padding:4px 6px;}
+.detail-lbl{font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;font-weight:700;text-align:center;}
+.detail-val{font-family:'IBM Plex Sans',sans-serif;font-size:15px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
+
+/* Load state */
+.load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
+
+/* ── UPLOAD ── */
+.file-section{text-align:center;padding:20px 0 4px;}
+.file-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:8px;
+  background:rgba(0,220,180,.08);border:1.5px solid rgba(0,220,180,.3);color:var(--teal);
+  font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.08em;}
+.file-btn:hover{background:rgba(0,220,180,.16);border-color:var(--teal);}
+.file-hint{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);margin-top:8px;letter-spacing:.06em;}
+#file-input{display:none;}
+
+/* ── PRINT ── */
+@media print{
+  .topbar,.filter-bar,.file-section,.trademark,.exp-btn,.nav-links{display:none!important;}
+  body{background:#fff!important;color:#000!important;}
+  .page{padding:0!important;max-width:100%!important;}
+  .table-wrap{border:1px solid #ccc!important;border-radius:0!important;}
+  thead .sec-row th,thead .sub-row th{background:#1a3a2a!important;color:#fff!important;font-size:9px!important;padding:6px 8px!important;}
+  td{padding:5px 8px!important;font-size:9px!important;color:#000!important;}
+  .td-id{color:#007a60!important;}
+  tbody tr.detail-row{display:none!important;}
+}
+
+/* ── TRADEMARK ── */
+.trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:28px;}
+.tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
+.tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
+.tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tlogo-wrap">
+    <a class="tlogo" href="dashboard.html">
+      <canvas id="gear" width="88" height="88" style="width:44px;height:44px;"></canvas>
+      <div class="tlogo-text">
+        <div class="tlogo-main">KR<span class="o">O</span>NOS</div>
+        <div class="tlogo-sub">Maintenance System</div>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a class="nav-link dashboard" href="dashboard.html">
+        <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M1 5.5L6 1l5 4.5V11H8V8H4v3H1V5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        DASHBOARD
+      </a>
+      <a class="nav-link active" href="moto_reductoare.html">MOTO-REDUCTOARE</a>
+    </nav>
+  </div>
+  <div class="topbar-center">
+    <div class="topbar-time" id="top-time">00:00:00</div>
+    <div class="topbar-date" id="top-date"></div>
+  </div>
+  <div class="topbar-right">
+    <span class="role-badge" id="user-role">APP OWNER</span>
+    <div class="coord-name-box">
+      <span class="first" id="user-first">Leica</span>
+      <span class="last" id="user-last">BOGDAN</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- KPI -->
+  <div class="kpi-strip">
+    <div class="kpi-card c-teal">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="kpi-val" id="k-total">—</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--teal);">TOTAL</div>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--teal);">moto-reductoare</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-card c-blue">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="kpi-val" id="k-siemens">—</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--blue);">SIEMENS</div>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--blue);">moto-reductoare</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-card c-amber">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="kpi-val" id="k-nord">—</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--amber);">NORD</div>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--amber);">moto-reductoare</div>
+        </div>
+      </div>
+    </div>
+    <div class="kpi-card c-green">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="kpi-val" id="k-abb">—</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--green);">ABB</div>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--green);">moto-reductoare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER + EXPORT -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9.5 9.5l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <input class="search-input" id="search-input" type="text" placeholder="Cauta echipament..." oninput="renderTable()"/>
+    </div>
+    <button class="filter-btn active" data-f="all" onclick="setFilter(this)">Toate</button>
+    <button class="filter-btn" data-f="banda" onclick="setFilter(this)">Trans. cu banda</button>
+    <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Trans. cu lant</button>
+    <button class="filter-btn" data-f="elevator" onclick="setFilter(this)">Elevator</button>
+    <div class="export-btns">
+      <button class="exp-btn pdf" onclick="exportPDF()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Exporta PDF
+      </button>
+      <button class="exp-btn xls" onclick="exportExcel()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Exporta Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table id="main-table">
+      <colgroup>
+        <col style="width:65px;"/><!-- ID -->
+        <col style="width:110px;"/><!-- M:Producator -->
+        <col style="width:150px;"/><!-- M:Model -->
+        <col style="width:130px;"/><!-- M:Curent -->
+        <col style="width:110px;"/><!-- M:Putere -->
+        <col style="width:110px;"/><!-- M:Turatie -->
+        <col style="width:120px;"/><!-- M:RulDE -->
+        <col style="width:120px;"/><!-- M:RulNE -->
+        <col style="width:110px;"/><!-- R:Producator -->
+        <col style="width:150px;"/><!-- R:Model -->
+        <col style="width:110px;"/><!-- R:Turatie -->
+        <col style="width:44px;"/><!-- expand -->
+      </colgroup>
+      <thead>
+        <tr class="sec-row">
+          <th class="sec-id">ID</th>
+          <th class="sec-motor" colspan="7">MOTOR</th>
+          <th class="sec-reduct" colspan="3">REDUCTOR</th>
+          <th class="sec-id" style="border-left:2px solid rgba(0,220,180,.2);font-size:10px;">▼</th>
+        </tr>
+        <tr class="sub-row">
+          <th onclick="sortBy(0)">ID</th>
+          <th class="th-motor col-motor-first" onclick="sortBy(1)">Producator</th>
+          <th class="th-motor" onclick="sortBy(2)">Model</th>
+          <th class="th-motor" onclick="sortBy(3)">Curent nominal</th>
+          <th class="th-motor" onclick="sortBy(4)">Putere nominala</th>
+          <th class="th-motor" onclick="sortBy(5)">Turatie (RPM)</th>
+          <th class="th-motor" onclick="sortBy(6)">Rulment DE</th>
+          <th class="th-motor" onclick="sortBy(7)">Rulment NE</th>
+          <th class="th-reduct col-reduct-first" onclick="sortBy(9)">Producator</th>
+          <th class="th-reduct" onclick="sortBy(10)">Model</th>
+          <th class="th-reduct" onclick="sortBy(11)">Turatie (RPM)</th>
+          <th class="col-expand" style="background:#081410;cursor:default;"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="12" class="load-state">Se incarca datele...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="file-section" id="file-section">
+    <label class="file-btn" for="file-input">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span id="file-btn-label">Incarca moto_reductoare.xlsx</span>
+    </label>
+    <input type="file" id="file-input" accept=".xlsx,.xls" onchange="loadFromInputFile(this)"/>
+    <div class="file-hint">Selecteaza fisierul Excel din folderul <strong style="color:var(--teal);">edit/</strong> de pe calculatorul tau</div>
+  </div>
+
+  <!-- TRADEMARK -->
+  <div class="trademark">
+    <div class="tm-name"><span class="lc">LEICA</span> <span class="bg">BOGDAN</span></div>
+    <div class="tm-email">leicabogdan@gmail.com</div>
+    <div class="tm-copy">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
+  </div>
+
+</div>
+
+<script>
+/* ── GEAR ── */
+function drawGear(cv){const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');c.beginPath();for(let i=0;i<12;i++){const b=(i/12)*Math.PI*2,ta=.18,ra=.26;const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(let m=0;m<60;m++){const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;const r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(([r,a,lw,col,bl])=>{const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;});const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.76,sA),[scx,scy]=pt(-RI*.22,sA);c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
+(function gl(){drawGear(document.getElementById('gear'));requestAnimationFrame(gl);})();
+
+/* ── CLOCK ── */
+function updateClock(){const now=new Date();const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+updateClock();setInterval(updateClock,1000);
+
+/* ── USER ── */
+(function(){try{const name=sessionStorage.getItem('k_name')||'Leica Bogdan';const role=sessionStorage.getItem('k_role')||'APP OWNER';const parts=name.split(' ');document.getElementById('user-first').textContent=parts[0]||'';document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();document.getElementById('user-role').textContent=role;}catch(e){}})();
+
+/* ── DATA ── */
+let allData=[];
+let currentFilter='all';
+let sortCol=-1,sortDir=1;
+let expandedRows=new Set();
+
+/* FALLBACK DATA — embedded */
+// Columns: 0=ID, 1=TipUtilaj, 2=M:Produc, 3=M:Model, 4=M:Curent, 5=M:Putere, 6=M:Turatie,
+//          7=M:RulDE, 8=M:RulNE, 9=M:TipConstr, 10=R:Produc, 11=R:Model, 12=R:Turatie
+// Extra detail cols: 13=M:Serie, 14=M:Tensiune, 15=M:Frecventa, 16=M:cosF, 17=M:Randament,
+//                   18=M:ClasaEf, 19=M:Lubrifiant, 20=M:Greutate, 21=M:IP, 22=M:Temp,
+//                   23=M:Standard, 24=M:ClasaIzol, 25=M:ATEX,
+//                   26=R:Serie, 27=R:Tensiune, 28=R:Frecventa, 29=R:Putere, 30=R:cosF,
+//                   31=R:Eficienta, 32=R:ClasaEf, 33=R:Greutate, 34=R:IP, 35=R:Temp,
+//                   36=R:ClasaIzol, 37=R:ATEX
+const FALLBACK=[
+  ["BC11","Transportor cu banda","SIEMENS","1CV2220B","65 A","37 kW","1470 RPM","6313-2RSC3","6313-2RSC3","IMB5","NORD","-","-","254687301","400V Δ / 460V Δ","50Hz / 60Hz","0.88","92.7% / 93.6%","IE2","-","295 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","50 Hz","-","0.88","94.6","IE3","-","IP66","-20°C la +40°C","Th.Cl.155 (F)","II 3D Ex tc IIIB T125C Dc"],
+  ["BC12","Transportor cu banda","SIEMENS","1CV2280B","132 A / 130 A","75 kW","1485 RPM","NU317EP","6317-C3","IMB5","NORD","SK 160 LH","1465 RPM","254211901","400V Δ / 460V Δ","50Hz / 60Hz","0.87/0.88","94% / 94.5%","IE2","UNIREX-N3 30g 8000h","570 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","50 Hz","15 kW","0.88","92.0","IE2","-","IP66","-","Th.Cl.155 (F)","-"],
+  ["BC52","Transportor cu banda","NORD","SK 160 LP/4 2D TF","27.4 A / 15.8 A","15 kW","1467 RPM","-","-","-","-","-","-","203999808-1300 / 59276626","400V Δ / 690V Y","50 Hz","0.87","-","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T125°C Db","-","-","-","18.5 kW","?.??","?.??","?","-","IP66","-","Th.Cl.155 (F)","-"],
+  ["BC53","Transportor cu banda","NORD","SK 160 LP/4 2D TF","27.4 A / 15.8 A","15 kW","1467 RPM","-","-","-","-","-","-","203999808-1400 / 59295839","400V Δ / 690V Y","50 Hz","0.87","-","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T125°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC01","Transportor cu lant","SIEMENS","1CV2282B","159 A / 158 A","90 kW","1486 RPM","NU317EP","6317-C3","IMB5","-","-","-","253620502 0158","400V Δ / 460V Δ","50Hz / 60Hz","0.87","94.2% / 95%","IE2","UNIREX-N3 30g 8000h","590 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC02","Transportor cu lant","SIEMENS","1CV2205B","55 A","34.5 kW","1770 RPM","6312-ZC3","6312-ZC3","200 L","-","-","-","2196466-001-006 0158","460V Δ","60 Hz","0.85","0.93","IE2","-","225 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC03","Transportor cu lant","SIEMENS","1CV2282B","159 A / 158 A","90 kW","1486 RPM","NU317EP","6317-C3","IMB5","-","-","-","253620501 0158","400V Δ / 460V Δ","50Hz / 60Hz","0.87","94.2% / 95%","IE2","UNIREX-N3 30g 8000h","590 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC04","Transportor cu lant","SIEMENS","1CV2205B","55 A","34.5 kW","1770 RPM","6312-ZC3","6312-ZC3","200 L","-","-","-","2196466-001-006 0158","460V Δ","60 Hz","0.85","0.93","IE2","-","225 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC11","Transportor cu lant","SIEMENS","1CV2252B","100 A / 99 A","55 kW","1480 RPM","NU215EP","6215-2RSC3","200 L","-","-","-","253675301 0158","400V Δ / 460V Δ","50Hz / 60Hz","0.85","93.5% / 94.1%","IE2","UNIREX-N3 20g 8000h","405 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC12","Transportor cu lant","SIEMENS","1CV2205B","56 A","30 kW","1770 RPM","6312-ZC3","6312-ZC3","200 L","-","-","-","2196466-001-001 0158","400V Δ","50 Hz","0.84","0.935","IE2","-","225 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC13","Transportor cu lant","SIEMENS","1CV2252B","100 A / 99 A","55 kW","1480 RPM","NU215EP","6215-2RSC3","200 L","-","-","-","253675303 0158","400V Δ / 460V Δ","50Hz / 60Hz","0.85","93.5% / 94.1%","IE2","UNIREX-N3 20g 8000h","405 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC14","Transportor cu lant","SIEMENS","1CV2205B","56 A","30 kW","1770 RPM","6312-ZC3","6312-ZC3","200 L","-","-","-","2196466-001-002 0158","400V Δ","50 Hz","0.84","0.923","IE2","-","225 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC202","Transportor cu lant","NORD","SK 180 MH/4 3D TF","34.9 A / 20.2 A","18.5 kW","1475 RPM","-","-","-","-","-","-","202682408-400 / 32064114","400V Δ / 690V Y","50 Hz","0.84","0.922","IE2","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T125°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC212","Transportor cu lant","NORD","SK 160 LP/4 3D TF","27.4 A / 15.8 A","15 kW","1467 RPM","-","-","-","-","-","-","37455572 / 56716598","400V Δ / 690V Y","50 Hz","0.87","0.921","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T125°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC51","Transportor cu lant","NORD","SK 250 WP/4 3D TF","96.8 A / 55.9 A","55 kW","1480 RPM","-","-","-","-","-","-","202651567-200 / 31928266","400V Δ / 690V Y","50 Hz","0.88","0.946","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T125°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC52","Transportor cu lant","NORD","SK 160 LH/4 3D TF","27.5 A / 15.9 A","15 kW","1465 RPM","-","-","-","-","-","-","202651567-100 / 31892405","400V Δ / 690V Y","50 Hz","0.88","0.92","IE2","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T125°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["CC53","Transportor cu lant","NORD","SK 180 MH/4 3D TF","34.9 A / 20.2 A","18.5 kW","1475 RPM","-","-","-","-","-","-","202682408-300 / 32064111","400V Δ / 690V Y","50 Hz","0.84","0.922","IE2","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T125°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["E01","Elevator","SIEMENS","1CV2310B","195 A / 113 A","110 kW","1490 RPM","6319-C3","6319-C3","315S-IMB3","-","-","-","253777901","400VΔ/690VY/460VΔ","50Hz/60Hz","0.86","94% / 94.5% / 95%","IE2","UNIREX-N3 40g 6000h","740 Kg","IP55","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T120°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["E02","Elevator","SIEMENS","1CV2310B","195 A / 113 A","110 kW","1490 RPM","6319-C3","6319-C3","315S-IMB3","-","-","-","253777902","400VΔ/690VY/460VΔ","50Hz/60Hz","0.86","94% / 94.5% / 95%","IE2","UNIREX-N3 40g 6000h","740 Kg","IP55","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T120°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["E03","Elevator","SIEMENS","1CV2310B","195 A / 113 A","110 kW","1490 RPM","6319-C3","6319-C3","315S-IMB3","-","-","-","253940901","400VΔ/690VY/460VΔ","50Hz/60Hz","0.86","94% / 94.5% / 95%","IE2","UNIREX-N3 40g 6000h","740 Kg","IP55","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T120°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["E04","Elevator","SIEMENS","1CV3310B","191 A / 111 A","110 kW","1488 RPM","6319-C3","6319-C3","315S-IMB3","-","-","-","3472294401","400VΔ/690VY/460VΔ","50Hz/60Hz","0.87","95.4% / 95.8%","IE3","UNIREX-N3 40g 6000h","760 Kg","IP66","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 3D Ex tc IIIB T120°C Dc","-","-","-","-","-","-","-","-","-","-","-","-"],
+  ["E82","Elevator","NORD","SK 225 SP/4 3D TF","68.9 A / 39.8 A","37 kW","1485 RPM","-","-","-","-","-","-","202693177-700 / 32720416","400V Δ / 690V Y","50 Hz","0.83","0.941","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T125°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
+];
+
+function tipFilter(row){
+  const id=String(row[0]).toUpperCase();
+  if(id.startsWith('BC'))return'banda';
+  if(id.startsWith('CC'))return'lant';
+  if(id.startsWith('E'))return'elevator';
+  return'other';
+}
+
+function updateKPI(data){
+  document.getElementById('k-total').textContent=data.length;
+  document.getElementById('k-siemens').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('SIEMENS')).length;
+  document.getElementById('k-nord').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('NORD')).length;
+  document.getElementById('k-abb').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('ABB')).length;
+}
+
+function getVisibleRows(){
+  let rows=[...allData];
+  if(currentFilter!=='all')rows=rows.filter(r=>tipFilter(r)===currentFilter);
+  const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
+  if(q)rows=rows.filter(r=>r.some(c=>String(c||'').toLowerCase().includes(q)));
+  if(sortCol>=0){
+    const colMap=[0,2,3,4,5,6,7,8,10,11,12];
+    rows.sort((a,b)=>{
+      const ci=colMap[sortCol]??sortCol;
+      return sortDir*String(a[ci]||'').localeCompare(String(b[ci]||''),undefined,{numeric:true});
+    });
+  }
+  return rows;
+}
+
+function f(v){return v&&v!=='-'&&v!=='NaN'?v:'—';}
+
+function buildDetailHTML(row){
+  const mRight=[
+    ['Serie',row[13],'teal'],['Tensiune nominala',row[14],'blue'],['Frecventa',row[15],'blue'],
+    ['Randament',row[17],'green'],['Factor de putere (cos φ)',row[16],'green'],
+    ['Clasa eficienta',row[18],'amber'],['Lubrifiant',row[19],'teal'],
+  ];
+  const mLeft=[
+    ['Greutate',row[20],'#fff'],['Tip constructie',row[9],'#fff'],
+    ['Grad protectie',row[21],'amber'],['Clasa izolatie',row[24],'#fff'],
+    ['Temperatura functionare',row[22],'#fff'],['Standard',row[23],'#fff'],
+    ['Certificare ATEX',row[25],'red'],
+  ];
+  const rRight=[
+    ['Serie',row[26],'teal'],['Tensiune',row[27],'blue'],['Frecventa',row[28],'blue'],
+    ['Putere nominala',row[29],'green'],['Factor de putere',row[30],'green'],
+    ['Eficienta',row[31],'green'],['Clasa eficienta',row[32],'amber'],
+  ];
+  const rLeft=[
+    ['Greutate',row[33],'#fff'],['Grad protectie',row[34],'amber'],
+    ['Clasa izolatie',row[36],'#fff'],['Temperatura',row[35],'#fff'],
+    ['Certificare ATEX',row[37],'red'],
+  ];
+  const SZ='15px';
+  function field(lbl,val,color){
+    const c=color.startsWith('#')?color:'var(--'+color+')';
+    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+c+';font-size:'+SZ+';">'+f(val)+'</div></div>';
+  }
+  function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
+  const hasR=row[10]&&row[10]!=='-';
+  return '<div class="detail-grid">'
+    +'<div class="detail-section">'
+      +'<div class="detail-section-title motor">&#9642; Motor &mdash; '+f(row[2])+' '+f(row[3])+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">'
+        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mLeft)+'</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mRight)+'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="detail-section" style="'+(hasR?'':'opacity:.4')+'">'
+      +'<div class="detail-section-title reduct">&#9642; Reductor &mdash; '+(hasR?f(row[10])+' '+f(row[11]):'N/A &mdash; motoreductor integrat')+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">'
+        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(rLeft)+'</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(rRight)+'</div>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+}
+
+function sortBy(col){
+  document.querySelectorAll('thead .sub-row th').forEach(th=>th.classList.remove('sort-asc','sort-desc'));
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
+  document.querySelectorAll('thead .sub-row th')[col].classList.add(sortDir===1?'sort-asc':'sort-desc');
+  renderTable();
+}
+
+function exportPDF(){window.print();}
+
+function exportExcel(){
+  const rows=getVisibleRows();
+  const headers=['ID','Tip utilaj','M:Producator','M:Model','M:Curent nominal','M:Putere nominala','M:Turatie','M:Rulment DE','M:Rulment NE','M:Tip constructie','R:Producator','R:Model','R:Turatie'];
+  const wsData=[headers,...rows.map(r=>headers.map((_,i)=>r[i]||''))];
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Moto-reductoare');
+  const now=new Date();
+  XLSX.writeFile(wb,`KRONOS_MotoReductoare_${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}.xlsx`);
+}
+
+function parseWorkbook(buf){
+  const wb=XLSX.read(buf,{type:'array'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  return raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
+}
+
+let fileHandle=null;
+
+async function handleFileBtn(){
+  if(fileHandle){
+    try{const file=await fileHandle.getFile();const buf=await file.arrayBuffer();applyData(parseWorkbook(new Uint8Array(buf)));flashBtn('✓ Actualizat');return;}catch(e){fileHandle=null;}
+  }
+  if(window.showOpenFilePicker){
+    try{
+      const[handle]=await window.showOpenFilePicker({types:[{description:'Excel',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx','.xls']}}],multiple:false});
+      fileHandle=handle;
+      const file=await handle.getFile();const buf=await file.arrayBuffer();
+      applyData(parseWorkbook(new Uint8Array(buf)));
+      document.getElementById('file-btn-label').textContent='Refresh date';
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
+  document.getElementById('file-input').click();
+}
+
+function loadFromInputFile(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{applyData(parseWorkbook(new Uint8Array(e.target.result)));}catch(err){alert('Eroare: '+err.message);}};
+  reader.readAsArrayBuffer(file);
+}
+
+function flashBtn(msg){const lbl=document.getElementById('file-btn-label');if(!lbl)return;const p=lbl.textContent;lbl.textContent=msg;setTimeout(()=>lbl.textContent=p,1500);}
+
+function applyData(data){
+  // Map from Excel format (13 cols: ID, TipUtilaj, M cols, R cols) to internal format
+  allData=data.map(r=>{
+    // Excel cols: 0=ID, 1=M:Produc, 2=M:Model, 3=M:Curent, 4=M:Putere, 5=M:Turatie,
+    //            6=M:RulDE, 7=M:RulNE, 8=M:TipConstr, 9=R:Produc, 10=R:Model, 11=R:Turatie, 12=TipUtilaj
+    return[r[0],r[12],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9],r[10],r[11]];
+  });
+  updateKPI(allData);
+  expandedRows.clear();
+  renderTable();
+}
+
+async function init(){
+  // Show FALLBACK immediately
+  allData=FALLBACK;
+  updateKPI(allData);
+  renderTable();
+
+  // Try fetch in background
+  try{
+    const resp=await fetch('edit/moto_reductoare.xlsx?t='+Date.now());
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const buf=await resp.arrayBuffer();
+    applyData(parseWorkbook(new Uint8Array(buf)));
+    document.getElementById('file-section').style.display='none';
+  }catch(e){
+    // Local mode — FALLBACK already shown, upload button visible
+  }
+}
+init();
+
+document.getElementById('file-btn').addEventListener('click',handleFileBtn);
+</script>
+</body>
+</html>
