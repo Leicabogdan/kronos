@@ -51,26 +51,30 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:1800px;margin:0 auto;}
 
 /* ── KPI ── */
-.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 @media(max-width:900px){.kpi-strip{grid-template-columns:1fr 1fr;}}
 .kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi-card.c-teal::before{background:var(--teal);}
 .kpi-card.c-amber::before{background:var(--amber);}
 .kpi-card.c-red::before{background:var(--red);}
+.kpi-card.c-green::before{background:var(--green);}
 .kpi-val{font-family:var(--title);font-size:clamp(26px,3.5vw,36px);font-weight:900;line-height:1;}
 .kpi-card.c-teal .kpi-val{color:var(--teal);}
 .kpi-card.c-amber .kpi-val{color:var(--amber);}
 .kpi-card.c-red .kpi-val{color:var(--red);}
+.kpi-card.c-green .kpi-val{color:var(--green);}
 .kpi-label-row{display:flex;align-items:center;gap:10px;margin-top:2px;}
 .kpi-big-label{font-family:var(--title);font-size:clamp(13px,1.8vw,18px);font-weight:900;opacity:.5;line-height:1;}
 .kpi-card.c-teal .kpi-big-label{color:var(--teal);}
 .kpi-card.c-amber .kpi-big-label{color:var(--amber);}
 .kpi-card.c-red .kpi-big-label{color:var(--red);}
+.kpi-card.c-green .kpi-big-label{color:var(--green);}
 .kpi-sub{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;margin-top:3px;}
 .kpi-card.c-teal .kpi-sub{color:var(--teal);}
 .kpi-card.c-amber .kpi-sub{color:var(--amber);}
 .kpi-card.c-red .kpi-sub{color:var(--red);}
+.kpi-card.c-green .kpi-sub{color:var(--green);}
 
 /* ── TOOLBAR ── */
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
@@ -153,7 +157,7 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
 .add-form-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px 16px;}
 .form-field{display:flex;flex-direction:column;gap:5px;}
-.form-lbl{font-family:var(--title);font-size:13px;font-weight:900;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:10px;}
+.form-lbl{font-family:var(--mono);font-size:10px;color:var(--teal);font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
 .form-input,.form-select,.form-textarea{
   background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;
   color:#fff;font-family:var(--sans);font-size:14px;padding:8px 12px;
@@ -192,13 +196,6 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
   background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);color:var(--amber);
   font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;transition:all .18s;}
 .setup-banner .dismiss-btn:hover{background:rgba(240,165,0,.2);}
-
-/* ── GOOGLE SHEETS EMBED ── */
-.gs-embed-wrap{background:var(--bg3);border:1.5px solid rgba(0,220,180,.25);border-radius:12px;overflow:hidden;margin-bottom:24px;}
-.gs-embed-header{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid rgba(0,220,180,.15);}
-.gs-embed-header svg{flex-shrink:0;}
-.gs-embed-title-text{font-family:var(--title);font-size:12px;font-weight:900;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;}
-.gs-iframe{width:100%;height:520px;border:none;display:block;background:var(--bg3);}
 
 /* ── PRINT ── */
 @media print{
@@ -257,12 +254,31 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
 
 <div class="page">
 
+  <!-- SETUP BANNER -->
+  <div class="setup-banner" id="setup-banner">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#f0a500" stroke-width="1.5"/><path d="M11 7v5M11 14.5v.5" stroke="#f0a500" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <div class="setup-banner-text">
+      <div class="setup-banner-title">CONFIGURARE GOOGLE SHEETS — NECESAR O SINGURA DATA</div>
+      <div class="setup-banner-body">
+        1. Creeaza un Google Sheet cu coloanele: <code>Timestamp</code>, <code>Motiv</code>, <code>DataInceput</code>, <code>OraInceput</code>, <code>DataFinal</code>, <code>OraFinal</code>, <code>Descriere</code>, <code>StatusUtilaj</code>, <code>PieseSchimb</code>, <code>Echipa</code>, <code>Adaugat de</code><br/>
+        2. <strong>Citire:</strong> Fisier → Partajare → Publicare pe web → Foaie 1 → CSV → Copiaza URL-ul si seteaza <code>SHEET_CSV_URL</code> in script de mai jos<br/>
+        3. <strong>Scriere:</strong> Extensii → Apps Script → copiaza scriptul de mai jos → Implementeaza ca aplicatie web (acces: Toata lumea) → Copiaza URL-ul si seteaza <code>APPS_SCRIPT_URL</code>
+      </div>
+      <button class="dismiss-btn" onclick="dismissBanner()">Am configurat — ascunde</button>
+    </div>
+  </div>
+
   <!-- KPI -->
   <div class="kpi-strip">
     <div class="kpi-card c-teal">
       <div class="kpi-val" id="k-total">—</div>
       <div class="kpi-label-row"><div class="kpi-big-label">TOTAL</div></div>
-      <div class="kpi-sub">interventii luna aceasta</div>
+      <div class="kpi-sub">interventii luna</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-val" id="k-apt">—</div>
+      <div class="kpi-label-row"><div class="kpi-big-label">APT</div></div>
+      <div class="kpi-sub">utilaje operationale</div>
     </div>
     <div class="kpi-card c-amber">
       <div class="kpi-val" id="k-suprav">—</div>
@@ -271,100 +287,8 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
     </div>
     <div class="kpi-card c-red">
       <div class="kpi-val" id="k-avarie">—</div>
-      <div class="kpi-label-row"><div class="kpi-big-label">AVARI</div></div>
-      <div class="kpi-sub">Avarii luna asta</div>
-    </div>
-  </div>
-
-<!-- ADD ROW FORM -->
-  <div class="add-form-wrap">
-    <div class="add-form-title">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#00dcb4" stroke-width="1.5"/><path d="M9 5v8M5 9h8" stroke="#00dcb4" stroke-width="1.8" stroke-linecap="round"/></svg>
-      Adauga inregistrare noua
-    </div>
-      <div class="form-field">
-        <label class="form-lbl">Motiv interventie *</label>
-        <select class="form-select" id="f-motiv">
-          <option value="">Selecteaza motiv interventie... </option>
-          <option value="Revizie 200 h">Revizie 200h</option>
-          <option value="Revizie 1500 h">Revizie 1500h</option>
-          <option value="Revizie 8000 h">Revizie 8000h</option>
-          <option value="Gresare">Gresare</option>
-          <option value="Verificare la golire celula">Verificare la golire celula</option>
-          <option value="Revizie anuala">Revizie anuala</option>
-          <option value="Mentenanta si intretinere">Mentenanta si intretinere</option>
-          <option value="Avarie">Avarie</option>
-          <option value="Schimb ulei">Schimb ulei</option>
-          <option value="Altele">Altele</option>
-          <option value="Curatare magneti">Curatare magneti</option>
-          <option value="Verificare curatare magneti">Verificare curatare magneti</option>
-          <option value="Luat in evidenta">Luat in evidenta</option>
-        </select>
-      </div>
-    <div class="form-grid">
-      <div class="form-field form-wide">
-        <label class="form-lbl"></label>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Data inceput *</label>
-        <input class="form-input" id="f-data-inc" type="date"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Ora inceput</label>
-        <input class="form-input" id="f-ora-inc" type="time"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Data finalizare</label>
-        <input class="form-input" id="f-data-fin" type="date"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Ora finalizare</label>
-        <input class="form-input" id="f-ora-fin" type="time"/>
-      </div>
- <div class="form-field">
-        <label class="form-lbl">Echipament *</label>
-        <select class="form-select" id="f-echipament">
-          <option value="">Selecteaza echipament...</option>
-          <option value="E01">E01</option>
-          <option value="E02">E02</option>
-          <option value="E03">E03</option>
-          <option value="E04">E04</option>
-        </select>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Status utilaj *</label>
-        <select class="form-select" id="f-status">
-          <option value="">Selecteaza status...</option>
-          <option value=" Apt de functionare">✓ Apt de functionare</option>
-          <option value="Supraveghere">⚠ Sub supraveghere</option>
-          <option value="Necesita interventie">✕ Necesita interventie</option>
-          <option value="Necesita piese de schimb">◼ Necesita piese de schimb</option>
-        </select>
-      </div>
-      <div class="form-field form">
-        <label class="form-lbl">Ore de functionare</label>
-        <input class="form-input" id="f-ore-functionare" type="text" placeholder="1500h"/>
-      </div>
-      <div class="form-field form-wide">
-        <label class="form-lbl">Echipa</label>
-        <input class="form-input" id="f-echipa" type="text" placeholder="ex: Leica Bogdan, Vuculescu Valentin"/>
-      </div>
-      <div class="form-field form-wide">
-        <label class="form-lbl">Necesar piese de schimb</label>
-        <input class="form-input" id="f-piese" type="text" placeholder="ex: Lant 10B-2 × 3m, Lagar 6319"/>
-      </div>
-      <div class="form-field form-wide">
-        <label class="form-lbl">Descriere lucrari efectuate</label>
-        <textarea class="form-textarea" id="f-desc" placeholder="Descrie detaliat lucrarile executate, constatarile tehnice si masurile luate..."></textarea>
-      </div>
-    </div>
-    <div class="form-actions">
-      <button class="btn-submit" id="btn-submit" onclick="submitRow()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Inregistreaza
-      </button>
-      <button class="btn-reset" onclick="resetForm()">Reseteaza</button>
-      <span id="form-msg" class="form-msg" style="display:none;"></span>
+      <div class="kpi-label-row"><div class="kpi-big-label">AVARIE</div></div>
+      <div class="kpi-sub">necesita interventie</div>
     </div>
   </div>
 
@@ -390,39 +314,6 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
         <option value="2025">2025</option>
         <option value="2026">2026</option>
         <option value="2027">2027</option>
-        <option value="2028">2028</option>
-        <option value="2029">2029</option>
-        <option value="2030">2030</option>
-      </select>
-    </div>
-    <div class="toolbar-sep"></div>    
-<!-- Echipament filter -->
-    <div class="select-wrap">
-      <select id="sel-echipament" onchange="applyFilters()">
-        <option value="">Toate echipamentele</option>
-        <option value="E01">E01</option>
-        <option value="E02">E02</option>
-        <option value="E03">E03</option>
-      </select>
-    </div>
-    <div class="toolbar-sep"></div>
-<!-- Interventii filter -->
-    <div class="select-wrap">
-      <select id="sel-motiv" onchange="applyFilters()">
-        <option value="">Toate interventiile</option>
-        <option value="Revizie 200 h">Revizie 200h</option>
-        <option value="Revizie 1500 h">Revizie 1500h</option>
-        <option value="Revizie 8000 h">Revizie 8000h</option>
-        <option value="Gresare">Gresare</option>
-        <option value="Verificare la golire celula">Verificare la golire celula</option>
-        <option value="Revizie anuala">Revizie anuala</option>
-        <option value="Mentenanta si intretinere">Mentenanta si intretinere</option>
-        <option value="Avarie">Avarie</option>
-        <option value="Schimb ulei">Schimb ulei</option>
-        <option value="Altele">Altele</option>
-        <option value="Curatare magneti">Curatare magneti</option>
-        <option value="Verificare curatare magneti">Verificare curatare magneti</option>
-        <option value="Luat in evidenta">Luat in evidenta</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
@@ -430,10 +321,41 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
     <div class="select-wrap">
       <select id="sel-status" onchange="applyFilters()">
         <option value="">Toate statusurile</option>
-        <option value="Apt de functionare">Apt de functionare</option>
-        <option value="Sub supraveghere">Sub supraveghere</option>
-        <option value="Necesita piese de schimb">Necesita piese de schimb</option>
-        <option value="Necesita interventie">Necesita interventie</option>
+        <option value="Apt">Apt</option>
+        <option value="Supraveghere">Supraveghere</option>
+        <option value="Avarie">Avarie</option>
+        <option value="Oprit">Oprit planificat</option>
+      </select>
+    </div>
+    <div class="toolbar-sep"></div>
+    <!-- Echipament filter -->
+    <div class="select-wrap">
+      <select id="sel-echipament" onchange="applyFilters()">
+        <option value="">Toate echipamentele</option>
+        <option value="E01">E01</option><option value="E02">E02</option>
+        <option value="E03">E03</option><option value="E04">E04</option>
+        <option value="E21">E21</option><option value="E22">E22</option>
+        <option value="E23">E23</option><option value="E51">E51</option>
+        <option value="E81">E81</option><option value="E82">E82</option>
+        <option value="CC01">CC01</option><option value="CC02">CC02</option>
+        <option value="CC03">CC03</option><option value="CC04">CC04</option>
+        <option value="BC11">BC11</option><option value="BC12">BC12</option>
+        <option value="BC21">BC21</option><option value="BC22">BC22</option>
+      </select>
+    </div>
+    <div class="toolbar-sep"></div>
+    <!-- Motiv filter -->
+    <div class="select-wrap">
+      <select id="sel-motiv" onchange="applyFilters()">
+        <option value="">Toate interventiile</option>
+        <option value="Revizie 200">Revizie 200h</option>
+        <option value="Revizie 1500">Revizie 1500h</option>
+        <option value="Revizie 8000">Revizie 8000h</option>
+        <option value="Gresare">Gresare</option>
+        <option value="Avarie">Avarie</option>
+        <option value="Schimb ulei">Schimb ulei</option>
+        <option value="Revizie anuala">Revizie anuala</option>
+        <option value="Mentenanta">Mentenanta si intretinere</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
@@ -447,7 +369,7 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4 7.5l2 3 2-3M4 7.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Exporta Excel
       </button>
-      <button class="tb-btn green" onclick="exportPDF()">
+      <button class="tb-btn red" onclick="exportPDF()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7h2a1 1 0 010 2h-2V7zM8 7h1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         Exporta PDF
       </button>
@@ -467,9 +389,9 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
           <th onclick="sortBy(1)">Motiv interventie</th>
           <th onclick="sortBy(2)">Inceput</th>
           <th onclick="sortBy(4)">Finalizare</th>
-          <th>Descriere lucrari</th>
+          <th onclick="sortBy(6)">Descriere lucrari efectuate</th>
           <th onclick="sortBy(7)">Status utilaj</th>
-          <th>Necesar piese</th>
+          <th onclick="sortBy(8)">Necesar piese de schimb</th>
           <th onclick="sortBy(9)">Echipa</th>
           <th onclick="sortBy(10)">Adaugat de</th>
         </tr>
@@ -480,256 +402,361 @@ td.td-check{text-align:center;padding:11px 8px;width:44px;}
     </table>
   </div>
 
+  <!-- ADD ROW FORM -->
+  <div class="add-form-wrap">
+    <div class="add-form-title">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#00dcb4" stroke-width="1.5"/><path d="M9 5v8M5 9h8" stroke="#00dcb4" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Adauga inregistrare noua
+    </div>
+    <div class="form-grid">
+      <div class="form-field form-wide">
+        <label class="form-lbl">Motiv interventie *</label>
+        <input class="form-input" id="f-motiv" type="text" placeholder="ex: Revizie 800h, Avarie lant tractiune, Schimb ulei..."/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Data inceput *</label>
+        <input class="form-input" id="f-data-inc" type="date"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Ora inceput</label>
+        <input class="form-input" id="f-ora-inc" type="time"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Data finalizare</label>
+        <input class="form-input" id="f-data-fin" type="date"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Ora finalizare</label>
+        <input class="form-input" id="f-ora-fin" type="time"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Status utilaj *</label>
+        <select class="form-select" id="f-status">
+          <option value="">Selecteaza status...</option>
+          <option value="Apt">✓ Apt</option>
+          <option value="Supraveghere">⚠ Supraveghere</option>
+          <option value="Avarie">✕ Avarie</option>
+          <option value="Oprit">◼ Oprit planificat</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Echipa</label>
+        <input class="form-input" id="f-echipa" type="text" placeholder="ex: Leica Bogdan, Vuculescu V."/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Necesar piese de schimb</label>
+        <input class="form-input" id="f-piese" type="text" placeholder="ex: Lant 10B-2 × 3m, Lagar 6319"/>
+      </div>
+      <div class="form-field form-wide">
+        <label class="form-lbl">Descriere lucrari efectuate</label>
+        <textarea class="form-textarea" id="f-desc" placeholder="Descrie detaliat lucrarile executate, constatarile tehnice si masurile luate..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-submit" id="btn-submit" onclick="submitRow()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Inregistreaza
+      </button>
+      <button class="btn-reset" onclick="resetForm()">Reseteaza</button>
+      <span id="form-msg" class="form-msg" style="display:none;"></span>
+    </div>
+  </div>
+
+  <!-- APPS SCRIPT SETUP -->
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:24px;">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Script Google Apps — copiaza in Extensii → Apps Script</div>
+    <pre style="background:var(--bg4);border:1px solid var(--border2);border-radius:7px;padding:14px;font-family:var(--mono);font-size:12px;color:#fff;overflow-x:auto;line-height:1.7;"><code id="apps-script-code">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date().toLocaleString('ro-RO'),
+    data.motiv, data.dataInceput, data.oraInceput,
+    data.dataFinal, data.oraFinal, data.descriere,
+    data.statusUtilaj, data.pieseSchimb, data.echipa,
+    data.adaugatDe, data.echipament
+  ]);
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+    <button onclick="copyScript()" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.25);color:var(--teal);font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 3V2a1 1 0 011-1h5a1 1 0 011 1v7a1 1 0 01-1 1h-1" stroke="currentColor" stroke-width="1.2"/></svg>
+      Copiaza script
+    </button>
+  </div>
+
   <!-- TRADEMARK -->
   <div class="trademark">
     <div class="tm-name"><span class="lc">LEICA</span> <span class="bg">BOGDAN</span></div>
-    <div class="tm-email">leicabogdan@gmail.com</div>
+    <div class="tm-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2c4049454f4d4e434b484d426c4b414d4540024f4341">[email&#160;protected]</a></div>
     <div class="tm-copy">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
   </div>
 
 </div><!-- /page -->
 
-<script>
-// ── CONFIG ──
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvte5ILUK0n23P8D7sl52OsPxsJqInAV_9EnihX_Nk_VKUlskhUR7FhBqD4Sw3iEgOyA/exec';
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ══════════════════════════════════════════════════
+//  CONFIGURARE — seteaza URL-urile tale Google Sheets
+// ══════════════════════════════════════════════════
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
+// Exemplu: 'https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/export?format=csv&gid=0'
+// sau URL-ul de la Publicare pe web ca CSV
 
-// Google Sheets column order after CSV parse (row[0..11]):
-// 0=Timestamp, 1=Motiv, 2=DataInc, 3=OraInc, 4=DataFin, 5=OraFin,
-// 6=Descriere, 7=Status, 8=Piese, 9=Echipa, 10=AdaugatDe, 11=Echipament
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvte5ILUK0n23P8D7sl52OsPxsJqInAV_9EnihX_Nk_VKUlskhUR7FhBqD4Sw3iEgOyA/exec';
+// Exemplu: 'https://script.google.com/macros/s/AKfycb.../exec'
+// ══════════════════════════════════════════════════
 
-// ── GEAR ──
-function drawGear(cv){var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;var RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);var grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');c.beginPath();for(var i=0;i<12;i++){var b=(i/12)*Math.PI*2,ta=.18,ra=.26;var a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;var p0=pt(RR,a1),p2=pt(RT,a2),p3=pt(RT,a3),p4=pt(RR,a4);if(!i)c.moveTo(p0[0],p0[1]);else c.lineTo(p0[0],p0[1]);c.lineTo(p2[0],p2[1]);c.lineTo(p3[0],p3[1]);c.lineTo(p4[0],p4[1]);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);var ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(var m=0;m<60;m++){var a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;var r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;var q1=pt(r1,a),q2=pt(r2,a);c.beginPath();c.moveTo(q1[0],q1[1]);c.lineTo(q2[0],q2[1]);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}var now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(function(x){var r=x[0],a=x[1],lw=x[2],col=x[3],bl=x[4];var p=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(p[0],p[1]);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;});var sA=(secs/60)*Math.PI*2,sp=pt(RI*.76,sA),sc=pt(-RI*.22,sA);c.beginPath();c.moveTo(sc[0],sc[1]);c.lineTo(sp[0],sp[1]);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
+/* ── GEAR ── */
+function drawGear(cv){const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');c.beginPath();for(let i=0;i<12;i++){const b=(i/12)*Math.PI*2,ta=.18,ra=.26;const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(let m=0;m<60;m++){const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;const r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(([r,a,lw,col,bl])=>{const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;});const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.76,sA),[scx,scy]=pt(-RI*.22,sA);c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
 (function gl(){drawGear(document.getElementById('gear'));requestAnimationFrame(gl);})();
 
-// ── CLOCK ──
-function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+/* ── CLOCK ── */
+function updateClock(){const now=new Date();const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
 updateClock();setInterval(updateClock,1000);
 
-// ── USER ──
+/* ── USER ── */
 (function(){
   try{
-    var name=sessionStorage.getItem('k_name')||'Leica Bogdan';
-    var role=sessionStorage.getItem('k_role')||'APP OWNER';
-    var parts=name.split(' ');
+    const name=sessionStorage.getItem('k_name')||'Leica Bogdan';
+    const role=sessionStorage.getItem('k_role')||'APP OWNER';
+    const parts=name.split(' ');
     document.getElementById('user-first').textContent=parts[0]||'';
     document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();
     document.getElementById('user-role').textContent=role;
+    document.getElementById('f-echipa').placeholder='ex: '+name;
   }catch(e){}
 })();
 
-// ── STATE ──
-var allData=[];
-var filteredData=[];
-var selectedRows=new Set();
-var sortCol=-1,sortDir=1;
-
-// ── CSV PARSER ──
-function parseCSV(text){
-  var rows=[],cur=[],cell='',inQ=false;
-  for(var i=0;i<text.length;i++){
-    var ch=text[i];
-    if(inQ){
-      if(ch==='"' && text[i+1]==='"'){cell+='"';i++;}
-      else if(ch==='"'){inQ=false;}
-      else cell+=ch;
-    } else {
-      if(ch==='"'){inQ=true;}
-      else if(ch===','){cur.push(cell.trim());cell='';}
-      else if(ch===''){}
-      else if(ch==='
-'){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);cur=[];cell='';}
-      else cell+=ch;
-    }
-  }
-  if(cell!==''||cur.length>0){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);}
-  return rows;
+/* ── SETUP BANNER ── */
+function dismissBanner(){
+  document.getElementById('setup-banner').style.display='none';
+  try{localStorage.setItem('kronos_mnt_banner_dismissed','1');}catch(e){}
 }
+try{if(localStorage.getItem('kronos_mnt_banner_dismissed'))document.getElementById('setup-banner').style.display='none';}catch(e){}
 
-// ── DATE PARSER — suporta DD.MM.YYYY si YYYY-MM-DD ──
-function parseDate(str){
-  str=String(str||'').trim();
-  if(!str)return null;
-  if(str.includes('.')){var p=str.split('.');if(p.length>=3)return{y:p[2].substring(0,4),m:p[1].padStart(2,'0'),d:p[0].padStart(2,'0')};}
-  if(str.includes('-')){var p=str.split('-');if(p.length>=3)return{y:p[0],m:p[1].padStart(2,'0'),d:p[2].substring(0,2).padStart(2,'0')};}
-  return null;
-}
+/* ── DATA ── */
+let allData=[];
+let filteredData=[];
+let selectedRows=new Set();
+let sortCol=-1,sortDir=1;
 
-function isCurrentMonth(dateStr){
-  var d=parseDate(dateStr);
-  if(!d)return false;
-  var now=new Date();
-  return d.m===String(now.getMonth()+1).padStart(2,'0') && d.y===String(now.getFullYear());
-}
+// Col indices (0=Timestamp,1=Motiv,2=DataInc,3=OraInc,4=DataFin,5=OraFin,6=Desc,7=Status,8=Piese,9=Echipa,10=AdaugatDe)
+function parseCSVRow(row){return row.map(function(c){return String(c||'').trim();});}
 
-// ── KPI — always from allData, luna curenta ──
-function updateKPI(){
-  var thisMonth=allData.filter(function(r){return isCurrentMonth(r[2]);});
-  document.getElementById('k-total').textContent=thisMonth.length;
-  document.getElementById('k-suprav').textContent=thisMonth.filter(function(r){
-    return String(r[7]||'').toLowerCase().includes('supraveg');
-  }).length;
-  document.getElementById('k-avarie').textContent=thisMonth.filter(function(r){
-    var motiv=String(r[1]||'').toLowerCase();
-    var status=String(r[7]||'').toLowerCase();
-    return motiv.includes('avarie')||status.includes('necesita interventie')||status.includes('avarie');
-  }).length;
-}
-
-// ── STATUS CHIP ──
 function statusChip(s){
-  var sl=String(s||'').toLowerCase();
-  if(sl.includes('apt'))return '<span class="status-chip chip-apt"><span class="sdot"></span>'+s+'</span>';
-  if(sl.includes('supraveg'))return '<span class="status-chip chip-supraveg"><span class="sdot"></span>'+s+'</span>';
-  if(sl.includes('necesita interv')||sl.includes('avarie'))return '<span class="status-chip chip-avarie"><span class="sdot"></span>'+s+'</span>';
-  if(sl.includes('necesita piese')||sl.includes('oprit'))return '<span class="status-chip chip-oprit"><span class="sdot"></span>'+s+'</span>';
-  if(s)return '<span class="status-chip chip-apt"><span class="sdot"></span>'+esc(s)+'</span>';
-  return '';
+  const sl=String(s||'').toLowerCase();
+  if(sl.includes('apt'))return '<span class="status-chip chip-apt"><span class="sdot"></span>Apt</span>';
+  if(sl.includes('supraveg'))return '<span class="status-chip chip-supraveg"><span class="sdot"></span>Supraveghere</span>';
+  if(sl.includes('avarie'))return '<span class="status-chip chip-avarie"><span class="sdot"></span>Avarie</span>';
+  if(sl.includes('oprit'))return '<span class="status-chip chip-oprit"><span class="sdot"></span>Oprit</span>';
+  return '<span class="status-chip chip-apt"><span class="sdot"></span>'+s+'</span>';
 }
 
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-// ── RENDER TABLE ──
-function renderTable(){
-  var tbody=document.getElementById('tbody');
-  var rows=filteredData.slice();
-  if(sortCol>=0){
-    // col mapping: sortBy arg -> data array index
-    var colMap={0:-1,11:11,1:1,2:2,4:4,7:7,9:9,10:10};
-    var ci=colMap[sortCol];
-    if(ci!==undefined && ci>=0){
-      rows.sort(function(a,b){
-        return sortDir*String(a[ci]||'').localeCompare(String(b[ci]||''),undefined,{numeric:true,sensitivity:'base'});
-      });
-    }
-  }
-  if(!rows.length){
-    tbody.innerHTML='<tr><td colspan="11" class="no-data">Nicio inregistrare gasita.</td></tr>';
-    updateSelCount();return;
-  }
-  var html='';
-  rows.forEach(function(row,i){
-    var uid=String(row[0]||'')+String(row[11]||'')+String(row[2]||'')+i;
-    var sel=selectedRows.has(uid);
-    // Combine date+time
-    var inc=esc(row[2]||'');
-    if(row[3]&&String(row[3]).trim())inc+='<br><span style="color:var(--blue);font-size:12px;">'+esc(row[3])+'</span>';
-    var fin=esc(row[4]||'');
-    if(row[5]&&String(row[5]).trim())fin+='<br><span style="color:var(--blue);font-size:12px;">'+esc(row[5])+'</span>';
-    html+='<tr class="'+(sel?'row-selected':'')+'" data-uid="'+esc(uid)+'">'
-      +'<td class="td-check"><input type="checkbox" class="row-cb" '+(sel?'checked ':'')+' onchange="toggleRow(this)"/></td>'
-      +'<td style="font-family:var(--mono);color:var(--teal);font-weight:700;">'+(i+1)+'</td>'
-      +'<td style="font-family:var(--mono);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;">'+esc(row[11]||'')+'</td>'
-      +'<td class="td-motiv">'+esc(row[1]||'')+'</td>'
-      +'<td class="td-data">'+inc+'</td>'
-      +'<td class="td-data">'+fin+'</td>'
-      +'<td class="td-desc" title="'+esc(row[6]||'')+'">'+esc(row[6]||'')+'</td>'
-      +'<td class="td-status">'+statusChip(row[7])+'</td>'
-      +'<td class="td-piese" title="'+esc(row[8]||'')+'">'+esc(row[8]||'')+'</td>'
-      +'<td class="td-echipa">'+esc(row[9]||'')+'</td>'
-      +'<td style="font-family:var(--mono);font-size:12px;color:#fff;">'+esc(row[10]||'')+'</td>'
-      +'</tr>';
+function updateKPI(){
+  // KPI intotdeauna din luna curenta, din allData (nu din filteredData)
+  var now=new Date();
+  var curM=String(now.getMonth()+1).padStart(2,'0');
+  var curY=String(now.getFullYear());
+  var thisMonth=allData.filter(function(r){
+    var date=String(r[2]||'').trim();
+    var m='',y='';
+    if(date.includes('.')){var p=date.split('.');m=String(p[1]||'').padStart(2,'0');y=String(p[2]||'').substring(0,4);}
+    else if(date.includes('-')){var p=date.split('-');y=p[0];m=String(p[1]||'').padStart(2,'0');}
+    return m===curM && y===curY;
   });
-  tbody.innerHTML=html;
-  updateSelCount();
+  document.getElementById('k-total').textContent=thisMonth.length||'0';
+  document.getElementById('k-apt').textContent=thisMonth.filter(function(r){return String(r[7]||'').toLowerCase().includes('apt');}).length;
+  document.getElementById('k-suprav').textContent=thisMonth.filter(function(r){return String(r[7]||'').toLowerCase().includes('supraveg');}).length;
+  document.getElementById('k-avarie').textContent=thisMonth.filter(function(r){
+    return String(r[1]||'').toLowerCase().includes('avarie')||String(r[7]||'').toLowerCase().includes('avarie')||String(r[7]||'').toLowerCase().includes('necesita interventie');
+  }).length;
 }
 
-// ── FILTERS ──
 function applyFilters(){
-  var month=document.getElementById('sel-month').value;
-  var year=document.getElementById('sel-year').value;
-  var status=document.getElementById('sel-status').value;
-  var echipament=document.getElementById('sel-echipament').value;
-  var motiv=document.getElementById('sel-motiv').value;
+  const month=document.getElementById('sel-month').value;
+  const year=document.getElementById('sel-year').value;
+  const status=document.getElementById('sel-status').value;
+  const selEchip=document.getElementById('sel-echipament')?document.getElementById('sel-echipament').value:'';
+  const selMotiv=document.getElementById('sel-motiv')?document.getElementById('sel-motiv').value:'';
   filteredData=allData.filter(function(row){
-    var d=parseDate(row[2]);
-    if(month && (!d || d.m!==month)) return false;
-    if(year && (!d || d.y!==year)) return false;
-    if(status && !String(row[7]||'').toLowerCase().includes(status.toLowerCase())) return false;
-    if(echipament && String(row[11]||'').toUpperCase()!==echipament.toUpperCase()) return false;
-    if(motiv && !String(row[1]||'').toLowerCase().includes(motiv.toLowerCase())) return false;
+    const date=String(row[2]||'').trim();
+    var m='',y='';
+    if(date.includes('.')){var p=date.split('.');m=String(p[1]||'').padStart(2,'0');y=String(p[2]||'').substring(0,4);}
+    else if(date.includes('-')){var p=date.split('-');y=p[0];m=String(p[1]||'').padStart(2,'0');}
+    if(month&&m!==month)return false;
+    if(year&&y!==year)return false;
+    if(status&&!String(row[7]||'').toLowerCase().includes(status.toLowerCase()))return false;
+    if(selEchip&&String(row[11]||'').toUpperCase()!==selEchip.toUpperCase())return false;
+    if(selMotiv&&!String(row[1]||'').toLowerCase().includes(selMotiv.toLowerCase()))return false;
     return true;
   });
   sortCol=-1;sortDir=1;
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
   selectedRows.clear();
+  updateKPI();
   renderTable();
+}
+
+function renderTable(){
+  const tbody=document.getElementById('tbody');
+  if(!filteredData.length){
+    tbody.innerHTML='<tr><td colspan="11" class="no-data">Nicio inregistrare gasita.</td></tr>';
+    updateSelCount();
+    return;
+  }
+  let rows=[...filteredData];
+  if(sortCol>=0){
+    rows.sort(function(a,b){
+      return sortDir*String(a[sortCol]||'').localeCompare(String(b[sortCol]||''),undefined,{numeric:true});
+    });
+  }
+  tbody.innerHTML=rows.map(function(row,i){
+    const id=String(row[1]||'')+String(row[2]||'')+i;
+    const sel=selectedRows.has(id);
+    // Combine date + time
+    var inc=esc(row[2]||'');
+    if(row[3]&&String(row[3]).trim())inc+='<br><span style="color:var(--blue);font-size:12px;">'+esc(row[3])+'</span>';
+    var fin=esc(row[4]||'');
+    if(row[5]&&String(row[5]).trim())fin+='<br><span style="color:var(--blue);font-size:12px;">'+esc(row[5])+'</span>';
+    return '<tr class="'+(sel?'row-selected':'')+'" data-id="'+id+'">'
+      +'<td class="td-check"><input type="checkbox" class="row-cb" '+(sel?'checked':'')
+        +' onchange="toggleRow(\''+id+'\',this)"/></td>'
+      +'<td><span style="font-family:var(--mono);color:var(--teal);font-weight:700;">'+(i+1)+'</span></td>'
+      +'<td style="font-family:var(--mono);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;">'+esc(row[11]||'')+'</td>'
+      +'<td class="td-motiv">'+esc(row[1])+'</td>'
+      +'<td class="td-data" style="white-space:nowrap;">'+inc+'</td>'
+      +'<td class="td-data" style="white-space:nowrap;">'+fin+'</td>'
+      +'<td class="td-desc" title="'+esc(row[6])+'">'+esc(row[6])+'</td>'
+      +'<td class="td-status">'+statusChip(row[7])+'</td>'
+      +'<td class="td-piese" title="'+esc(row[8])+'">'+esc(row[8])+'</td>'
+      +'<td class="td-echipa">'+esc(row[9])+'</td>'
+      +'<td style="font-family:var(--mono);font-size:12px;color:#fff;">'+esc(row[10])+'</td>'
+      +'</tr>';
+  }).join('');
+  updateSelCount();
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function toggleRow(id,cb){
+  if(cb.checked)selectedRows.add(id);
+  else selectedRows.delete(id);
+  const tr=document.querySelector('tr[data-id="'+id+'"]');
+  if(tr)tr.classList.toggle('row-selected',cb.checked);
+  updateSelCount();
+  document.getElementById('cb-all').checked=false;
+}
+
+function toggleAll(cb){
+  const rows=document.querySelectorAll('#tbody .row-cb');
+  rows.forEach(function(row,i){
+    row.checked=cb.checked;
+    const tr=row.closest('tr');
+    const id=tr?tr.dataset.id:'';
+    if(cb.checked)selectedRows.add(id);
+    else selectedRows.delete(id);
+    if(tr)tr.classList.toggle('row-selected',cb.checked);
+  });
+  updateSelCount();
+}
+
+function updateSelCount(){
+  const sc=document.getElementById('sel-count');
+  if(selectedRows.size>0){sc.style.display='';sc.textContent=selectedRows.size+' selectate';}
+  else{sc.style.display='none';}
+}
+
+function getExportRows(){
+  if(selectedRows.size>0){
+    return filteredData.filter(function(row,i){
+      const id=String(row[1]||'')+String(row[2]||'')+i;
+      return selectedRows.has(id);
+    });
+  }
+  return filteredData;
 }
 
 function sortBy(col){
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
-  // find th index: 0=cb,1=Nr,2=Echip,3=Motiv,4=Inceput,5=Fin,6=Desc,7=Status,8=Piese,9=Echipa,10=AdaugatDe
-  var thMap={0:1,11:2,1:3,2:4,4:5,7:7,9:9,10:10};
-  var ths=document.querySelectorAll('thead .hdr-row th');
-  var ti=thMap[col];
-  if(ti!==undefined && ths[ti])ths[ti].classList.add(sortDir===1?'sort-asc':'sort-desc');
+  document.querySelectorAll('thead .hdr-row th')[col+1].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
 }
 
-// ── CHECKBOX ──
-function toggleRow(cb){
-  var tr=cb.closest('tr');
-  var uid=tr?tr.dataset.uid:'';
-  if(cb.checked)selectedRows.add(uid);
-  else selectedRows.delete(uid);
-  if(tr)tr.classList.toggle('row-selected',cb.checked);
-  document.getElementById('cb-all').checked=false;
-  updateSelCount();
-}
-function toggleAll(cb){
-  document.querySelectorAll('#tbody .row-cb').forEach(function(box){
-    box.checked=cb.checked;
-    var tr=box.closest('tr');
-    var uid=tr?tr.dataset.uid:'';
-    if(cb.checked)selectedRows.add(uid);else selectedRows.delete(uid);
-    if(tr)tr.classList.toggle('row-selected',cb.checked);
-  });
-  updateSelCount();
-}
-function updateSelCount(){
-  var sc=document.getElementById('sel-count');
-  if(selectedRows.size>0){sc.style.display='';sc.textContent=selectedRows.size+' selectate';}
-  else sc.style.display='none';
-}
-
-// ── LOAD DATA ──
-async function loadData(){
-  var tbody=document.getElementById('tbody');
-  tbody.innerHTML='<tr><td colspan="11" class="no-data" style="color:var(--teal);">⟳ Se incarca datele din Google Sheets...</td></tr>';
+/* ── LOAD DATA ── */
+async async function loadData(){
+  const tbody=document.getElementById('tbody');
+  tbody.innerHTML='<tr><td colspan="11" class="no-data">Se incarca datele...</td></tr>';
+  if(!SHEET_CSV_URL){
+    allData=getDemoData();
+    filteredData=[...allData];
+    updateKPI();
+    renderTable();
+    return;
+  }
   try{
-    var resp=await fetch(SHEET_CSV_URL+'&t='+Date.now());
+    const url=SHEET_CSV_URL+'&t='+Date.now();
+    const resp=await fetch(url);
     if(!resp.ok)throw new Error('HTTP '+resp.status);
-    var text=await resp.text();
-    var rows=parseCSV(text);
-    // Skip header row (row 0)
-    allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
-    // Ensure each row has 12 elements
+    const text=await resp.text();
+    const rows=parseCSV(text);
+    // Skip header row
+    allData=rows.slice(1).filter(function(r){return r.some(function(c){return c.trim();});});
     allData=allData.map(function(r){while(r.length<12)r.push('');return r;});
-    filteredData=allData.slice();
+    filteredData=[...allData];
     updateKPI();
     renderTable();
   }catch(err){
-    console.error('CSV fetch error:',err);
-    tbody.innerHTML='<tr><td colspan="11" class="no-data" style="color:var(--red);">Eroare la incarcarea datelor: '+esc(err.message)+'<br><span style="color:var(--teal);font-size:12px;">Verifica URL-ul Google Sheets si ca fisierul este publicat.</span></td></tr>';
-    allData=[];filteredData=[];
+    allData=getDemoData();
+    filteredData=[...allData];
     updateKPI();
+    renderTable();
+    console.warn('Google Sheets fetch failed, showing demo data:',err.message);
   }
 }
 
-// ── SUBMIT ──
-async function submitRow(){
-  var motiv=document.getElementById('f-motiv').value.trim();
-  var echipament=document.getElementById('f-echipament').value.trim();
-  var dataInc=document.getElementById('f-data-inc').value;
-  var oraInc=document.getElementById('f-ora-inc').value;
-  var dataFin=document.getElementById('f-data-fin').value;
-  var oraFin=document.getElementById('f-ora-fin').value;
-  var desc=document.getElementById('f-desc').value.trim();
-  var status=document.getElementById('f-status').value;
-  var piese=document.getElementById('f-piese').value.trim();
-  var echipa=document.getElementById('f-echipa').value.trim();
-  var adaugatDe=sessionStorage.getItem('k_name')||'Necunoscut';
+function parseCSV(text){
+  var rows=[];var current=[];var cell='';var inQ=false;
+  for(var i=0;i<text.length;i++){
+    var ch=text[i];
+    if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"'){inQ=false;}else cell+=ch;}
+    else{if(ch==='"'){inQ=true;}else if(ch===','){current.push(cell);cell='';}
+    else if(ch==='\r'){}else if(ch==='\n'){current.push(cell);rows.push(current);current=[];cell='';}
+    else cell+=ch;}
+  }
+  if(cell||current.length)current.push(cell);
+  if(current.some(function(c){return c.trim();}))rows.push(current);
+  return rows;
+}
+
+function getDemoData(){
+  return[
+    ['19.03.2026 08:00','Revizie 800h - Relubrifiere','19.03.2026','08:00','19.03.2026','11:30','Relubrifiere completa lagare, verificare tensiune lant, inlocuit garnitura capacul reductorului','Apt','Vaselina SKF LGMT2 × 2kg','Leica Bogdan, Vuculescu V.','Leica Bogdan'],
+    ['15.03.2026 14:00','Avarie - Blocare banda','15.03.2026','14:00','15.03.2026','17:45','Corp strain blocat la tambur de actionare. Extras corp strain, verificat banda, realiniat sistem tensionare','Supraveghere','Urub M16 × 4buc','Leica Bogdan','Leica Bogdan'],
+    ['10.03.2026 09:00','Schimb ulei reductor CC04','10.03.2026','09:00','10.03.2026','10:30','Schimb ulei reductor NORD. Ulei vechi evacuat, curatare carter, incarcat CLP PG 220 - 17L','Apt','CLP PG 220 - 17L','Vuculescu V.','Leica Bogdan'],
+    ['05.03.2026 06:30','Inspectie zilnica compresor','05.03.2026','06:30','05.03.2026','07:00','Verificare nivel ulei, presiune functionare, filtre. Temperatura functionare normala','Apt','-','Dan Alexandru','Dan Alexandru'],
+    ['28.02.2026 10:00','Inlocuire cuple elastice E01','28.02.2026','10:00','28.02.2026','14:00','Inlocuite 2 cuple elastice uzate la motorul E01. Verificata aliniere motor-reductor','Apt','Cuple elastice 65mm × 2buc','Leica Bogdan, Stan C.','Leica Bogdan'],
+  ];
+}
+
+/* ── SUBMIT FORM ── */
+async async function submitRow(){
+  const motiv=document.getElementById('f-motiv').value.trim();
+  const echipament=document.getElementById('f-echipament')?document.getElementById('f-echipament').value.trim():'';
+  const dataInc=document.getElementById('f-data-inc').value;
+  const oraInc=document.getElementById('f-ora-inc').value;
+  const dataFin=document.getElementById('f-data-fin').value;
+  const oraFin=document.getElementById('f-ora-fin').value;
+  const desc=document.getElementById('f-desc').value.trim();
+  const status=document.getElementById('f-status').value;
+  const piese=document.getElementById('f-piese').value.trim();
+  const echipa=document.getElementById('f-echipa').value.trim();
 
   if(!motiv){showMsg('Motiv interventie este obligatoriu','err');return;}
   if(!echipament){showMsg('Echipamentul este obligatoriu','err');return;}
@@ -739,92 +766,82 @@ async function submitRow(){
   if(!echipa){showMsg('Echipa este obligatorie','err');return;}
   if(!desc){showMsg('Descrierea lucrarilor este obligatorie','err');return;}
 
-  var btn=document.getElementById('btn-submit');
-  btn.disabled=true;
-  showMsg('Se trimite in Google Sheets...','loading');
+  const adaugatDe=(sessionStorage.getItem('k_name')||'Necunoscut');
+  const payload={motiv,echipament,dataInceput:dataInc,oraInceput:oraInc,dataFinal:dataFin,oraFinal:oraFin,
+    descriere:desc,statusUtilaj:status,pieseSchimb:piese,echipa,adaugatDe};
 
-  var payload={
-    motiv:motiv,echipament:echipament,
-    dataInceput:dataInc,oraInceput:oraInc,
-    dataFinal:dataFin,oraFinal:oraFin,
-    descriere:desc,statusUtilaj:status,
-    pieseSchimb:piese,echipa:echipa,
-    adaugatDe:adaugatDe
-  };
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;
+  showMsg('Se trimite...','loading');
+
+  if(!APPS_SCRIPT_URL){
+    // No URL configured - add locally as demo
+    setTimeout(function(){
+      const now=new Date();
+      const ts=now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+' '+
+        String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+      allData.unshift([ts,motiv,dataInc,oraInc,dataFin,oraFin,desc,status,piese,echipa,adaugatDe,echipament]);
+      filteredData=[...allData];
+      updateKPI();
+      renderTable();
+      resetForm();
+      showMsg('Adaugat local (configureaza Apps Script URL pentru salvare permanenta)','ok');
+      btn.disabled=false;
+    },400);
+    return;
+  }
 
   try{
-    var resp=await fetch(APPS_SCRIPT_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(payload)
-    });
-    var result=await resp.json();
+    const resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const result=await resp.json();
     if(result.status==='ok'){
-      showMsg('Inregistrat cu succes!','ok');
+      showMsg('Inregistrat cu succes in Google Sheets!','ok');
       resetForm();
-      setTimeout(loadData,2000);
-    } else {
-      throw new Error(result.error||'Eroare necunoscuta');
-    }
+      setTimeout(loadData,1500);
+    }else throw new Error(result.error||'Eroare necunoscuta');
   }catch(err){
-    showMsg('Eroare: '+err.message+' — verifica Apps Script URL','err');
+    showMsg('Eroare: '+err.message,'err');
   }
   btn.disabled=false;
 }
 
 function showMsg(text,type){
-  var el=document.getElementById('form-msg');
+  const el=document.getElementById('form-msg');
   el.textContent=text;el.className='form-msg '+type;el.style.display='';
   if(type==='ok')setTimeout(function(){el.style.display='none';},4000);
 }
 
 function resetForm(){
-  ['f-data-inc','f-ora-inc','f-data-fin','f-ora-fin','f-desc','f-piese','f-echipa'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.value='';
-  });
+  ['f-data-inc','f-ora-inc','f-data-fin','f-ora-fin','f-desc','f-piese','f-echipa'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('f-motiv').value='';
-  document.getElementById('f-echipament').value='';
+  if(document.getElementById('f-echipament'))document.getElementById('f-echipament').value='';
   document.getElementById('f-status').value='';
   document.getElementById('form-msg').style.display='none';
-  // Reset date to today
-  var now=new Date();
-  document.getElementById('f-data-inc').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
 }
 
-// ── EXPORT ──
-function getExportRows(){
-  if(selectedRows.size>0){
-    return filteredData.filter(function(row,i){
-      var uid=String(row[0]||'')+String(row[11]||'')+String(row[2]||'')+i;
-      return selectedRows.has(uid);
-    });
-  }
-  return filteredData;
-}
-
+/* ── EXPORT ── */
 function exportExcel(){
-  var rows=getExportRows();
-  var headers=['Timestamp','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Necesar piese','Echipa','Adaugat de','Echipament'];
-  var wsData=[headers].concat(rows.map(function(r){return r.slice(0,12);}));
-  var ws=XLSX.utils.aoa_to_sheet(wsData);
-  ws['!cols']=[{wch:16},{wch:28},{wch:13},{wch:10},{wch:13},{wch:10},{wch:50},{wch:22},{wch:25},{wch:22},{wch:15},{wch:12}];
-  var wb=XLSX.utils.book_new();
+  const rows=getExportRows();
+  const headers=['Timestamp','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Necesar piese','Echipa','Adaugat de','Echipament'];
+  const wsData=[headers,...rows];
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols']=headers.map(function(_,i){return{wch:[10,30,14,12,14,12,50,18,25,20,15][i]};});
+  const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Mentenanta');
-  var now=new Date();
+  const now=new Date();
   XLSX.writeFile(wb,'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
 }
 
 function exportPDF(){window.print();}
 
-// ── INIT ──
+function copyScript(){
+  const code=document.getElementById('apps-script-code').textContent;
+  navigator.clipboard.writeText(code).then(function(){alert('Script copiat in clipboard!');}).catch(function(){});
+}
+
+/* ── SET DEFAULT DATES ── */
 (function(){
-  var now=new Date();
-  var y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),d=String(now.getDate()).padStart(2,'0');
-  document.getElementById('f-data-inc').value=y+'-'+m+'-'+d;
-  document.getElementById('sel-year').value=String(y);
-  document.getElementById('sel-month').value=m;
-  loadData();
-})();
-</script>
-</body>
-</html>
+  const now=new Date();
+  const y=now.getFullYear(),m=String(now.getMonth()+1).padStart(2,'0'),d=String(now.getDate()).padStart(2,'0');
+  document.g
