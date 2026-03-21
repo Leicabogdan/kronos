@@ -72,24 +72,27 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .kpi-card.c-teal .kpi-rtitle{color:var(--teal);}
 .kpi-card.c-amber .kpi-rtitle{color:var(--amber);}
 .kpi-card.c-red .kpi-rtitle{color:var(--red);}
-.eq-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:20px;
-  font-family:var(--mono);font-size:11px;font-weight:700;
+.eq-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:20px;
+  font-family:var(--mono);font-size:13px;font-weight:700;
   background:rgba(255,255,255,.04);border:1px solid var(--border2);}
-.eq-pill .peq{font-weight:900;}
-.eq-pill .pmot{font-size:10px;color:rgba(255,255,255,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
+.eq-pill .peq{font-weight:900;font-size:14px;}
+.eq-pill .pmot{font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
 .kpi-card.c-teal .eq-pill .peq{color:var(--teal);}
 .kpi-card.c-amber .eq-pill .peq{color:var(--amber);}
 .kpi-card.c-red .eq-pill .peq{color:var(--red);}
-.kpi-empty{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);font-style:italic;}
+.kpi-empty{font-family:var(--mono);font-size:10px;color:#fff;font-style:italic;}
 .add-form-wrap{background:var(--bg3);border:1.5px solid rgba(0,220,180,.22);border-radius:12px;padding:18px 20px;margin-bottom:20px;}
 .add-form-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px 14px;}
 .form-field{display:flex;flex-direction:column;gap:4px;}
-.form-lbl{font-family:var(--mono);font-size:10px;color:var(--teal);font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+.form-lbl{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1px;}
 .form-input,.form-select,.form-textarea{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:14px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--teal);}
 .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.28);}
 .form-select{appearance:none;-webkit-appearance:none;cursor:pointer;}
+.form-select-wrap{position:relative;display:block;}
+.form-select-wrap::after{content:'\25BC';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--teal);font-size:9px;pointer-events:none;}
+.form-select-wrap .form-select{padding-right:32px;}
 .form-select option{background:var(--bg3);}
 .form-textarea{resize:vertical;min-height:72px;line-height:1.5;}
 .form-wide{grid-column:1/-1;}
@@ -137,13 +140,13 @@ td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
 .td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
-.td-eq{font-family:var(--mono);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;}
+.td-eq{font-family:var(--title);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;letter-spacing:.06em;}
 .td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;}
 .td-dt{font-family:var(--mono);font-size:12px;}
-.td-dt .ddate{color:var(--teal);font-weight:700;}
-.td-dt .dtime{color:var(--blue);display:block;font-size:11px;}
+.td-dt .ddate{color:var(--teal);font-weight:700;font-size:13px;}
+.td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
 .td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.td-echipa{color:var(--purple);font-family:var(--mono);font-size:13px;font-weight:700;}
+.td-echipa{color:var(--purple);font-family:var(--mono);font-size:13px;font-weight:900;}
 .td-piese{color:#fff;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;white-space:nowrap;}
 .chip .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
@@ -249,66 +252,132 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     <div class="form-grid">
       <div class="form-field">
         <label class="form-lbl">Motiv interventie *</label>
-        <select class="form-select" id="f-motiv">
+        <div class="form-select-wrap"><select class="form-select" id="f-motiv">
           <option value="">Selecteaza motiv...</option>
           <option>Revizie 200h</option><option>Revizie 1500h</option><option>Revizie 8000h</option>
           <option>Gresare</option><option>Verificare la golire celula</option><option>Revizie anuala</option>
           <option>Mentenanta si intretinere</option><option>Avarie</option><option>Schimb ulei</option>
           <option>Curatare magneti</option>
           <option>Luat in evidenta</option><option>Altele</option>
-        </select>
+        </select></div>
       </div>
       <div class="form-field">
         <label class="form-lbl">Echipament *</label>
-        <select class="form-select" id="f-echipament">
-          <option value="">Selecteaza echipament...</option>
-          <!-- ELEVATOARE -->
-          <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
-          <option>E21</option><option>E22</option><option>E23</option><option>E51</option>
-          <option>E81</option><option>E82</option><option>E201</option>
-          <!-- TRANSPORTOARE CU LANT -->
-          <option>CC01</option><option>CC02</option><option>CC03</option><option>CC04</option>
-          <option>CC10</option><option>CC11</option><option>CC12</option><option>CC13</option>
-          <option>CC14</option><option>CC15</option><option>CC16</option><option>CC19</option>
-          <option>CC21</option><option>CC22</option><option>CC23</option><option>CC24</option>
-          <option>CC25</option><option>CC26</option><option>CC27</option><option>CC29</option>
-          <option>CC31</option><option>CC32</option><option>CC33</option>
-          <option>CC51</option><option>CC52</option><option>CC53</option>
-          <option>CC202</option><option>CC204</option><option>CC210</option>
-          <option>CC211</option><option>CC212</option><option>CC213</option>
-          <!-- TRANSPORTOARE CU BANDA -->
-          <option>BC01</option><option>BC11</option><option>BC12</option>
-          <option>BC21</option><option>BC22</option><option>BC31</option><option>BC32</option>
-          <option>BC33</option><option>BC34</option><option>BC41</option><option>BC42</option>
-          <option>BC43</option><option>BC44</option><option>BC47</option><option>BC48</option>
-          <option>BC51</option><option>BC52</option><option>BC53</option>
-          <!-- FILTRE -->
-          <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
-          <option>FS05</option><option>FS06</option><option>FS07</option><option>FS08</option>
-          <option>FS09</option><option>FS10</option><option>FSCF</option>
-          <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
-          <!-- SNECURI -->
-          <option>S11</option><option>S12</option><option>S13</option><option>S14</option>
-          <option>S15</option><option>S16</option><option>S21</option><option>S22</option>
-          <option>S23</option><option>S24</option><option>S25</option><option>S26</option>
-          <!-- MAGNETI -->
-          <option>MA01</option><option>MA02</option><option>E201</option><option>E81</option>
-          <!-- SISTEME HIDRAULICE -->
-          <option>Sistem hidraulic SL1</option><option>Sistem hidraulic SL2</option>
-          <!-- COMPRESOARE -->
-          <option>Compresor Buncar Barja</option><option>Compresor SL1</option><option>Compresor SL2</option>
-          <option>Compresor HH1</option><option>Compresor CF</option>
-        </select>
+        <div style="position:relative;">
+          <input class="form-input" id="f-echipament" list="echip-list" placeholder="Scrie sau selecteaza echipament..." autocomplete="off"/>
+          <datalist id="echip-list">
+          <option value="E01">E01</option>
+          <option value="E02">E02</option>
+          <option value="E03">E03</option>
+          <option value="E04">E04</option>
+          <option value="E21">E21</option>
+          <option value="E22">E22</option>
+          <option value="E23">E23</option>
+          <option value="E51">E51</option>
+          <option value="E81">E81</option>
+          <option value="E82">E82</option>
+          <option value="E201">E201</option>
+          <option value="CC01">CC01</option>
+          <option value="CC02">CC02</option>
+          <option value="CC03">CC03</option>
+          <option value="CC04">CC04</option>
+          <option value="CC10">CC10</option>
+          <option value="CC11">CC11</option>
+          <option value="CC12">CC12</option>
+          <option value="CC13">CC13</option>
+          <option value="CC14">CC14</option>
+          <option value="CC15">CC15</option>
+          <option value="CC16">CC16</option>
+          <option value="CC19">CC19</option>
+          <option value="CC21">CC21</option>
+          <option value="CC22">CC22</option>
+          <option value="CC23">CC23</option>
+          <option value="CC24">CC24</option>
+          <option value="CC25">CC25</option>
+          <option value="CC26">CC26</option>
+          <option value="CC27">CC27</option>
+          <option value="CC29">CC29</option>
+          <option value="CC31">CC31</option>
+          <option value="CC32">CC32</option>
+          <option value="CC33">CC33</option>
+          <option value="CC51">CC51</option>
+          <option value="CC52">CC52</option>
+          <option value="CC53">CC53</option>
+          <option value="CC202">CC202</option>
+          <option value="CC204">CC204</option>
+          <option value="CC210">CC210</option>
+          <option value="CC211">CC211</option>
+          <option value="CC212">CC212</option>
+          <option value="CC213">CC213</option>
+          <option value="BC01">BC01</option>
+          <option value="BC11">BC11</option>
+          <option value="BC12">BC12</option>
+          <option value="BC21">BC21</option>
+          <option value="BC22">BC22</option>
+          <option value="BC31">BC31</option>
+          <option value="BC32">BC32</option>
+          <option value="BC33">BC33</option>
+          <option value="BC34">BC34</option>
+          <option value="BC41">BC41</option>
+          <option value="BC42">BC42</option>
+          <option value="BC43">BC43</option>
+          <option value="BC44">BC44</option>
+          <option value="BC47">BC47</option>
+          <option value="BC48">BC48</option>
+          <option value="BC51">BC51</option>
+          <option value="BC52">BC52</option>
+          <option value="BC53">BC53</option>
+          <option value="FS01">FS01</option>
+          <option value="FS02">FS02</option>
+          <option value="FS03">FS03</option>
+          <option value="FS04">FS04</option>
+          <option value="FS05">FS05</option>
+          <option value="FS06">FS06</option>
+          <option value="FS07">FS07</option>
+          <option value="FS08">FS08</option>
+          <option value="FS09">FS09</option>
+          <option value="FS10">FS10</option>
+          <option value="FSCF">FSCF</option>
+          <option value="SF201">SF201</option>
+          <option value="SF202">SF202</option>
+          <option value="SF203">SF203</option>
+          <option value="SF211">SF211</option>
+          <option value="SF222">SF222</option>
+          <option value="S11">S11</option>
+          <option value="S12">S12</option>
+          <option value="S13">S13</option>
+          <option value="S14">S14</option>
+          <option value="S15">S15</option>
+          <option value="S16">S16</option>
+          <option value="S21">S21</option>
+          <option value="S22">S22</option>
+          <option value="S23">S23</option>
+          <option value="S24">S24</option>
+          <option value="S25">S25</option>
+          <option value="S26">S26</option>
+          <option value="MA01">MA01</option>
+          <option value="MA02">MA02</option>
+          <option value="E201">E201</option>
+          <option value="E81">E81</option>
+          <option value="Sistem hidraulic SL1">Sistem hidraulic SL1</option>
+          <option value="Sistem hidraulic SL2">Sistem hidraulic SL2</option>
+          <option value="Compresor Buncar Barja">Compresor Buncar Barja</option>
+          <option value="Compresor SL1">Compresor SL1</option>
+          <option value="Compresor SL2">Compresor SL2</option>
+          <option value="Compresor HH1">Compresor HH1</option>
+          <option value="Compresor CF">Compresor CF</option>
+          </datalist>
+        </div>
       </div>
       <div class="form-field">
         <label class="form-lbl">Status utilaj *</label>
-        <select class="form-select" id="f-status">
+        <div class="form-select-wrap"><select class="form-select" id="f-status">
           <option value="">Selecteaza status...</option>
           <option value="Apt de functionare">&#10003; Apt de functionare</option>
           <option value="Sub supraveghere">&#9888; Sub supraveghere</option>
           <option value="Necesita interventie">&#10007; Necesita interventie</option>
           <option value="Necesita piese de schimb">&#9632; Necesita piese de schimb</option>
-        </select>
+        </select></div>
       </div>
       <div class="form-field">
         <label class="form-lbl">Data inceput *</label>
@@ -316,7 +385,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Ora inceput</label>
-        <input class="form-input" type="time" id="f-ora-inc"/>
+        <input class="form-input" type="time" id="f-ora-inc" step="60"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Data finalizare *</label>
@@ -324,7 +393,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Ora finalizare</label>
-        <input class="form-input" type="time" id="f-ora-fin"/>
+        <input class="form-input" type="time" id="f-ora-fin" step="60"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Echipa *</label>
@@ -552,6 +621,26 @@ updateClock(); setInterval(updateClock, 1000);
   } catch(e) {}
 })();
 
+function fmtDate(s) {
+  s = String(s||'').trim();
+  if (!s) return '—';
+  if (s.indexOf('-') > -1) {
+    var p = s.split('-');
+    if (p.length >= 3) return p[2].substring(0,2) + '/' + p[1] + '/' + p[0];
+  }
+  if (s.indexOf('.') > -1) {
+    var p = s.split('.');
+    if (p.length >= 3) return p[0].padStart(2,'0') + '/' + p[1].padStart(2,'0') + '/' + p[2].substring(0,4);
+  }
+  return esc(s);
+}
+function fmtTime(s) {
+  s = String(s||'').trim();
+  if (!s) return '';
+  var parts = s.split(':');
+  if (parts.length >= 2) return parts[0].padStart(2,'0') + ':' + parts[1].padStart(2,'0');
+  return esc(s);
+}
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -685,10 +774,10 @@ function renderTable() {
   rows.forEach(function(row, i) {
     var uid = String(row[0]||'') + String(row[11]||'') + String(row[2]||'') + i;
     var sel = selectedRows.has(uid);
-    var inc = '<span class="ddate">' + esc(row[2]||'') + '</span>';
-    if (row[3] && String(row[3]).trim()) inc += '<span class="dtime">' + esc(row[3]) + '</span>';
-    var fin = '<span class="ddate">' + esc(row[4]||'') + '</span>';
-    if (row[5] && String(row[5]).trim()) fin += '<span class="dtime">' + esc(row[5]) + '</span>';
+    var inc = '<span class="ddate">' + fmtDate(row[2]||'') + '</span>';
+    if (row[3] && String(row[3]).trim()) inc += '<span class="dtime">' + fmtTime(row[3]) + '</span>';
+    var fin = '<span class="ddate">' + fmtDate(row[4]||'') + '</span>';
+    if (row[5] && String(row[5]).trim()) fin += '<span class="dtime">' + fmtTime(row[5]) + '</span>';
     html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + esc(uid) + '">'
       + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleRow(this)"/></td>'
       + '<td class="td-nr">' + (i+1) + '</td>'
