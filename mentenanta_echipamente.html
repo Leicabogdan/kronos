@@ -354,7 +354,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
             <optgroup label="Compresoare">
               <option>Compresor Buncar Barja</option>
               <option>Compresor SL1</option><option>Compresor SL2</option>
-              <option>Compresor HH1</option><option>Compresor CF</option>
+              <option>Compresoare HH1</option><option>Compresoare CF</option>
             </optgroup>
           </select>
         </div>
@@ -495,7 +495,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <optgroup label="Compresoare">
           <option>Compresor Buncar Barja</option>
           <option>Compresor SL1</option><option>Compresor SL2</option>
-          <option>Compresor HH1</option><option>Compresor CF</option>
+          <option>Compresoare HH1</option><option>Compresoare CF</option>
         </optgroup>
       </select>
     </div>
@@ -706,6 +706,20 @@ function statusChip(s) {
   return '<span class="chip ' + cls + '"><span class="dot"></span>' + esc(s||'Apt') + '</span>';
 }
 
+function renderKpiEqPiese(elId, rows) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  if (!rows.length) { el.innerHTML = '<span class="kpi-empty">Nicio inregistrare</span>'; return; }
+  el.innerHTML = rows.map(function(r) {
+    var eq = esc(r[11] || '—');
+    var piese = esc(String(r[8]||'—').substring(0, 20));
+    return '<div class="eq-pill" style="margin-bottom:3px;">'
+      + '<span class="peq" style="color:var(--amber);">' + eq + '</span>'
+      + '<span class="pmot">' + piese + '</span>'
+      + '</div>';
+  }).join('');
+}
+
 function renderKpiEq(elId, rows) {
   var el = document.getElementById(elId);
   if (!el) return;
@@ -724,8 +738,14 @@ function renderKpiEq(elId, rows) {
 
 function updateKPI() {
   var thisMonth = allData.filter(function(r) { return isThisMonth(r[2]); });
-  document.getElementById('k-total').textContent = thisMonth.length;
-  renderKpiEq('kpi-total-eq', thisMonth.slice(-3).reverse());
+  // Total: exclude avarie, necesita interventie, necesita piese
+  var totalOk = thisMonth.filter(function(r) {
+    var s = String(r[7]||'').toLowerCase();
+    var m = String(r[1]||'').toLowerCase();
+    return s.indexOf('avarie') < 0 && s.indexOf('necesita interv') < 0 && s.indexOf('necesita piese') < 0 && m.indexOf('avarie') < 0;
+  });
+  document.getElementById('k-total').textContent = totalOk.length;
+  renderKpiEq('kpi-total-eq', totalOk.slice(-3).reverse());
 
   var suprav = thisMonth.filter(function(r) {
     return String(r[7]||'').toLowerCase().indexOf('supraveg') > -1;
@@ -894,9 +914,17 @@ function getExportRows() {
 function onEchipamentChange() {
   var val = document.getElementById('f-echipament').value;
   var desc = document.getElementById('f-desc');
-  if (val && val.toLowerCase().indexOf('magnet') > -1 && !desc.value.trim()) {
-    desc.value = 'S-au indepartat depunerile de praf si obiectele straine din magnet.';
-  } else if (desc.value === 'S-au indepartat depunerile de praf si obiectele straine din magnet.') {
+  var MAGNET_TEXT = 'S-au indepartat depunerile de praf si obiectele straine din magnet.';
+  var COMPR_TEXT = 'S-au suflat, purjat si inspectat vizual compresoarele.';
+  var autoTexts = [MAGNET_TEXT, COMPR_TEXT];
+  var isMagnet = val && val.toLowerCase().indexOf('magnet') > -1;
+  var isCompresor = val && (val === 'Compresoare HH1' || val === 'Compresoare CF');
+  var isAutoText = autoTexts.indexOf(desc.value) > -1;
+  if (isMagnet && (isAutoText || !desc.value.trim())) {
+    desc.value = MAGNET_TEXT;
+  } else if (isCompresor && (isAutoText || !desc.value.trim())) {
+    desc.value = COMPR_TEXT;
+  } else if (isAutoText && !isMagnet && !isCompresor) {
     desc.value = '';
   }
 }
