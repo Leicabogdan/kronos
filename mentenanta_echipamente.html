@@ -138,7 +138,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
 .td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
 .td-eq{font-family:var(--mono);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;}
-.td-motiv{color:#fff;font-weight:600;}
+.td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;}
 .td-dt{font-family:var(--mono);font-size:12px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:11px;}
@@ -254,7 +254,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <option>Revizie 200h</option><option>Revizie 1500h</option><option>Revizie 8000h</option>
           <option>Gresare</option><option>Verificare la golire celula</option><option>Revizie anuala</option>
           <option>Mentenanta si intretinere</option><option>Avarie</option><option>Schimb ulei</option>
-          <option>Curatare magneti</option><option>Verificare curatare magneti</option>
+          <option>Curatare magneti</option>
           <option>Luat in evidenta</option><option>Altele</option>
         </select>
       </div>
@@ -262,17 +262,42 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <label class="form-lbl">Echipament *</label>
         <select class="form-select" id="f-echipament">
           <option value="">Selecteaza echipament...</option>
+          <!-- ELEVATOARE -->
           <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
-          <option>E21</option><option>E22</option><option>E23</option><option>E51</option><option>E81</option><option>E82</option>
+          <option>E21</option><option>E22</option><option>E23</option><option>E51</option>
+          <option>E81</option><option>E82</option><option>E201</option>
+          <!-- TRANSPORTOARE CU LANT -->
           <option>CC01</option><option>CC02</option><option>CC03</option><option>CC04</option>
-          <option>CC10</option><option>CC11</option><option>CC12</option><option>CC13</option><option>CC14</option>
-          <option>CC15</option><option>CC16</option><option>CC19</option><option>CC21</option><option>CC22</option>
+          <option>CC10</option><option>CC11</option><option>CC12</option><option>CC13</option>
+          <option>CC14</option><option>CC15</option><option>CC16</option><option>CC19</option>
+          <option>CC21</option><option>CC22</option><option>CC23</option><option>CC24</option>
+          <option>CC25</option><option>CC26</option><option>CC27</option><option>CC29</option>
+          <option>CC31</option><option>CC32</option><option>CC33</option>
           <option>CC51</option><option>CC52</option><option>CC53</option>
-          <option>BC11</option><option>BC12</option><option>BC21</option><option>BC22</option>
-          <option>BC31</option><option>BC32</option><option>BC41</option><option>BC42</option>
-          <option>BC47</option><option>BC48</option><option>BC51</option><option>BC52</option><option>BC53</option>
-          <option>FS01</option><option>FS02</option><option>FS03</option>
-          <option>S11</option><option>S12</option><option>S21</option><option>S22</option>
+          <option>CC202</option><option>CC204</option><option>CC210</option>
+          <option>CC211</option><option>CC212</option><option>CC213</option>
+          <!-- TRANSPORTOARE CU BANDA -->
+          <option>BC01</option><option>BC11</option><option>BC12</option>
+          <option>BC21</option><option>BC22</option><option>BC31</option><option>BC32</option>
+          <option>BC33</option><option>BC34</option><option>BC41</option><option>BC42</option>
+          <option>BC43</option><option>BC44</option><option>BC47</option><option>BC48</option>
+          <option>BC51</option><option>BC52</option><option>BC53</option>
+          <!-- FILTRE -->
+          <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
+          <option>FS05</option><option>FS06</option><option>FS07</option><option>FS08</option>
+          <option>FS09</option><option>FS10</option><option>FSCF</option>
+          <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
+          <!-- SNECURI -->
+          <option>S11</option><option>S12</option><option>S13</option><option>S14</option>
+          <option>S15</option><option>S16</option><option>S21</option><option>S22</option>
+          <option>S23</option><option>S24</option><option>S25</option><option>S26</option>
+          <!-- MAGNETI -->
+          <option>MA01</option><option>MA02</option><option>E201</option><option>E81</option>
+          <!-- SISTEME HIDRAULICE -->
+          <option>Sistem hidraulic SL1</option><option>Sistem hidraulic SL2</option>
+          <!-- COMPRESOARE -->
+          <option>Compresor Buncar Barja</option><option>Compresor SL1</option><option>Compresor SL2</option>
+          <option>Compresor HH1</option><option>Compresor CF</option>
         </select>
       </div>
       <div class="form-field">
@@ -338,16 +363,40 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <select id="sel-year" onchange="applyFilters()">
         <option value="">Toti anii</option>
         <option value="2024">2024</option><option value="2025">2025</option>
-        <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
+        <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
     <div class="select-wrap">
       <select id="sel-echipament" onchange="applyFilters()">
-        <option value="">Toate echipamentele</option>
-        <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
-        <option>CC01</option><option>CC02</option><option>CC03</option><option>CC04</option>
-        <option>BC11</option><option>BC12</option><option>BC21</option><option>BC22</option>
+          <option value="">Toate echipamentele</option>
+          <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
+          <option>E21</option><option>E22</option><option>E23</option><option>E51</option>
+          <option>E81</option><option>E82</option><option>E201</option>
+          <option>CC01</option><option>CC02</option><option>CC03</option><option>CC04</option>
+          <option>CC10</option><option>CC11</option><option>CC12</option><option>CC13</option>
+          <option>CC14</option><option>CC15</option><option>CC16</option><option>CC19</option>
+          <option>CC21</option><option>CC22</option><option>CC23</option><option>CC24</option>
+          <option>CC25</option><option>CC26</option><option>CC27</option><option>CC29</option>
+          <option>CC31</option><option>CC32</option><option>CC33</option>
+          <option>CC51</option><option>CC52</option><option>CC53</option>
+          <option>CC202</option><option>CC204</option><option>CC210</option><option>CC211</option><option>CC212</option><option>CC213</option>
+          <option>BC01</option><option>BC11</option><option>BC12</option>
+          <option>BC21</option><option>BC22</option><option>BC31</option><option>BC32</option>
+          <option>BC33</option><option>BC34</option><option>BC41</option><option>BC42</option>
+          <option>BC43</option><option>BC44</option><option>BC47</option><option>BC48</option>
+          <option>BC51</option><option>BC52</option><option>BC53</option>
+          <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
+          <option>FS05</option><option>FS06</option><option>FS07</option><option>FS08</option>
+          <option>FS09</option><option>FS10</option><option>FSCF</option>
+          <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
+          <option>S11</option><option>S12</option><option>S13</option><option>S14</option>
+          <option>S15</option><option>S16</option><option>S21</option><option>S22</option>
+          <option>S23</option><option>S24</option><option>S25</option><option>S26</option>
+          <option>MA01</option><option>MA02</option>
+          <option>Sistem hidraulic SL1</option><option>Sistem hidraulic SL2</option>
+          <option>Compresor Buncar Barja</option><option>Compresor SL1</option><option>Compresor SL2</option>
+          <option>Compresor HH1</option><option>Compresor CF</option>
       </select>
     </div>
     <div class="select-wrap">
@@ -363,8 +412,10 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <select id="sel-motiv" onchange="applyFilters()">
         <option value="">Toate interventiile</option>
         <option>Revizie 200h</option><option>Revizie 1500h</option><option>Revizie 8000h</option>
-        <option>Gresare</option><option>Avarie</option><option>Schimb ulei</option>
+        <option>Gresare</option><option>Verificare la golire celula</option>
         <option>Revizie anuala</option><option>Mentenanta si intretinere</option>
+        <option>Avarie</option><option>Schimb ulei</option>
+        <option>Curatare magneti</option><option>Luat in evidenta</option><option>Altele</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
@@ -378,7 +429,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Exporta Excel
       </button>
-      <button class="tb-btn red" onclick="exportPDF()">
+      <button class="tb-btn green" onclick="exportPDF()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
         Exporta PDF
       </button>
