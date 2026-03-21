@@ -73,10 +73,10 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .kpi-card.c-amber .kpi-rtitle{color:var(--amber);}
 .kpi-card.c-red .kpi-rtitle{color:var(--red);}
 .eq-pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;border-radius:20px;
-  font-family:var(--mono);font-size:13px;font-weight:700;
+  font-family:var(--sans);font-size:13px;font-weight:700;
   background:rgba(255,255,255,.04);border:1px solid var(--border2);}
-.eq-pill .peq{font-weight:900;font-size:14px;}
-.eq-pill .pmot{font-size:12px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
+.eq-pill .peq{font-weight:700;font-size:14px;font-family:var(--title);}
+.eq-pill .pmot{font-size:12px;color:#fff;font-family:var(--sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
 .kpi-card.c-teal .eq-pill .peq{color:var(--teal);}
 .kpi-card.c-amber .eq-pill .peq{color:var(--amber);}
 .kpi-card.c-red .eq-pill .peq{color:var(--red);}
@@ -85,7 +85,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .add-form-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px 14px;}
 .form-field{display:flex;flex-direction:column;gap:4px;}
-.form-lbl{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1px;}
+.form-lbl{font-family:var(--mono);font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
 .form-input,.form-select,.form-textarea{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:14px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--teal);}
 .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.28);}
@@ -124,7 +124,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .sel-count{font-family:var(--mono);font-size:12px;color:var(--teal);font-weight:700;white-space:nowrap;}
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:24px;}
 table{width:100%;border-collapse:collapse;min-width:1300px;font-family:var(--sans);}
-thead tr.hdr-row th{font-family:var(--sans);font-size:13px;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:11px 13px;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:2px solid rgba(0,220,180,.35);border-right:1px solid rgba(255,255,255,.06);background:#081410;}
+thead tr.hdr-row th{font-family:var(--sans);font-size:13px;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:11px 13px;text-align:center;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:2px solid rgba(0,220,180,.35);border-right:1px solid rgba(255,255,255,.06);background:#081410;}
 thead tr.hdr-row th:hover{color:var(--teal);background:rgba(0,220,180,.06);}
 thead tr.hdr-row th.sort-asc::after{content:' \2191';color:var(--teal);}
 thead tr.hdr-row th.sort-desc::after{content:' \2193';color:var(--teal);}
@@ -135,20 +135,20 @@ tbody tr:nth-child(odd){background:var(--bg3);}
 tbody tr:nth-child(even){background:var(--bg4);}
 tbody tr:hover{background:rgba(0,220,180,.04)!important;}
 tbody tr.row-selected{background:rgba(0,220,180,.08)!important;}
-td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:14px;}
+td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:14px;text-align:center;}
 td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
 .td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
 .td-eq{font-family:var(--title);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;letter-spacing:.06em;}
-.td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;}
+.td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;text-align:left;}
 .td-dt{font-family:var(--mono);font-size:12px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;font-size:13px;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
-.td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.td-echipa{color:var(--purple);font-family:var(--mono);font-size:13px;font-weight:900;}
-.td-piese{color:#fff;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;white-space:nowrap;}
+.td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+.td-echipa{color:var(--purple);font-family:var(--mono);font-size:13px;font-weight:900;text-align:left;}
+.td-piese{color:#fff;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;white-space:nowrap;}
 .chip .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
 .chip-apt{background:rgba(74,175,112,.15);color:var(--green);border:1.5px solid rgba(74,175,112,.4);}
 .chip-supraveg{background:rgba(240,165,0,.15);color:var(--amber);border:1.5px solid rgba(240,165,0,.4);}
@@ -238,7 +238,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="kpi-div"></div>
       <div class="kpi-right">
-        <div class="kpi-rtitle">Echipamente avarie</div>
+        <div class="kpi-rtitle">Avarie echipamente</div>
         <div id="kpi-avarii-eq"></div>
       </div>
     </div>
@@ -263,110 +263,118 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Echipament *</label>
-        <div style="position:relative;">
-          <input class="form-input" id="f-echipament" list="echip-list" placeholder="Scrie sau selecteaza echipament..." autocomplete="off"/>
+        <div style="position:relative;max-width:400px;">
+          <input class="form-input" id="f-echipament" list="echip-list" placeholder="Scrie sau selecteaza echipament..." autocomplete="off" style="max-width:100%;"/>
           <datalist id="echip-list">
-          <option value="E01">E01</option>
-          <option value="E02">E02</option>
-          <option value="E03">E03</option>
-          <option value="E04">E04</option>
-          <option value="E21">E21</option>
-          <option value="E22">E22</option>
-          <option value="E23">E23</option>
-          <option value="E51">E51</option>
-          <option value="E81">E81</option>
-          <option value="E82">E82</option>
-          <option value="E201">E201</option>
-          <option value="CC01">CC01</option>
-          <option value="CC02">CC02</option>
-          <option value="CC03">CC03</option>
-          <option value="CC04">CC04</option>
-          <option value="CC10">CC10</option>
-          <option value="CC11">CC11</option>
-          <option value="CC12">CC12</option>
-          <option value="CC13">CC13</option>
-          <option value="CC14">CC14</option>
-          <option value="CC15">CC15</option>
-          <option value="CC16">CC16</option>
-          <option value="CC19">CC19</option>
-          <option value="CC21">CC21</option>
-          <option value="CC22">CC22</option>
-          <option value="CC23">CC23</option>
-          <option value="CC24">CC24</option>
-          <option value="CC25">CC25</option>
-          <option value="CC26">CC26</option>
-          <option value="CC27">CC27</option>
-          <option value="CC29">CC29</option>
-          <option value="CC31">CC31</option>
-          <option value="CC32">CC32</option>
-          <option value="CC33">CC33</option>
-          <option value="CC51">CC51</option>
-          <option value="CC52">CC52</option>
-          <option value="CC53">CC53</option>
-          <option value="CC202">CC202</option>
-          <option value="CC204">CC204</option>
-          <option value="CC210">CC210</option>
-          <option value="CC211">CC211</option>
-          <option value="CC212">CC212</option>
-          <option value="CC213">CC213</option>
-          <option value="BC01">BC01</option>
-          <option value="BC11">BC11</option>
-          <option value="BC12">BC12</option>
-          <option value="BC21">BC21</option>
-          <option value="BC22">BC22</option>
-          <option value="BC31">BC31</option>
-          <option value="BC32">BC32</option>
-          <option value="BC33">BC33</option>
-          <option value="BC34">BC34</option>
-          <option value="BC41">BC41</option>
-          <option value="BC42">BC42</option>
-          <option value="BC43">BC43</option>
-          <option value="BC44">BC44</option>
-          <option value="BC47">BC47</option>
-          <option value="BC48">BC48</option>
-          <option value="BC51">BC51</option>
-          <option value="BC52">BC52</option>
-          <option value="BC53">BC53</option>
-          <option value="FS01">FS01</option>
-          <option value="FS02">FS02</option>
-          <option value="FS03">FS03</option>
-          <option value="FS04">FS04</option>
-          <option value="FS05">FS05</option>
-          <option value="FS06">FS06</option>
-          <option value="FS07">FS07</option>
-          <option value="FS08">FS08</option>
-          <option value="FS09">FS09</option>
-          <option value="FS10">FS10</option>
-          <option value="FSCF">FSCF</option>
-          <option value="SF201">SF201</option>
-          <option value="SF202">SF202</option>
-          <option value="SF203">SF203</option>
-          <option value="SF211">SF211</option>
-          <option value="SF222">SF222</option>
-          <option value="S11">S11</option>
-          <option value="S12">S12</option>
-          <option value="S13">S13</option>
-          <option value="S14">S14</option>
-          <option value="S15">S15</option>
-          <option value="S16">S16</option>
-          <option value="S21">S21</option>
-          <option value="S22">S22</option>
-          <option value="S23">S23</option>
-          <option value="S24">S24</option>
-          <option value="S25">S25</option>
-          <option value="S26">S26</option>
-          <option value="MA01">MA01</option>
-          <option value="MA02">MA02</option>
-          <option value="E201">E201</option>
-          <option value="E81">E81</option>
+          <!-- ELEVATOARE -->
+          <option value="Elevator E01">Elevator E01</option>
+          <option value="Elevator E02">Elevator E02</option>
+          <option value="Elevator E03">Elevator E03</option>
+          <option value="Elevator E04">Elevator E04</option>
+          <option value="Elevator E21">Elevator E21</option>
+          <option value="Elevator E22">Elevator E22</option>
+          <option value="Elevator E23">Elevator E23</option>
+          <option value="Elevator E51">Elevator E51</option>
+          <option value="Elevator E81">Elevator E81</option>
+          <option value="Elevator E82">Elevator E82</option>
+          <option value="Elevator E201">Elevator E201</option>
+          <!-- TRANS. CU LANT -->
+          <option value="Trans. lant CC01">Trans. lant CC01</option>
+          <option value="Trans. lant CC02">Trans. lant CC02</option>
+          <option value="Trans. lant CC03">Trans. lant CC03</option>
+          <option value="Trans. lant CC04">Trans. lant CC04</option>
+          <option value="Trans. lant CC10">Trans. lant CC10</option>
+          <option value="Trans. lant CC11">Trans. lant CC11</option>
+          <option value="Trans. lant CC12">Trans. lant CC12</option>
+          <option value="Trans. lant CC13">Trans. lant CC13</option>
+          <option value="Trans. lant CC14">Trans. lant CC14</option>
+          <option value="Trans. lant CC15">Trans. lant CC15</option>
+          <option value="Trans. lant CC16">Trans. lant CC16</option>
+          <option value="Trans. lant CC19">Trans. lant CC19</option>
+          <option value="Trans. lant CC21">Trans. lant CC21</option>
+          <option value="Trans. lant CC22">Trans. lant CC22</option>
+          <option value="Trans. lant CC23">Trans. lant CC23</option>
+          <option value="Trans. lant CC24">Trans. lant CC24</option>
+          <option value="Trans. lant CC25">Trans. lant CC25</option>
+          <option value="Trans. lant CC26">Trans. lant CC26</option>
+          <option value="Trans. lant CC27">Trans. lant CC27</option>
+          <option value="Trans. lant CC29">Trans. lant CC29</option>
+          <option value="Trans. lant CC31">Trans. lant CC31</option>
+          <option value="Trans. lant CC32">Trans. lant CC32</option>
+          <option value="Trans. lant CC33">Trans. lant CC33</option>
+          <option value="Trans. lant CC51">Trans. lant CC51</option>
+          <option value="Trans. lant CC52">Trans. lant CC52</option>
+          <option value="Trans. lant CC53">Trans. lant CC53</option>
+          <option value="Trans. lant CC202">Trans. lant CC202</option>
+          <option value="Trans. lant CC204">Trans. lant CC204</option>
+          <option value="Trans. lant CC210">Trans. lant CC210</option>
+          <option value="Trans. lant CC211">Trans. lant CC211</option>
+          <option value="Trans. lant CC212">Trans. lant CC212</option>
+          <option value="Trans. lant CC213">Trans. lant CC213</option>
+          <!-- TRANS. CU BANDA -->
+          <option value="Trans. banda BC01">Trans. banda BC01</option>
+          <option value="Trans. banda BC11">Trans. banda BC11</option>
+          <option value="Trans. banda BC12">Trans. banda BC12</option>
+          <option value="Trans. banda BC21">Trans. banda BC21</option>
+          <option value="Trans. banda BC22">Trans. banda BC22</option>
+          <option value="Trans. banda BC31">Trans. banda BC31</option>
+          <option value="Trans. banda BC32">Trans. banda BC32</option>
+          <option value="Trans. banda BC33">Trans. banda BC33</option>
+          <option value="Trans. banda BC34">Trans. banda BC34</option>
+          <option value="Trans. banda BC41">Trans. banda BC41</option>
+          <option value="Trans. banda BC42">Trans. banda BC42</option>
+          <option value="Trans. banda BC43">Trans. banda BC43</option>
+          <option value="Trans. banda BC44">Trans. banda BC44</option>
+          <option value="Trans. banda BC47">Trans. banda BC47</option>
+          <option value="Trans. banda BC48">Trans. banda BC48</option>
+          <option value="Trans. banda BC51">Trans. banda BC51</option>
+          <option value="Trans. banda BC52">Trans. banda BC52</option>
+          <option value="Trans. banda BC53">Trans. banda BC53</option>
+          <!-- FILTRE -->
+          <option value="Filtru FS01">Filtru FS01</option>
+          <option value="Filtru FS02">Filtru FS02</option>
+          <option value="Filtru FS03">Filtru FS03</option>
+          <option value="Filtru FS04">Filtru FS04</option>
+          <option value="Filtru FS05">Filtru FS05</option>
+          <option value="Filtru FS06">Filtru FS06</option>
+          <option value="Filtru FS07">Filtru FS07</option>
+          <option value="Filtru FS08">Filtru FS08</option>
+          <option value="Filtru FS09">Filtru FS09</option>
+          <option value="Filtru FS10">Filtru FS10</option>
+          <option value="Filtru FSCF">Filtru FSCF</option>
+          <option value="Filtru SF201">Filtru SF201</option>
+          <option value="Filtru SF202">Filtru SF202</option>
+          <option value="Filtru SF203">Filtru SF203</option>
+          <option value="Filtru SF211">Filtru SF211</option>
+          <option value="Filtru SF222">Filtru SF222</option>
+          <!-- SNECURI -->
+          <option value="Snec S11">Snec S11</option>
+          <option value="Snec S12">Snec S12</option>
+          <option value="Snec S13">Snec S13</option>
+          <option value="Snec S14">Snec S14</option>
+          <option value="Snec S15">Snec S15</option>
+          <option value="Snec S16">Snec S16</option>
+          <option value="Snec S21">Snec S21</option>
+          <option value="Snec S22">Snec S22</option>
+          <option value="Snec S23">Snec S23</option>
+          <option value="Snec S24">Snec S24</option>
+          <option value="Snec S25">Snec S25</option>
+          <option value="Snec S26">Snec S26</option>
+          <!-- MAGNETI -->
+          <option value="Magnet MA01">Magnet MA01</option>
+          <option value="Magnet MA02">Magnet MA02</option>
+          <option value="Magnet E201">Magnet E201</option>
+          <option value="Magnet E81">Magnet E81</option>
+          <!-- SISTEME HIDRAULICE -->
           <option value="Sistem hidraulic SL1">Sistem hidraulic SL1</option>
           <option value="Sistem hidraulic SL2">Sistem hidraulic SL2</option>
+          <!-- COMPRESOARE -->
           <option value="Compresor Buncar Barja">Compresor Buncar Barja</option>
           <option value="Compresor SL1">Compresor SL1</option>
           <option value="Compresor SL2">Compresor SL2</option>
           <option value="Compresor HH1">Compresor HH1</option>
           <option value="Compresor CF">Compresor CF</option>
-          </datalist>
+        </datalist>
         </div>
       </div>
       <div class="form-field">
@@ -438,34 +446,45 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     <div class="toolbar-sep"></div>
     <div class="select-wrap">
       <select id="sel-echipament" onchange="applyFilters()">
-          <option value="">Toate echipamentele</option>
-          <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
-          <option>E21</option><option>E22</option><option>E23</option><option>E51</option>
-          <option>E81</option><option>E82</option><option>E201</option>
-          <option>CC01</option><option>CC02</option><option>CC03</option><option>CC04</option>
-          <option>CC10</option><option>CC11</option><option>CC12</option><option>CC13</option>
-          <option>CC14</option><option>CC15</option><option>CC16</option><option>CC19</option>
-          <option>CC21</option><option>CC22</option><option>CC23</option><option>CC24</option>
-          <option>CC25</option><option>CC26</option><option>CC27</option><option>CC29</option>
-          <option>CC31</option><option>CC32</option><option>CC33</option>
-          <option>CC51</option><option>CC52</option><option>CC53</option>
-          <option>CC202</option><option>CC204</option><option>CC210</option><option>CC211</option><option>CC212</option><option>CC213</option>
-          <option>BC01</option><option>BC11</option><option>BC12</option>
-          <option>BC21</option><option>BC22</option><option>BC31</option><option>BC32</option>
-          <option>BC33</option><option>BC34</option><option>BC41</option><option>BC42</option>
-          <option>BC43</option><option>BC44</option><option>BC47</option><option>BC48</option>
-          <option>BC51</option><option>BC52</option><option>BC53</option>
-          <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
-          <option>FS05</option><option>FS06</option><option>FS07</option><option>FS08</option>
-          <option>FS09</option><option>FS10</option><option>FSCF</option>
-          <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
-          <option>S11</option><option>S12</option><option>S13</option><option>S14</option>
-          <option>S15</option><option>S16</option><option>S21</option><option>S22</option>
-          <option>S23</option><option>S24</option><option>S25</option><option>S26</option>
-          <option>MA01</option><option>MA02</option>
+        <option value="">Toate echipamentele</option>
+        <optgroup label="Elevatoare">
+          <option>Elevator E01</option><option>Elevator E02</option><option>Elevator E03</option><option>Elevator E04</option>
+          <option>Elevator E21</option><option>Elevator E22</option><option>Elevator E23</option><option>Elevator E51</option>
+          <option>Elevator E81</option><option>Elevator E82</option><option>Elevator E201</option>
+        </optgroup>
+        <optgroup label="Trans. cu lant">
+          <option>Trans. lant CC01</option><option>Trans. lant CC02</option><option>Trans. lant CC03</option><option>Trans. lant CC04</option>
+          <option>Trans. lant CC10</option><option>Trans. lant CC11</option><option>Trans. lant CC12</option><option>Trans. lant CC13</option>
+          <option>Trans. lant CC14</option><option>Trans. lant CC15</option><option>Trans. lant CC16</option><option>Trans. lant CC19</option>
+          <option>Trans. lant CC21</option><option>Trans. lant CC22</option><option>Trans. lant CC51</option><option>Trans. lant CC52</option><option>Trans. lant CC53</option>
+          <option>Trans. lant CC202</option><option>Trans. lant CC210</option><option>Trans. lant CC211</option><option>Trans. lant CC212</option><option>Trans. lant CC213</option>
+        </optgroup>
+        <optgroup label="Trans. cu banda">
+          <option>Trans. banda BC01</option><option>Trans. banda BC11</option><option>Trans. banda BC12</option>
+          <option>Trans. banda BC21</option><option>Trans. banda BC22</option><option>Trans. banda BC31</option><option>Trans. banda BC32</option>
+          <option>Trans. banda BC41</option><option>Trans. banda BC42</option><option>Trans. banda BC47</option><option>Trans. banda BC48</option>
+          <option>Trans. banda BC51</option><option>Trans. banda BC52</option><option>Trans. banda BC53</option>
+        </optgroup>
+        <optgroup label="Filtre">
+          <option>Filtru FS01</option><option>Filtru FS02</option><option>Filtru FS03</option><option>Filtru FS04</option>
+          <option>Filtru FS05</option><option>Filtru FS06</option><option>Filtru FS07</option><option>Filtru FS08</option>
+          <option>Filtru FS09</option><option>Filtru FS10</option><option>Filtru FSCF</option>
+          <option>Filtru SF201</option><option>Filtru SF202</option><option>Filtru SF203</option><option>Filtru SF211</option><option>Filtru SF222</option>
+        </optgroup>
+        <optgroup label="Snecuri">
+          <option>Snec S11</option><option>Snec S12</option><option>Snec S13</option><option>Snec S14</option><option>Snec S15</option><option>Snec S16</option>
+          <option>Snec S21</option><option>Snec S22</option><option>Snec S23</option><option>Snec S24</option><option>Snec S25</option><option>Snec S26</option>
+        </optgroup>
+        <optgroup label="Magneti">
+          <option>Magnet MA01</option><option>Magnet MA02</option><option>Magnet E201</option><option>Magnet E81</option>
+        </optgroup>
+        <optgroup label="Sisteme hidraulice">
           <option>Sistem hidraulic SL1</option><option>Sistem hidraulic SL2</option>
+        </optgroup>
+        <optgroup label="Compresoare">
           <option>Compresor Buncar Barja</option><option>Compresor SL1</option><option>Compresor SL2</option>
           <option>Compresor HH1</option><option>Compresor CF</option>
+        </optgroup>
       </select>
     </div>
     <div class="select-wrap">
