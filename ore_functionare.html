@@ -362,25 +362,12 @@ td:last-child{border-right:none;}
     </div>
   </div>
 
-  <!-- CHART -->
+  <!-- CHART: full width -->
   <div class="chart-wrap">
-    <div class="chart-header">
-      <div class="chart-title">TOP 20 — ORE CUMULATE ECHIPAMENTE</div>
-      <div class="chart-filters">
-        <button class="chart-btn active" onclick="setChartFilter('toate',this)">TOATE</button>
-        <button class="chart-btn" onclick="setChartFilter('banda',this)">BANDA</button>
-        <button class="chart-btn" onclick="setChartFilter('lant',this)">LANT</button>
-        <button class="chart-btn" onclick="setChartFilter('elevator',this)">ELEVATOR</button>
-        <button class="chart-btn" onclick="setChartFilter('filtru',this)">FILTRU</button>
-        <button class="chart-btn" onclick="setChartFilter('cantar',this)">CANTAR</button>
-      </div>
-    </div>
-    <div class="chart-canvas-wrap">
-      <canvas id="ore-chart"></canvas>
-    </div>
+
   </div>
 
-  <!-- TOOLBAR -->
+  <!-- TOOLBAR: single row above table -->
   <div class="toolbar">
     <div class="select-wrap">
       <select id="sel-categorie" onchange="applyFilters()">
@@ -409,15 +396,13 @@ td:last-child{border-right:none;}
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7A5 5 0 0 1 12 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 7a5 5 0 0 1-10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 3L12 5l-2 .5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Refresh
     </button>
-    <div class="toolbar-right">
-      <button class="tb-btn teal" onclick="window.print()">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h8v5H3z" stroke="currentColor" stroke-width="1.2"/><path d="M3 6H1v6h12V6h-2" stroke="currentColor" stroke-width="1.2"/><path d="M3 9h8v4H3z" stroke="currentColor" stroke-width="1.2"/></svg>
-        Exporta
-      </button>
-    </div>
+    <button class="tb-btn teal" onclick="window.print()">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h8v5H3z" stroke="currentColor" stroke-width="1.2"/><path d="M3 6H1v6h12V6h-2" stroke="currentColor" stroke-width="1.2"/><path d="M3 9h8v4H3z" stroke="currentColor" stroke-width="1.2"/></svg>
+      Exporta
+    </button>
   </div>
 
-  <!-- TABLE -->
+  <!-- TABLE: full width -->
   <div class="table-wrap">
     <table id="main-table">
       <thead>
@@ -445,7 +430,8 @@ td:last-child{border-right:none;}
     <div class="tm-email">leicabogdan@gmail.com</div>
     <div class="tm-copy">&#169; 2026 KRONOS&#8482; &#183; ALL RIGHTS RESERVED</div>
   </div>
-</div>
+
+
 
 <script>
 // ── CONFIG ──
