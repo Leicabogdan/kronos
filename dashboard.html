@@ -553,7 +553,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <canvas id="sgear" width="80" height="80" style="width:40px;height:40px;flex-shrink:0;"></canvas>
+      <canvas id="sgear" width="68" height="68" style="width:34px;height:34px;flex-shrink:0;"></canvas>
       <div class="logo-text">
         <div class="logo-main">KR<span>O</span>NOS</div>
         <div class="logo-sub">Maintenance System</div>
@@ -1078,9 +1078,9 @@ async function loadActivitate() {
         +'<div style="flex:1;min-width:0;">'
         // Row 1: equipment + motiv + status chip
         +'<div style="display:flex;align-items:stretch;gap:8px;margin-bottom:4px;">'
-        +'<span style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--amber);">'+eq+'</span>'
-        +'<span style="font-family:var(--sans);font-size:20px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';">'+m+'</span>'
-        +(s?'<span style="margin-left:auto;flex-shrink:0;font-family:var(--sans);font-size:16px;font-weight:700;padding:5px 14px;border-radius:8px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;align-self:center;white-space:nowrap;">'+s+'</span>':'')
+        +'<span style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--amber);">'+eq+'</span>'
+        +'<span style="font-family:var(--sans);font-size:24px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';">'+m+'</span>'
+        +(s?'<span style="margin-left:auto;flex-shrink:0;font-family:var(--sans);font-size:20px;font-weight:700;padding:6px 16px;border-radius:8px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;align-self:center;white-space:nowrap;">'+s+'</span>':'')
         +'</div>'
         // Row 2: dates + ora
         +'<div style="display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;margin-bottom:3px;">'
@@ -1089,7 +1089,7 @@ async function loadActivitate() {
         +(echipa?'<span style="color:var(--purple);">≡ '+echipa+'</span>':'')
         +'</div>'
         // Row 3: descriere (truncated)
-        +(desc?'<div style="font-family:var(--sans);font-size:11px;color:rgba(#fff;font-weight:500;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:4px;">'+desc+'</div>':'')
+        +(desc?'<div style="font-family:var(--sans);font-size:11px;color:rgba(#fff;font-weight:500;font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:5px;">'+desc+'</div>':'')
         // Row 4: piese (if any)
         +(piese?'<div style="font-family:var(--mono);font-size:10px;color:var(--blue);">◆ Piese: '+piese+'</div>':'')
         +'</div>'
