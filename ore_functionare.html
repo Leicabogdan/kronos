@@ -210,6 +210,9 @@ td:last-child{border-right:none;}
     color:#1a3a6e;text-align:right;letter-spacing:.05em;}
   .print-report-date{font-size:10px;color:#444;margin-top:2px;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
+  .print-header,.print-footer{background:#fff!important;z-index:9999!important;}
+  .print-header{box-shadow:0 2px 0 #fff,0 4px 0 #fff!important;}
+  .print-footer{box-shadow:0 -2px 0 #fff,0 -4px 0 #fff!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
@@ -292,7 +295,7 @@ td:last-child{border-right:none;}
 <div class="page">
 
   <!-- PRINT HEADER (only visible when printing) -->
-  <div class="print-header" id="print-header">
+  <div class="print-header" id="print-header" style="background:#fff;">
     <div class="print-header-left">
       <div>
         <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
@@ -309,7 +312,7 @@ td:last-child{border-right:none;}
       <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
     </div>
   </div>
-  <div class="print-footer" id="print-footer">
+  <div class="print-footer" id="print-footer" style="background:#fff;">
     <span id="print-date-text"></span>
     <span></span>
   </div>
@@ -1089,7 +1092,7 @@ function resetFormOre(){
       var rows = tbody.querySelectorAll('tr:not(.print-break)');
       var cols = document.querySelectorAll('thead .hdr-row th').length || 10;
       rows.forEach(function(row, i) {
-        if(i > 0 && i % 20 === 0) {
+        if(i > 0 && i % 18 === 0) {
           var br = document.createElement('tr');
           br.className = 'print-break';
           br.style.pageBreakBefore = 'always';
