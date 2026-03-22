@@ -741,16 +741,16 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
           </div>
 
           <!-- AVARII LUNA ASTA -->
-          <div class="avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);margin-bottom:24px;">
-            <div style="flex-shrink:0;min-width:120px;">
-              <div class="kpi-lbl">Avarii luna curenta</div>
-              <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);" id="dash-avarii-count">&#8212;</div>
-              <div class="kpi-sub" id="dash-avarii-sub" style="font-size:12px;padding-left:4px;">se incarca...</div>
+          <div class="avarii-alarm" style="grid-column:1/-1;display:flex;align-items:flex-start;gap:clamp(14px,2.5vw,24px);margin-bottom:24px;min-height:200px;">
+            <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+              <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
+              <div class="kpi-val" style="font-size:clamp(48px,6vw,68px);color:#fff;font-family:var(--title);font-weight:900;line-height:1;" id="dash-avarii-count">&#8212;</div>
+              <div id="dash-avarii-sub" style="font-size:13px;color:#fff;font-family:var(--mono);font-weight:600;letter-spacing:.06em;margin-top:4px;padding-left:6px;">se incarca...</div>
             </div>
             <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
-              <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu avarii luna aceasta</div>
+              <div style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:700;margin-bottom:12px;">Echipamente cu avarii luna aceasta</div>
               <div style="display:flex;flex-direction:column;gap:7px;" id="dash-avarii-rows">
-                <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Se incarca datele...</div>
+                <div style="font-family:var(--sans);font-size:14px;color:#fff;">Se incarca datele...</div>
               </div>
             </div>
           </div>
@@ -807,7 +807,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
           </div>
           <div class="panel" style="padding:0;margin-bottom:20px;">
             <div id="dash-activitate-rows">
-              <div style="padding:14px 16px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Se incarca activitatea recenta...</div>
+              <div style="padding:14px 16px;font-family:var(--sans);font-size:15px;color:#fff;">Se incarca activitatea recenta...</div>
             </div>
           </div>
 
@@ -824,12 +824,12 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div style="text-align:center;">
-                <div style="font-family:var(--title);font-size:28px;font-weight:900;color:var(--amber);" id="dash-ulei-curand">&#8212;</div>
+                <div style="font-family:var(--title);font-size:28px;font-weight:900;color:var(--amber);" id="dash-ulei-curand">...</div>
                 <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.1em;font-weight:700;">CURAND</div>
                 <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);">&lt;90 zile</div>
               </div>
               <div style="text-align:center;">
-                <div style="font-family:var(--title);font-size:28px;font-weight:900;color:var(--red);" id="dash-ulei-depasit">&#8212;</div>
+                <div style="font-family:var(--title);font-size:28px;font-weight:900;color:var(--red);" id="dash-ulei-depasit">...</div>
                 <div style="font-family:var(--mono);font-size:9px;color:var(--red);letter-spacing:.1em;font-weight:700;">DEPASIT</div>
                 <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);">data trecuta</div>
               </div>
@@ -988,7 +988,7 @@ async function loadDashAvarii() {
     // Update rows
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Nicio avarie inregistrata luna aceasta</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
       return;
     }
     var html2 = '';
@@ -1010,6 +1010,51 @@ async function loadDashAvarii() {
 loadDashAvarii();
 setInterval(loadDashAvarii, 60000);
 
+/* SCHIMB ULEI LIVE */
+(function loadUlei() {
+  // FALLBACK data - same as schimb_ulei.html
+  var FALLBACK = [
+    {nr:'BC11',data:'01.02.2026',interval:2000},
+    {nr:'BC12',data:'15.01.2026',interval:2000},
+    {nr:'BC51',data:'10.12.2025',interval:2000},
+    {nr:'BC52',data:'20.11.2025',interval:2000},
+    {nr:'BC53',data:'05.01.2026',interval:2000},
+    {nr:'CC01',data:'18.02.2026',interval:2000},
+    {nr:'CC02',data:'22.01.2026',interval:2000},
+    {nr:'CC03',data:'14.12.2025',interval:2000},
+    {nr:'CC04',data:'30.11.2025',interval:2000},
+    {nr:'CC11',data:'08.03.2026',interval:2000},
+    {nr:'CC12',data:'25.01.2026',interval:2000},
+    {nr:'CC13',data:'12.02.2026',interval:2000},
+    {nr:'CC14',data:'03.12.2025',interval:2000},
+    {nr:'E01',data:'20.03.2026',interval:3000},
+    {nr:'E02',data:'15.02.2026',interval:3000},
+    {nr:'E03',data:'10.01.2026',interval:3000},
+    {nr:'E04',data:'05.12.2025',interval:3000},
+    {nr:'E21',data:'22.02.2026',interval:3000},
+    {nr:'E22',data:'18.01.2026',interval:3000},
+    {nr:'E51',data:'28.11.2025',interval:3000},
+    {nr:'E81',data:'14.02.2026',interval:3000},
+    {nr:'E82',data:'09.01.2026',interval:3000}
+  ];
+  var now = new Date();
+  var curand = 0, depasit = 0;
+  FALLBACK.forEach(function(r) {
+    if (!r.data) return;
+    var p = r.data.split('.');
+    if (p.length < 3) return;
+    var last = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+    var next = new Date(last.getTime() + r.interval * 24 * 60 * 60 * 1000);
+    var diff = Math.floor((next - now) / (1000*60*60*24));
+    if (diff < 0) depasit++;
+    else if (diff < 90) curand++;
+  });
+  var ec = document.getElementById('dash-ulei-curand');
+  var ed = document.getElementById('dash-ulei-depasit');
+  if (ec) ec.textContent = curand;
+  if (ed) ed.textContent = depasit;
+})();
+
 /* ACTIVITATE RECENTA */
 async function loadActivitate() {
   try {
@@ -1020,7 +1065,7 @@ async function loadActivitate() {
     var recent = rows.slice(-10).reverse();
     var el = document.getElementById('dash-activitate-rows');
     if(!el) return;
-    if(!recent.length){el.innerHTML='<div style="padding:14px;font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Nicio activitate inregistrata.</div>';return;}
+    if(!recent.length){el.innerHTML='<div style="padding:14px;font-family:var(--sans);font-size:15px;color:#fff;">Nicio activitate inregistrata.</div>';return;}
     el.innerHTML = recent.map(function(r){
       var eq=r[11]||'?', m=r[1]||'?', di=r[2]||'', oi=r[3]||'', df=r[4]||'', of2=r[5]||'', desc=r[6]||'', s=r[7]||'', piese=r[8]||'', echipa=r[9]||'';
       var av=m.toLowerCase().indexOf('avarie')>-1;
@@ -1033,9 +1078,9 @@ async function loadActivitate() {
         +'<div style="flex:1;min-width:0;">'
         // Row 1: equipment + motiv + status chip
         +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">'
-        +'<span style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--amber);">'+eq+'</span>'
-        +'<span style="font-family:var(--sans);font-size:15px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:500)+';">'+m+'</span>'
-        +(s?'<span style="margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:'+sc+'22;color:'+sc+';border:1px solid '+sc+'44;">'+s+'</span>':'')
+        +'<span style="font-family:var(--mono);font-size:17px;font-weight:700;color:var(--amber);">'+eq+'</span>'
+        +'<span style="font-family:var(--sans);font-size:17px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';">'+m+'</span>'
+        +(s?'<span style="margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;">'+s+'</span>':'')
         +'</div>'
         // Row 2: dates + ora
         +'<div style="display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;margin-bottom:3px;">'
@@ -1314,8 +1359,8 @@ initUser();
           <div class="kpi-grid" style="margin-bottom:0;">
         <!-- AVARII HOTSPOT FULL WIDTH -->
         <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:120px;">
-            <div class="kpi-lbl">Avarii luna curenta</div>
+          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+            <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
             <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
             <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
@@ -1721,7 +1766,7 @@ async function loadDashAvarii() {
     // Update rows
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Nicio avarie inregistrata luna aceasta</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
       return;
     }
     var html2 = '';
@@ -2008,15 +2053,15 @@ initUser();
 </script>
 </body>
 </html>avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:120px;">
-            <div class="kpi-lbl">Avarii luna curenta</div>
+          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+            <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);" id="dash-avarii-count">—</div>
-            <div class="kpi-sub" id="dash-avarii-sub" style="font-size:12px;padding-left:4px;">se incarca...</div>
+            <div id="dash-avarii-sub" style="font-size:13px;color:#fff;font-family:var(--mono);font-weight:600;letter-spacing:.06em;margin-top:4px;padding-left:6px;">se incarca...</div>
           </div>
           <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
-            <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu avarii luna aceasta</div>
+            <div style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:700;margin-bottom:12px;">Echipamente cu avarii luna aceasta</div>
             <div style="display:flex;flex-direction:column;gap:7px;" id="dash-avarii-rows">
-              <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Se incarca datele...</div>
+              <div style="font-family:var(--sans);font-size:14px;color:#fff;">Se incarca datele...</div>
             </div>
           </div>
         </div><!-- /app -->
@@ -2089,7 +2134,7 @@ async function loadDashAvarii() {
     // Update rows
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Nicio avarie inregistrata luna aceasta</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
       return;
     }
     var html2 = '';
@@ -2366,8 +2411,8 @@ initUser();
           <div class="kpi-grid" style="margin-bottom:0;">
         <!-- AVARII HOTSPOT FULL WIDTH -->
         <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:120px;">
-            <div class="kpi-lbl">Avarii luna curenta</div>
+          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+            <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
             <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
             <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
@@ -2773,7 +2818,7 @@ async function loadDashAvarii() {
     // Update rows
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.08em;">Nicio avarie inregistrata luna aceasta</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
       return;
     }
     var html2 = '';
