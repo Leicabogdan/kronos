@@ -189,14 +189,73 @@ td:last-child{border-right:none;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
 .tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
 @media print{
-  .topbar,.toolbar,.add-form-wrap,.chart-wrap,.trademark{display:none!important;}
-  body{background:#fff!important;color:#000!important;}
-  .page{padding:0!important;max-width:100%!important;}
-  .kpi-strip{display:none!important;}
-  .table-wrap{border:1px solid #ccc!important;border-radius:0!important;}
-  td,th{font-size:9px!important;padding:5px 7px!important;color:#000!important;}
-  .td-eq{color:#1a3a6e!important;}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  a{color:inherit!important;text-decoration:none!important;}
+  a[href]::after{content:none!important;display:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:10mm!important;}
+  .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
+  .page{padding:0!important;max-width:100%!important;margin:0!important;}
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;
+    background:#fff!important;}
+  .print-header-left{display:flex;align-items:center;gap:12px;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
+    font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
+    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
+    color:#1a3a6e;text-align:right;letter-spacing:.05em;}
+  .print-report-date{font-size:10px;color:#444;margin-top:2px;}
+  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
+  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  thead tr.hdr-row th{
+    background:#1a3a6e!important;color:#fff!important;
+    font-size:9px!important;padding:7px 8px!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;
+    font-weight:700!important;letter-spacing:.04em!important;
+    text-align:center!important;border-right:1px solid #2a4a8e!important;
+    white-space:normal!important;
+  }
+  tbody tr{background:#fff!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;}
+  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
+    border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
+    vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  /* ore_functionare columns: Nr(1) Echip(2) Cod(3) Data(4) OreCum(5) Delta(6) Regim(7) 200h(8) 1500h(9) 8000h(10) */
+  thead tr.hdr-row th:nth-child(1){width:4%!important;}
+  thead tr.hdr-row th:nth-child(2){width:10%!important;}
+  thead tr.hdr-row th:nth-child(3){width:9%!important;}
+  thead tr.hdr-row th:nth-child(4){width:10%!important;}
+  thead tr.hdr-row th:nth-child(5){width:10%!important;}
+  thead tr.hdr-row th:nth-child(6){width:8%!important;}
+  thead tr.hdr-row th:nth-child(7){width:9%!important;}
+  thead tr.hdr-row th:nth-child(8){width:13%!important;}
+  thead tr.hdr-row th:nth-child(9){width:13%!important;}
+  thead tr.hdr-row th:nth-child(10){width:14%!important;}
+  .td-nr{color:#1a3a6e!important;font-weight:700!important;}
+  .td-eq{color:#1a3a6e!important;font-weight:700!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-size:9px!important;}
+  .td-cod{color:#000!important;font-size:8px!important;}
+  .td-ore{font-weight:700!important;}
+  .td-regim{color:#000!important;}
+  .th-chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
+  .th-ok{border-color:#1a7a4a!important;color:#1a7a4a!important;}
+  .th-warn{border-color:#8a6000!important;color:#8a6000!important;}
+  .th-over{border-color:#8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
+  .no-data{color:#000!important;}
+  @page{size:A4 landscape;margin:0mm;}
+  @page:first{margin:0mm;}
+  @page:left{margin:0mm;}
+  @page:right{margin:0mm;}
+  .print-footer{display:flex!important;position:fixed;bottom:8mm;left:10mm;right:10mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;padding-top:4px;
+    justify-content:space-between;align-items:center;}
+  .print-footer a,.print-footer a::after{display:none!important;content:none!important;}
+  html{-webkit-print-color-adjust:exact;}
 }
+.print-header{display:none;}
+.print-footer{display:none;}
 </style>
 </head>
 <body>
@@ -232,6 +291,30 @@ td:last-child{border-right:none;}
 
 <div class="page">
 
+  <!-- PRINT HEADER (only visible when printing) -->
+  <div class="print-header" id="print-header">
+    <div class="print-header-left">
+      <div>
+        <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
+        <div class="print-kronos-sub">Maintenance System</div>
+      </div>
+      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
+      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
+        Registru Ore Functionare Echipamente<br>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP &middot; Port Constanta</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;">
+      <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span>
+      <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
+    </div>
+  </div>
+  <div class="print-footer" id="print-footer">
+    <span id="print-date-text"></span>
+    <span></span>
+  </div>
+
+
   <!-- KPI -->
   <div class="kpi-strip">
     <div class="kpi-card c-teal">
@@ -252,7 +335,7 @@ td:last-child{border-right:none;}
           <div class="kpi-num" id="k-warn-count">—</div>
           <div class="kpi-sub">in 20h de prag revizie</div>
         </div>
-        <div class="kpi-title">ATENTIE<br>REVIZIE<br>CURANTA</div>
+        <div class="kpi-title">ATENTIE<br>URMEAZA<br>REVIZIE</div>
       </div>
       <div class="kpi-list" id="k-warn-list">
         <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
@@ -992,6 +1075,13 @@ function resetFormOre(){
   sortCol=4;sortDir=-1;
   loadData();
   setInterval(loadData,120000);
+  window.addEventListener('beforeprint', function() {
+    var now = new Date();
+    var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+    var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    var el = document.getElementById('print-date-text');
+    if(el) el.textContent = 'Data generarii: ' + d + ' ' + t;
+  });
 })();
 </script>
 </body>
