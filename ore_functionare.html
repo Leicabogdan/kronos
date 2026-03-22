@@ -118,13 +118,13 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 /* CHART */
 .chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;
   padding:18px 20px;margin-bottom:20px;}
-.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
-.chart-title{font-family:var(--title);font-size:14px;font-weight:900;color:#fff;letter-spacing:.08em;}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;padding-left:120px;}
+.chart-title{font-family:var(--title);font-size:12px;font-weight:900;color:#fff;letter-spacing:.06em;}
 .chart-filters{display:flex;gap:6px;flex-wrap:wrap;}
 .chart-btn{font-family:var(--mono);font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;
   cursor:pointer;border:1.5px solid var(--border2);background:var(--bg4);color:#fff;transition:all .18s;letter-spacing:.06em;}
 .chart-btn:hover,.chart-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.4);color:var(--teal);}
-.chart-canvas-wrap{height:280px;position:relative;}
+.chart-canvas-wrap{height:240px;position:relative;}
 /* TOOLBAR */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
 .select-wrap{position:relative;}
@@ -364,7 +364,7 @@ td:last-child{border-right:none;}
   <!-- CHART: full width -->
   <div class="chart-wrap">
     <div class="chart-header">
-      <div class="chart-title">TOP 30 — ORE CUMULATE ECHIPAMENTE</div>
+      <div class="chart-title" style="font-size:12px;">TOP 10 — ORE CUMULATE ECHIPAMENTE</div>
       <div class="chart-filters">
         <button class="chart-btn active" onclick="setChartFilter('toate',this)">TOATE</button>
         <button class="chart-btn" onclick="setChartFilter('banda',this)">BANDA</button>
@@ -899,7 +899,7 @@ function renderChart(){
     return row.cat===chartFilter;
   });
   data.sort(function(a,b){return b.ore-a.ore;});
-  var top=data.slice(0,30);
+  var top=data.slice(0,10);
   var labels=top.map(function(r){return r.eq;});
   var values=top.map(function(r){return r.ore;});
   var colors=top.map(function(r){
