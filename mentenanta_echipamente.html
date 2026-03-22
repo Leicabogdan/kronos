@@ -774,13 +774,17 @@ function esc(s) {
 function getDateParts(str) {
   str = String(str||'').trim();
   if (!str) return null;
-  if (str.indexOf('.') > -1) {
-    var p = str.split('.');
-    if (p.length >= 3) return { y: p[2].substring(0,4), m: p[1].padStart(2,'0') };
+  // DD/MM/YYYY or DD.MM.YYYY
+  if (str.indexOf('/') > -1 || str.indexOf('.') > -1) {
+    var sep = str.indexOf('/') > -1 ? '/' : '.';
+    var p = str.split(sep);
+    if (p.length >= 3) return { y: p[2].substring(0,4), m: String(p[1]).padStart(2,'0'), d: String(p[0]).padStart(2,'0') };
   }
+  // YYYY-MM-DD
   if (str.indexOf('-') > -1) {
     var p = str.split('-');
-    if (p.length >= 2) return { y: p[0], m: p[1].padStart(2,'0') };
+    if (p.length >= 3) return { y: p[0], m: String(p[1]).padStart(2,'0'), d: String(p[2]).substring(0,2).padStart(2,'0') };
+    if (p.length >= 2) return { y: p[0], m: String(p[1]).padStart(2,'0'), d: '01' };
   }
   return null;
 }
@@ -893,13 +897,13 @@ async function loadData() {
     allData = rows.slice(1).filter(function(r) { return r.some(function(c) { return c !== ''; }); });
     allData = allData.map(function(r) { while (r.length < 12) r.push(''); return r; });
     filteredData = allData.slice();
-    updateKPI();
-    renderTable();
+    applyFilters();  // applies current month/year filter + renders table + updates KPI
   } catch(err) {
     document.getElementById('tbody').innerHTML =
       '<tr><td colspan="11" class="no-data" style="color:var(--red);">Eroare: ' + esc(err.message) +
       '<br><span style="color:rgba(255,255,255,.45);font-size:11px;font-weight:400;">Verifica URL-ul Google Sheets si ca fisierul este publicat ca CSV.</span></td></tr>';
     allData = []; filteredData = [];
+    renderTable();
     updateKPI();
   }
 }
@@ -963,6 +967,15 @@ function applyFilters() {
   document.querySelectorAll('thead .hdr-row th').forEach(function(t) { t.classList.remove('sort-asc','sort-desc'); });
   selectedRows.clear();
   renderTable();
+  updateKPI();
+}
+
+function dateToSortKey(str) {
+  // Convert any date format to YYYYMMDD for correct chronological sorting
+  if (!str) return '';
+  var d = getDateParts(str);
+  if (d) return d.y + d.m + (d.d || '01');
+  return str;
 }
 
 function sortBy(col) {
@@ -972,6 +985,16 @@ function sortBy(col) {
   var ti = thMap[col];
   var ths = document.querySelectorAll('thead .hdr-row th');
   if (ti !== undefined && ths[ti]) ths[ti].classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  // Apply sort to filteredData
+  var sc2 = col;
+  var isDateCol = (col === 2 || col === 4); // Inceput / Finalizare
+  filteredData.sort(function(a, b) {
+    var va = isDateCol ? dateToSortKey(a[sc2]||'') : String(a[sc2]||'');
+    var vb = isDateCol ? dateToSortKey(b[sc2]||'') : String(b[sc2]||'');
+    if (va < vb) return -sortDir;
+    if (va > vb) return sortDir;
+    return 0;
+  });
   renderTable();
 }
 
