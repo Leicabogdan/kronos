@@ -124,7 +124,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .chart-btn{font-family:var(--mono);font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;
   cursor:pointer;border:1.5px solid var(--border2);background:var(--bg4);color:#fff;transition:all .18s;letter-spacing:.06em;}
 .chart-btn:hover,.chart-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.4);color:var(--teal);}
-.chart-canvas-wrap{height:560px;position:relative;}
+.chart-canvas-wrap{height:280px;position:relative;}
 /* TOOLBAR */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
 .select-wrap{position:relative;}
@@ -149,10 +149,10 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .search-input::placeholder{color:rgba(255,255,255,.35);}
 .toolbar-right{margin-left:auto;}
 /* TABLE */
-.table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:visible;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;font-family:var(--sans);table-layout:fixed;}
+.table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;margin-bottom:24px;width:100%;}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);table-layout:auto;}
 thead tr.hdr-row th{font-family:var(--sans);font-size:14px;color:#fff;letter-spacing:.04em;text-transform:uppercase;
-  font-weight:700;padding:12px 16px;text-align:center;white-space:nowrap;
+  font-weight:700;padding:12px 16px;text-align:center;white-space:normal;
   cursor:pointer;user-select:none;transition:all .15s;
   border-bottom:2px solid rgba(0,220,180,.35);border-right:1px solid rgba(255,255,255,.06);
   background:#081410;}
@@ -901,7 +901,7 @@ function renderChart(){
     return row.cat===chartFilter;
   });
   data.sort(function(a,b){return b.ore-a.ore;});
-  var top=data.slice(0,20);
+  var top=data.slice(0,30);
   var labels=top.map(function(r){return r.eq;});
   var values=top.map(function(r){return r.ore;});
   var colors=top.map(function(r){
