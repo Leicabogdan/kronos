@@ -50,7 +50,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .logo-text{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
 .logo-main{font-family:var(--title);font-size:18px;font-weight:900;letter-spacing:.14em;color:#fff;white-space:nowrap;}
 .logo-main span{color:var(--teal);}
-.logo-sub{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.16em;font-weight:700;white-space:nowrap;}
+.logo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.16em;font-weight:700;white-space:nowrap;}
 
 /* nav */
 .sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:none;}
@@ -553,7 +553,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <canvas id="sgear" width="60" height="60" style="width:30px;height:30px;flex-shrink:0;"></canvas>
+      <canvas id="sgear" width="56" height="56" style="width:28px;height:28px;flex-shrink:0;"></canvas>
       <div class="logo-text">
         <div class="logo-main">KR<span>O</span>NOS</div>
         <div class="logo-sub">Maintenance System</div>
@@ -1083,7 +1083,7 @@ async function loadActivitate() {
         +(s?'<span style="margin-left:auto;flex-shrink:0;font-family:var(--sans);font-size:18px;font-weight:700;padding:5px 14px;border-radius:8px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;align-self:center;white-space:nowrap;">'+s+'</span>':'')
         +'</div>'
         // Row 2: dates + ora
-        +'<div style="display:flex;gap:14px;font-family:var(--mono);font-size:16px;color:#fff;margin-bottom:4px;">'
+        +'<div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:center;font-family:var(--mono);font-size:16px;color:#fff;margin-bottom:4px;overflow:hidden;">'
         +(di?'<span style="color:var(--teal);">▶ '+di+(oi?' '+oi:'')+'</span>':'')
         +(df?'<span style="color:rgba(255,255,255,.4);">■ '+df+(of2?' '+of2:'')+'</span>':'')
         +(echipa?'<span style="color:var(--purple);">≡ '+echipa+'</span>':'')
