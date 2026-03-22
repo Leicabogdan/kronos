@@ -186,17 +186,18 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:12mm!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
-    padding:10px 18px 8px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;}
+    padding:10px 18px 8px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;
+    background:#fff!important;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
   .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
   .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
     color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-logo{height:50px;width:auto;background:#fff;padding:2px;border-radius:3px;}
+  .print-logo{height:50px;width:auto;background:transparent!important;}
   .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
     color:#1a3a6e;text-align:right;letter-spacing:.05em;}
   .print-report-date{font-size:10px;color:#666;margin-top:2px;}
@@ -245,10 +246,10 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .desc-bubble{display:none!important;}
   .chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
   .no-data{color:#000!important;}
-  @page{size:A4 landscape;margin:14mm 12mm 14mm 12mm;}
-  @page{-webkit-margin-before:14mm;}
-  html::before,html::after{display:none!important;}
-  title{display:none!important;}
+  @page{size:A4 landscape;margin:0mm;}
+  @page:first{margin:0mm;}
+  @page:left{margin:0mm;}
+  @page:right{margin:0mm;}
   .page-break{page-break-before:always;}
   .print-footer{display:block!important;position:fixed;bottom:8mm;left:12mm;right:12mm;
     font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
@@ -588,6 +589,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <option>Compresor SL1</option><option>Compresor SL2</option>
           <option>Compresoare HH1</option><option>Compresoare CF</option>
         </optgroup>
+        <option style="font-weight:700;">Altele</option>
       </select>
     </div>
     <div class="select-wrap">
@@ -1099,66 +1101,60 @@ function exportExcel() {
   var dateStr = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
   var timeStr = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
 
-  // Row 1: title header
-  // Row 2: sub info
-  // Row 3: blank
-  // Row 4: column headers
-  // Row 5+: data
-
-  var titleRow = ['KRONOS - Registru Mentenanta Echipamente','','','','','','','','',''];
+  var headers = ['Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'];
+  var titleRow = ['KRONOS — Registru Mentenanta Echipamente','','','','','','','','',''];
   var infoRow = ['Terminal Cereale SOCEP · Port Constanta','','','Data generare: '+dateStr+' '+timeStr,'','','','','',''];
   var blankRow = ['','','','','','','','','',''];
-  var headers = ['Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'];
+  var logoSpaceRow = ['','','','','','','','','',''];
 
-  var data = [titleRow, infoRow, blankRow, headers].concat(rows.map(function(r) {
+  // Row 1 = logo row (blank, logos added as images)
+  // Row 2 = title
+  // Row 3 = info
+  // Row 4 = blank
+  // Row 5 = headers
+  // Row 6+ = data
+  var data = [logoSpaceRow, titleRow, infoRow, blankRow, headers].concat(rows.map(function(r) {
     return [r[11],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9]];
   }));
 
   var ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{wch:14},{wch:24},{wch:13},{wch:10},{wch:13},{wch:10},{wch:48},{wch:24},{wch:28},{wch:24}];
+  ws['!cols'] = [{wch:14},{wch:24},{wch:13},{wch:9},{wch:13},{wch:9},{wch:46},{wch:24},{wch:28},{wch:22}];
 
-  var range = XLSX.utils.decode_range(ws['!ref']);
-
-  // Merge title row across all columns
   if (!ws['!merges']) ws['!merges'] = [];
-  ws['!merges'].push({s:{r:0,c:0},e:{r:0,c:9}});
-  ws['!merges'].push({s:{r:1,c:0},e:{r:1,c:2}});
-  ws['!merges'].push({s:{r:1,c:3},e:{r:1,c:9}});
+  ws['!merges'].push({s:{r:0,c:0},e:{r:0,c:9}});  // logo row
+  ws['!merges'].push({s:{r:1,c:0},e:{r:1,c:9}});  // title
+  ws['!merges'].push({s:{r:2,c:0},e:{r:2,c:2}});  // info left
+  ws['!merges'].push({s:{r:2,c:3},e:{r:2,c:9}});  // info right
 
-  // Style row heights
-  ws['!rows'] = [
-    {hpt:28}, // title
-    {hpt:18}, // info
-    {hpt:8},  // blank
-    {hpt:24}, // header
-  ];
-  for (var ri = 4; ri <= range.e.r; ri++) {
-    ws['!rows'].push({hpx:undefined, hpt:'auto'});
-  }
+  ws['!rows'] = [{hpt:52},{hpt:28},{hpt:18},{hpt:8},{hpt:26}];
+  var range = XLSX.utils.decode_range(ws['!ref']);
+  for (var ri = 5; ri <= range.e.r; ri++) ws['!rows'].push({hpt:undefined});
 
-  // Title row style
-  var t0 = ws['A1'] || {};
-  ws['A1'] = {v:titleRow[0],t:'s',s:{
+  // Logo row style
+  ws['A1'] = {v:'',t:'s',s:{fill:{fgColor:{rgb:'FFFFFF'}}}};
+
+  // Title row
+  ws['A2'] = {v:titleRow[0],t:'s',s:{
     fill:{fgColor:{rgb:'1A3A6E'}},
     font:{bold:true,color:{rgb:'00DCB4'},sz:16,name:'Calibri'},
     alignment:{horizontal:'center',vertical:'center'}
   }};
 
   // Info row
-  ws['A2'] = {v:infoRow[0],t:'s',s:{
+  ws['A3'] = {v:infoRow[0],t:'s',s:{
     fill:{fgColor:{rgb:'EAF0FB'}},
     font:{color:{rgb:'1A3A6E'},sz:10,bold:true},
     alignment:{horizontal:'left',vertical:'center'}
   }};
-  ws['D2'] = {v:infoRow[3],t:'s',s:{
+  ws['D3'] = {v:infoRow[3],t:'s',s:{
     fill:{fgColor:{rgb:'EAF0FB'}},
     font:{color:{rgb:'555555'},sz:10},
     alignment:{horizontal:'right',vertical:'center'}
   }};
 
-  // Column header row (row index 3)
+  // Column headers (row index 4)
   for (var C = 0; C <= 9; C++) {
-    var addr = XLSX.utils.encode_cell({r:3, c:C});
+    var addr = XLSX.utils.encode_cell({r:4,c:C});
     ws[addr] = {v:headers[C],t:'s',s:{
       fill:{fgColor:{rgb:'1A3A6E'}},
       font:{bold:true,color:{rgb:'FFFFFF'},sz:11},
@@ -1172,23 +1168,16 @@ function exportExcel() {
     }};
   }
 
-  // Data rows (starting at row index 4)
-  for (var R = 4; R <= range.e.r; R++) {
-    var isEven = (R % 2 === 0);
-    var fillColor = isEven ? 'EFF4FB' : 'FFFFFF';
+  // Data rows
+  for (var R = 5; R <= range.e.r; R++) {
+    var fillColor = (R % 2 === 1) ? 'EFF4FB' : 'FFFFFF';
     for (var C2 = 0; C2 <= 9; C2++) {
-      var addr2 = XLSX.utils.encode_cell({r:R, c:C2});
+      var addr2 = XLSX.utils.encode_cell({r:R,c:C2});
       if (!ws[addr2]) ws[addr2] = {t:'s',v:''};
-      var isDesc = (C2 === 6);
-      var isPiese = (C2 === 8);
       ws[addr2].s = {
         fill:{fgColor:{rgb:fillColor}},
         font:{color:{rgb:C2===0?'1A3A6E':'000000'},sz:10,bold:C2===0},
-        alignment:{
-          horizontal: isDesc||isPiese ? 'left' : 'center',
-          vertical:'top',
-          wrapText:true
-        },
+        alignment:{horizontal:(C2===6||C2===8)?'left':'center',vertical:'top',wrapText:true},
         border:{
           bottom:{style:'thin',color:{rgb:'D0D8E8'}},
           right:{style:'thin',color:{rgb:'D0D8E8'}}
@@ -1199,9 +1188,29 @@ function exportExcel() {
 
   var wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Mentenanta Echipamente');
+
+  // Add SOCEP logo image
+  try {
+    if (wb.Sheets && ws) {
+      var socepB64 =  + SOCEP_B64 + ;
+      wb.Sheets['Mentenanta Echipamente']['!images'] = [
+        {
+          name: 'socep_logo.png',
+          data: socepB64,
+          opts: {base64: true},
+          position: {
+            type: 'twoCellAnchor',
+            attrs: {editAs: 'oneCell'},
+            from: {col:8, colOff:0, row:0, rowOff:0},
+            to: {col:9, colOff:0, row:0, rowOff:0}
+          }
+        }
+      ];
+    }
+  } catch(e) {}
+
   XLSX.writeFile(wb, 'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
 }
-
 function exportPDF() { window.print(); }
 
 (function init() {
