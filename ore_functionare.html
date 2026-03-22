@@ -69,7 +69,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .kpi-card.c-teal .kpi-sub{color:var(--teal);}
 .kpi-card.c-amber .kpi-sub{color:var(--amber);}
 .kpi-card.c-red .kpi-sub{color:var(--red);}
-.kpi-list{display:flex;flex-direction:column;gap:5px;}
+.kpi-list{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 .kpi-pill{display:flex;align-items:center;justify-content:space-between;
   padding:4px 10px;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:600;}
 .kpi-card.c-amber .kpi-pill{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.2);}
@@ -747,7 +747,7 @@ function updateKPI(){
   document.getElementById('k-ore-total').textContent=Math.round(totalDelta*10)/10;
   var list1=document.getElementById('k-ore-list');
   if(topDelta.length){
-    list1.innerHTML=topDelta.slice(0,4).map(function(x){
+    list1.innerHTML=topDelta.map(function(x){
       return '<div class="kpi-pill"><span class="pill-eq">'+esc(x.eq)+'</span>'
         +'<span class="pill-badge">+'+x.d.toFixed(1)+'h</span></div>';
     }).join('');
@@ -764,7 +764,7 @@ function updateKPI(){
   document.getElementById('k-warn-count').textContent=warnItems.length||'0';
   var list2=document.getElementById('k-warn-list');
   if(warnItems.length){
-    list2.innerHTML=warnItems.slice(0,4).map(function(x){
+    list2.innerHTML=warnItems.map(function(x){
       return '<div class="kpi-pill"><span class="pill-eq">'+esc(x.eq)+'</span>'
         +'<span class="pill-info">'+x.label+'</span>'
         +'<span class="pill-badge">'+x.ramase.toFixed(1)+'h</span></div>';
@@ -782,7 +782,7 @@ function updateKPI(){
   document.getElementById('k-over-count').textContent=overItems.length||'0';
   var list3=document.getElementById('k-over-list');
   if(overItems.length){
-    list3.innerHTML=overItems.slice(0,4).map(function(x){
+    list3.innerHTML=overItems.map(function(x){
       return '<div class="kpi-pill"><span class="pill-eq">'+esc(x.eq)+'</span>'
         +'<span class="pill-info">'+x.label+'</span>'
         +'<span class="pill-badge">+'+x.dep.toFixed(1)+'h</span></div>';
