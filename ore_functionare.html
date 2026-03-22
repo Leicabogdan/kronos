@@ -192,12 +192,15 @@ td:last-child{border-right:none;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:10mm!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
+  body > .page > *:not(.print-header):not(.print-footer){margin-top:0!important;}
+  .table-wrap{margin-top:52px!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
-    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;
-    background:#fff!important;}
+    position:fixed;top:0;left:0;right:0;
+    padding:8px 12mm 8px 12mm;border-bottom:2px solid #1a3a6e;
+    background:#fff!important;z-index:1000;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
   .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
@@ -243,11 +246,8 @@ td:last-child{border-right:none;}
   .th-warn{border-color:#8a6000!important;color:#8a6000!important;}
   .th-over{border-color:#8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
   .no-data{color:#000!important;}
-  @page{size:A4 landscape;margin:0mm;}
-  @page:first{margin:0mm;}
-  @page:left{margin:0mm;}
-  @page:right{margin:0mm;}
-  .print-footer{display:flex!important;position:fixed;bottom:8mm;left:10mm;right:10mm;
+  @page{size:A4 landscape;margin:18mm 12mm 14mm 12mm;}
+  .print-footer{display:flex!important;position:fixed;bottom:6mm;left:12mm;right:12mm;
     font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
     border-top:1px solid #d0d8e8;padding-top:4px;
     justify-content:space-between;align-items:center;}
@@ -1081,6 +1081,30 @@ function resetFormOre(){
     var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     var el = document.getElementById('print-date-text');
     if(el) el.textContent = 'Data generarii: ' + d + ' ' + t;
+    // Insert page breaks every 20 rows
+    var tbody = document.getElementById('tbody');
+    if(tbody) {
+      // Remove old print breaks
+      tbody.querySelectorAll('.print-break').forEach(function(r){r.remove();});
+      var rows = tbody.querySelectorAll('tr:not(.print-break)');
+      var cols = document.querySelectorAll('thead .hdr-row th').length || 10;
+      rows.forEach(function(row, i) {
+        if(i > 0 && i % 20 === 0) {
+          var br = document.createElement('tr');
+          br.className = 'print-break';
+          br.style.pageBreakBefore = 'always';
+          var td = document.createElement('td');
+          td.colSpan = cols;
+          td.style.cssText = 'padding:0;border:none;height:0;font-size:0;page-break-before:always;';
+          br.appendChild(td);
+          row.parentNode.insertBefore(br, row);
+        }
+      });
+    }
+  });
+  window.addEventListener('afterprint', function() {
+    var tbody = document.getElementById('tbody');
+    if(tbody) tbody.querySelectorAll('.print-break').forEach(function(r){r.remove();});
   });
 })();
 </script>
