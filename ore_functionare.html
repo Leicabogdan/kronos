@@ -270,7 +270,57 @@ td:last-child{border-right:none;}
         <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
       </div>
     </div>
-  </div>
+  <div class="kpi-card" style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));"></div>
+    <div class="kpi-top" style="margin-bottom:12px;">
+      <div>
+        <div style="font-family:var(--title);font-size:clamp(11px,1.2vw,13px);font-weight:900;color:#fff;opacity:.7;letter-spacing:.06em;">SUMAR REVIZII</div>
+        <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;margin-top:2px;">200h / 1500h / 8000h</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <!-- 200h row -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+          <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);">REVIZIE 200h</span>
+          <div style="display:flex;gap:6px;">
+            <span id="k4-200-warn" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.3);">0 atentie</span>
+            <span id="k4-200-over" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(224,80,80,.15);color:var(--red);border:1px solid rgba(224,80,80,.3);">0 depasit</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="k4-200-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--red));width:0%;transition:width .6s;"></div>
+        </div>
+      </div>
+      <!-- 1500h row -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+          <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--blue);">REVIZIE 1500h</span>
+          <div style="display:flex;gap:6px;">
+            <span id="k4-1500-warn" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.3);">0 atentie</span>
+            <span id="k4-1500-over" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(224,80,80,.15);color:var(--red);border:1px solid rgba(224,80,80,.3);">0 depasit</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="k4-1500-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--red));width:0%;transition:width .6s;"></div>
+        </div>
+      </div>
+      <!-- 8000h row -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+          <span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--purple);">REVIZIE 8000h</span>
+          <div style="display:flex;gap:6px;">
+            <span id="k4-8000-warn" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.3);">0 atentie</span>
+            <span id="k4-8000-over" style="font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;background:rgba(224,80,80,.15);color:var(--red);border:1px solid rgba(224,80,80,.3);">0 depasit</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <div id="k4-8000-bar" style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--amber),var(--red));width:0%;transition:width .6s;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /kpi-strip -->
 
   <!-- FORM -->
   <div class="add-form-wrap">
@@ -395,6 +445,16 @@ td:last-child{border-right:none;}
     </div>
     <input type="text" class="search-input" id="search-eq" placeholder="Cauta echipament..." oninput="applyFilters()"/>
     <div class="toolbar-sep"></div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <span style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;">REVIZIE:</span>
+      <button class="chart-btn" id="rev-all" onclick="setRevFilter('toate',this)">TOATE</button>
+      <button class="chart-btn" id="rev-200" onclick="setRevFilter('200',this)">200h</button>
+      <button class="chart-btn" id="rev-1500" onclick="setRevFilter('1500',this)">1500h</button>
+      <button class="chart-btn" id="rev-8000" onclick="setRevFilter('8000',this)">8000h</button>
+      <button class="chart-btn" id="rev-warn" onclick="setRevFilter('warn',this)" style="color:var(--amber);border-color:rgba(240,165,0,.35);">ATENTIE</button>
+      <button class="chart-btn" id="rev-over" onclick="setRevFilter('over',this)" style="color:var(--red);border-color:rgba(224,80,80,.35);">DEPASIT</button>
+    </div>
+    <div class="toolbar-sep"></div>
     <button class="tb-btn teal" onclick="loadData()">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7A5 5 0 0 1 12 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 7a5 5 0 0 1-10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 3L12 5l-2 .5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Refresh
@@ -497,6 +557,7 @@ var lastRevizii = {};   // {eq: {rev200: date, rev1500: date, rev8000: date}}
 var tableData = [];     // computed rows for table
 var filteredData = [];
 var sortCol = 4, sortDir = -1; // default: ore desc
+var revFilter = 'toate';
 var chartFilter = 'toate';
 var oreChart = null;
 
@@ -798,12 +859,36 @@ function sortBy(col){
   if(ths[col])ths[col].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
 }
+function setRevFilter(f, btn) {
+  revFilter = f;
+  document.querySelectorAll('[id^="rev-"]').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  // auto-set sort by the selected threshold
+  if(f==='200'){sortCol=7;sortDir=1;}
+  else if(f==='1500'){sortCol=8;sortDir=1;}
+  else if(f==='8000'){sortCol=9;sortDir=1;}
+  applyFilters();
+}
+
 function applyFilters(){
   var cat=document.getElementById('sel-categorie').value;
   var srch=(document.getElementById('search-eq').value||'').toLowerCase();
   filteredData=tableData.filter(function(row){
     if(cat&&row.cat!==cat)return false;
     if(srch&&row.eq.toLowerCase().indexOf(srch)<0)return false;
+    if(revFilter==='200'){if(!row.t200||row.t200.ramase>200)return false;}
+    else if(revFilter==='1500'){if(!row.t1500||row.t1500.ramase>1500)return false;}
+    else if(revFilter==='8000'){if(!row.t8000||row.t8000.ramase>8000)return false;}
+    else if(revFilter==='warn'){
+      var w=(row.t200&&row.t200.ramase>=0&&row.t200.ramase<=20)||
+             (row.t1500&&row.t1500.ramase>=0&&row.t1500.ramase<=20)||
+             (row.t8000&&row.t8000.ramase>=0&&row.t8000.ramase<=20);
+      if(!w)return false;
+    }
+    else if(revFilter==='over'){
+      var o=(row.t200&&row.t200.ramase<0)||(row.t1500&&row.t1500.ramase<0)||(row.t8000&&row.t8000.ramase<0);
+      if(!o)return false;
+    }
     return true;
   });
   renderTable();
@@ -957,6 +1042,8 @@ function resetFormOre(){
 // ── INIT ──
 (function(){
   sortCol=4;sortDir=-1;
+  var allBtn=document.getElementById('rev-all');
+  if(allBtn)allBtn.classList.add('active');
   loadData();
   setInterval(loadData,120000);
 })();
