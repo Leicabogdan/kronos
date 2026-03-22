@@ -463,19 +463,21 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Data inceput *</label>
-        <input class="form-input" type="date" id="f-data-inc"/>
+        <input class="form-input" type="text" id="f-data-inc-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-data-inc')" autocomplete="off" style="letter-spacing:.05em;"/>
+        <input type="hidden" id="f-data-inc"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Ora inceput</label>
-        <input class="form-input" type="time" id="f-ora-inc" step="60"/>
+        <input class="form-input" type="text" id="f-ora-inc" placeholder="HH:MM" maxlength="5" oninput="formatTimeInput(this)" autocomplete="off" style="letter-spacing:.08em;"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Data finalizare *</label>
-        <input class="form-input" type="date" id="f-data-fin"/>
+        <input class="form-input" type="text" id="f-data-fin-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-data-fin')" autocomplete="off" style="letter-spacing:.05em;"/>
+        <input type="hidden" id="f-data-fin"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Ora finalizare</label>
-        <input class="form-input" type="time" id="f-ora-fin" step="60"/>
+        <input class="form-input" type="text" id="f-ora-fin" placeholder="HH:MM" maxlength="5" oninput="formatTimeInput(this)" autocomplete="off" style="letter-spacing:.08em;"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Echipa *</label>
@@ -1026,9 +1028,18 @@ function onEchipamentChange() {
 async function submitRow() {
   var motiv = document.getElementById('f-motiv').value;
   var echipament = document.getElementById('f-echipament').value;
-  var dataInc = document.getElementById('f-data-inc').value;
+  // Sync display to hidden for date inputs
+  (function(){
+    var di=document.getElementById('f-data-inc-display');
+    var df=document.getElementById('f-data-fin-display');
+    var hi=document.getElementById('f-data-inc');
+    var hf=document.getElementById('f-data-fin');
+    if(di&&hi) hi.value=displayToISO(di.value);
+    if(df&&hf) hf.value=displayToISO(df.value);
+  })();
+  var dataInc = document.getElementById('f-data-inc-display')?document.getElementById('f-data-inc-display').value:document.getElementById('f-data-inc').value;
   var oraInc = document.getElementById('f-ora-inc').value;
-  var dataFin = document.getElementById('f-data-fin').value;
+  var dataFin = document.getElementById('f-data-fin-display')?document.getElementById('f-data-fin-display').value:document.getElementById('f-data-fin').value;
   var oraFin = document.getElementById('f-ora-fin').value;
   var desc = document.getElementById('f-desc').value.trim();
   var status = document.getElementById('f-status').value;
@@ -1086,11 +1097,21 @@ function resetForm() {
   ['f-ora-inc','f-data-fin','f-ora-fin','f-desc','f-piese','f-echipa'].forEach(function(id) {
     document.getElementById(id).value = '';
   });
+  var dd=document.getElementById('f-data-fin-display');
+  var di=document.getElementById('f-data-inc-display');
+  if(dd)dd.value='';
+  if(di){var n=new Date();di.value=String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+n.getFullYear();}
   document.getElementById('f-motiv').value = '';
   document.getElementById('f-echipament').value = '';
   document.getElementById('f-status').value = '';
   document.getElementById('form-msg').style.display = 'none';
   var now = new Date();
+  // Set display date DD/MM/YYYY
+  var dispEl = document.getElementById('f-data-inc-display');
+  if(dispEl) {
+    dispEl.value = String(now.getDate()).padStart(2,'0') + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + now.getFullYear();
+  }
+  // Also set hidden for compatibility
   document.getElementById('f-data-inc').value =
     now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
 }
@@ -1179,6 +1200,42 @@ function exportExcel() {
 
 function exportPDF() { window.print(); }
 
+// ── DATE / TIME INPUT HELPERS ──
+function formatDateInput(el, hiddenId) {
+  var v = el.value.replace(/[^0-9]/g,'');
+  var out = '';
+  if(v.length > 0) out += v.substring(0,2);
+  if(v.length >= 3) out += '/' + v.substring(2,4);
+  if(v.length >= 5) out += '/' + v.substring(4,8);
+  el.value = out;
+  // Update hidden ISO field
+  var hidden = document.getElementById(hiddenId);
+  if(hidden && v.length === 8) {
+    hidden.value = v.substring(4,8) + '-' + v.substring(2,4) + '-' + v.substring(0,2);
+  }
+}
+function formatTimeInput(el) {
+  var v = el.value.replace(/[^0-9]/g,'');
+  var out = '';
+  if(v.length > 0) {
+    var h = v.substring(0,2);
+    if(parseInt(h,10) > 23) h = '23';
+    out = h;
+  }
+  if(v.length >= 3) {
+    var m = v.substring(2,4);
+    if(parseInt(m,10) > 59) m = '59';
+    out += ':' + m;
+  }
+  el.value = out;
+}
+function displayToISO(d) {
+  if(!d) return '';
+  var p = d.split('/');
+  if(p.length === 3 && p[2].length === 4) return p[2]+'-'+p[1]+'-'+p[0];
+  return d;
+}
+
 (function init() {
   // Real-time KPI refresh every 60 seconds
   setInterval(function() {
@@ -1199,6 +1256,12 @@ function exportPDF() { window.print(); }
     document.getElementById('print-footer').style.display = 'none';
   });
   var now = new Date();
+  // Set display date DD/MM/YYYY
+  var dispEl = document.getElementById('f-data-inc-display');
+  if(dispEl) {
+    dispEl.value = String(now.getDate()).padStart(2,'0') + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + now.getFullYear();
+  }
+  // Also set hidden for compatibility
   document.getElementById('f-data-inc').value =
     now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
   document.getElementById('sel-year').value = String(now.getFullYear());
