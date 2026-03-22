@@ -194,51 +194,24 @@ td:last-child{border-right:none;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    margin:0!important;padding:0!important;}
+    margin:0!important;padding:0 14mm!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
-
-  /* ── HEADER: fixed so it appears on every page ── */
-  .print-header{
-    display:flex!important;
-    position:fixed;top:0;left:0;right:0;height:22mm;
-    align-items:center;justify-content:space-between;
-    padding:6px 14mm 6px 14mm;
-    border-bottom:2px solid #1a3a6e;
-    background:#fff!important;
-    z-index:9999;}
-  .print-header-left{display:flex;align-items:center;gap:12px;}
-  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
-    font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
-  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
-    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-
-  /* ── FOOTER: fixed at bottom every page ── */
-  .print-footer{
-    display:flex!important;
-    position:fixed;bottom:0;left:0;right:0;height:12mm;
-    align-items:center;padding:0 14mm;
-    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;background:#fff!important;
-    justify-content:space-between;z-index:9999;}
-
-  /* ── PAGE: margins reserve space for fixed header/footer ── */
-  @page{size:A4 landscape;margin:26mm 14mm 16mm 14mm;}
-
-  /* ── TABLE ── */
-  .table-wrap{
-    border:none!important;
-    border-radius:0!important;overflow:visible!important;
-    width:100%!important;
-    /* spacer so first row not under fixed header */
-    margin-top:0!important;}
-  table{
-    width:100%!important;table-layout:fixed!important;
-    border-collapse:collapse!important;
+  /* Hide static print-header div (we inject into thead instead) */
+  .print-header,.print-footer{display:none!important;}
+  /* Table */
+  .table-wrap{border:none!important;border-radius:0!important;overflow:visible!important;width:100%!important;}
+  table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;
     border:1.5px solid #1a3a6e!important;}
-  /* thead repeats column labels on each page natively */
+  /* thead with brand row + column labels repeats on every page */
   thead{display:table-header-group!important;}
   tbody{display:table-row-group!important;}
+  /* Brand header row (injected by JS) */
+  .print-brand-row td{
+    background:#fff!important;padding:8px 10px 6px 10px!important;
+    border-bottom:2px solid #1a3a6e!important;border-right:none!important;
+    border-top:none!important;vertical-align:middle!important;}
+  /* Column label row */
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 6px!important;
@@ -270,7 +243,13 @@ td:last-child{border-right:none;}
   .th-warn{border:1px solid #8a6000!important;color:#8a6000!important;}
   .th-over{border:1px solid #8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
   .th-na{border:1px solid #aaa!important;color:#aaa!important;}
-  .no-data{color:#000!important;}
+  /* Footer: fixed at bottom */
+  .print-footer-fixed{
+    display:flex!important;position:fixed;bottom:0;left:14mm;right:14mm;height:10mm;
+    align-items:center;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;background:#fff!important;
+    justify-content:space-between;}
+  @page{size:A4 landscape;margin:10mm 0 14mm 0;}
   html{-webkit-print-color-adjust:exact;}
 }
 .print-header{display:none;}
@@ -1098,8 +1077,47 @@ function resetFormOre(){
     var now = new Date();
     var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
     var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+    var dateStr = 'Data generarii: ' + d + ' ' + t;
     var el = document.getElementById('print-date-text');
-    if(el) el.textContent = 'Data generarii: ' + d + ' ' + t;
+    if(el) el.textContent = dateStr;
+    var ef = document.getElementById('print-date-fixed');
+    if(ef) ef.textContent = dateStr;
+    // Inject brand header row as first row of thead so it repeats on every page
+    var thead = document.querySelector('#main-table thead');
+    if(thead && !thead.querySelector('.print-brand-row')) {
+      var cols = thead.querySelectorAll('.hdr-row th').length || 10;
+      var brandRow = document.createElement('tr');
+      brandRow.className = 'print-brand-row';
+      var td = document.createElement('td');
+      td.colSpan = cols;
+      td.innerHTML =
+        '<table style="width:100%;border-collapse:collapse;"><tr>' +
+        '<td style="width:50%;vertical-align:middle;padding:0;">' +
+          '<div style="display:flex;align-items:center;gap:14px;">' +
+            '<div>' +
+              '<div style="font-family:Orbitron,Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;">KR<span style='color:#00dcb4;'>O</span>NOS</div>' +
+              '<div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#1a3a6e;letter-spacing:.2em;opacity:.7;margin-top:1px;">MAINTENANCE SYSTEM</div>' +
+            '</div>' +
+            '<div style="width:1px;height:36px;background:#d0d8e8;margin:0 6px;"></div>' +
+            '<div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;line-height:1.5;">' +
+              'Registru Ore Functionare Echipamente<br>' +
+              '<span style='font-weight:400;font-size:10px;color:#555;'>Terminal Cereale SOCEP · Port Constanta</span>' +
+            '</div>' +
+          '</div>' +
+        '</td>' +
+        '<td style="width:50%;text-align:right;vertical-align:middle;padding:0;">' +
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;">' +
+            '<span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;line-height:1;">SOCEP</span>' +
+            '<span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;margin-top:2px;">PORT OPERATOR</span>' +
+          '</div>' +
+        '</td>' +
+        '</tr></table>';
+      thead.insertBefore(brandRow, thead.firstChild);
+    }
+  });
+  window.addEventListener('afterprint', function() {
+    var brandRow = document.querySelector('.print-brand-row');
+    if(brandRow) brandRow.remove();
   });
 })();
 </script>
