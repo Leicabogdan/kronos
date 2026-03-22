@@ -194,24 +194,33 @@ td:last-child{border-right:none;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    margin:0!important;padding:0 14mm!important;}
+    margin:0!important;padding:0 12mm!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
-  /* Hide static print-header div (we inject into thead instead) */
-  .print-header,.print-footer{display:none!important;}
+  /* Header: normal flow, visible once on page 1 */
+  .print-header{
+    display:flex!important;align-items:center;justify-content:space-between;
+    padding:8px 0 8px 0;border-bottom:2px solid #1a3a6e;margin-bottom:8px;
+    background:#fff!important;}
+  .print-header-left{display:flex;align-items:center;gap:12px;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;
+    font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
+    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+  /* Footer: fixed bottom, every page */
+  .print-footer{
+    display:block!important;position:fixed;bottom:0;left:0;right:0;
+    padding:3px 12mm;background:#fff!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;}
   /* Table */
-  .table-wrap{border:none!important;border-radius:0!important;overflow:visible!important;width:100%!important;}
-  table{width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;
-    border:1.5px solid #1a3a6e!important;}
-  /* thead with brand row + column labels repeats on every page */
+  .table-wrap{border:none!important;border-radius:0!important;
+    overflow:visible!important;width:100%!important;}
+  table{width:100%!important;table-layout:fixed!important;
+    border-collapse:collapse!important;border:1.5px solid #1a3a6e!important;}
+  /* thead repeats column labels on every page */
   thead{display:table-header-group!important;}
   tbody{display:table-row-group!important;}
-  /* Brand header row (injected by JS) */
-  .print-brand-row td{
-    background:#fff!important;padding:8px 10px 6px 10px!important;
-    border-bottom:2px solid #1a3a6e!important;border-right:none!important;
-    border-top:none!important;vertical-align:middle!important;}
-  /* Column label row */
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 6px!important;
@@ -222,7 +231,8 @@ td:last-child{border-right:none;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
   td{padding:5px 6px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
-    vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
+    vertical-align:middle!important;white-space:normal!important;
+    word-break:break-word!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
   thead tr.hdr-row th:nth-child(1){width:4%!important;}
   thead tr.hdr-row th:nth-child(2){width:9%!important;}
@@ -238,17 +248,12 @@ td:last-child{border-right:none;}
   .td-eq{color:#1a3a6e!important;font-weight:700!important;font-size:9px!important;}
   .td-cod{color:#000!important;font-size:8px!important;}
   .td-ore{font-weight:700!important;}
-  .th-chip{background:transparent!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
+  .th-chip{background:transparent!important;font-size:8px!important;
+    padding:2px 5px!important;border-radius:3px!important;}
   .th-ok{border:1px solid #1a7a4a!important;color:#1a7a4a!important;}
   .th-warn{border:1px solid #8a6000!important;color:#8a6000!important;}
   .th-over{border:1px solid #8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
   .th-na{border:1px solid #aaa!important;color:#aaa!important;}
-  /* Footer: fixed at bottom */
-  .print-footer-fixed{
-    display:flex!important;position:fixed;bottom:0;left:14mm;right:14mm;height:10mm;
-    align-items:center;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;background:#fff!important;
-    justify-content:space-between;}
   @page{size:A4 landscape;margin:10mm 0 14mm 0;}
   html{-webkit-print-color-adjust:exact;}
 }
@@ -1075,49 +1080,13 @@ function resetFormOre(){
   setInterval(loadData,120000);
   window.addEventListener('beforeprint', function() {
     var now = new Date();
-    var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
-    var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-    var dateStr = 'Data generarii: ' + d + ' ' + t;
+    var d = String(now.getDate()).padStart(2,'0')+'/'
+          + String(now.getMonth()+1).padStart(2,'0')+'/'
+          + now.getFullYear();
+    var t = String(now.getHours()).padStart(2,'0')
+          + ':' + String(now.getMinutes()).padStart(2,'0');
     var el = document.getElementById('print-date-text');
-    if(el) el.textContent = dateStr;
-    var ef = document.getElementById('print-date-fixed');
-    if(ef) ef.textContent = dateStr;
-    // Inject brand header row as first row of thead so it repeats on every page
-    var thead = document.querySelector('#main-table thead');
-    if(thead && !thead.querySelector('.print-brand-row')) {
-      var cols = thead.querySelectorAll('.hdr-row th').length || 10;
-      var brandRow = document.createElement('tr');
-      brandRow.className = 'print-brand-row';
-      var td = document.createElement('td');
-      td.colSpan = cols;
-      td.innerHTML =
-        '<table style="width:100%;border-collapse:collapse;"><tr>' +
-        '<td style="width:50%;vertical-align:middle;padding:0;">' +
-          '<div style="display:flex;align-items:center;gap:14px;">' +
-            '<div>' +
-              '<div style="font-family:Orbitron,Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;">KR<span style='color:#00dcb4;'>O</span>NOS</div>' +
-              '<div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#1a3a6e;letter-spacing:.2em;opacity:.7;margin-top:1px;">MAINTENANCE SYSTEM</div>' +
-            '</div>' +
-            '<div style="width:1px;height:36px;background:#d0d8e8;margin:0 6px;"></div>' +
-            '<div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;line-height:1.5;">' +
-              'Registru Ore Functionare Echipamente<br>' +
-              '<span style='font-weight:400;font-size:10px;color:#555;'>Terminal Cereale SOCEP · Port Constanta</span>' +
-            '</div>' +
-          '</div>' +
-        '</td>' +
-        '<td style="width:50%;text-align:right;vertical-align:middle;padding:0;">' +
-          '<div style="display:flex;flex-direction:column;align-items:flex-end;">' +
-            '<span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;line-height:1;">SOCEP</span>' +
-            '<span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;margin-top:2px;">PORT OPERATOR</span>' +
-          '</div>' +
-        '</td>' +
-        '</tr></table>';
-      thead.insertBefore(brandRow, thead.firstChild);
-    }
-  });
-  window.addEventListener('afterprint', function() {
-    var brandRow = document.querySelector('.print-brand-row');
-    if(brandRow) brandRow.remove();
+    if (el) el.textContent = 'Data generarii: ' + d + ' ' + t;
   });
 })();
 </script>
