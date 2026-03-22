@@ -184,6 +184,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  a{color:inherit!important;text-decoration:none!important;}
+  a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
@@ -194,7 +196,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
   .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
     color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-logo{height:44px;width:auto;}
+  .print-logo{height:50px;width:auto;mix-blend-mode:multiply;}
   .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
     color:#1a3a6e;text-align:right;letter-spacing:.05em;}
   .print-report-date{font-size:10px;color:#666;margin-top:2px;}
@@ -220,18 +222,23 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   thead tr.hdr-row th:nth-child(10),
   thead tr.hdr-row th:nth-child(11),
   tbody td:nth-child(1),tbody td:nth-child(10),tbody td:nth-child(11){display:none!important;}
-  /* Columns widths: Nr, Echipament, Inceput, Finalizare, Descriere, Status */
-  thead tr.hdr-row th:nth-child(2){width:4%!important;}
-  thead tr.hdr-row th:nth-child(3){width:10%!important;}
-  thead tr.hdr-row th:nth-child(4){width:12%!important;}
-  thead tr.hdr-row th:nth-child(5){width:10%!important;}
-  thead tr.hdr-row th:nth-child(6){width:10%!important;}
-  thead tr.hdr-row th:nth-child(7){width:34%!important;}
+  /* Hide: checkbox(1), Motiv(4), Echipa(10), Adaugat(11) */
+  thead tr.hdr-row th:nth-child(4),
+  tbody td:nth-child(4){display:none!important;}
+  /* Column widths: Nr(2), Echip(3), Inceput(5), Fin(6), Desc(7), Status(8), Piese(9) */
+  thead tr.hdr-row th:nth-child(2){width:3%!important;}
+  thead tr.hdr-row th:nth-child(3){width:11%!important;}
+  thead tr.hdr-row th:nth-child(5){width:11%!important;}
+  thead tr.hdr-row th:nth-child(6){width:11%!important;}
+  thead tr.hdr-row th:nth-child(7){width:28%!important;}
   thead tr.hdr-row th:nth-child(8){width:14%!important;}
-  thead tr.hdr-row th:nth-child(9){width:6%!important;}
+  thead tr.hdr-row th:nth-child(9){width:22%!important;font-size:10px!important;}
+  tbody td:nth-child(9){font-size:10px!important;text-align:left!important;}
   .td-eq{color:#1a3a6e!important;font-weight:700!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-size:9px!important;}
   .td-motiv{font-size:9px!important;text-align:left!important;}
-  .td-dt{font-size:9px!important;}
+  .td-dt{font-size:8px!important;}
+  .td-dt .ddate{font-size:8px!important;font-weight:600!important;}
+  .td-dt .dtime{font-size:7px!important;}
   .td-dt .ddate{color:#000!important;font-weight:600!important;}
   .td-dt .dtime{color:#333!important;font-size:8px!important;}
   .td-desc{max-width:none!important;white-space:normal!important;text-align:left!important;font-size:9px!important;}
@@ -1073,12 +1080,50 @@ function resetForm() {
 
 function exportExcel() {
   var rows = getExportRows();
-  var headers = ['Timestamp','Motiv','Data inc','Ora inc','Data fin','Ora fin','Descriere','Status','Piese','Echipa','Adaugat de','Echipament'];
-  var data = [headers].concat(rows.map(function(r) { return r.slice(0,12); }));
+  // Columns: Echipament, Motiv, Data inc, Ora inc, Data fin, Ora fin, Descriere, Status utilaj, Piese schimb, Echipa
+  // Skip: Timestamp (r[0]) and Adaugat de (r[10])
+  var headers = ['Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'];
+  var data = [headers].concat(rows.map(function(r) {
+    return [r[11],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9]];
+  }));
   var ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{wch:16},{wch:22},{wch:12},{wch:9},{wch:12},{wch:9},{wch:45},{wch:22},{wch:22},{wch:22},{wch:14},{wch:11}];
+  // Column widths
+  ws['!cols'] = [{wch:14},{wch:24},{wch:13},{wch:10},{wch:13},{wch:10},{wch:48},{wch:24},{wch:28},{wch:24}];
+  // Style header row
+  var range = XLSX.utils.decode_range(ws['!ref']);
+  for (var C = range.s.c; C <= range.e.c; C++) {
+    var addr = XLSX.utils.encode_cell({r:0, c:C});
+    if (!ws[addr]) continue;
+    ws[addr].s = {
+      fill: {fgColor: {rgb: '1A3A6E'}},
+      font: {bold: true, color: {rgb: 'FFFFFF'}, sz: 11},
+      alignment: {horizontal: 'center', vertical: 'center', wrapText: true},
+      border: {
+        bottom: {style:'medium', color:{rgb:'FFFFFF'}},
+        right: {style:'thin', color:{rgb:'FFFFFF'}}
+      }
+    };
+  }
+  // Style data rows (alternating)
+  for (var R = 1; R <= range.e.r; R++) {
+    var fillColor = R % 2 === 0 ? 'EFF4FF' : 'FFFFFF';
+    for (var C2 = range.s.c; C2 <= range.e.c; C2++) {
+      var addr2 = XLSX.utils.encode_cell({r:R, c:C2});
+      if (!ws[addr2]) ws[addr2] = {t:'s', v:''};
+      ws[addr2].s = {
+        fill: {fgColor: {rgb: fillColor}},
+        font: {color: {rgb: '000000'}, sz: 10},
+        alignment: {horizontal: C2 === 6 ? 'left' : 'center', vertical: 'center', wrapText: true},
+        border: {
+          bottom: {style:'thin', color:{rgb:'D0D8E8'}},
+          right: {style:'thin', color:{rgb:'D0D8E8'}}
+        }
+      };
+    }
+  }
+  ws['!rows'] = [{hpt:22}]; // header row height
   var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Mentenanta');
+  XLSX.utils.book_append_sheet(wb, ws, 'Mentenanta Echipamente');
   var now = new Date();
   XLSX.writeFile(wb, 'KRONOS_Mentenanta_' + now.getDate() + '.' + (now.getMonth()+1) + '.' + now.getFullYear() + '.xlsx');
 }
