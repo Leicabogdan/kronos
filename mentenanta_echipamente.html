@@ -7,7 +7,7 @@
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx-js-style.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -1101,127 +1101,83 @@ function exportExcel() {
   var dateStr = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
   var timeStr = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
 
-  // Try xlsx-js-style first, fallback to plain xlsx, fallback to HTML table (Excel-compatible)
-  var XL = window.XLSXStyle || window.XLSX;
-
-  if (!XL) {
-    // HTML table fallback - opens directly in Excel with basic formatting
-    exportExcelHTML(rows, dateStr, timeStr);
-    return;
-  }
-
-  var DARK='1A3A6E', TEAL='00DCB4', LTSKY='D6E8F7', SKYBL='5090D0';
-  var WHT='FFFFFF', ALT='F5F8FF', BORD='B8CAEA', DTXT='0D1B3A';
-  var hasStyles = !!window.XLSXStyle;
-
-  function tb(){var s={style:'thin',color:{rgb:BORD}};return{top:s,bottom:s,left:s,right:s};}
-  function mb(){var m={style:'medium',color:{rgb:WHT}},t={style:'thin',color:{rgb:'3A5A9E'}};return{top:m,bottom:m,left:t,right:t};}
-  var statusC={'Apt de functionare':{bg:'E8F8F0',fg:'1A7A4A'},'Sub supraveghere':{bg:'FFF8E1',fg:'8A6000'},'Necesita interventie':{bg:'FEECEC',fg:'8A1A1A'},'Necesita piese de schimb':{bg:'FFF0E0',fg:'8A4A00'}};
-  var hdrs=['Nr.','Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'];
-
-  var wsData=[
-    ['','KRONOS  —  Registru Mentenanta Echipamente','','','','','','','','','',''],
-    ['','Terminal Cereale SOCEP  ·  Port Constanta','','','','','','Data generare: '+dateStr+' '+timeStr,'','','',''],
-    ['','','','','','','','','','','',''],
-    [''].concat(hdrs)
-  ];
-  rows.forEach(function(r,i){wsData.push(['',(i+1).toString(),r[11]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||'',r[6]||'',r[7]||'',r[8]||'',r[9]||'']);});
-
-  var ws=XL.utils.aoa_to_sheet(wsData);
-  ws['!cols']=[{wch:2},{wch:5},{wch:14},{wch:24},{wch:13},{wch:10},{wch:13},{wch:10},{wch:46},{wch:22},{wch:28},{wch:22}];
-  ws['!rows']=[{hpt:28},{hpt:20},{hpt:8},{hpt:28}];
-  for(var i=0;i<rows.length;i++) ws['!rows'].push({hpt:undefined});
-  ws['!merges']=[{s:{r:0,c:1},e:{r:0,c:11}},{s:{r:1,c:1},e:{r:1,c:6}},{s:{r:1,c:7},e:{r:1,c:11}},{s:{r:2,c:0},e:{r:2,c:11}}];
-  ws['!autofilter']={ref:'B4:L4'};
-
-  if(hasStyles) {
-    function sc(addr,s){if(!ws[addr])ws[addr]={t:'s',v:''};ws[addr].s=s;}
-    sc('B1',{fill:{fgColor:{rgb:DARK}},font:{bold:true,sz:16,color:{rgb:TEAL},name:'Calibri'},alignment:{horizontal:'left',vertical:'center',indent:1}});
-    for(var c=2;c<12;c++){var a=XL.utils.encode_cell({r:0,c:c});if(!ws[a])ws[a]={t:'s',v:''};ws[a].s={fill:{fgColor:{rgb:DARK}}};}
-    sc('A1',{fill:{fgColor:{rgb:DARK}}});
-    sc('B2',{fill:{fgColor:{rgb:LTSKY}},font:{bold:true,sz:11,color:{rgb:DARK},name:'Calibri'},alignment:{horizontal:'left',vertical:'center',indent:1}});
-    sc('H2',{fill:{fgColor:{rgb:LTSKY}},font:{sz:10,color:{rgb:SKYBL},name:'Calibri'},alignment:{horizontal:'right',vertical:'center'}});
-    for(var c2=2;c2<12;c2++){var a2=XL.utils.encode_cell({r:1,c:c2});if(!ws[a2])ws[a2]={t:'s',v:''};ws[a2].s={fill:{fgColor:{rgb:LTSKY}}};}
-    sc('A2',{fill:{fgColor:{rgb:LTSKY}}});
-    for(var c3=0;c3<12;c3++){var a3=XL.utils.encode_cell({r:2,c:c3});if(!ws[a3])ws[a3]={t:'s',v:''};ws[a3].s={fill:{fgColor:{rgb:WHT}}};}
-    hdrs.forEach(function(h,i){var addr=XL.utils.encode_cell({r:3,c:i+1});if(!ws[addr])ws[addr]={t:'s',v:h};ws[addr].s={fill:{fgColor:{rgb:DARK}},font:{bold:true,sz:11,color:{rgb:WHT},name:'Calibri'},alignment:{horizontal:'center',vertical:'center',wrapText:true},border:mb()};});
-    sc('A4',{fill:{fgColor:{rgb:DARK}}});
-    rows.forEach(function(r,i){
-      var row=4+i,isE=i%2===0,fill=isE?ALT:WHT;
-      var nr=XL.utils.encode_cell({r:row,c:1});
-      ws[nr]={v:(i+1),t:'n',s:{fill:{fgColor:{rgb:fill}},font:{bold:true,sz:10,color:{rgb:DARK},name:'Calibri'},alignment:{horizontal:'center',vertical:'center'},border:tb()}};
-      [r[11],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9]].forEach(function(val,j){
-        var addr=XL.utils.encode_cell({r:row,c:j+2});
-        if(!ws[addr])ws[addr]={t:'s',v:val||''};
-        var isDesc=(j===6),isPiese=(j===8),isEchip=(j===0),isStat=(j===7);
-        var bg=fill,fg=DTXT,bold=false;
-        if(isEchip){bold=true;fg=DARK;}
-        if(isStat){var sc2=statusC[val||''];if(sc2){bg=sc2.bg;fg=sc2.fg;bold=true;}}
-        ws[addr].s={fill:{fgColor:{rgb:bg}},font:{sz:10,color:{rgb:fg},bold:bold,name:'Calibri'},alignment:{horizontal:(isDesc||isPiese)?'left':'center',vertical:'top',wrapText:true},border:tb()};
-      });
-      sc(XL.utils.encode_cell({r:row,c:0}),{fill:{fgColor:{rgb:fill}}});
-    });
-  }
-
-  var wb=XL.utils.book_new();
-  XL.utils.book_append_sheet(wb,ws,'Mentenanta Echipamente');
-  XL.writeFile(wb,'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
-}
-
-function exportExcelHTML(rows, dateStr, timeStr) {
-  var statusStyles = {
-    'Apt de functionare':'background:#e8f8f0;color:#1a7a4a;font-weight:bold;',
-    'Sub supraveghere':'background:#fff8e1;color:#8a6000;font-weight:bold;',
-    'Necesita interventie':'background:#feecec;color:#8a1a1a;font-weight:bold;',
-    'Necesita piese de schimb':'background:#fff0e0;color:#8a4a00;font-weight:bold;'
+  var statusBg = {
+    'Apt de functionare':'#e8f8f0','Sub supraveghere':'#fff8e1',
+    'Necesita interventie':'#feecec','Necesita piese de schimb':'#fff0e0'
   };
-  var th='background:#1a3a6e;color:#ffffff;font-weight:bold;padding:6px 8px;border:1px solid #fff;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11px;';
-  var tdBase='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10px;vertical-align:top;';
-  var html2='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
-  html2+='<head><meta charset="UTF-8"><style>td{mso-number-format:"@";}</style></head><body>';
-  html2+='<table><tr><td colspan="11" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:16px;padding:8px 12px;font-family:Calibri,Arial,sans-serif;">KRONOS — Registru Mentenanta Echipamente</td></tr>';
-  html2+='<tr><td colspan="7" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11px;padding:5px 10px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP · Port Constanta</td>';
-  html2+='<td colspan="4" style="background:#d6e8f7;color:#5090d0;font-size:10px;padding:5px 10px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
-  html2+='<tr><td colspan="11" style="background:#ffffff;height:6px;"></td></tr>';
-  html2+='<tr>';
-  ['Nr.','Echipament','Motiv','Data inc','Ora inc','Data fin','Ora fin','Descriere','Status','Piese','Echipa'].forEach(function(h){html2+='<td style="'+th+'">'+h+'</td>';});
-  html2+='</tr>';
-  rows.forEach(function(r,i){
-    var fill=i%2===0?'#f5f8ff':'#ffffff';
-    var status=r[7]||'';var statusSt=statusStyles[status]||'';
-    html2+='<tr>';
-    html2+='<td style="'+tdBase+'background:'+fill+';color:#1a3a6e;font-weight:bold;text-align:center;">'+(i+1)+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[11]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';">'+(r[1]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';text-align:center;">'+(r[2]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';text-align:center;">'+(r[3]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';text-align:center;">'+(r[4]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';text-align:center;">'+(r[5]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';">'+(r[6]||'')+'</td>';
-    html2+='<td style="'+tdBase+statusSt+'text-align:center;">'+status+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';">'+(r[8]||'')+'</td>';
-    html2+='<td style="'+tdBase+'background:'+fill+';">'+(r[9]||'')+'</td>';
-    html2+='</tr>';
+  var statusFg = {
+    'Apt de functionare':'#1a7a4a','Sub supraveghere':'#8a6000',
+    'Necesita interventie':'#8a1a1a','Necesita piese de schimb':'#8a4a00'
+  };
+
+  var th = 'background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  var tdC = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;';
+  var tdL = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:left;';
+
+  var t = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+  t += '<head><meta charset="UTF-8">';
+  t += '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+  t += '<x:Name>Mentenanta Echipamente</x:Name>';
+  t += '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  t += '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+  t += '</head><body>';
+  t += '<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
+
+  // Row 1: KRONOS title
+  t += '<tr><td colspan="11" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">';
+  t += 'KRONOS &mdash; Registru Mentenanta Echipamente</td></tr>';
+
+  // Row 2: SOCEP info
+  t += '<tr>';
+  t += '<td colspan="7" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP &middot; Port Constanta</td>';
+  t += '<td colspan="4" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td>';
+  t += '</tr>';
+
+  // Row 3: spacer
+  t += '<tr><td colspan="11" style="height:8px;background:#ffffff;"></td></tr>';
+
+  // Row 4: headers
+  t += '<tr>';
+  ['Nr.','Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'].forEach(function(h){
+    t += '<td style="'+th+'">'+h+'</td>';
   });
-  html2+='</table></body></html>';
-  var blob=new Blob([html2],{type:'application/vnd.ms-excel;charset=UTF-8'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xls';
-  a.click();
+  t += '</tr>';
+
+  // Data rows
+  rows.forEach(function(r,i){
+    var fill = i%2===0 ? '#f5f8ff' : '#ffffff';
+    var status = r[7]||'';
+    var sBg = statusBg[status]||fill;
+    var sFg = statusFg[status]||'#0d1b3a';
+    t += '<tr>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[11]||'')+'</td>';
+    var av=(r[1]||'').toLowerCase().indexOf('avarie')>-1;
+    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[1]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[2]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[3]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[4]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[5]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[6]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
+    t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[8]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[9]||'')+'</td>';
+    t += '</tr>';
+  });
+
+  t += '</table></body></html>';
+
+  var blob = new Blob([t], {type:'application/vnd.ms-excel;charset=utf-8'});
+  var link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xls';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
 function exportPDF() { window.print(); }
-
-// xlsx-js-style exposes XLSXStyle; alias to XLSX for compatibility
-(function(){
-  var checkXLSX = setInterval(function(){
-    if(typeof XLSXStyle !== 'undefined') {
-      window.XLSX = XLSXStyle;
-      clearInterval(checkXLSX);
-    }
-  }, 50);
-})();
 
 (function init() {
   // Real-time KPI refresh every 60 seconds
