@@ -447,7 +447,11 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
               <option>Compresor SL1</option><option>Compresor SL2</option>
               <option>Compresoare HH1</option><option>Compresoare CF</option>
             </optgroup>
-                      <option style="font-weight:700;">Altele</option>
+            <optgroup label="Cantare">
+              <option>Cantar WE01</option><option>Cantar WE02</option>
+              <option>Cantar WE03</option><option>Cantar CF</option>
+            </optgroup>
+            <option style="font-weight:700;">Altele</option>
           </select>
         </div>
       </div>
@@ -590,6 +594,10 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <option>Compresor Buncar Barja</option>
           <option>Compresor SL1</option><option>Compresor SL2</option>
           <option>Compresoare HH1</option><option>Compresoare CF</option>
+        </optgroup>
+        <optgroup label="Cantare">
+          <option>Cantar WE01</option><option>Cantar WE02</option>
+          <option>Cantar WE03</option><option>Cantar CF</option>
         </optgroup>
         <option style="font-weight:700;">Altele</option>
       </select>
@@ -890,7 +898,7 @@ async function loadData() {
   document.getElementById('tbody').innerHTML =
     '<tr><td colspan="11" class="no-data" style="color:var(--teal);">\u29d7 Se incarca datele din Google Sheets...</td></tr>';
   try {
-    var resp = await fetch(SHEET_CSV_URL + '&t=' + Date.now());
+    var resp = await fetch(SHEET_CSV_URL + '&t=' + Date.now() + '&r=' + Math.random(), {cache: 'no-store', headers: {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache'}});
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     var text = await resp.text();
     var rows = parseCSV(text);
