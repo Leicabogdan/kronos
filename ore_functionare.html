@@ -192,15 +192,15 @@ td:last-child{border-right:none;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0 12mm!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   body > .page > *:not(.print-header):not(.print-footer){margin-top:0!important;}
-  .table-wrap{margin-top:52px!important;}
+  .table-wrap{margin-top:0!important;border-left:none!important;border-right:none!important;border-top:none!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
     position:fixed;top:0;left:0;right:0;
-    padding:8px 12mm 8px 12mm;border-bottom:2px solid #1a3a6e;
-    background:#fff!important;z-index:1000;}
+    padding:6px 12mm 6px 12mm;border-bottom:2px solid #1a3a6e;
+    background:#fff!important;z-index:9999;height:20mm;box-sizing:border-box;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
   .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
@@ -211,8 +211,8 @@ td:last-child{border-right:none;}
   .print-report-date{font-size:10px;color:#444;margin-top:2px;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
   .print-header,.print-footer{background:#fff!important;z-index:9999!important;}
-  .print-header{box-shadow:0 2px 0 #fff,0 4px 0 #fff!important;}
-  .print-footer{box-shadow:0 -2px 0 #fff,0 -4px 0 #fff!important;}
+  .print-header{box-shadow:0 2px 0 #fff,0 4px 0 #fff,-4px 0 0 #fff,4px 0 0 #fff,0 -8px 0 #fff!important;}
+  .print-footer{box-shadow:0 -2px 0 #fff,0 -4px 0 #fff,-4px 0 0 #fff,4px 0 0 #fff,0 8px 0 #fff!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
@@ -222,6 +222,7 @@ td:last-child{border-right:none;}
     text-align:center!important;border-right:1px solid #2a4a8e!important;
     white-space:normal!important;
   }
+  thead{display:table-header-group!important;}
   tbody tr{background:#fff!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
   td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
@@ -249,7 +250,7 @@ td:last-child{border-right:none;}
   .th-warn{border-color:#8a6000!important;color:#8a6000!important;}
   .th-over{border-color:#8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
   .no-data{color:#000!important;}
-  @page{size:A4 landscape;margin:18mm 12mm 14mm 12mm;}
+  @page{size:A4 landscape;margin:26mm 0mm 16mm 0mm;}
   .print-footer{display:flex!important;position:fixed;bottom:6mm;left:12mm;right:12mm;
     font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
     border-top:1px solid #d0d8e8;padding-top:4px;
