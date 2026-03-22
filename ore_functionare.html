@@ -192,70 +192,85 @@ td:last-child{border-right:none;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0 12mm!important;}
+  html,body{background:#fff!important;color:#000!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;
+    margin:0!important;padding:0!important;}
   .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
-  body > .page > *:not(.print-header):not(.print-footer){margin-top:0!important;}
-  .table-wrap{margin-top:0!important;border-left:none!important;border-right:none!important;border-top:none!important;}
-  .print-header{display:flex!important;align-items:center;justify-content:space-between;
-    position:fixed;top:0;left:0;right:0;
-    padding:6px 12mm 6px 12mm;border-bottom:2px solid #1a3a6e;
-    background:#fff!important;z-index:9999;height:20mm;box-sizing:border-box;}
+
+  /* ── HEADER: fixed so it appears on every page ── */
+  .print-header{
+    display:flex!important;
+    position:fixed;top:0;left:0;right:0;height:22mm;
+    align-items:center;justify-content:space-between;
+    padding:6px 14mm 6px 14mm;
+    border-bottom:2px solid #1a3a6e;
+    background:#fff!important;
+    z-index:9999;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
   .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
   .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
     color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
-    color:#1a3a6e;text-align:right;letter-spacing:.05em;}
-  .print-report-date{font-size:10px;color:#444;margin-top:2px;}
-  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
-  .print-header,.print-footer{background:#fff!important;z-index:9999!important;}
-  .print-header{box-shadow:0 2px 0 #fff,0 4px 0 #fff,-4px 0 0 #fff,4px 0 0 #fff,0 -8px 0 #fff!important;}
-  .print-footer{box-shadow:0 -2px 0 #fff,0 -4px 0 #fff,-4px 0 0 #fff,4px 0 0 #fff,0 8px 0 #fff!important;}
-  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+
+  /* ── FOOTER: fixed at bottom every page ── */
+  .print-footer{
+    display:flex!important;
+    position:fixed;bottom:0;left:0;right:0;height:12mm;
+    align-items:center;padding:0 14mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;background:#fff!important;
+    justify-content:space-between;z-index:9999;}
+
+  /* ── PAGE: margins reserve space for fixed header/footer ── */
+  @page{size:A4 landscape;margin:26mm 14mm 16mm 14mm;}
+
+  /* ── TABLE ── */
+  .table-wrap{
+    border:none!important;
+    border-radius:0!important;overflow:visible!important;
+    width:100%!important;
+    /* spacer so first row not under fixed header */
+    margin-top:0!important;}
+  table{
+    width:100%!important;table-layout:fixed!important;
+    border-collapse:collapse!important;
+    border:1.5px solid #1a3a6e!important;}
+  /* thead repeats column labels on each page natively */
+  thead{display:table-header-group!important;}
+  tbody{display:table-row-group!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
-    font-size:9px!important;padding:7px 8px!important;
+    font-size:9px!important;padding:7px 6px!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    font-weight:700!important;letter-spacing:.04em!important;
-    text-align:center!important;border-right:1px solid #2a4a8e!important;
-    white-space:normal!important;
-  }
-  thead{display:table-header-group!important;}
-  tbody tr{background:#fff!important;}
+    font-weight:700!important;text-align:center!important;
+    border-right:1px solid #2a4a8e!important;white-space:normal!important;}
+  tbody tr{background:#fff!important;page-break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
-  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
+  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
     vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
-  /* ore_functionare columns: Nr(1) Echip(2) Cod(3) Data(4) OreCum(5) Delta(6) Regim(7) 200h(8) 1500h(9) 8000h(10) */
   thead tr.hdr-row th:nth-child(1){width:4%!important;}
-  thead tr.hdr-row th:nth-child(2){width:10%!important;}
-  thead tr.hdr-row th:nth-child(3){width:9%!important;}
+  thead tr.hdr-row th:nth-child(2){width:9%!important;}
+  thead tr.hdr-row th:nth-child(3){width:8%!important;}
   thead tr.hdr-row th:nth-child(4){width:10%!important;}
   thead tr.hdr-row th:nth-child(5){width:10%!important;}
   thead tr.hdr-row th:nth-child(6){width:8%!important;}
   thead tr.hdr-row th:nth-child(7){width:9%!important;}
-  thead tr.hdr-row th:nth-child(8){width:13%!important;}
-  thead tr.hdr-row th:nth-child(9){width:13%!important;}
+  thead tr.hdr-row th:nth-child(8){width:14%!important;}
+  thead tr.hdr-row th:nth-child(9){width:14%!important;}
   thead tr.hdr-row th:nth-child(10){width:14%!important;}
   .td-nr{color:#1a3a6e!important;font-weight:700!important;}
-  .td-eq{color:#1a3a6e!important;font-weight:700!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-size:9px!important;}
+  .td-eq{color:#1a3a6e!important;font-weight:700!important;font-size:9px!important;}
   .td-cod{color:#000!important;font-size:8px!important;}
   .td-ore{font-weight:700!important;}
-  .td-regim{color:#000!important;}
-  .th-chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
-  .th-ok{border-color:#1a7a4a!important;color:#1a7a4a!important;}
-  .th-warn{border-color:#8a6000!important;color:#8a6000!important;}
-  .th-over{border-color:#8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
+  .th-chip{background:transparent!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
+  .th-ok{border:1px solid #1a7a4a!important;color:#1a7a4a!important;}
+  .th-warn{border:1px solid #8a6000!important;color:#8a6000!important;}
+  .th-over{border:1px solid #8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
+  .th-na{border:1px solid #aaa!important;color:#aaa!important;}
   .no-data{color:#000!important;}
-  @page{size:A4 landscape;margin:26mm 0mm 16mm 0mm;}
-  .print-footer{display:flex!important;position:fixed;bottom:6mm;left:12mm;right:12mm;
-    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;padding-top:4px;
-    justify-content:space-between;align-items:center;}
-  .print-footer a,.print-footer a::after{display:none!important;content:none!important;}
   html{-webkit-print-color-adjust:exact;}
 }
 .print-header{display:none;}
@@ -1085,30 +1100,6 @@ function resetFormOre(){
     var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
     var el = document.getElementById('print-date-text');
     if(el) el.textContent = 'Data generarii: ' + d + ' ' + t;
-    // Insert page breaks every 20 rows
-    var tbody = document.getElementById('tbody');
-    if(tbody) {
-      // Remove old print breaks
-      tbody.querySelectorAll('.print-break').forEach(function(r){r.remove();});
-      var rows = tbody.querySelectorAll('tr:not(.print-break)');
-      var cols = document.querySelectorAll('thead .hdr-row th').length || 10;
-      rows.forEach(function(row, i) {
-        if(i > 0 && i % 18 === 0) {
-          var br = document.createElement('tr');
-          br.className = 'print-break';
-          br.style.pageBreakBefore = 'always';
-          var td = document.createElement('td');
-          td.colSpan = cols;
-          td.style.cssText = 'padding:0;border:none;height:0;font-size:0;page-break-before:always;';
-          br.appendChild(td);
-          row.parentNode.insertBefore(br, row);
-        }
-      });
-    }
-  });
-  window.addEventListener('afterprint', function() {
-    var tbody = document.getElementById('tbody');
-    if(tbody) tbody.querySelectorAll('.print-break').forEach(function(r){r.remove();});
   });
 })();
 </script>
