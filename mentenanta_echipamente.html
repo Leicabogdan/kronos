@@ -1189,25 +1189,7 @@ function exportExcel() {
   var wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Mentenanta Echipamente');
 
-  // Add SOCEP logo image
-  try {
-    if (wb.Sheets && ws) {
-      var socepB64 =  + SOCEP_B64 + ;
-      wb.Sheets['Mentenanta Echipamente']['!images'] = [
-        {
-          name: 'socep_logo.png',
-          data: socepB64,
-          opts: {base64: true},
-          position: {
-            type: 'twoCellAnchor',
-            attrs: {editAs: 'oneCell'},
-            from: {col:8, colOff:0, row:0, rowOff:0},
-            to: {col:9, colOff:0, row:0, rowOff:0}
-          }
-        }
-      ];
-    }
-  } catch(e) {}
+  // Images require SheetJS Pro - skipped
 
   XLSX.writeFile(wb, 'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
 }
