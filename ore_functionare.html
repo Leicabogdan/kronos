@@ -150,9 +150,9 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .toolbar-right{margin-left:auto;}
 /* TABLE */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;min-width:1100px;font-family:var(--sans);}
-thead tr.hdr-row th{font-family:var(--sans);font-size:12px;color:#fff;letter-spacing:.04em;text-transform:uppercase;
-  font-weight:700;padding:10px 12px;text-align:center;white-space:nowrap;
+table{width:100%;border-collapse:collapse;min-width:1400px;font-family:var(--sans);}
+thead tr.hdr-row th{font-family:var(--sans);font-size:14px;color:#fff;letter-spacing:.04em;text-transform:uppercase;
+  font-weight:700;padding:12px 16px;text-align:center;white-space:nowrap;
   cursor:pointer;user-select:none;transition:all .15s;
   border-bottom:2px solid rgba(0,220,180,.35);border-right:1px solid rgba(255,255,255,.06);
   background:#081410;}
@@ -164,19 +164,19 @@ tbody tr{transition:background .1s;}
 tbody tr:nth-child(odd){background:var(--bg3);}
 tbody tr:nth-child(even){background:var(--bg4);}
 tbody tr:hover{background:rgba(0,220,180,.04)!important;}
-td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.05);
-  border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:13px;text-align:center;}
+td{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.05);
+  border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:16px;text-align:center;}
 td:last-child{border-right:none;}
-.td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
-.td-eq{font-family:var(--mono);color:var(--teal);font-weight:900;font-size:14px;white-space:nowrap;}
-.td-cod{font-family:var(--mono);color:#fff;font-size:12px;}
-.td-ore{font-family:var(--mono);font-weight:700;font-size:14px;}
-.td-regim{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,.7);}
-.td-delta{font-family:var(--mono);font-size:13px;}
-.td-data{font-family:var(--mono);font-size:12px;color:var(--teal);}
+.td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:16px;}
+.td-eq{font-family:var(--mono);color:var(--teal);font-weight:900;font-size:18px;white-space:nowrap;}
+.td-cod{font-family:var(--mono);color:#fff;font-size:15px;}
+.td-ore{font-family:var(--mono);font-weight:700;font-size:18px;}
+.td-regim{font-family:var(--mono);font-size:15px;color:#fff;}
+.td-delta{font-family:var(--mono);font-size:16px;}
+.td-data{font-family:var(--mono);font-size:15px;color:var(--teal);}
 /* Threshold chips */
-.th-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;
-  font-family:var(--mono);font-size:11px;font-weight:700;white-space:nowrap;}
+.th-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;
+  font-family:var(--mono);font-size:14px;font-weight:700;white-space:nowrap;}
 .th-ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.3);}
 .th-warn{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.3);}
 .th-over{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.3);}
@@ -445,14 +445,15 @@ td:last-child{border-right:none;}
     </div>
     <input type="text" class="search-input" id="search-eq" placeholder="Cauta echipament..." oninput="applyFilters()"/>
     <div class="toolbar-sep"></div>
-    <div style="display:flex;gap:6px;align-items:center;">
-      <span style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;">REVIZIE:</span>
-      <button class="chart-btn" id="rev-all" onclick="setRevFilter('toate',this)">TOATE</button>
-      <button class="chart-btn" id="rev-200" onclick="setRevFilter('200',this)">200h</button>
-      <button class="chart-btn" id="rev-1500" onclick="setRevFilter('1500',this)">1500h</button>
-      <button class="chart-btn" id="rev-8000" onclick="setRevFilter('8000',this)">8000h</button>
-      <button class="chart-btn" id="rev-warn" onclick="setRevFilter('warn',this)" style="color:var(--amber);border-color:rgba(240,165,0,.35);">ATENTIE</button>
-      <button class="chart-btn" id="rev-over" onclick="setRevFilter('over',this)" style="color:var(--red);border-color:rgba(224,80,80,.35);">DEPASIT</button>
+    <div class="select-wrap">
+      <select id="sel-revizie" onchange="setRevFilterDrop()">
+        <option value="">Toate reviziile</option>
+        <option value="200">200h</option>
+        <option value="1500">1500h</option>
+        <option value="8000">8000h</option>
+        <option value="warn" style="color:var(--amber);">In 20h de prag</option>
+        <option value="over" style="color:var(--red);">Depasit prag</option>
+      </select>
     </div>
     <div class="toolbar-sep"></div>
     <button class="tb-btn teal" onclick="loadData()">
@@ -859,14 +860,12 @@ function sortBy(col){
   if(ths[col])ths[col].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
 }
-function setRevFilter(f, btn) {
-  revFilter = f;
-  document.querySelectorAll('[id^="rev-"]').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  // auto-set sort by the selected threshold
-  if(f==='200'){sortCol=7;sortDir=1;}
-  else if(f==='1500'){sortCol=8;sortDir=1;}
-  else if(f==='8000'){sortCol=9;sortDir=1;}
+function setRevFilterDrop() {
+  var sel = document.getElementById('sel-revizie');
+  revFilter = sel ? sel.value : '';
+  if(revFilter==='200'){sortCol=7;sortDir=1;}
+  else if(revFilter==='1500'){sortCol=8;sortDir=1;}
+  else if(revFilter==='8000'){sortCol=9;sortDir=1;}
   applyFilters();
 }
 
@@ -1042,8 +1041,6 @@ function resetFormOre(){
 // ── INIT ──
 (function(){
   sortCol=4;sortDir=-1;
-  var allBtn=document.getElementById('rev-all');
-  if(allBtn)allBtn.classList.add('active');
   loadData();
   setInterval(loadData,120000);
 })();
