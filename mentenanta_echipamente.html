@@ -1101,98 +1101,184 @@ function exportExcel() {
   var dateStr = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
   var timeStr = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
 
-  var headers = ['Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'];
-  var titleRow = ['KRONOS — Registru Mentenanta Echipamente','','','','','','','','',''];
-  var infoRow = ['Terminal Cereale SOCEP · Port Constanta','','','Data generare: '+dateStr+' '+timeStr,'','','','','',''];
-  var blankRow = ['','','','','','','','','',''];
-  var logoSpaceRow = ['','','','','','','','','',''];
+  var DARK  = '1A3A6E';
+  var TEAL  = '00DCB4';
+  var MID   = 'EAF0FB';
+  var ALT   = 'F5F8FF';
+  var WHT   = 'FFFFFF';
+  var DARK_TXT = '0D1B3A';
+  var BORD  = 'B8CAEA';
 
-  // Row 1 = logo row (blank, logos added as images)
+  function thinBorder() {
+    var s = {style:'thin',color:{rgb:BORD}};
+    return {top:s,bottom:s,left:s,right:s};
+  }
+  function hdrBorder() {
+    var m={style:'medium',color:{rgb:WHT}}, t={style:'thin',color:{rgb:'3A5A9E'}};
+    return {top:m,bottom:m,left:t,right:t};
+  }
+
+  var statusColors = {
+    'Apt de functionare':       {bg:'E8F8F0',fg:'1A7A4A'},
+    'Sub supraveghere':         {bg:'FFF8E1',fg:'8A6000'},
+    'Necesita interventie':     {bg:'FEECEC',fg:'8A1A1A'},
+    'Necesita piese de schimb': {bg:'FFF0E0',fg:'8A4A00'}
+  };
+
+  var headers = ['Nr.','Echipament','Motiv interventie','Data inceput','Ora inceput',
+                 'Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj',
+                 'Piese de schimb','Echipa'];
+  var colWidths = [5,14,24,13,10,13,10,46,22,28,22];
+
+  // Build worksheet data (array of arrays)
+  // Row 1 = logo spacer (blank)
   // Row 2 = title
   // Row 3 = info
-  // Row 4 = blank
+  // Row 4 = spacer
   // Row 5 = headers
   // Row 6+ = data
-  var data = [logoSpaceRow, titleRow, infoRow, blankRow, headers].concat(rows.map(function(r) {
-    return [r[11],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9]];
-  }));
 
-  var ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{wch:14},{wch:24},{wch:13},{wch:9},{wch:13},{wch:9},{wch:46},{wch:24},{wch:28},{wch:22}];
+  var ws_data = [
+    ['','','','','','','','','','','',''],   // row 1 logo
+    ['','KRONOS \u2014 Registru Mentenanta Echipamente','','','','','','','','','',''],  // row 2
+    ['','Terminal Cereale SOCEP \u00b7 Port Constanta','','','','','','Data generare: '+dateStr+' '+timeStr,'','','',''],  // row 3
+    ['','','','','','','','','','','',''],   // row 4 spacer
+    [''].concat(headers)                     // row 5 headers
+  ];
 
-  if (!ws['!merges']) ws['!merges'] = [];
-  ws['!merges'].push({s:{r:0,c:0},e:{r:0,c:9}});  // logo row
-  ws['!merges'].push({s:{r:1,c:0},e:{r:1,c:9}});  // title
-  ws['!merges'].push({s:{r:2,c:0},e:{r:2,c:2}});  // info left
-  ws['!merges'].push({s:{r:2,c:3},e:{r:2,c:9}});  // info right
+  rows.forEach(function(r,i){
+    ws_data.push([
+      '',               // A col margin
+      (i+1).toString(), // Nr
+      r[11]||'',        // Echipament
+      r[1]||'',         // Motiv
+      r[2]||'',         // Data inc
+      r[3]||'',         // Ora inc
+      r[4]||'',         // Data fin
+      r[5]||'',         // Ora fin
+      r[6]||'',         // Descriere
+      r[7]||'',         // Status
+      r[8]||'',         // Piese
+      r[9]||''          // Echipa
+    ]);
+  });
 
-  ws['!rows'] = [{hpt:52},{hpt:28},{hpt:18},{hpt:8},{hpt:26}];
-  var range = XLSX.utils.decode_range(ws['!ref']);
-  for (var ri = 5; ri <= range.e.r; ri++) ws['!rows'].push({hpt:undefined});
+  var ws = XLSX.utils.aoa_to_sheet(ws_data);
 
-  // Logo row style
-  ws['A1'] = {v:'',t:'s',s:{fill:{fgColor:{rgb:'FFFFFF'}}}};
+  // Column widths
+  ws['!cols'] = [{wch:1},{wch:5},{wch:14},{wch:24},{wch:13},{wch:10},{wch:13},{wch:10},{wch:46},{wch:22},{wch:28},{wch:22}];
 
-  // Title row
-  ws['A2'] = {v:titleRow[0],t:'s',s:{
-    fill:{fgColor:{rgb:'1A3A6E'}},
-    font:{bold:true,color:{rgb:'00DCB4'},sz:16,name:'Calibri'},
-    alignment:{horizontal:'center',vertical:'center'}
-  }};
+  // Row heights
+  ws['!rows'] = [{hpt:56},{hpt:22},{hpt:16},{hpt:8},{hpt:28}];
+  for(var i=0;i<rows.length;i++) ws['!rows'].push({hpt:18});
 
-  // Info row
-  ws['A3'] = {v:infoRow[0],t:'s',s:{
-    fill:{fgColor:{rgb:'EAF0FB'}},
-    font:{color:{rgb:'1A3A6E'},sz:10,bold:true},
-    alignment:{horizontal:'left',vertical:'center'}
-  }};
-  ws['D3'] = {v:infoRow[3],t:'s',s:{
-    fill:{fgColor:{rgb:'EAF0FB'}},
-    font:{color:{rgb:'555555'},sz:10},
-    alignment:{horizontal:'right',vertical:'center'}
-  }};
+  // Merges
+  ws['!merges'] = [
+    {s:{r:0,c:0},e:{r:0,c:11}},   // row 1 full
+    {s:{r:1,c:1},e:{r:1,c:11}},   // title
+    {s:{r:2,c:1},e:{r:2,c:6}},    // info left
+    {s:{r:2,c:7},e:{r:2,c:11}},   // info right
+    {s:{r:3,c:0},e:{r:3,c:11}},   // spacer
+  ];
 
-  // Column headers (row index 4)
-  for (var C = 0; C <= 9; C++) {
-    var addr = XLSX.utils.encode_cell({r:4,c:C});
-    ws[addr] = {v:headers[C],t:'s',s:{
-      fill:{fgColor:{rgb:'1A3A6E'}},
-      font:{bold:true,color:{rgb:'FFFFFF'},sz:11},
-      alignment:{horizontal:'center',vertical:'center',wrapText:true},
-      border:{
-        top:{style:'medium',color:{rgb:'FFFFFF'}},
-        bottom:{style:'medium',color:{rgb:'FFFFFF'}},
-        left:{style:'thin',color:{rgb:'2A5ABE'}},
-        right:{style:'thin',color:{rgb:'2A5ABE'}}
-      }
-    }};
+  // AutoFilter on header row
+  ws['!autofilter'] = {ref:'B5:L5'};
+
+  // Helper to set cell style
+  function sc(addr, val, s) {
+    if(!ws[addr]) ws[addr]={};
+    if(val!==undefined) ws[addr].v = val;
+    if(typeof val==='number') ws[addr].t='n';
+    else ws[addr].t='s';
+    ws[addr].s = s;
   }
+
+  // Row 1: logo bg
+  for(var c=0;c<12;c++){
+    var a=XLSX.utils.encode_cell({r:0,c:c});
+    if(!ws[a])ws[a]={t:'s',v:''};
+    ws[a].s={fill:{fgColor:{rgb:'F0F4FC'}}};
+  }
+
+  // Row 2: title
+  sc('B2','KRONOS \u2014 Registru Mentenanta Echipamente',{
+    fill:{fgColor:{rgb:DARK}},
+    font:{bold:true,sz:16,color:{rgb:TEAL},name:'Calibri'},
+    alignment:{horizontal:'left',vertical:'center',indent:1}
+  });
+  sc('A2','',{fill:{fgColor:{rgb:DARK}}});
+
+  // Row 3: info
+  sc('B3','Terminal Cereale SOCEP \u00b7 Port Constanta',{
+    fill:{fgColor:{rgb:MID}},
+    font:{bold:true,sz:10,color:{rgb:DARK},name:'Calibri'},
+    alignment:{horizontal:'left',vertical:'center',indent:1}
+  });
+  sc('H3','Data generare: '+dateStr+' '+timeStr,{
+    fill:{fgColor:{rgb:MID}},
+    font:{sz:10,color:{rgb:'555555'},name:'Calibri'},
+    alignment:{horizontal:'right',vertical:'center'}
+  });
+  sc('A3','',{fill:{fgColor:{rgb:MID}}});
+
+  // Row 4: spacer
+  sc('A4','',{fill:{fgColor:{rgb:WHT}}});
+
+  // Row 5: headers
+  headers.forEach(function(h,i){
+    var addr=XLSX.utils.encode_cell({r:4,c:i+1});
+    sc(addr,h,{
+      fill:{fgColor:{rgb:DARK}},
+      font:{bold:true,sz:11,color:{rgb:WHT},name:'Calibri'},
+      alignment:{horizontal:'center',vertical:'center',wrapText:true},
+      border:hdrBorder()
+    });
+  });
+  sc('A5','',{fill:{fgColor:{rgb:DARK}}});
 
   // Data rows
-  for (var R = 5; R <= range.e.r; R++) {
-    var fillColor = (R % 2 === 1) ? 'EFF4FB' : 'FFFFFF';
-    for (var C2 = 0; C2 <= 9; C2++) {
-      var addr2 = XLSX.utils.encode_cell({r:R,c:C2});
-      if (!ws[addr2]) ws[addr2] = {t:'s',v:''};
-      ws[addr2].s = {
-        fill:{fgColor:{rgb:fillColor}},
-        font:{color:{rgb:C2===0?'1A3A6E':'000000'},sz:10,bold:C2===0},
-        alignment:{horizontal:(C2===6||C2===8)?'left':'center',vertical:'top',wrapText:true},
-        border:{
-          bottom:{style:'thin',color:{rgb:'D0D8E8'}},
-          right:{style:'thin',color:{rgb:'D0D8E8'}}
-        }
+  rows.forEach(function(r,i){
+    var row = 5 + i;
+    var isEven = i%2===0;
+    var rowFill = isEven ? ALT : WHT;
+
+    sc(XLSX.utils.encode_cell({r:row,c:0}),'',{fill:{fgColor:{rgb:rowFill}}});
+
+    // Nr
+    var nrAddr=XLSX.utils.encode_cell({r:row,c:1});
+    ws[nrAddr]={v:(i+1),t:'n',s:{
+      fill:{fgColor:{rgb:rowFill}},
+      font:{bold:true,sz:10,color:{rgb:DARK},name:'Calibri'},
+      alignment:{horizontal:'center',vertical:'center'},
+      border:thinBorder()
+    }};
+
+    var dataArr=[r[11],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9]];
+    dataArr.forEach(function(val,j){
+      var col=2+j;
+      var addr=XLSX.utils.encode_cell({r:row,c:col});
+      if(!ws[addr])ws[addr]={t:'s',v:val||''};
+      var isDesc=(j===6), isPiese=(j===8), isEchip=(j===0), isStatus=(j===7);
+      var bg=rowFill, fg=DARK_TXT, bold=false;
+      if(isEchip){bold=true;fg=DARK;}
+      if(isStatus){
+        var sc2=statusColors[val||''];
+        if(sc2){bg=sc2.bg;fg=sc2.fg;bold=true;}
+      }
+      ws[addr].s={
+        fill:{fgColor:{rgb:bg}},
+        font:{sz:10,color:{rgb:fg},bold:bold,name:'Calibri'},
+        alignment:{horizontal:isDesc||isPiese?'left':'center',vertical:'top',wrapText:true},
+        border:thinBorder()
       };
-    }
-  }
+    });
+  });
 
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Mentenanta Echipamente');
-
-  // Images require SheetJS Pro - skipped
-
-  XLSX.writeFile(wb, 'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
+  var wb2=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb2,ws,'Mentenanta Echipamente');
+  XLSX.writeFile(wb2,'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
 }
+
 function exportPDF() { window.print(); }
 
 (function init() {
