@@ -741,13 +741,13 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
           </div>
 
           <!-- AVARII LUNA ASTA -->
-          <div class="avarii-alarm" style="grid-column:1/-1;display:flex;align-items:flex-start;gap:clamp(14px,2.5vw,24px);margin-bottom:24px;min-height:200px;">
-            <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+          <div class="avarii-alarm" style="grid-column:1/-1;display:flex;align-items:flex-start;gap:clamp(14px,2.5vw,24px);margin-bottom:24px;min-height:220px;padding:8px 0 8px 8px;">
+            <div style="flex-shrink:0;min-width:140px;padding-top:10px;padding-left:8px;">
               <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
               <div class="kpi-val" style="font-size:clamp(48px,6vw,68px);color:#fff;font-family:var(--title);font-weight:900;line-height:1;" id="dash-avarii-count">&#8212;</div>
               <div id="dash-avarii-sub" style="font-size:13px;color:#fff;font-family:var(--mono);font-weight:600;letter-spacing:.06em;margin-top:4px;padding-left:6px;">se incarca...</div>
             </div>
-            <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+            <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(14px,2vw,22px);padding-top:10px;">
               <div style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:700;margin-bottom:12px;">Echipamente cu avarii luna aceasta</div>
               <div style="display:flex;flex-direction:column;gap:7px;" id="dash-avarii-rows">
                 <div style="font-family:var(--sans);font-size:14px;color:#fff;">Se incarca datele...</div>
@@ -1077,10 +1077,10 @@ async function loadActivitate() {
         // Content
         +'<div style="flex:1;min-width:0;">'
         // Row 1: equipment + motiv + status chip
-        +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">'
+        +'<div style="display:flex;align-items:stretch;gap:8px;margin-bottom:4px;">'
         +'<span style="font-family:var(--mono);font-size:17px;font-weight:700;color:var(--amber);">'+eq+'</span>'
         +'<span style="font-family:var(--sans);font-size:17px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';">'+m+'</span>'
-        +(s?'<span style="margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:700;padding:3px 10px;border-radius:10px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;">'+s+'</span>':'')
+        +(s?'<span style="margin-left:auto;flex-shrink:0;font-family:var(--sans);font-size:14px;font-weight:700;padding:4px 12px;border-radius:8px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;align-self:center;white-space:nowrap;">'+s+'</span>':'')
         +'</div>'
         // Row 2: dates + ora
         +'<div style="display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;margin-bottom:3px;">'
@@ -1089,7 +1089,7 @@ async function loadActivitate() {
         +(echipa?'<span style="color:var(--purple);">≡ '+echipa+'</span>':'')
         +'</div>'
         // Row 3: descriere (truncated)
-        +(desc?'<div style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:2px;">'+desc+'</div>':'')
+        +(desc?'<div style="font-family:var(--sans);font-size:11px;color:rgba(#fff;font-weight:500;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:3px;">'+desc+'</div>':'')
         // Row 4: piese (if any)
         +(piese?'<div style="font-family:var(--mono);font-size:10px;color:var(--blue);">◆ Piese: '+piese+'</div>':'')
         +'</div>'
@@ -1359,13 +1359,13 @@ initUser();
           <div class="kpi-grid" style="margin-bottom:0;">
         <!-- AVARII HOTSPOT FULL WIDTH -->
         <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+          <div style="flex-shrink:0;min-width:140px;padding-top:10px;padding-left:8px;">
             <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
             <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
             <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
           </div>
-          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(14px,2vw,22px);padding-top:10px;">
             <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu cele mai multe avarii</div>
             <div style="display:flex;flex-direction:column;gap:7px;">
               <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;margin-bottom:8px;">ECHIPAMENTE CU &gt;5 AVARII / SAPTAMANA</div>
@@ -2053,12 +2053,12 @@ initUser();
 </script>
 </body>
 </html>avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+          <div style="flex-shrink:0;min-width:140px;padding-top:10px;padding-left:8px;">
             <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);" id="dash-avarii-count">—</div>
             <div id="dash-avarii-sub" style="font-size:13px;color:#fff;font-family:var(--mono);font-weight:600;letter-spacing:.06em;margin-top:4px;padding-left:6px;">se incarca...</div>
           </div>
-          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(14px,2vw,22px);padding-top:10px;">
             <div style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:700;margin-bottom:12px;">Echipamente cu avarii luna aceasta</div>
             <div style="display:flex;flex-direction:column;gap:7px;" id="dash-avarii-rows">
               <div style="font-family:var(--sans);font-size:14px;color:#fff;">Se incarca datele...</div>
@@ -2411,13 +2411,13 @@ initUser();
           <div class="kpi-grid" style="margin-bottom:0;">
         <!-- AVARII HOTSPOT FULL WIDTH -->
         <div class="kpi-card avarii-alarm" style="grid-column:1/-1;display:flex;align-items:center;gap:clamp(14px,2.5vw,24px);">
-          <div style="flex-shrink:0;min-width:140px;padding-top:4px;">
+          <div style="flex-shrink:0;min-width:140px;padding-top:10px;padding-left:8px;">
             <div class="kpi-lbl" style="font-size:16px;color:#fff;font-weight:700;letter-spacing:.04em;">Avarii luna curenta</div>
             <div class="kpi-val" style="font-size:clamp(28px,4vw,42px);">19</div>
             <div class="kpi-sub">3 echipamente hotspot · saptamana curenta</div>
             <div class="kpi-trend" style="margin-top:6px;"><span class="kpi-trend-val trend-down">▼ -1</span><span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--mono);font-weight:600;"> vs luna trecuta</span></div>
           </div>
-          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(12px,2vw,20px);">
+          <div style="flex:1;border-left:1px solid rgba(240,165,0,.2);padding-left:clamp(14px,2vw,22px);padding-top:10px;">
             <div style="font-family:var(--mono);font-size:9px;color:var(--amber);letter-spacing:.2em;font-weight:700;margin-bottom:10px;text-transform:uppercase;">Echipamente cu cele mai multe avarii</div>
             <div style="display:flex;flex-direction:column;gap:7px;">
               <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.12em;margin-bottom:8px;">ECHIPAMENTE CU &gt;5 AVARII / SAPTAMANA</div>
