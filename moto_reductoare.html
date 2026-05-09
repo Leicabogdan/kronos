@@ -128,7 +128,7 @@ thead .sec-row th{
 /* Sub-header row */
 thead .sub-row th{
   font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#fff;letter-spacing:.06em;text-transform:uppercase;
-  font-weight:700;padding:10px 13px;text-align:left;white-space:nowrap;
+  font-weight:700;padding:10px 13px;text-align:center;white-space:nowrap;
   cursor:pointer;user-select:none;transition:all .15s;
   border-bottom:1.5px solid rgba(255,255,255,.1);
   border-right:1px solid rgba(255,255,255,.07);
@@ -159,6 +159,7 @@ td{
   vertical-align:middle;font-size:15px;
   font-family:'IBM Plex Sans',sans-serif;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  text-align:center;
 }
 td:last-child{border-right:none;}
 .td-id{font-family:var(--mono);font-weight:900;color:var(--teal);font-size:16px;letter-spacing:.08em;white-space:nowrap;}
@@ -470,6 +471,13 @@ const FALLBACK=[
   ["E82","Elevator","NORD","SK 225 SP/4 3D TF","68.9 A / 39.8 A","37 kW","1485 RPM","-","-","-","-","-","-","202693177-700 / 32720416","400V Δ / 690V Y","50 Hz","0.83","0.941","IE3","-","-","IP66","-20°C la +40°C","EN60034/EN60079","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T125°C Db","-","-","-","-","-","-","-","-","-","-","-","-"],
 ];
 
+function setFilter(btn){
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  currentFilter=btn.dataset.f;
+  renderTable();
+}
+
 function tipFilter(row){
   const id=String(row[0]).toUpperCase();
   if(id.startsWith('BC'))return'banda';
@@ -732,11 +740,6 @@ function parseCSV(text){
 }
 
 async function init(){
-  // Show FALLBACK immediately
-  allData=FALLBACK;
-  updateKPI(allData);
-  renderTable();
-
   // Fetch from Google Sheets CSV
   try{
     const resp=await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vScHFAt_g32bNQ-O6d5Zq3oFt_FILT5zvaKAxe7Njp_eVyf_0Oq_G7SfCOBj6UbBqgLZW147SIPRTeK/pub?gid=0&single=true&output=csv&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
