@@ -297,51 +297,13 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <textarea class="form-textarea" id="f-sarcina" placeholder="Descrie sarcina sau activitatea de realizat..." style="min-height:56px;"></textarea>
       </div>
       <div class="form-field">
-        <label class="form-lbl">Stare *</label>
-        <div class="form-select-wrap">
-          <select class="form-select" id="f-stare">
-            <option value="">Selecteaza stare...</option>
-            <option value="Neinceput">⬜ Neinceput</option>
-            <option value="In curs de desfasurare">🔵 In curs de desfasurare</option>
-            <option value="Finalizat">✅ Finalizat</option>
-            <option value="Anulat">🔴 Anulat</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-field">
         <label class="form-lbl">Responsabil *</label>
         <input class="form-input" type="text" id="f-responsabil" placeholder="ex: Leica Bogdan"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Stadiu</label>
-        <div class="form-select-wrap">
-          <select class="form-select" id="f-stadiu">
-            <option value="">Selecteaza stadiu...</option>
-            <option value="5%">▪ 5% — Abia inceput</option>
-            <option value="25%">▪ 25% — In progres</option>
-            <option value="50%">▪ 50% — Jumatate</option>
-            <option value="75%">▪ 75% — Aproape gata</option>
-            <option value="Finalizat">✔ Finalizat — 100%</option>
-          </select>
-        </div>
       </div>
       <div class="form-field">
         <label class="form-lbl">Termen limita</label>
         <input class="form-input" type="text" id="f-termen-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-termen')" autocomplete="off" style="letter-spacing:.05em;"/>
         <input type="hidden" id="f-termen"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Evaluare</label>
-        <div class="form-select-wrap">
-          <select class="form-select" id="f-evaluare">
-            <option value="">Fara evaluare</option>
-            <option value="1">★☆☆☆☆ — 1 stea</option>
-            <option value="2">★★☆☆☆ — 2 stele</option>
-            <option value="3">★★★☆☆ — 3 stele</option>
-            <option value="4">★★★★☆ — 4 stele</option>
-            <option value="5">★★★★★ — 5 stele</option>
-          </select>
-        </div>
       </div>
     </div>
     <div class="form-actions">
@@ -552,7 +514,7 @@ function stareChip(s){
 function stadiuBar(s){
   var pctMap={'5%':5,'25%':25,'50%':50,'75%':75,'Finalizat':100,'finalizat':100};
   var pct=pctMap[s]||0;
-  var colorMap={5:'var(--red)',25:'var(--amber)',50:'var(--blue)',75:'var(--purple)',100:'var(--green)'};
+  var colorMap={5:'var(--red)',25:'var(--amber)',50:'var(--amber)',75:'var(--blue)',100:'var(--green)'};
   var col=colorMap[pct]||'var(--border2)';
   if(!s)return '<span style="color:rgba(255,255,255,.3);font-size:12px;">—</span>';
   return '<div class="stadiu-wrap">'
@@ -684,6 +646,16 @@ async function loadData(){
     var rows=parseCSV(text);
     allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     allData=allData.map(function(r){while(r.length<6)r.push('');return r;});
+    // Merge with locally added rows (not yet in Sheet)
+    var local=loadLocal();
+    if(local){
+      var sheetKeys=new Set(allData.map(function(r){return String(r[0]||'').trim()+'|'+String(r[2]||'').trim();}));
+      local.forEach(function(lr){
+        var k=String(lr[0]||'').trim()+'|'+String(lr[2]||'').trim();
+        if(!sheetKeys.has(k))allData.push(lr);
+      });
+    }
+    saveLocal();
     filteredData=allData.slice();
     applyFilters();
     updateKPI();
@@ -695,29 +667,38 @@ async function loadData(){
 
 /* ── SUBMIT FORM ── */
 function resetForm(){
-  ['f-sarcina','f-stare','f-responsabil','f-stadiu','f-termen-display','f-termen','f-evaluare'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['f-sarcina','f-responsabil','f-termen-display','f-termen'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   showMsg('form-msg','','');
 }
 function showMsg(elId,type,text){var el=document.getElementById(elId);if(!type){el.style.display='none';return;}el.className='form-msg '+type;el.textContent=text;el.style.display='';}
 
 async function submitRow(){
   var sarcina=document.getElementById('f-sarcina').value.trim();
-  var stare=document.getElementById('f-stare').value.trim();
   var responsabil=document.getElementById('f-responsabil').value.trim();
-  var stadiu=document.getElementById('f-stadiu').value.trim();
   var termen=document.getElementById('f-termen').value.trim()||document.getElementById('f-termen-display').value.trim();
-  var evaluare=document.getElementById('f-evaluare').value.trim();
-  if(!sarcina||!stare||!responsabil){showMsg('form-msg','err','Completeaza campurile obligatorii (*)');return;}
+  var stare='Neinceput';
+  var stadiu='';
+  var evaluare='';
+  if(!sarcina||!responsabil){showMsg('form-msg','err','Completeaza campurile obligatorii (*)');return;}
   var btn=document.getElementById('btn-submit');
   btn.disabled=true;showMsg('form-msg','loading','Se trimite...');
   try{
-    if(APPS_SCRIPT_URL==='PUNE_URL_APPS_SCRIPT_AICI'){showMsg('form-msg','err','Configureaza APPS_SCRIPT_URL.');btn.disabled=false;return;}
     var name=sessionStorage.getItem('k_name')||'Necunoscut';
-    var payload={sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare,adaugat_de:name};
-    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-    var json=await resp.json();
-    if(json.result==='success'){showMsg('form-msg','ok','✓ Inregistrat cu succes!');resetForm();setTimeout(loadData,800);}
-    else throw new Error(json.error||'Eroare necunoscuta');
+    var newRow=[sarcina, stare, responsabil, stadiu, termen, evaluare];
+    if(APPS_SCRIPT_URL!=='PUNE_URL_APPS_SCRIPT_AICI'){
+      var payload={sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare,adaugat_de:name};
+      var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+      var json=await resp.json();
+      if(json.result!=='success') throw new Error(json.error||'Eroare necunoscuta');
+    }
+    // Always save locally too
+    allData.push(newRow);
+    filteredData=allData.slice();
+    saveLocal();
+    showMsg('form-msg','ok','✓ Activitate adaugata!');
+    resetForm();
+    renderTable();
+    updateKPI();
   }catch(e){showMsg('form-msg','err','Eroare: '+e.message);}
   btn.disabled=false;
 }
@@ -753,23 +734,21 @@ async function saveEdit(){
   if(!sarcina||!stare||!responsabil){showMsg('edit-msg','err','Campurile marcate cu * sunt obligatorii.');return;}
   showMsg('edit-msg','loading','Se salveaza...');
   try{
-    if(APPS_SCRIPT_URL==='PUNE_URL_APPS_SCRIPT_AICI'){
-      // Local update only (no backend)
-      var row=filteredData[editRowIndex];
-      row[0]=sarcina;row[1]=stare;row[2]=responsabil;row[3]=stadiu;row[4]=termen;row[5]=evaluare;
-      // Sync to allData
-      var uid=row;
-      renderTable();updateKPI();
-      showMsg('edit-msg','ok','✓ Actualizat local (fara backend)');
-      setTimeout(closeEditModal,800);
-      return;
-    }
     var row=filteredData[editRowIndex];
-    var payload={action:'edit',row_id:row[0],sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare};
-    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-    var json=await resp.json();
-    if(json.result==='success'){showMsg('edit-msg','ok','✓ Salvat!');setTimeout(function(){closeEditModal();loadData();},600);}
-    else throw new Error(json.error||'Eroare');
+    row[0]=sarcina;row[1]=stare;row[2]=responsabil;row[3]=stadiu;row[4]=termen;row[5]=evaluare;
+    // Sync to allData
+    var ai=allData.indexOf(row);
+    if(ai>=0){allData[ai]=row;}
+    saveLocal();
+    if(APPS_SCRIPT_URL!=='PUNE_URL_APPS_SCRIPT_AICI'){
+      try{
+        var payload={action:'edit',sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare};
+        await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+      }catch(ex){}
+    }
+    renderTable();updateKPI();
+    showMsg('edit-msg','ok','✓ Salvat!');
+    setTimeout(closeEditModal,700);
   }catch(e){showMsg('edit-msg','err','Eroare: '+e.message);}
 }
 
@@ -797,8 +776,16 @@ function exportExcel(){
 /* ── DATE/TIME HELPERS ── */
 function formatDateInput(el,hiddenId){var v=el.value.replace(/[^0-9]/g,'');var out='';if(v.length>0)out+=v.substring(0,2);if(v.length>=3)out+='/'+v.substring(2,4);if(v.length>=5)out+='/'+v.substring(4,8);el.value=out;var hidden=document.getElementById(hiddenId);if(hidden&&v.length===8)hidden.value=v.substring(4,8)+'-'+v.substring(2,4)+'-'+v.substring(0,2);}
 
+/* ── LOCAL STORAGE ── */
+var LS_KEY='kronos_activitati_siloz';
+function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(allData));}catch(e){}}
+function loadLocal(){try{var d=JSON.parse(localStorage.getItem(LS_KEY)||'null');return d&&d.length?d:null;}catch(e){return null;}}
+
 /* ── INIT ── */
 (function init(){
+  // Show local data immediately while fetching
+  var local=loadLocal();
+  if(local){allData=local;filteredData=allData.slice();renderTable();updateKPI();}
   setInterval(loadData,60000);
   loadData();
 })();
