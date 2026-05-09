@@ -341,9 +341,9 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
       <input class="search-input" id="search-input" type="text" placeholder="Cauta echipament..." oninput="renderTable()"/>
     </div>
     <button class="filter-btn active" data-f="all" onclick="setFilter(this)">Toate</button>
-    <button class="filter-btn" data-f="banda" onclick="setFilter(this)">Trans. cu banda</button>
-    <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Trans. cu lant</button>
-    <button class="filter-btn" data-f="elevator" onclick="setFilter(this)">Elevator</button>
+    <button class="filter-btn" data-f="banda" onclick="setFilter(this)">Transportoare cu banda</button>
+    <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Transportoare cu lant</button>
+    <button class="filter-btn" data-f="elevator" onclick="setFilter(this)">Elevatoare</button>
     <div class="export-btns">
       <button class="exp-btn pdf" onclick="exportPDF(false)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -474,7 +474,7 @@ function tipFilter(row){
   const id=String(row[0]).toUpperCase();
   if(id.startsWith('BC'))return'banda';
   if(id.startsWith('CC'))return'lant';
-  if(id.startsWith('E'))return'elevator';
+  if(/^E\d/.test(id)||id==='E')return'elevator';
   return'other';
 }
 
