@@ -745,15 +745,6 @@ async function loadData(){
     var rows=parseCSV(text);
     allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     allData=allData.map(function(r){while(r.length<6)r.push('');return r;});
-    // Merge with locally added rows (not yet in Sheet)
-    var local=loadLocal();
-    if(local){
-      var sheetKeys=new Set(allData.map(function(r){return String(r[0]||'').trim()+'|'+String(r[2]||'').trim();}));
-      local.forEach(function(lr){
-        var k=String(lr[0]||'').trim()+'|'+String(lr[2]||'').trim();
-        if(!sheetKeys.has(k))allData.push(lr);
-      });
-    }
     saveLocal();
     filteredData=allData.slice();
     applyFilters();
@@ -932,9 +923,6 @@ function loadLocal(){try{var d=JSON.parse(localStorage.getItem(LS_KEY)||'null');
 
 /* ── INIT ── */
 (function init(){
-  // Show local data immediately while fetching
-  var local=loadLocal();
-  if(local){allData=local;filteredData=allData.slice();renderTable();updateKPI();}
   setInterval(loadData,60000);
   loadData();
 })();
