@@ -515,13 +515,14 @@ function buildDetailHTML(row){
     ['Raport total de transmisie',row[30],'green'],
     ['Tip ulei',row[31],'amber'],
     ['Cantitate ulei',row[32],'amber'],
-    ['Data fabricatie',row[34],'amber'],
   ];
   const rLeft=[
-    ['Pozitie de montaj',row[32],'#fff'],
+    ['Pozitie de montaj',row[33],'#fff'],
     ['Greutate',row[35],'#fff'],
     ['Certificare ATEX',row[36],'red'],
     ['Temperatura functionare',row[37],'#fff'],
+    ['Data fabricatie',row[34],'amber'],
+    ['Ore de functionare estimate',row[38],'amber'],
   ];
   const SZ='15px';
   function field(lbl,val,color){
@@ -639,7 +640,7 @@ async function init(){
     const rows=parseCSV(await resp.text()).slice(1).filter(r=>r.some(c=>c!==''));
     if(rows.length){
       allData=rows.map(r=>{
-        while(r.length<38)r.push('');
+        while(r.length<39)r.push('');
         const id=String(r[0]).toUpperCase();
         let tip='';
         if(id.startsWith('BC'))tip='Transportor cu banda';
