@@ -50,7 +50,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .page{padding:clamp(16px,2.5vw,28px);max-width:1600px;margin:0 auto;}
 
 /* SUMMARY STRIP */
-.summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:30px;}
+.summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px;}
 @media(max-width:800px){.summary-strip{grid-template-columns:1fr 1fr;}}
 .sum-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 18px;position:relative;overflow:hidden;}
 .sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -63,12 +63,12 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .sum-card.c-blue .sum-lbl{color:var(--blue);}
 .sum-card.c-amber .sum-lbl{color:var(--amber);}
 .sum-card.c-green .sum-lbl{color:var(--green);}
-.sum-val{font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;}
+.sum-val{font-family:var(--title);font-size:clamp(28px,3.8vw,42px);font-weight:900;line-height:1;}
 .sum-card.c-teal .sum-val{color:var(--teal);}
 .sum-card.c-blue .sum-val{color:var(--blue);}
 .sum-card.c-amber .sum-val{color:var(--amber);}
 .sum-card.c-green .sum-val{color:var(--green);}
-.sum-sub{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.45);font-weight:600;margin-top:6px;}
+.sum-sub{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;margin-top:6px;}
 
 /* SECTION HEADER */
 .section-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
@@ -79,7 +79,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
   background:rgba(0,220,180,.07);border:1px solid rgba(0,220,180,.22);color:var(--teal);}
 
 /* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px;margin-bottom:28px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 @media(max-width:560px){.kpi-grid{grid-template-columns:1fr;}}
 
 /* KPI CARD */
@@ -100,7 +100,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
 /* Card header */
 .card-head{
-  padding:14px 16px 12px;
+  padding:16px 20px 14px;
   border-bottom:1px solid var(--border2);
   display:flex;align-items:center;justify-content:space-between;
   background:rgba(0,220,180,.025);
@@ -117,17 +117,17 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 }
 
 /* Card body */
-.card-body{padding:10px 16px 14px;}
+.card-body{padding:14px 20px 18px;}
 .field-row{
   display:flex;align-items:center;justify-content:space-between;
-  padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);
 }
 .field-row:last-child{border-bottom:none;}
 .field-lbl{
   font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:rgba(255,255,255,.36);flex-shrink:0;padding-right:12px;
+  text-transform:uppercase;color:#fff;flex-shrink:0;padding-right:12px;
 }
-.field-val{font-family:var(--sans);font-size:14px;font-weight:700;text-align:right;}
+.field-val{font-family:var(--sans);font-size:15px;font-weight:700;text-align:right;}
 .fv-inaltime{color:var(--teal);}
 .fv-diametru{color:var(--blue);}
 .fv-volum{color:var(--amber);}
@@ -187,12 +187,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
     <div class="sum-card c-teal">
       <div class="sum-lbl">Total celule</div>
       <div class="sum-val">12</div>
-      <div class="sum-sub">2 siruri &middot; S1 &amp; S2</div>
-    </div>
-    <div class="sum-card c-blue">
-      <div class="sum-lbl">Inaltime celula</div>
-      <div class="sum-val">34 m</div>
-      <div class="sum-sub">toate celulele</div>
+      <div class="sum-sub">&nbsp;</div>
     </div>
     <div class="sum-card c-amber">
       <div class="sum-lbl">Volum total</div>
@@ -208,7 +203,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
   <!-- SIR S1 -->
   <div class="section-header">
-    <div class="section-title">Sirul S1</div>
+    <div class="section-title">Faza 1</div>
     <div class="section-line"></div>
     <div class="section-count">6 celule</div>
   </div>
@@ -216,7 +211,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
   <!-- SIR S2 -->
   <div class="section-header">
-    <div class="section-title">Sirul S2</div>
+    <div class="section-title">Faza 2</div>
     <div class="section-line"></div>
     <div class="section-count">6 celule</div>
   </div>
