@@ -1296,8 +1296,19 @@ function toggleGroup(itemsId, arrowId) {
   var el = document.getElementById(itemsId);
   var arr = document.getElementById(arrowId);
   var open = el.style.maxHeight !== '0px' && el.style.maxHeight !== '';
-  if (open) { el.style.maxHeight = '0'; if(arr) arr.style.transform = ''; }
-  else { el.style.maxHeight = el.scrollHeight + 'px'; if(arr) arr.style.transform = 'rotate(180deg)'; }
+  if (open) {
+    el.style.maxHeight = '0';
+    if(arr) arr.style.transform = '';
+  } else {
+    // Use visibility trick: temporarily show to get scrollHeight
+    el.style.maxHeight = 'none';
+    var h = el.scrollHeight;
+    el.style.maxHeight = '0';
+    // Force reflow then animate
+    el.offsetHeight;
+    el.style.maxHeight = (h || 500) + 'px';
+    if(arr) arr.style.transform = 'rotate(180deg)';
+  }
 }
 function toggleSbMnt() { toggleGroup('sb-mnt-items','sb-mnt-arrow'); }
 function toggleSbDt()  { toggleGroup('sb-dt-items','sb-dt-arrow'); }
@@ -1401,8 +1412,7 @@ function survParseCSV(t){
   for(var i=0;i<t.length;i++){var ch=t[i];
     if(inQ){if(ch=='"'&&t[i+1]=='"'){cell+='"';i++;}else if(ch=='"')inQ=false;else cell+=ch;}
     else{if(ch=='"')inQ=true;else if(ch==','){cur.push(cell.trim());cell='';}
-    else if(ch==''){}else if(ch=='
-'){cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}
+    else if(ch=='\r'){}else if(ch=='\n'){cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}
   cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
 }
 
