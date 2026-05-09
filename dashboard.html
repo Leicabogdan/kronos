@@ -1391,22 +1391,45 @@ function notifySef(){
 
 // ── SURVEILLANCE CRUD ──
 var SURV_STORE_KEY = 'kronos_surv_items';
+var SURV_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN7kD1KaankY8ArjhMnY8ytPDGCNrPk3QoGZCG-oZ7UshJt9WxO9ZxghFOOn_URx_LRqiN37UOmpxX/pub?gid=0&single=true&output=csv';
+var SURV_AS_URL  = 'https://script.google.com/macros/s/AKfycby9h7sxy5YizshE5oYvyy1Ph-X0P1gfUCKyjEEsxYiEu9NDhR7VSuVf4qaov2oq1ZF3eQ/exec';
 var survItems = [];
-var survEditIdx = -1; // -1 = add new
+var survEditIdx = -1;
 
-function survLoad(){
-  try{ survItems = JSON.parse(localStorage.getItem(SURV_STORE_KEY)||'null') || null; }catch(e){ survItems = null; }
-  if(!survItems){
-    survItems = [
-      {eq:'CC04', watch:'Temperatura lagar', details:'T lagar capul de actionare >65°C. Limita alarma: 70°C. Limita oprire: 80°C.', risc:'RIDICAT'},
-      {eq:'BC11', watch:'Vibratii tambur', details:'Vibratii anormale la tamburul de actionare. Verificare rulment si aliniament banda.', risc:'MEDIU'},
-      {eq:'E01',  watch:'Deflector cupe',   details:'Deflector cupe uzat partial. Necesita inlocuire la urmatoarea golire celula.', risc:'SCAZUT'},
-    ];
-  }
-  survRender();
+function survParseCSV(t){
+  var rows=[],cur=[],cell='',inQ=false;
+  for(var i=0;i<t.length;i++){var ch=t[i];
+    if(inQ){if(ch=='"'&&t[i+1]=='"'){cell+='"';i++;}else if(ch=='"')inQ=false;else cell+=ch;}
+    else{if(ch=='"')inQ=true;else if(ch==','){cur.push(cell.trim());cell='';}
+    else if(ch==''){}else if(ch=='
+'){cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}
+  cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
 }
 
-function survSave(){ try{ localStorage.setItem(SURV_STORE_KEY, JSON.stringify(survItems)); }catch(e){} }
+async function survLoad(){
+  try{survItems=JSON.parse(localStorage.getItem(SURV_STORE_KEY)||'null')||[];}catch(e){survItems=[];}
+  survRender();
+  try{
+    var resp=await fetch(SURV_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    var rows=survParseCSV(await resp.text()).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
+    if(rows.length){
+      survItems=rows.map(function(r){while(r.length<4)r.push('');return{eq:r[0]||'',watch:r[1]||'',details:r[2]||'',risc:r[3]||'RIDICAT'};});
+      localStorage.setItem(SURV_STORE_KEY,JSON.stringify(survItems));
+      survRender();
+    }
+  }catch(err){}
+}
+
+function survSave(){try{localStorage.setItem(SURV_STORE_KEY,JSON.stringify(survItems));}catch(e){}}
+
+async function survSaveToSheet(payload){
+  try{
+    var resp=await fetch(SURV_AS_URL,{method:'POST',body:JSON.stringify(payload)});
+    var json=await resp.json();
+    if(json.result!=='success')throw new Error(json.error||'Eroare');
+  }catch(e){console.warn('Surv sheet:',e.message);}
+}
 
 function survRiskChip(risc){
   var cfg = {
@@ -1467,25 +1490,36 @@ function closeSurvEdit(){
   document.getElementById('surv-edit-modal').style.display = 'none';
 }
 
-function saveSurvEdit(){
-  var eq = document.getElementById('surv-f-eq').value.trim();
-  var watch = document.getElementById('surv-f-watch').value.trim();
-  var details = document.getElementById('surv-f-details').value.trim();
-  var risc = document.getElementById('surv-f-risc').value;
-  if(!eq || !watch){ alert('Completeaza Echipament si Ce se supravegheaza.'); return; }
-  var item = {eq:eq, watch:watch, details:details, risc:risc};
-  if(survEditIdx === -1){ survItems.push(item); }
-  else { survItems[survEditIdx] = item; }
+async function saveSurvEdit(){
+  var eq=document.getElementById('surv-f-eq').value.trim();
+  var watch=document.getElementById('surv-f-watch').value.trim();
+  var details=document.getElementById('surv-f-details').value.trim();
+  var risc=document.getElementById('surv-f-risc').value;
+  if(!eq||!watch){alert('Completeaza Echipament si Ce se supravegheaza.');return;}
+  var item={eq:eq,watch:watch,details:details,risc:risc};
+  var payload;
+  if(survEditIdx===-1){
+    payload={action:'add',echipament:eq,watch:watch,details:details,risc:risc};
+    survItems.push(item);
+  }else{
+    payload={action:'edit',echipament_original:survItems[survEditIdx].eq,echipament:eq,watch:watch,details:details,risc:risc};
+    survItems[survEditIdx]=item;
+  }
   survSave();
   survRender();
   closeSurvEdit();
+  await survSaveToSheet(payload);
+  setTimeout(survLoad,600);
 }
 
-function deleteSurv(idx){
-  if(!confirm('Stergi echipamentul "'+survItems[idx].eq+'" din supraveghere?')) return;
-  survItems.splice(idx, 1);
+async function deleteSurv(idx){
+  if(!confirm('Stergi echipamentul "'+survItems[idx].eq+'" din supraveghere?'))return;
+  var eq=survItems[idx].eq;
+  survItems.splice(idx,1);
   survSave();
   survRender();
+  await survSaveToSheet({action:'delete',echipament:eq});
+  setTimeout(survLoad,600);
 }
 
 survLoad();
