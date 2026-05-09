@@ -196,8 +196,6 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
 .load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
 
 /* ── UPLOAD ── */
-  background:rgba(0,220,180,.08);border:1.5px solid rgba(0,220,180,.3);color:var(--teal);
-  font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.08em;}
 .file-hint{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);margin-top:8px;letter-spacing:.06em;}
 
 /* ── PRINT ── */
@@ -443,6 +441,48 @@ function updateKPI(data){
   document.getElementById('k-abb').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('ABB')).length;
 }
 
+function renderTable(){
+  var tbody=document.getElementById('tbody');
+  if(!tbody)return;
+  var rows=getVisibleRows();
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="12" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
+  var html='';
+  rows.forEach(function(row,i){
+    var id=String(row[0]||'');
+    var isExp=expandedRows.has(id);
+    var ec=isExp?' expanded':'';
+    html+='<tr class="data-row'+ec+'" data-id="'+id.replace(/"/g,'&quot;')+'">'
+      +'<td style="font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;text-align:center;">'+f(row[0])+'</td>'
+      +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[2])+'</td>'
+      +'<td style="color:#fff;font-size:13px;">'+f(row[3])+'</td>'
+      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[4])+'</td>'
+      +'<td style="color:var(--teal);font-weight:700;font-size:13px;text-align:center;">'+f(row[5])+'</td>'
+      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[6])+'</td>'
+      +'<td style="color:var(--blue);font-size:12px;text-align:center;">'+f(row[7])+'</td>'
+      +'<td style="color:var(--blue);font-size:12px;text-align:center;">'+f(row[8])+'</td>'
+      +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[10])+'</td>'
+      +'<td style="color:#fff;font-size:13px;">'+f(row[11])+'</td>'
+      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[12])+'</td>'
+      +'<td style="text-align:center;color:var(--teal);font-size:14px;">'+(isExp?'&#9650;':'&#9660;')+'</td>'
+      +'</tr>';
+    if(isExp){
+      html+='<tr class="detail-row open"><td colspan="12">'+buildDetailHTML(row)+'</td></tr>';
+    }
+  });
+  tbody.innerHTML=html;
+  // Attach click handlers after render
+  tbody.querySelectorAll('tr.data-row').forEach(function(tr){
+    tr.addEventListener('click',function(){toggleRow(tr.dataset.id);});
+  });
+}
+
+function toggleRow(id){
+  if(expandedRows.has(id))expandedRows.delete(id);
+  else expandedRows.add(id);
+  renderTable();
+}
+
+
 function getVisibleRows(){
   let rows=[...allData];
   if(currentFilter!=='all')rows=rows.filter(r=>tipFilter(r)===currentFilter);
@@ -527,18 +567,61 @@ function exportExcel(){
   XLSX.writeFile(wb,`KRONOS_MotoReductoare_${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}.xlsx`);
 }
 
+function parseWorkbook(buf){
+  const wb=XLSX.read(buf,{type:'array'});
+  const ws=wb.Sheets[wb.SheetNames[0]];
+  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  return raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
+}
 
+let fileHandle=null;
 
+async function handleFileBtn(){
+  if(fileHandle){
+    try{const file=await fileHandle.getFile();const buf=await file.arrayBuffer();applyData(parseWorkbook(new Uint8Array(buf)));flashBtn('✓ Actualizat');return;}catch(e){fileHandle=null;}
+  }
+  if(window.showOpenFilePicker){
+    try{
+      const[handle]=await window.showOpenFilePicker({types:[{description:'Excel',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx','.xls']}}],multiple:false});
+      fileHandle=handle;
+      const file=await handle.getFile();const buf=await file.arrayBuffer();
+      applyData(parseWorkbook(new Uint8Array(buf)));
+      document.getElementById('file-btn-label').textContent='Refresh date';
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
+  document.getElementById('file-input').click();
+}
 
+function loadFromInputFile(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{try{applyData(parseWorkbook(new Uint8Array(e.target.result)));}catch(err){alert('Eroare: '+err.message);}};
+  reader.readAsArrayBuffer(file);
+}
+
+function flashBtn(msg){const lbl=document.getElementById('file-btn-label');if(!lbl)return;const p=lbl.textContent;lbl.textContent=msg;setTimeout(()=>lbl.textContent=p,1500);}
+
+function applyData(data){
+  // Map from Excel format (13 cols: ID, TipUtilaj, M cols, R cols) to internal format
+  allData=data.map(r=>{
+    // Excel cols: 0=ID, 1=M:Produc, 2=M:Model, 3=M:Curent, 4=M:Putere, 5=M:Turatie,
+    //            6=M:RulDE, 7=M:RulNE, 8=M:TipConstr, 9=R:Produc, 10=R:Model, 11=R:Turatie, 12=TipUtilaj
+    return[r[0],r[12],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9],r[10],r[11]];
+  });
+  updateKPI(allData);
+  expandedRows.clear();
+  renderTable();
+}
 
 function parseCSV(text){
-  const rows=[],sep=',';let cur=[],cell='',inQ=false;
+  const rows=[];let cur=[],cell='',inQ=false;
   for(let i=0;i<text.length;i++){const ch=text[i];
     if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
-    else{if(ch==='"')inQ=true;else if(ch===sep){cur.push(cell.trim());cell='';}
-    else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(c=>c!==''))rows.push(cur);cur=[];cell='';}
+    else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}
+    else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(x=>x!==''))rows.push(cur);cur=[];cell='';}
     else cell+=ch;}}
-  cur.push(cell.trim());if(cur.some(c=>c!==''))rows.push(cur);return rows;
+  cur.push(cell.trim());if(cur.some(x=>x!==''))rows.push(cur);return rows;
 }
 
 async function init(){
@@ -553,49 +636,39 @@ async function init(){
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     const rows=parseCSV(await resp.text()).slice(1).filter(r=>r.some(c=>c!==''));
     if(rows.length){
-      // Sheet cols match internal format exactly: 0=ID, 1=M:Produc, 2=M:Model ...
-      // Map to internal: [ID, TipUtilaj(from ID prefix), M:Produc, M:Model, M:Curent, M:Putere, M:Turatie, M:RulDE, M:RulNE, M:TipConstr, R:Produc, R:Model, R:Turatie, ...rest]
       allData=rows.map(r=>{
         while(r.length<38)r.push('');
-        // Derive TipUtilaj from ID
         const id=String(r[0]).toUpperCase();
         let tip='';
         if(id.startsWith('BC'))tip='Transportor cu banda';
         else if(id.startsWith('CC'))tip='Transportor cu lant';
         else if(id.startsWith('E'))tip='Elevator';
-        // Internal format: [0=ID, 1=Tip, 2=M:Produc, 3=M:Model, 4=M:Serie, 5=M:Tensiune, 6=M:Frecventa,
-        //  7=M:Curent, 8=M:Putere, 9=M:cosF, 10=M:ClasaEf, 11=M:Randament, 12=M:Turatie,
-        //  13=M:RulDE, 14=M:RulNE, 15=M:Lubrifiant, 16=M:TipConstr, 17=M:Greutate, 18=M:IP,
-        //  19=M:Temp, 20=M:Standard, 21=M:ClasaIzol, 22=M:ATEX,
-        //  23=R:Produc, 24=R:Model, 25=R:Serie, 26=R:TuratieIesire, 27=R:CupluIesire,
-        //  28=R:Turatie, 29=R:Putere, 30=R:Raport, 31=R:TipUlei, 32=R:CantUlei,
-        //  33=R:Pozitie, 34=R:DataFab, 35=R:Greutate, 36=R:ATEX, 37=R:TempAmb, 38=R:OreEst]
-        // Sheet: 0=ID, 1=M:Produc, 2=M:Model, 3=M:Serie, 4=M:Tensiune, 5=M:Frecventa,
-        //  6=M:Curent, 7=M:Putere, 8=M:cosF, 9=M:ClasaEf, 10=M:Randament, 11=M:Turatie,
-        //  12=M:RulDE, 13=M:RulNE, 14=M:Lubrifiant, 15=M:TipConstr, 16=M:Greutate, 17=M:IP,
-        //  18=M:Temp, 19=M:Standard, 20=M:ClasaIzol, 21=M:ATEX,
-        //  22=R:Produc, 23=R:Model, 24=R:Serie, 25=R:TuratieIesire, 26=R:CupluIesire,
-        //  27=R:Turatie, 28=R:Putere, 29=R:Raport, 30=R:TipUlei, 31=R:CantUlei,
-        //  32=R:Pozitie, 33=R:DataFab, 34=R:Greutate, 35=R:ATEX, 36=R:TempAmb, 37=R:OreEst
-        return[
-          r[0],tip,r[1],r[2],r[6],r[7],r[11], // ID,Tip,M:Produc,M:Model,M:Curent,M:Putere,M:Turatie
-          r[12],r[13],r[15],                    // M:RulDE,M:RulNE,M:TipConstr
-          r[22],r[23],r[27],                    // R:Produc,R:Model,R:Turatie
-          r[3],r[4],r[5],r[8],r[10],r[9],r[14],r[16],r[17],r[18],r[19],r[20],r[21], // M details
-          r[24],r[25],r[26],r[28],r[29],r[30],r[31],r[32],r[33],r[34],r[35],r[36],r[37] // R details
-        ];
+        // Sheet: 0=ID,1=M:Produc,2=M:Model,3=M:Serie,4=M:Tensiune,5=M:Frecventa,
+        //  6=M:Curent,7=M:Putere,8=M:cosF,9=M:ClasaEf,10=M:Randament,11=M:Turatie,
+        //  12=M:RulDE,13=M:RulNE,14=M:Lubrifiant,15=M:TipConstr,16=M:Greutate,17=M:IP,
+        //  18=M:Temp,19=M:Standard,20=M:ClasaIzol,21=M:ATEX,
+        //  22=R:Produc,23=R:Model,24=R:Serie,25=R:TuratieIesire,26=R:CupluIesire,
+        //  27=R:Turatie,28=R:Putere,29=R:Raport,30=R:TipUlei,31=R:CantUlei,
+        //  32=R:Pozitie,33=R:DataFab,34=R:Greutate,35=R:ATEX,36=R:TempAmb,37=R:OreEst
+        // Internal: [0=ID,1=Tip,2=M:Produc,3=M:Model,4=M:Curent,5=M:Putere,6=M:Turatie,
+        //  7=M:RulDE,8=M:RulNE,9=M:TipConstr,10=R:Produc,11=R:Model,12=R:Turatie,
+        //  13=M:Serie,14=M:Tensiune,15=M:Frecventa,16=M:cosF,17=M:Randament,18=M:ClasaEf,
+        //  19=M:Lubrifiant,20=M:Greutate,21=M:IP,22=M:Temp,23=M:Standard,24=M:ClasaIzol,25=M:ATEX,
+        //  26=R:Serie,27=R:Tensiune,28=R:Frecventa,29=R:Putere,30=R:cosF,31=R:Eficienta,
+        //  32=R:ClasaEf,33=R:Greutate,34=R:IP,35=R:Temp,36=R:ClasaIzol,37=R:ATEX]
+        return[r[0],tip,r[1],r[2],r[6],r[7],r[11],r[12],r[13],r[15],r[22],r[23],r[27],
+               r[3],r[4],r[5],r[8],r[10],r[9],r[14],r[16],r[17],r[18],r[19],r[20],r[21],
+               r[24],r[25],r[26],r[28],r[29],r[30],r[31],r[32],r[33],r[34],r[35],r[36],r[37]];
       });
       updateKPI(allData);
       expandedRows.clear();
       renderTable();
-
     }
   }catch(e){
     console.warn('CSV fetch failed, using FALLBACK:',e.message);
   }
 }
 init();
-
 </script>
 </body>
 </html>
