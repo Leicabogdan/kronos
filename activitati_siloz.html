@@ -127,7 +127,19 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
 /* ── TABLE ── */
 .table-wrap{border:1.5px solid rgba(155,109,255,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;min-width:1000px;font-family:var(--sans);}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:900px;font-family:var(--sans);}
+/* Screen col widths: check=3%, nr=3%, sarcina=35%, stare=12%, resp=14%, stadiu=9%, termen=11%, eval=8%, actiuni=5% */
+thead tr.hdr-row th:nth-child(1){width:3%;}
+thead tr.hdr-row th:nth-child(2){width:3%;}
+thead tr.hdr-row th:nth-child(3){width:35%;}
+thead tr.hdr-row th:nth-child(4){width:12%;}
+thead tr.hdr-row th:nth-child(5){width:14%;}
+thead tr.hdr-row th:nth-child(6){width:9%;}
+thead tr.hdr-row th:nth-child(7){width:11%;}
+thead tr.hdr-row th:nth-child(8){width:8%;}
+thead tr.hdr-row th:nth-child(9){width:5%;}
+/* Sarcina wraps */
+tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;}
 thead tr.hdr-row th{font-family:var(--sans);font-size:13px;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:11px 13px;text-align:center;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:2px solid rgba(155,109,255,.35);border-right:1px solid rgba(255,255,255,.06);background:#0e0818;}
 thead tr.hdr-row th:hover{color:var(--purple);background:rgba(155,109,255,.06);}
 thead tr.hdr-row th.sort-asc::after{content:' \2191';color:var(--purple);}
@@ -144,7 +156,7 @@ td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--purple);cursor:pointer;}
 .td-nr{font-family:var(--mono);color:var(--purple);font-weight:700;font-size:13px;}
-.td-sarcina{color:#fff;font-weight:600;font-size:14px;text-align:left;max-width:280px;}
+.td-sarcina{color:#fff;font-weight:600;font-size:14px;text-align:left;white-space:normal;word-break:break-word;}
 .td-responsabil{color:#fff;font-size:14px;font-weight:600;text-align:left;}
 .td-termen{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--amber);}
 .td-termen.overdue{color:var(--red);}
@@ -159,7 +171,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .chip-anulat{background:rgba(224,80,80,.12);color:var(--red);border:1.5px solid rgba(224,80,80,.35);}
 
 /* ── STADIU BAR ── */
-.stadiu-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px;}
+.stadiu-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;width:100%;}
 .stadiu-bar-bg{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
 .stadiu-bar-fill{height:100%;border-radius:3px;transition:width .3s;}
 .stadiu-pct{font-family:var(--sans);font-size:12px;font-weight:700;}
@@ -245,9 +257,9 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
   /* Chips and stars: print-friendly */
   .chip-stare{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
-  .stadiu-wrap{gap:2px!important;}
-  .stadiu-bar-bg{background:#eee!important;}
-  .stadiu-bar-fill{print-color-adjust:exact!important;}
+  .stadiu-wrap{gap:2px!important;min-width:0!important;width:100%!important;max-width:60px!important;margin:0 auto!important;}
+  .stadiu-bar-bg{background:#ddd!important;height:5px!important;width:100%!important;max-width:60px!important;}
+  .stadiu-bar-fill{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;}
   .stadiu-pct{font-size:8px!important;color:#000!important;}
   .star-filled{color:#c8860a!important;}
   .star-empty{color:#ccc!important;}
@@ -891,7 +903,9 @@ function exportExcel(){
   var headers=['Nr.','Sarcina','Stare','Responsabil','Stadiu','Termen limita','Evaluare'];
   var wsData=[headers];
   dataToExport.forEach(function(r,i){
-    wsData.push([i+1, r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', r[5]||'']);
+    var evalN=parseInt(r[5])||0;
+    var evalStr=evalN?(evalN+'/5 '+('★').repeat(evalN)+('☆').repeat(5-evalN)):'';
+    wsData.push([i+1, r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', evalStr]);
   });
   var ws=XLSX.utils.aoa_to_sheet(wsData);
   ws['!cols']=[{wch:5},{wch:55},{wch:22},{wch:22},{wch:12},{wch:14},{wch:10}];
