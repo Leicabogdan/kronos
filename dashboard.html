@@ -1049,39 +1049,48 @@ setInterval(loadDashAvarii, 60000);
 
 /* SCHIMB ULEI LIVE */
 (function loadUlei() {
-  // FALLBACK data - same as schimb_ulei.html
+  // Date din schimb_ulei.html FALLBACK_DATA — col[6] = Urmatorul schimb
   var FALLBACK = [
-    {nr:'BC11',data:'01.02.2026',interval:2000},
-    {nr:'BC12',data:'15.01.2026',interval:2000},
-    {nr:'BC51',data:'10.12.2025',interval:2000},
-    {nr:'BC52',data:'20.11.2025',interval:2000},
-    {nr:'BC53',data:'05.01.2026',interval:2000},
-    {nr:'CC01',data:'18.02.2026',interval:2000},
-    {nr:'CC02',data:'22.01.2026',interval:2000},
-    {nr:'CC03',data:'14.12.2025',interval:2000},
-    {nr:'CC04',data:'30.11.2025',interval:2000},
-    {nr:'CC11',data:'08.03.2026',interval:2000},
-    {nr:'CC12',data:'25.01.2026',interval:2000},
-    {nr:'CC13',data:'12.02.2026',interval:2000},
-    {nr:'CC14',data:'03.12.2025',interval:2000},
-    {nr:'E01',data:'20.03.2026',interval:3000},
-    {nr:'E02',data:'15.02.2026',interval:3000},
-    {nr:'E03',data:'10.01.2026',interval:3000},
-    {nr:'E04',data:'05.12.2025',interval:3000},
-    {nr:'E21',data:'22.02.2026',interval:3000},
-    {nr:'E22',data:'18.01.2026',interval:3000},
-    {nr:'E51',data:'28.11.2025',interval:3000},
-    {nr:'E81',data:'14.02.2026',interval:3000},
-    {nr:'E82',data:'09.01.2026',interval:3000}
+    {nr:'BC11',next:'24.07.2027'},
+    {nr:'BC12',next:'01.08.2027'},
+    {nr:'BC32',next:'01.08.2027'},
+    {nr:'BC34',next:'01.08.2027'},
+    {nr:'BC41',next:'24.07.2027'},
+    {nr:'BC42',next:'31.07.2027'},
+    {nr:'BC47',next:'23.07.2027'},
+    {nr:'BC48',next:'23.07.2027'},
+    {nr:'CC01',next:'07.08.2027'},
+    {nr:'CC02',next:'07.08.2027'},
+    {nr:'CC03',next:'28.07.2027'},
+    {nr:'CC04',next:'28.07.2027'},
+    {nr:'CC10-1 SL',next:'01.11.2025'},
+    {nr:'CC10-2 SL',next:'01.08.2027'},
+    {nr:'CC11',next:'08.08.2027'},
+    {nr:'CC11 SL',next:'01.08.2027'},
+    {nr:'CC12',next:'25.07.2027'},
+    {nr:'CC13',next:'08.08.2027'},
+    {nr:'CC14',next:'25.07.2027'},
+    {nr:'CC15',next:'08.08.2027'},
+    {nr:'CC16',next:'08.08.2027'},
+    {nr:'CC19',next:'24.07.2027'},
+    {nr:'CC202',next:'07.08.2027'},
+    {nr:'CC51',next:'12.08.2027'},
+    {nr:'CC52',next:'07.08.2027'},
+    {nr:'CC53',next:'31.07.2027'},
+    {nr:'E01',next:'14.08.2027'},
+    {nr:'E02',next:'22.07.2027'},
+    {nr:'E03',next:'28.07.2027'},
+    {nr:'E51',next:'12.08.2027'},
+    {nr:'E81',next:'23.07.2027'},
+    {nr:'E82',next:'24.06.2027'}
   ];
-  var now = new Date();
+  var now = new Date(); now.setHours(0,0,0,0);
   var curand = 0, depasit = 0;
   FALLBACK.forEach(function(r) {
-    if (!r.data) return;
-    var p = r.data.split('.');
+    if (!r.next) return;
+    var p = r.next.split('.');
     if (p.length < 3) return;
-    var last = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
-    var next = new Date(last.getTime() + r.interval * 24 * 60 * 60 * 1000);
+    var next = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
     var diff = Math.floor((next - now) / (1000*60*60*24));
     if (diff < 0) depasit++;
     else if (diff < 90) curand++;
