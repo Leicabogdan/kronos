@@ -142,7 +142,6 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;font-size:15px;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
 .td-desc{color:#fff;font-size:13px;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;position:relative;}
-.td-echipa{color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;text-align:left;}
 .td-piese{color:#fff;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
 .td-adaugat{color:rgba(255,255,255,.55);font-family:var(--mono);font-size:12px;text-align:left;}
 .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;white-space:nowrap;}
@@ -386,12 +385,11 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <th onclick="sortBy(3)">Descriere lucrari</th>
           <th onclick="sortBy(4)">Status cuva</th>
           <th onclick="sortBy(5)">Piese schimb</th>
-          <th onclick="sortBy(6)">Echipa</th>
           <th onclick="sortBy(7)">Adaugat de</th>
         </tr>
       </thead>
       <tbody id="tbody">
-        <tr><td colspan="9" class="no-data" style="color:var(--teal);">&#9655; Se incarca datele din Google Sheets...</td></tr>
+        <tr><td colspan="8" class="no-data" style="color:var(--teal);">&#9655; Se incarca datele din Google Sheets...</td></tr>
       </tbody>
     </table>
   </div>
@@ -444,7 +442,7 @@ function statusChip(s){
 
 /* ── RENDER TABLE ──
    Sheet columns (0-indexed):
-   0=timestamp, 1=cuva, 2=data, 3=ora, 4=descriere, 5=status, 6=piese, 7=echipa, 8=adaugat_de
+   0=cuva, 1=data, 2=descriere, 3=status, 4=piese, 5=adaugat_de
 */
 function renderTable(){
   var tbody=document.getElementById('tbody');
@@ -461,23 +459,21 @@ function renderTable(){
       return 0;
     });
   }
-  if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="no-data" style="color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';updateSelCount();return;}
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="8" class="no-data" style="color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';updateSelCount();return;}
   var html='';
   rows.forEach(function(row,i){
-    var uid=String(row[0]||'')+String(row[1]||'')+String(row[2]||'')+i;
+    var uid=String(row[0]||'')+String(row[1]||'')+i;
     var sel=selectedRows.has(uid);
-    var dt='<span class="ddate">'+fmtDate(row[2]||'')+'</span>';
-    if(row[3]&&String(row[3]).trim())dt+='<span class="dtime">'+fmtTime(row[3])+'</span>';
+    var dt='<span class="ddate">'+fmtDate(row[1]||'')+'</span>';
     html+='<tr class="'+(sel?'row-selected':'')+'" data-uid="'+esc(uid)+'">'
       +'<td class="td-check"><input type="checkbox" class="row-cb"'+(sel?' checked':'')+' onchange="toggleRow(this)"/></td>'
       +'<td class="td-nr">'+(i+1)+'</td>'
-      +'<td class="td-cuva">'+esc(row[1]||'')+'</td>'
+      +'<td class="td-cuva">'+esc(row[0]||'')+'</td>'
       +'<td class="td-dt">'+dt+'</td>'
-      +'<td class="td-desc" data-desc="'+esc(row[4]||'')+'">'+esc(row[4]||'')+'</td>'
-      +'<td>'+statusChip(row[5])+'</td>'
-      +'<td class="td-piese" title="'+esc(row[6]||'')+'">'+esc(row[6]||'')+'</td>'
-      +'<td class="td-echipa">'+esc(row[7]||'')+'</td>'
-      +'<td class="td-adaugat">'+esc(row[8]||'')+'</td>'
+      +'<td class="td-desc" data-desc="'+esc(row[2]||'')+'">'+esc(row[2]||'')+'</td>'
+      +'<td>'+statusChip(row[3])+'</td>'
+      +'<td class="td-piese" title="'+esc(row[4]||'')+'">'+esc(row[4]||'')+'</td>'
+      +'<td class="td-adaugat">'+esc(row[5]||'')+'</td>'
       +'</tr>';
   });
   tbody.innerHTML=html;
@@ -490,11 +486,11 @@ function applyFilters(){
   var cuva=document.getElementById('sel-cuva').value;
   var status=document.getElementById('sel-status').value;
   filteredData=allData.filter(function(row){
-    var d=getDateParts(row[2]);
+    var d=getDateParts(row[1]);
     if(month&&(!d||d.m!==month))return false;
     if(year&&(!d||d.y!==year))return false;
-    if(cuva&&String(row[1]||'').toLowerCase().indexOf(cuva.toLowerCase())<0)return false;
-    if(status&&String(row[5]||'').toLowerCase().indexOf(status.toLowerCase())<0)return false;
+    if(cuva&&String(row[0]||'').toLowerCase().indexOf(cuva.toLowerCase())<0)return false;
+    if(status&&String(row[3]||'').toLowerCase().indexOf(status.toLowerCase())<0)return false;
     return true;
   });
   sortCol=-1;sortDir=1;
@@ -507,7 +503,7 @@ function sortBy(col){
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
   var ths=document.querySelectorAll('thead .hdr-row th');
-  // th index offset: 0=checkbox,1=nr,2=cuva,3=data,4=desc,5=status,6=piese,7=echipa,8=adaugat
+  // th index offset: 0=checkbox,1=nr,2=cuva,3=data,4=desc,5=status,6=piese,7=adaugat
   var thIdx={0:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8};
   var ti=thIdx[col];
   if(ti!==undefined&&ths[ti])ths[ti].classList.add(sortDir===1?'sort-asc':'sort-desc');
@@ -522,10 +518,10 @@ function updateSelCount(){var sc=document.getElementById('sel-count');if(selecte
 function parseCSV(text){var rows=[],cur=[],cell='',inQ=false;for(var i=0;i<text.length;i++){var ch=text[i];if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);return rows;}
 
 async function loadData(){
-  document.getElementById('tbody').innerHTML='<tr><td colspan="9" class="no-data" style="color:var(--teal);">&#9655; Se incarca datele...</td></tr>';
+  document.getElementById('tbody').innerHTML='<tr><td colspan="8" class="no-data" style="color:var(--teal);">&#9655; Se incarca datele...</td></tr>';
   if(SHEET_CSV_URL==='PUNE_URL_CSV_AICI'){
     allData=[];filteredData=[];renderTable();
-    document.getElementById('tbody').innerHTML='<tr><td colspan="9" class="no-data" style="color:rgba(255,255,255,.35);">Configureaza URL-ul Google Sheets in variabila SHEET_CSV_URL.</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="8" class="no-data" style="color:rgba(255,255,255,.35);">Configureaza URL-ul Google Sheets in variabila SHEET_CSV_URL.</td></tr>';
     return;
   }
   try{
@@ -534,11 +530,11 @@ async function loadData(){
     var text=await resp.text();
     var rows=parseCSV(text);
     allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
-    allData=allData.map(function(r){while(r.length<9)r.push('');return r;});
+    allData=allData.map(function(r){while(r.length<6)r.push('');return r;});
     filteredData=allData.slice();
     applyFilters();
   }catch(err){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="9" class="no-data" style="color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="8" class="no-data" style="color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
     allData=[];filteredData=[];renderTable();
   }
 }
@@ -558,7 +554,6 @@ async function submitRow(){
   var status=document.getElementById('f-status').value.trim();
   var data=document.getElementById('f-data').value.trim()||document.getElementById('f-data-display').value.trim();
   var ora='';
-  var echipa='';
   var piese=document.getElementById('f-piese').value.trim();
   var desc=document.getElementById('f-desc').value.trim();
   if(!cuva||!status||!data||!desc){showMsg('err','Completeaza campurile obligatorii (*)');return;}
@@ -566,7 +561,7 @@ async function submitRow(){
   btn.disabled=true;showMsg('loading','Se trimite...');
   try{
     var name=sessionStorage.getItem('k_name')||'Necunoscut';
-    var payload={cuva:cuva,data:data,ora:ora,descriere:desc,status:status,piese:piese,echipa:echipa,adaugat_de:name};
+    var payload={cuva:cuva,data:data,descriere:desc,status:status,piese:piese,adaugat_de:name};
     if(APPS_SCRIPT_URL==='PUNE_URL_APPS_SCRIPT_AICI'){
       showMsg('err','Configureaza APPS_SCRIPT_URL pentru a salva date.');btn.disabled=false;return;
     }
@@ -593,8 +588,8 @@ async function submitRow(){
 function exportPDF(){window.print();}
 function exportExcel(){
   var rows=filteredData;
-  var headers=['Cuva receptie','Data','Ora','Descriere lucrari','Status cuva','Piese schimb','Echipa','Adaugat de'];
-  var wsData=[headers,...rows.map(function(r){return[r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||'',r[6]||'',r[7]||'',r[8]||''];})];
+  var headers=['Cuva receptie','Data','Descriere lucrari','Status cuva','Piese schimb','Adaugat de'];
+  var wsData=[headers,...rows.map(function(r){return[r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||''];})];
   var ws=XLSX.utils.aoa_to_sheet(wsData);
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Cuve Receptie');
