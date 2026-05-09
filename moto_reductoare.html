@@ -202,44 +202,53 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
-  a[href]::after{content:none!important;}
-  .topbar,.filter-bar,.file-section,.trademark,.filter-btn,.exp-btn,.nav-links,.search-input{display:none!important;}
-  body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  a[href]::after{content:none!important;display:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
+  .topbar,.filter-bar,.file-section,.trademark,.filter-btn,.exp-btn,.nav-links,.search-input,.kpi-strip{display:none!important;}
   .page{padding:0 8mm!important;max-width:100%!important;margin:0!important;}
 
-  /* Print header */
+  /* Header */
   #print-header{display:flex!important;align-items:center;justify-content:space-between;
-    padding:6px 8px;border-bottom:2px solid #1a3a2a;margin-bottom:10px;background:#fff!important;}
-  #print-footer{display:flex!important;}
+    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;background:#fff!important;}
+  #print-footer{display:flex!important;position:fixed;bottom:5mm;left:8mm;right:8mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;padding-top:3px;justify-content:space-between;}
 
-  /* Table */
-  .table-wrap{border:1px solid #1a3a2a!important;border-radius:0!important;overflow:visible!important;}
-  table{width:100%!important;border-collapse:collapse!important;min-width:0!important;}
-  thead .sec-row th{background:#1a3a2a!important;color:#fff!important;font-size:8px!important;padding:5px 6px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
-  thead .sub-row th{background:#1a3a2a!important;color:#fff!important;font-size:7px!important;padding:5px 6px!important;white-space:normal!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
-  tbody tr:nth-child(even){background:#f0f7f4!important;}
-  td{padding:4px 6px!important;font-size:8px!important;color:#000!important;border-bottom:1px solid #d0e8d8!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
-  .td-id,.td-motor,.td-reduct{font-size:8px!important;color:#000!important;}
-  .sec-motor{background:#0d1f35!important;}
-  .sec-reduct{background:#150a28!important;}
-  .th-motor{background:#0d1f35!important;}
-  .th-reduct{background:#150a28!important;}
-
-  /* Simple PDF: hide detail rows */
+  /* ── SIMPLE PDF ── */
+  body[data-pdf-simple] .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
+  body[data-pdf-simple] table{width:100%!important;border-collapse:collapse!important;min-width:0!important;}
+  body[data-pdf-simple] thead .sec-row th{background:#1a3a6e!important;color:#fff!important;font-size:8px!important;padding:5px 6px!important;}
+  body[data-pdf-simple] thead .sub-row th{background:#1a3a6e!important;color:#fff!important;font-size:7px!important;padding:5px 6px!important;white-space:normal!important;}
+  body[data-pdf-simple] .sec-motor{background:#0d1f35!important;}
+  body[data-pdf-simple] .sec-reduct{background:#150a28!important;}
+  body[data-pdf-simple] .th-motor{background:#0d1f35!important;}
+  body[data-pdf-simple] .th-reduct{background:#150a28!important;}
+  body[data-pdf-simple] tbody tr:nth-child(even){background:#f0f4fb!important;}
+  body[data-pdf-simple] td{padding:4px 6px!important;font-size:8px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;}
   body[data-pdf-simple] tbody tr.detail-row{display:none!important;}
 
-  /* Complex PDF: show detail rows nicely */
-  body[data-pdf-complex] tbody tr.detail-row{display:table-row!important;}
-  body[data-pdf-complex] tbody tr.detail-row td{background:#f8fff8!important;padding:8px 10px!important;font-size:8px!important;}
-  body[data-pdf-complex] .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  body[data-pdf-complex] .detail-section{background:#fff!important;border:1px solid #ccc!important;border-radius:4px!important;padding:6px 8px!important;}
-  body[data-pdf-complex] .detail-section-title{font-size:8px!important;color:#1a3a2a!important;margin-bottom:6px!important;}
-  body[data-pdf-complex] .detail-field{padding:2px 4px!important;}
-  body[data-pdf-complex] .detail-lbl{font-size:7px!important;color:#007a60!important;}
-  body[data-pdf-complex] .detail-val{font-size:8px!important;color:#000!important;}
+  /* ── COMPLEX PDF — only detail cards, no table ── */
+  body[data-pdf-complex] .table-wrap{display:none!important;}
+  body[data-pdf-complex] #complex-cards{display:block!important;}
+  .complex-card{background:#fff!important;border:1px solid #1a3a6e!important;border-radius:6px!important;
+    padding:10px 12px!important;margin-bottom:10px!important;page-break-inside:avoid!important;}
+  .complex-card-id{font-family:'Orbitron',sans-serif!important;font-size:11px!important;
+    font-weight:900!important;color:#1a3a6e!important;letter-spacing:.1em!important;
+    border-bottom:1px solid #d0d8e8!important;padding-bottom:6px!important;margin-bottom:8px!important;}
+  .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .detail-section{background:#f8f9ff!important;border:1px solid #ccc!important;border-radius:4px!important;padding:6px 8px!important;}
+  .detail-section-title{font-size:9px!important;font-weight:700!important;margin-bottom:6px!important;color:#1a3a6e!important;}
+  .detail-section-title.motor{color:#0d1f35!important;}
+  .detail-section-title.reduct{color:#150a28!important;}
+  .detail-field{padding:2px 4px!important;display:flex!important;flex-direction:column!important;align-items:center!important;}
+  .detail-lbl{font-size:7px!important;color:#007a60!important;font-family:'Share Tech Mono',monospace!important;}
+  .detail-val{font-size:8px!important;color:#000!important;font-weight:600!important;}
 
   @page{size:A4 landscape;margin:0mm;}
 }
+#print-header{display:none;}
+#print-footer{display:none;}
+#complex-cards{display:none;}
 
 /* ── TRADEMARK ── */
 .trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:28px;}
@@ -292,7 +301,7 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
         <div class="kpi-val" id="k-total">—</div>
         <div style="display:flex;flex-direction:column;gap:4px;">
           <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--teal);">TOTAL</div>
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--teal);">moto-reductoare</div>
+
         </div>
       </div>
     </div>
@@ -301,7 +310,7 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
         <div class="kpi-val" id="k-siemens">—</div>
         <div style="display:flex;flex-direction:column;gap:4px;">
           <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--blue);">SIEMENS</div>
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--blue);">moto-reductoare</div>
+
         </div>
       </div>
     </div>
@@ -310,7 +319,7 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
         <div class="kpi-val" id="k-nord">—</div>
         <div style="display:flex;flex-direction:column;gap:4px;">
           <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--amber);">NORD</div>
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--amber);">moto-reductoare</div>
+
         </div>
       </div>
     </div>
@@ -319,7 +328,7 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
         <div class="kpi-val" id="k-abb">—</div>
         <div style="display:flex;flex-direction:column;gap:4px;">
           <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--green);">ABB</div>
-          <div style="font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em; color:var(--green);">moto-reductoare</div>
+
         </div>
       </div>
     </div>
@@ -615,32 +624,27 @@ function exportPDF(complex){
   var dtEl=document.getElementById('print-date-text');
   if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
 
-  var ph=document.getElementById('print-header');
-  var pf=document.getElementById('print-footer');
-  if(ph){ph.style.display='flex';}
-  if(pf){pf.style.display='flex';}
-
   if(complex){
-    // Expand all rows for complex PDF
+    // Build cards for each visible row
     var rows=getVisibleRows();
-    var prevExpanded=new Set(expandedRows);
-    rows.forEach(function(r){expandedRows.add(String(r[0]||''));});
-    renderTable();
+    var container=document.getElementById('complex-cards');
+    var html='';
+    rows.forEach(function(row){
+      html+='<div class="complex-card">'
+        +'<div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'
+        +buildDetailHTML(row)
+        +'</div>';
+    });
+    container.innerHTML=html;
     document.body.setAttribute('data-pdf-complex','1');
     window.print();
-    // Restore
-    expandedRows=prevExpanded;
-    renderTable();
     document.body.removeAttribute('data-pdf-complex');
+    container.innerHTML='';
   } else {
-    // Simple: hide detail rows
     document.body.setAttribute('data-pdf-simple','1');
     window.print();
     document.body.removeAttribute('data-pdf-simple');
   }
-
-  if(ph)ph.style.display='none';
-  if(pf)pf.style.display='none';
 }
 
 function exportExcel(){
