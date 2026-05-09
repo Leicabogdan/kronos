@@ -239,25 +239,25 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
   <!-- KPI STRIP -->
   <div class="kpi-strip">
-    <div class="kpi-card c-purple" style="flex-direction:column;align-items:flex-start;gap:6px;">
+    <div class="kpi-card c-purple" style="flex-direction:column;align-items:center;text-align:center;gap:6px;">
       <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--purple);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Total activitati</div>
       <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--purple);line-height:1;" id="k-total">0</div>
-      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">activitati nefinalizate</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;">activitati nefinalizate</div>
     </div>
-    <div class="kpi-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-color:rgba(80,144,224,.18);background:rgba(80,144,224,.03);">
+    <div class="kpi-card" style="flex-direction:column;align-items:center;text-align:center;gap:6px;border-color:rgba(80,144,224,.18);background:rgba(80,144,224,.03);">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);border-radius:10px 10px 0 0;"></div>
       <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--blue);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">In desfasurare</div>
       <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--blue);line-height:1;" id="k-incurs">0</div>
-      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">in curs de desfasurare</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;">in curs de desfasurare</div>
     </div>
-    <div class="kpi-card c-green" style="flex-direction:column;align-items:flex-start;gap:6px;">
+    <div class="kpi-card c-green" style="flex-direction:column;align-items:center;text-align:center;gap:6px;">
       <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--green);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Finalizate</div>
       <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--green);line-height:1;" id="k-finalizat">0</div>
-      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">finalizate</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--green);letter-spacing:.06em;text-transform:uppercase;">finalizate</div>
     </div>
-    <div class="kpi-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.02);">
+    <div class="kpi-card" style="flex-direction:column;align-items:center;text-align:center;gap:6px;border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.02);">
       <div style="position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.35);border-radius:10px 10px 0 0;"></div>
-      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Neincepute</div>
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:#fff;letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Neincepute</div>
       <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:#fff;line-height:1;" id="k-neinceput">0</div>
       <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">sarcini neincepute</div>
     </div>
@@ -550,10 +550,20 @@ function renderTable(){
   var rows=filteredData.slice();
   if(sortCol>=0){
     var sc=sortCol;
-    var isDateCol=(sc===4);
+    // stadiu order map: 5%=5, 25%=25, 50%=50, 75%=75, Finalizat=100, empty=0
+    var stadiuOrder={'':0,'5%':5,'25%':25,'50%':50,'75%':75,'finalizat':100,'Finalizat':100};
+    // stare order: Neinceput=0, In curs=1, Finalizat=2, Anulat=3
+    var stareOrder=function(s){s=String(s||'').toLowerCase();if(s.indexOf('curs')>-1)return 1;if(s.indexOf('finaliz')>-1)return 2;if(s.indexOf('anulat')>-1)return 3;return 0;};
     rows.sort(function(a,b){
-      var va=isDateCol?dateToSortKey(a[sc]||''):String(a[sc]||'');
-      var vb=isDateCol?dateToSortKey(b[sc]||''):String(b[sc]||'');
+      var va,vb;
+      if(sc===0){va=0;vb=0;return 0;} // Nr: no-op, preserves current order
+      else if(sc===1){va=0;vb=0;return 0;} // Sarcina: no sort (text, too arbitrary)
+      else if(sc===2){va=stareOrder(a[1]);vb=stareOrder(b[1]);}  // Stare col=2 maps to data[1]
+      else if(sc===3){va=String(a[2]||'').toLowerCase();vb=String(b[2]||'').toLowerCase();} // Responsabil=data[2]
+      else if(sc===4){va=stadiuOrder[a[3]]||stadiuOrder[String(a[3]||'').toLowerCase()]||0;vb=stadiuOrder[b[3]]||stadiuOrder[String(b[3]||'').toLowerCase()]||0;} // Stadiu=data[3]
+      else if(sc===5){va=dateToSortKey(a[4]||'');vb=dateToSortKey(b[4]||'');} // Termen=data[4]
+      else if(sc===6){va=parseInt(a[5])||0;vb=parseInt(b[5])||0;} // Evaluare=data[5]
+      else{va=String(a[sc]||'');vb=String(b[sc]||'');}
       if(va<vb)return -sortDir;if(va>vb)return sortDir;return 0;
     });
   }
@@ -612,7 +622,7 @@ function sortBy(col){
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
   var ths=document.querySelectorAll('thead .hdr-row th');
-  var thIdx={0:1,1:2,2:3,3:4,4:5,5:6,6:7};
+  var thIdx={0:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8};
   var ti=thIdx[col];
   if(ti!==undefined&&ths[ti])ths[ti].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
