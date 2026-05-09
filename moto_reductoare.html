@@ -96,7 +96,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
 /* ── TABLE — 3-section Excel style ── */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:16px;}
-table{width:100%;border-collapse:collapse;min-width:1600px;font-family:'IBM Plex Sans',sans-serif;}
+table{width:100%;border-collapse:collapse;min-width:100%;font-family:'IBM Plex Sans',sans-serif;}
 
 /* Section header row — styled as buttons/pills */
 thead .sec-row th{
@@ -147,7 +147,7 @@ thead .sub-row th:last-child{border-right:none;}
 .col-expand{border-left:2px solid rgba(0,220,180,.1)!important;}
 
 /* Body */
-tbody tr.data-row{transition:background .12s;cursor:pointer;}
+tbody tr.data-row{transition:background .12s;cursor:pointer;user-select:none;}
 tbody tr.data-row:nth-child(4n+1),tbody tr.data-row:nth-child(4n+2){background:var(--bg3);}
 tbody tr.data-row:nth-child(4n+3),tbody tr.data-row:nth-child(4n){background:var(--bg4);}
 tbody tr.data-row:hover{background:rgba(0,220,180,.05)!important;}
@@ -320,25 +320,23 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
   <div class="table-wrap">
     <table id="main-table">
       <colgroup>
-        <col style="width:70px;"/><!-- ID -->
-        <col style="width:130px;"/><!-- M:Producator -->
-        <col style="width:180px;"/><!-- M:Model -->
-        <col style="width:150px;"/><!-- M:Curent -->
-        <col style="width:130px;"/><!-- M:Putere -->
-        <col style="width:130px;"/><!-- M:Turatie -->
-        <col style="width:140px;"/><!-- M:RulDE -->
-        <col style="width:140px;"/><!-- M:RulNE -->
-        <col style="width:130px;"/><!-- R:Producator -->
-        <col style="width:180px;"/><!-- R:Model -->
-        <col style="width:130px;"/><!-- R:Turatie -->
-        <col style="width:46px;"/><!-- expand -->
+        <col style="width:5%;"/><!-- ID -->
+        <col style="width:9%;"/><!-- M:Producator -->
+        <col style="width:13%;"/><!-- M:Model -->
+        <col style="width:10%;"/><!-- M:Curent -->
+        <col style="width:8%;"/><!-- M:Putere -->
+        <col style="width:8%;"/><!-- M:Turatie -->
+        <col style="width:9%;"/><!-- M:RulDE -->
+        <col style="width:9%;"/><!-- M:RulNE -->
+        <col style="width:9%;"/><!-- R:Producator -->
+        <col style="width:12%;"/><!-- R:Model -->
+        <col style="width:8%;"/><!-- R:Turatie -->
       </colgroup>
       <thead>
         <tr class="sec-row">
           <th class="sec-id">ID</th>
           <th class="sec-motor" colspan="7">MOTOR</th>
           <th class="sec-reduct" colspan="3">REDUCTOR</th>
-          <th class="sec-id" style="border-left:2px solid rgba(0,220,180,.2);font-size:10px;">▼</th>
         </tr>
         <tr class="sub-row">
           <th onclick="sortBy(0)">ID</th>
@@ -352,7 +350,6 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
           <th class="th-reduct col-reduct-first" onclick="sortBy(9)">Producator</th>
           <th class="th-reduct" onclick="sortBy(10)">Model</th>
           <th class="th-reduct" onclick="sortBy(11)">Turatie (RPM)</th>
-          <th class="col-expand" style="background:#081410;cursor:default;"></th>
         </tr>
       </thead>
       <tbody id="tbody">
@@ -463,7 +460,6 @@ function renderTable(){
       +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[10])+'</td>'
       +'<td style="color:#fff;font-size:13px;">'+f(row[11])+'</td>'
       +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[12])+'</td>'
-      +'<td style="text-align:center;color:var(--teal);font-size:14px;">'+(isExp?'&#9650;':'&#9660;')+'</td>'
       +'</tr>';
     if(isExp){
       html+='<tr class="detail-row open"><td colspan="12">'+buildDetailHTML(row)+'</td></tr>';
