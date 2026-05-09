@@ -471,7 +471,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
 <script>
 var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxsSJ-_lMOxU2ymhbqacX8m1Rd4bKYAE1VVcAN679sYECrPeFdGqf8rbkNGgoqGHRbUWpYlm94y-rv/pub?gid=735172309&single=true&output=csv';
-var APPS_SCRIPT_URL = 'PUNE_URL_APPS_SCRIPT_AICI';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMM6EPODQPwkmqi5Wzwl16wu1IKOQx6OkNg4CWs0Tevd4oF_NZorZFVOvVawKhx6YB/exec';
 
 var allData = [];
 var filteredData = [];
@@ -685,12 +685,10 @@ async function submitRow(){
   try{
     var name=sessionStorage.getItem('k_name')||'Necunoscut';
     var newRow=[sarcina, stare, responsabil, stadiu, termen, evaluare];
-    if(APPS_SCRIPT_URL!=='PUNE_URL_APPS_SCRIPT_AICI'){
-      var payload={sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare,adaugat_de:name};
-      var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-      var json=await resp.json();
-      if(json.result!=='success') throw new Error(json.error||'Eroare necunoscuta');
-    }
+    var payload={sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare,adaugat_de:name};
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var json=await resp.json();
+    if(json.result!=='success') throw new Error(json.error||'Eroare necunoscuta');
     // Always save locally too
     allData.push(newRow);
     filteredData=allData.slice();
@@ -740,12 +738,12 @@ async function saveEdit(){
     var ai=allData.indexOf(row);
     if(ai>=0){allData[ai]=row;}
     saveLocal();
-    if(APPS_SCRIPT_URL!=='PUNE_URL_APPS_SCRIPT_AICI'){
-      try{
-        var payload={action:'edit',sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare};
-        await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-      }catch(ex){}
-    }
+    try{
+      var payload={action:'edit',sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare};
+      var er=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+      var ej=await er.json();
+      if(ej.result!=='success') throw new Error(ej.error||'Eroare');
+    }catch(ex){showMsg('edit-msg','err','Eroare Apps Script: '+ex.message);return;}
     renderTable();updateKPI();
     showMsg('edit-msg','ok','✓ Salvat!');
     setTimeout(closeEditModal,700);
