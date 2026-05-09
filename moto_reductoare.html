@@ -379,12 +379,12 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
           <th class="th-motor" onclick="sortBy(2)">Model</th>
           <th class="th-motor" onclick="sortBy(3)">Curent nominal</th>
           <th class="th-motor" onclick="sortBy(4)">Putere nominala</th>
-          <th class="th-motor" onclick="sortBy(5)">Turatie (RPM)</th>
+          <th class="th-motor" onclick="sortBy(5)">Turatie</th>
           <th class="th-motor" onclick="sortBy(6)">Rulment DE</th>
           <th class="th-motor" onclick="sortBy(7)">Rulment NE</th>
           <th class="th-reduct col-reduct-first" onclick="sortBy(9)">Prod.</th>
           <th class="th-reduct" onclick="sortBy(10)">Model</th>
-          <th class="th-reduct" onclick="sortBy(11)">Turatie (RPM)</th>
+          <th class="th-reduct" onclick="sortBy(11)">Turatie</th>
         </tr>
       </thead>
       <tbody id="tbody">
@@ -533,20 +533,33 @@ function f(v){return v&&v!=='-'&&v!=='NaN'?v:'—';}
 
 function buildDetailHTML(row){
   const mRight=[
-    ['Serie',row[13],'teal'],['Tensiune nominala',row[14],'blue'],['Frecventa',row[15],'blue'],
-    ['Randament',row[17],'green'],['Factor de putere (cos φ)',row[16],'green'],
-    ['Clasa eficienta',row[18],'amber'],['Lubrifiant',row[19],'teal'],
+    ['Serie',row[13],'teal'],
+    ['Model',row[3],'teal'],
+    ['Curent nominal',row[4],'blue'],
+    ['Putere nominala',row[5],'blue'],
+    ['Tensiune nominala',row[14],'blue'],
+    ['Frecventa',row[15],'blue'],
+    ['Randament',row[17],'green'],
+    ['Factor de putere (cos φ)',row[16],'green'],
+    ['Clasa eficienta',row[18],'amber'],
+    ['Turatie',row[6],'#fff'],
   ];
   const mLeft=[
-    ['Greutate',row[20],'#fff'],['Tip constructie',row[9],'#fff'],
-    ['Grad protectie',row[21],'amber'],['Clasa izolatie',row[24],'#fff'],
-    ['Temperatura functionare',row[22],'#fff'],['Standard',row[23],'#fff'],
+    ['Rulment DE',row[7],'blue'],
+    ['Rulment NE',row[8],'blue'],
+    ['Lubrifiant',row[19],'teal'],
+    ['Greutate',row[20],'#fff'],
+    ['Tip constructie',row[9],'#fff'],
+    ['Grad protectie',row[21],'amber'],
+    ['Clasa izolatie',row[24],'#fff'],
+    ['Temperatura functionare',row[22],'#fff'],
+    ['Standard',row[23],'#fff'],
     ['Certificare ATEX',row[25],'red'],
   ];
   const rRight=[
     ['Serie',row[26],'teal'],
     ['Model',row[11],'teal'],
-    ['Turatie (RPM)',row[12],'teal'],
+    ['Turatie',row[12],'teal'],
     ['Turatia nominala arbore iesire',row[27],'blue'],
     ['Cuplu nominal arbore iesire',row[28],'blue'],
     ['Putere maxima',row[29],'blue'],
