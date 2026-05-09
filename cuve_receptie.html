@@ -171,19 +171,57 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  html,body{background:#fff!important;color:#000!important;padding:12mm!important;}
-  .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
-  .page{padding:0!important;max-width:100%!important;margin:0!important;}
+  a{color:inherit!important;text-decoration:none!important;}
+  a[href]::after{content:none!important;display:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
+  .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
+  .page{padding:0 10mm!important;max-width:100%!important;margin:0!important;}
+
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:12px;background:#fff!important;}
+  .print-header-left{display:flex;align-items:center;gap:12px;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
-  thead tr.hdr-row th{background:#1a3a6e!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-weight:700!important;white-space:normal!important;}
+  thead tr.hdr-row th{
+    background:#1a3a6e!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;
+    text-align:center!important;border-right:1px solid #2a4a8e!important;white-space:normal!important;
+  }
   tbody tr{background:#fff!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
-  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;}
-  .chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;}
+  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
+    border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
+    vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+
+  /* Hide checkbox and Nr action cols */
+  thead tr.hdr-row th:nth-child(1),tbody td:nth-child(1){display:none!important;}
+
+  /* Col widths: Nr=3%, Cuva=12%, Data=10%, Descriere=38%, Status=14%, Piese=13%, AdaugatDe=10% */
+  thead tr.hdr-row th:nth-child(2){width:3%!important;}
+  thead tr.hdr-row th:nth-child(3){width:12%!important;}
+  thead tr.hdr-row th:nth-child(4){width:10%!important;}
+  thead tr.hdr-row th:nth-child(5){width:38%!important;text-align:left!important;}
+  thead tr.hdr-row th:nth-child(6){width:14%!important;}
+  thead tr.hdr-row th:nth-child(7){width:13%!important;}
+  thead tr.hdr-row th:nth-child(8){width:10%!important;}
+
+  tbody td:nth-child(5){text-align:left!important;padding-left:8px!important;}
+  tbody td:nth-child(2){font-size:8px!important;}
+
+  .chip-apt,.chip-supraveg,.chip-avarie,.chip-oprit{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
   .desc-bubble{display:none!important;}
-  @page{size:A4 landscape;margin:10mm;}
+  .print-footer{display:block!important;position:fixed;bottom:6mm;left:10mm;right:10mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;padding-top:3px;
+    display:flex;justify-content:space-between;align-items:center;}
+  @page{size:A4 landscape;margin:0mm;}
 }
+.print-header{display:none;}
+.print-footer{display:none;}
 </style>
 </head>
 <body>
@@ -220,6 +258,29 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 </div>
 
 <div class="page">
+
+  <div class="print-footer" id="print-footer">
+    <span id="print-date-text"></span>
+    <span>KRONOS &trade; &middot; Terminal Cereale SOCEP &middot; Port Constanta</span>
+  </div>
+
+  <div class="print-header" id="print-header">
+    <div class="print-header-left">
+      <div>
+        <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
+        <div class="print-kronos-sub">Maintenance System</div>
+      </div>
+      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
+      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
+        Registru Cuve Receptie<br>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP &middot; Port Constanta</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;">
+      <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;display:block;">SOCEP</span>
+      <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#4a7aae;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
+    </div>
+  </div>
 
   <!-- KPI STRIP — 4 cuve -->
   <div class="kpi-strip">
@@ -585,16 +646,56 @@ async function submitRow(){
 })();
 
 /* ── EXPORT ── */
-function exportPDF(){window.print();}
+function exportPDF(){
+  var now=new Date();
+  var d=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+  var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var dtEl=document.getElementById('print-date-text');
+  if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
+  var hasSelected=selectedRows.size>0;
+  var hiddenRows=[];
+  if(hasSelected){
+    document.querySelectorAll('#tbody tr').forEach(function(tr){
+      if(!tr.classList.contains('row-selected')){tr.style.display='none';hiddenRows.push(tr);}
+    });
+  }
+  var ph=document.getElementById('print-header');
+  var pf=document.getElementById('print-footer');
+  if(ph)ph.style.display='flex';
+  if(pf)pf.style.display='flex';
+  window.print();
+  if(ph)ph.style.display='none';
+  if(pf)pf.style.display='none';
+  hiddenRows.forEach(function(tr){tr.style.display='';});
+}
 function exportExcel(){
-  var rows=filteredData;
-  var headers=['Cuva receptie','Data','Descriere lucrari','Status cuva','Piese schimb','Adaugat de'];
-  var wsData=[headers,...rows.map(function(r){return[r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||''];})];
+  var dataToExport;
+  if(selectedRows.size>0){
+    dataToExport=[];
+    document.querySelectorAll('#tbody tr.row-selected').forEach(function(tr){
+      var uid=tr.dataset.uid;
+      var idx=filteredData.findIndex(function(r,i){return(String(r[0]||'')+String(r[1]||'')+i)===uid;});
+      if(idx>=0)dataToExport.push(filteredData[idx]);
+    });
+  }else{dataToExport=filteredData;}
+  var headers=['Nr.','Cuva receptie','Data','Descriere lucrari','Status cuva','Piese schimb','Adaugat de'];
+  var wsData=[headers];
+  dataToExport.forEach(function(r,i){
+    wsData.push([i+1,r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||'']);
+  });
   var ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols']=[{wch:4},{wch:16},{wch:14},{wch:50},{wch:22},{wch:22},{wch:18}];
+  var range=XLSX.utils.decode_range(ws['!ref']);
+  for(var C=range.s.c;C<=range.e.c;C++){
+    var addr=XLSX.utils.encode_cell({r:0,c:C});
+    if(!ws[addr])continue;
+    ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'1a3a6e'}},alignment:{horizontal:'center'}};
+  }
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Cuve Receptie');
   var now=new Date();
-  XLSX.writeFile(wb,'KRONOS_CuveReceptie_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
+  XLSX.writeFile(wb,'KRONOS_CuveReceptie_'+String(now.getDate()).padStart(2,'0')+'.'
+    +String(now.getMonth()+1).padStart(2,'0')+'.'+now.getFullYear()+'.xlsx');
 }
 
 /* ── DATE/TIME INPUT HELPERS ── */
