@@ -513,15 +513,15 @@ function buildDetailHTML(row){
     ['Turatia nominala arbore iesire',row[27],'blue'],
     ['Cuplu nominal arbore iesire',row[28],'blue'],
     ['Raport total de transmisie',row[30],'green'],
-    ['Tip ulei',row[31],'green'],
+    ['Tip ulei',row[31],'amber'],
     ['Cantitate ulei',row[32],'amber'],
+    ['Data fabricatie',row[34],'amber'],
   ];
   const rLeft=[
-    ['Greutate',row[33],'#fff'],
-    ['Grad protectie',row[34],'amber'],
-    ['Clasa izolatie',row[36],'#fff'],
-    ['Temperatura functionare',row[35],'#fff'],
-    ['Certificare ATEX',row[37],'red'],
+    ['Pozitie de montaj',row[32],'#fff'],
+    ['Greutate',row[35],'#fff'],
+    ['Certificare ATEX',row[36],'red'],
+    ['Temperatura functionare',row[37],'#fff'],
   ];
   const SZ='15px';
   function field(lbl,val,color){
@@ -533,7 +533,7 @@ function buildDetailHTML(row){
   const titleStyle='font-family:var(--sans);font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border2);';
   return '<div class="detail-grid">'
     +'<div class="detail-section">'
-      +'<div class="detail-section-title motor" style="'+titleStyle+'">Motor &mdash; '+f(row[2])+' '+f(row[3])+'<span style="margin-left:12px;color:#fff;font-size:13px;opacity:.6;">'+f(row[5])+'</span></div>'
+      +'<div class="detail-section-title motor" style="'+titleStyle+'">Motor &mdash; '+f(row[2])+' '+f(row[3])+' &mdash; <span style="color:var(--blue);font-size:15px;font-weight:700;">'+f(row[5])+'</span></div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">'
         +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mLeft)+'</div>'
         +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mRight)+'</div>'
