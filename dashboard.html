@@ -783,19 +783,18 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
               </div>
             </div>
 
-            <!-- CONFORMITATE -->
-            <div class="widget-card widget-green-border" style="height:100%;">
-              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:var(--green);letter-spacing:.1em;margin-bottom:8px;">CONFORMITATE</div>
-              <div style="font-family:var(--title);font-size:clamp(36px,4vw,52px);font-weight:900;color:var(--green);line-height:1;">98<span style="font-size:20px;">%</span></div>
-              <div style="font-family:var(--sans);font-size:10px;color:#fff;margin-top:6px;">proceduri ISO/HACCP</div>
+            <!-- NEIMPLEMENTAT 1 -->
+            <div class="widget-card" style="height:100%;border-color:rgba(255,255,255,.08);opacity:.45;">
+              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
+              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:rgba(255,255,255,.2);line-height:1;">—</div>
+              <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">in curs de dezvoltare</div>
             </div>
 
-            <!-- INTERVENTII LUNA -->
-            <div class="widget-card" style="border-color:rgba(80,144,224,.3);background:rgba(80,144,224,.04);height:100%;">
-              <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);border-radius:10px 10px 0 0;"></div>
-              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:var(--blue);letter-spacing:.1em;margin-bottom:8px;">INTERVENTII LUNA</div>
-              <div style="font-family:var(--title);font-size:clamp(36px,4vw,52px);font-weight:900;color:var(--blue);line-height:1;" id="dash-interv-count">&#8212;</div>
-              <div style="font-family:var(--sans);font-size:10px;color:#fff;margin-top:6px;" id="dash-interv-sub">se incarca...</div>
+            <!-- NEIMPLEMENTAT 2 -->
+            <div class="widget-card" style="height:100%;border-color:rgba(255,255,255,.08);opacity:.45;">
+              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
+              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:rgba(255,255,255,.2);line-height:1;">—</div>
+              <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">in curs de dezvoltare</div>
             </div>
 
           </div>
@@ -1000,20 +999,15 @@ async function loadDashAvarii() {
     rows = rows.map(function(r){while(r.length<12)r.push('');return r;});
     // Filter avarii this month: motiv contains 'avarie' OR status contains 'necesita interv' or 'avarie'
     var now = new Date();
-    // Count ALL interventii this month (not just avarii) for total
-    var thisMonth = rows.filter(function(r){ return isThisMonthDash(r[2]); });
-    var avarii = thisMonth.filter(function(r){
+    var avarii = rows.filter(function(r){
       var m = String(r[1]||'').toLowerCase();
       var s = String(r[7]||'').toLowerCase();
-      return m.indexOf('avarie')>-1 || s.indexOf('necesita interv')>-1 || s.indexOf('avarie')>-1;
+      return isThisMonthDash(r[2]) && (m.indexOf('avarie')>-1 || s.indexOf('necesita interv')>-1 || s.indexOf('avarie')>-1);
     });
-    // Count by equipment (all interventii this month as hotspot)
+    // Count by equipment
     var eqCounts = {};
-    avarii.length ? avarii.forEach(function(r){
-      var eq = String(r[11]||'Necunoscut').trim();
-      eqCounts[eq] = (eqCounts[eq]||0)+1;
-    }) : thisMonth.forEach(function(r){
-      var eq = String(r[11]||'Necunoscut').trim();
+    avarii.forEach(function(r){
+      var eq = r[11]||r[11]||'Necunoscut';
       eqCounts[eq] = (eqCounts[eq]||0)+1;
     });
     // Sort by count desc
@@ -1021,9 +1015,7 @@ async function loadDashAvarii() {
     var maxCount = sorted.length ? eqCounts[sorted[0]] : 1;
     // Update count
     document.getElementById('dash-avarii-count').textContent = avarii.length || '0';
-    document.getElementById('dash-avarii-sub').textContent = (avarii.length
-      ? sorted.length + ' echip. cu avarii'
-      : thisMonth.length + ' interventii luna') + ' · ' + new Date().toLocaleString('ro-RO',{month:'long'});
+    document.getElementById('dash-avarii-sub').textContent = sorted.length + ' echipamente · luna curenta';
     // Also update total interventii count
     var intervEl = document.getElementById('dash-interv-count');
     var intervSub = document.getElementById('dash-interv-sub');
@@ -1033,7 +1025,7 @@ async function loadDashAvarii() {
     // Update rows
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:13px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta.</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
       return;
     }
     var html2 = '';
@@ -1126,31 +1118,31 @@ async function loadActivitate() {
     if(!el) return;
     if(!recent.length){el.innerHTML='<div style="padding:14px;font-family:var(--sans);font-size:15px;color:#fff;">Nicio activitate inregistrata.</div>';return;}
     el.innerHTML = recent.map(function(r){
-      var eq=String(r[11]||'').trim()||'?';
-      var m=String(r[1]||'').trim()||'—';
-      var di=r[2]||'', oi=r[3]||'', df=r[4]||'', of2=r[5]||'';
-      var desc=String(r[6]||'').trim();
-      var s=String(r[7]||'').trim();
-      var piese=String(r[8]||'').trim();
-      var echipa=String(r[9]||'').trim();
+      var eq=r[11]||'?', m=r[1]||'?', di=r[2]||'', oi=r[3]||'', df=r[4]||'', of2=r[5]||'', desc=r[6]||'', s=r[7]||'', piese=r[8]||'', echipa=r[9]||'';
       var av=m.toLowerCase().indexOf('avarie')>-1;
       var col=av?'var(--red)':'var(--teal)';
-      var sc=s.toLowerCase().indexOf('apt')>-1?'var(--green)':s.toLowerCase().indexOf('supraveg')>-1?'var(--amber)':s.toLowerCase().indexOf('necesita')>-1?'var(--red)':'rgba(255,255,255,.4)';
-      return '<div style="display:flex;align-items:stretch;gap:0;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);">'
-        +'<div style="width:3px;border-radius:2px;background:'+col+';flex-shrink:0;margin-right:12px;align-self:stretch;"></div>'
+      var sc=s.indexOf('Apt')>-1?'var(--green)':s.indexOf('supraveg')>-1?'var(--amber)':s.indexOf('Necesita')>-1?'var(--red)':'rgba(255,255,255,.5)';
+      return '<div style="display:flex;align-items:stretch;gap:0;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.05);">'
+        // Left color bar
+        +'<div style="width:3px;min-height:100%;border-radius:2px;background:'+col+';flex-shrink:0;margin-right:12px;"></div>'
+        // Content
         +'<div style="flex:1;min-width:0;">'
-        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">'
-        +'<span style="font-family:var(--sans);font-size:13px;font-weight:700;color:var(--amber);">'+eq+'</span>'
-        +'<span style="font-family:var(--sans);font-size:13px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';">'+m+'</span>'
-        +(s?'<span style="margin-left:auto;font-family:var(--sans);font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;background:'+sc+'22;color:'+sc+';border:1px solid '+sc+'66;white-space:nowrap;">'+s+'</span>':'')
+        // Row 1: equipment + motiv + status chip
+        +'<div style="display:flex;align-items:flex-start;gap:8px;flex-wrap:nowrap;margin-bottom:4px;">'
+        +'<span style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--amber);">'+eq+'</span>'
+        +'<span style="font-family:var(--sans);font-size:18px;color:'+(av?'var(--red)':'#fff')+';font-weight:'+(av?700:600)+';white-space:normal;">'+m+'</span>'
+        +(s?'<span style="margin-left:auto;flex-shrink:0;font-family:var(--sans);font-size:18px;font-weight:700;padding:5px 14px;border-radius:8px;background:'+sc+'22;color:'+sc+';border:1.5px solid '+sc+'88;align-self:center;white-space:nowrap;">'+s+'</span>':'')
         +'</div>'
-        +'<div style="display:flex;gap:12px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:#fff;margin-bottom:2px;">'
+        // Row 2: dates + ora
+        +'<div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:center;font-family:var(--mono);font-size:16px;color:#fff;margin-bottom:4px;overflow:hidden;">'
         +(di?'<span style="color:var(--teal);">▶ '+di+(oi?' '+oi:'')+'</span>':'')
-        +(df?'<span style="color:rgba(255,255,255,.45);">■ '+df+(of2?' '+of2:'')+'</span>':'')
+        +(df?'<span style="color:rgba(255,255,255,.4);">■ '+df+(of2?' '+of2:'')+'</span>':'')
         +(echipa?'<span style="color:var(--purple);">≡ '+echipa+'</span>':'')
         +'</div>'
-        +(desc?'<div style="font-family:var(--sans);font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">'+desc+'</div>':'')
-        +(piese?'<div style="font-family:var(--mono);font-size:11px;color:var(--blue);margin-top:2px;">◆ '+piese+'</div>':'')
+        // Row 3: descriere (truncated)
+        +(desc?'<div style="font-family:var(--sans);font-size:16px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:4px;">'+desc+'</div>':'')
+        // Row 4: piese (if any)
+        +(piese?'<div style="font-family:var(--mono);font-size:16px;color:var(--blue);">◆ Piese: '+piese+'</div>':'')
         +'</div>'
         +'</div>';
     }).join('');
