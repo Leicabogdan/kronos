@@ -330,15 +330,6 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   <!-- TOOLBAR -->
   <div class="toolbar">
     <div class="select-wrap">
-      <select id="sel-month" onchange="applyFilters()">
-        <option value="">Toate lunile</option>
-        <option value="01">Ianuarie</option><option value="02">Februarie</option><option value="03">Martie</option>
-        <option value="04">Aprilie</option><option value="05">Mai</option><option value="06">Iunie</option>
-        <option value="07">Iulie</option><option value="08">August</option><option value="09">Septembrie</option>
-        <option value="10">Octombrie</option><option value="11">Noiembrie</option><option value="12">Decembrie</option>
-      </select>
-    </div>
-    <div class="select-wrap">
       <select id="sel-year" onchange="applyFilters()">
         <option value="">Toti anii</option>
         <option value="2024">2024</option><option value="2025">2025</option>
@@ -494,7 +485,7 @@ function renderTable(){
 }
 
 function applyFilters(){
-  var month=document.getElementById('sel-month').value;
+  var month='';
   var year=document.getElementById('sel-year').value;
   var cuva=document.getElementById('sel-cuva').value;
   var status=document.getElementById('sel-status').value;
@@ -622,8 +613,8 @@ function formatTimeInput(el){var v=el.value.replace(/[^0-9]/g,'');var out='';if(
   var dispEl=document.getElementById('f-data-display');
   if(dispEl)dispEl.value=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
   document.getElementById('f-data').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  document.getElementById('sel-year').value=String(now.getFullYear());
-  document.getElementById('sel-month').value=String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('sel-year').value='';
+  
   loadData();
 })();
 </script>
