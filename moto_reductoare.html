@@ -200,14 +200,45 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
 
 /* ── PRINT ── */
 @media print{
-  .topbar,.filter-bar,.file-section,.trademark,.exp-btn,.nav-links{display:none!important;}
-  body{background:#fff!important;color:#000!important;}
-  .page{padding:0!important;max-width:100%!important;}
-  .table-wrap{border:1px solid #ccc!important;border-radius:0!important;}
-  thead .sec-row th,thead .sub-row th{background:#1a3a2a!important;color:#fff!important;font-size:9px!important;padding:6px 8px!important;}
-  td{padding:5px 8px!important;font-size:9px!important;color:#000!important;}
-  .td-id{color:#007a60!important;}
-  tbody tr.detail-row{display:none!important;}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  a{color:inherit!important;text-decoration:none!important;}
+  a[href]::after{content:none!important;}
+  .topbar,.filter-bar,.file-section,.trademark,.filter-btn,.exp-btn,.nav-links,.search-input{display:none!important;}
+  body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  .page{padding:0 8mm!important;max-width:100%!important;margin:0!important;}
+
+  /* Print header */
+  #print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:6px 8px;border-bottom:2px solid #1a3a2a;margin-bottom:10px;background:#fff!important;}
+  #print-footer{display:flex!important;}
+
+  /* Table */
+  .table-wrap{border:1px solid #1a3a2a!important;border-radius:0!important;overflow:visible!important;}
+  table{width:100%!important;border-collapse:collapse!important;min-width:0!important;}
+  thead .sec-row th{background:#1a3a2a!important;color:#fff!important;font-size:8px!important;padding:5px 6px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  thead .sub-row th{background:#1a3a2a!important;color:#fff!important;font-size:7px!important;padding:5px 6px!important;white-space:normal!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  tbody tr:nth-child(even){background:#f0f7f4!important;}
+  td{padding:4px 6px!important;font-size:8px!important;color:#000!important;border-bottom:1px solid #d0e8d8!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;}
+  .td-id,.td-motor,.td-reduct{font-size:8px!important;color:#000!important;}
+  .sec-motor{background:#0d1f35!important;}
+  .sec-reduct{background:#150a28!important;}
+  .th-motor{background:#0d1f35!important;}
+  .th-reduct{background:#150a28!important;}
+
+  /* Simple PDF: hide detail rows */
+  body[data-pdf-simple] tbody tr.detail-row{display:none!important;}
+
+  /* Complex PDF: show detail rows nicely */
+  body[data-pdf-complex] tbody tr.detail-row{display:table-row!important;}
+  body[data-pdf-complex] tbody tr.detail-row td{background:#f8fff8!important;padding:8px 10px!important;font-size:8px!important;}
+  body[data-pdf-complex] .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  body[data-pdf-complex] .detail-section{background:#fff!important;border:1px solid #ccc!important;border-radius:4px!important;padding:6px 8px!important;}
+  body[data-pdf-complex] .detail-section-title{font-size:8px!important;color:#1a3a2a!important;margin-bottom:6px!important;}
+  body[data-pdf-complex] .detail-field{padding:2px 4px!important;}
+  body[data-pdf-complex] .detail-lbl{font-size:7px!important;color:#007a60!important;}
+  body[data-pdf-complex] .detail-val{font-size:8px!important;color:#000!important;}
+
+  @page{size:A4 landscape;margin:0mm;}
 }
 
 /* ── TRADEMARK ── */
@@ -305,9 +336,13 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
     <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Trans. cu lant</button>
     <button class="filter-btn" data-f="elevator" onclick="setFilter(this)">Elevator</button>
     <div class="export-btns">
-      <button class="exp-btn pdf" onclick="exportPDF()">
+      <button class="exp-btn pdf" onclick="exportPDF(false)">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Exporta PDF
+        PDF Simplu
+      </button>
+      <button class="exp-btn pdf" onclick="exportPDF(true)" style="background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);color:var(--teal);">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        PDF Complex
       </button>
       <button class="exp-btn xls" onclick="exportExcel()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -558,7 +593,40 @@ function sortBy(col){
   renderTable();
 }
 
-function exportPDF(){window.print();}
+function exportPDF(complex){
+  var now=new Date();
+  var d=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+  var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var dtEl=document.getElementById('print-date-text');
+  if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
+
+  var ph=document.getElementById('print-header');
+  var pf=document.getElementById('print-footer');
+  if(ph){ph.style.display='flex';}
+  if(pf){pf.style.display='flex';}
+
+  if(complex){
+    // Expand all rows for complex PDF
+    var rows=getVisibleRows();
+    var prevExpanded=new Set(expandedRows);
+    rows.forEach(function(r){expandedRows.add(String(r[0]||''));});
+    renderTable();
+    document.body.setAttribute('data-pdf-complex','1');
+    window.print();
+    // Restore
+    expandedRows=prevExpanded;
+    renderTable();
+    document.body.removeAttribute('data-pdf-complex');
+  } else {
+    // Simple: hide detail rows
+    document.body.setAttribute('data-pdf-simple','1');
+    window.print();
+    document.body.removeAttribute('data-pdf-simple');
+  }
+
+  if(ph)ph.style.display='none';
+  if(pf)pf.style.display='none';
+}
 
 function exportExcel(){
   const rows=getVisibleRows();
