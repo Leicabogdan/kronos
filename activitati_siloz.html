@@ -229,17 +229,17 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   thead tr.hdr-row th:nth-child(9),
   tbody td:nth-child(9){display:none!important;}
 
-  /* Column widths after hiding checkbox: Nr(2)=3%, Sarcina(3)=30%, Stare(4)=12%, Responsabil(5)=13%, Stadiu(6)=10%, Termen(7)=12%, Evaluare(8)=10% */
+  /* Column widths: Nr(2)=3%, Sarcina(3)=42%, Stare(4)=12%, Responsabil(5)=14%, Stadiu(6)=8%, Termen(7)=10%, Evaluare(8)=7% */
   thead tr.hdr-row th:nth-child(2){width:3%!important;}
-  thead tr.hdr-row th:nth-child(3){width:30%!important;text-align:left!important;}
+  thead tr.hdr-row th:nth-child(3){width:42%!important;text-align:left!important;}
   thead tr.hdr-row th:nth-child(4){width:12%!important;}
-  thead tr.hdr-row th:nth-child(5){width:13%!important;}
-  thead tr.hdr-row th:nth-child(6){width:10%!important;}
-  thead tr.hdr-row th:nth-child(7){width:12%!important;}
-  thead tr.hdr-row th:nth-child(8){width:10%!important;}
+  thead tr.hdr-row th:nth-child(5){width:14%!important;}
+  thead tr.hdr-row th:nth-child(6){width:8%!important;}
+  thead tr.hdr-row th:nth-child(7){width:10%!important;}
+  thead tr.hdr-row th:nth-child(8){width:7%!important;}
 
-  /* Sarcina col: left aligned, show full text */
-  tbody td:nth-child(3){text-align:left!important;padding-left:8px!important;white-space:normal!important;}
+  /* Sarcina col: left aligned, full text wrapping */
+  tbody td:nth-child(3){text-align:left!important;padding-left:8px!important;white-space:normal!important;word-break:break-word!important;line-height:1.4!important;}
   /* Nr col narrow */
   tbody td:nth-child(2){text-align:center!important;font-size:8px!important;}
 
@@ -853,6 +853,17 @@ function exportPDF(){
   var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
   var dtEl=document.getElementById('print-date-text');
   if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
+  // If rows are selected, hide non-selected before print
+  var hasSelected=selectedRows.size>0;
+  var hiddenRows=[];
+  if(hasSelected){
+    document.querySelectorAll('#tbody tr').forEach(function(tr){
+      if(!tr.classList.contains('row-selected')){
+        tr.style.display='none';
+        hiddenRows.push(tr);
+      }
+    });
+  }
   var ph=document.getElementById('print-header');
   var pf=document.getElementById('print-footer');
   if(ph)ph.style.display='flex';
@@ -860,17 +871,30 @@ function exportPDF(){
   window.print();
   if(ph)ph.style.display='none';
   if(pf)pf.style.display='none';
+  hiddenRows.forEach(function(tr){tr.style.display='';});
 }
 function exportExcel(){
+  // Use selected rows if any, else all filteredData
+  var dataToExport;
+  if(selectedRows.size>0){
+    dataToExport=[];
+    document.querySelectorAll('#tbody tr.row-selected').forEach(function(tr){
+      var uid=tr.dataset.uid;
+      var idx=filteredData.findIndex(function(r,i){
+        return (String(r[0]||'')+String(r[2]||'')+i)===uid;
+      });
+      if(idx>=0) dataToExport.push(filteredData[idx]);
+    });
+  } else {
+    dataToExport=filteredData;
+  }
   var headers=['Nr.','Sarcina','Stare','Responsabil','Stadiu','Termen limita','Evaluare'];
   var wsData=[headers];
-  filteredData.forEach(function(r,i){
+  dataToExport.forEach(function(r,i){
     wsData.push([i+1, r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', r[5]||'']);
   });
   var ws=XLSX.utils.aoa_to_sheet(wsData);
-  // Column widths
-  ws['!cols']=[{wch:5},{wch:50},{wch:22},{wch:22},{wch:14},{wch:16},{wch:10}];
-  // Header style
+  ws['!cols']=[{wch:5},{wch:55},{wch:22},{wch:22},{wch:12},{wch:14},{wch:10}];
   var range=XLSX.utils.decode_range(ws['!ref']);
   for(var C=range.s.c;C<=range.e.c;C++){
     var addr=XLSX.utils.encode_cell({r:0,c:C});
