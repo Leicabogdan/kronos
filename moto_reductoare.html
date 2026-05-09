@@ -48,7 +48,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .coord-name-box .last{font-family:var(--raj);font-size:15px;font-weight:700;color:var(--teal);display:block;letter-spacing:.12em;}
 
 /* ── PAGE ── */
-.page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:1800px;margin:0 auto;}
+.page{padding:clamp(12px,1.5vw,18px) clamp(8px,1.5vw,16px);max-width:100%;margin:0;}
 
 /* ── KPI ── */
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
@@ -184,12 +184,12 @@ tbody tr.detail-row.open{display:table-row;}
 tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rgba(0,220,180,.15);padding:16px 20px;}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
-.detail-section-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.detail-section-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
 .detail-section-title.motor{color:var(--blue);}
 .detail-section-title.reduct{color:var(--purple);}
 
 .detail-field{display:flex;flex-direction:column;gap:2px;align-items:center;padding:4px 6px;}
-.detail-lbl{font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;font-weight:700;text-align:center;}
+.detail-lbl{font-family:var(--mono);font-size:15px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:center;}
 .detail-val{font-family:'IBM Plex Sans',sans-serif;font-size:15px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
 
 /* Load state */
@@ -455,8 +455,8 @@ function renderTable(){
       +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[4])+'</td>'
       +'<td style="color:var(--teal);font-weight:700;font-size:13px;text-align:center;">'+f(row[5])+'</td>'
       +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[6])+'</td>'
-      +'<td style="color:var(--blue);font-size:12px;text-align:center;">'+f(row[7])+'</td>'
-      +'<td style="color:var(--blue);font-size:12px;text-align:center;">'+f(row[8])+'</td>'
+      +'<td style="color:var(--blue);font-size:13px;text-align:center;font-family:var(--mono);">'+f(row[7])+'</td>'
+      +'<td style="color:var(--blue);font-size:13px;text-align:center;font-family:var(--mono);">'+f(row[8])+'</td>'
       +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[10])+'</td>'
       +'<td style="color:#fff;font-size:13px;">'+f(row[11])+'</td>'
       +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[12])+'</td>'
