@@ -64,17 +64,13 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .kpi-card.c-amber .kpi-id{color:var(--amber);}
 .kpi-card.c-blue .kpi-id{color:var(--blue);}
 .kpi-card.c-green .kpi-id{color:var(--green);}
-.kpi-dim{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.06em;color:#fff;margin-top:4px;}
-.kpi-vol{font-family:var(--sans);font-size:15px;font-weight:700;}
+.kpi-dim{font-family:var(--sans);font-size:16px;font-weight:700;color:#fff;margin-top:4px;}
+.kpi-vol{font-family:var(--sans);font-size:18px;font-weight:700;}
 .kpi-card.c-teal .kpi-vol{color:var(--teal);}
 .kpi-card.c-amber .kpi-vol{color:var(--amber);}
 .kpi-card.c-blue .kpi-vol{color:var(--blue);}
 .kpi-card.c-green .kpi-vol{color:var(--green);}
-.kpi-sublbl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.45;margin-top:2px;}
-.kpi-card.c-teal .kpi-sublbl{color:var(--teal);}
-.kpi-card.c-amber .kpi-sublbl{color:var(--amber);}
-.kpi-card.c-blue .kpi-sublbl{color:var(--blue);}
-.kpi-card.c-green .kpi-sublbl{color:var(--green);}
+.kpi-sublbl{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff!important;opacity:1;margin-top:2px;}
 .kpi-sep{height:1px;background:var(--border2);margin:6px 0;}
 
 /* ── FORM ── */
@@ -253,7 +249,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
     <div class="kpi-card c-blue">
       <div class="kpi-inner">
-        <div class="kpi-id">CUVA AUTO CF</div>
+        <div class="kpi-id">CUVA CF</div>
         <div class="kpi-sep"></div>
         <div class="kpi-sublbl">Dimensiuni</div>
         <div class="kpi-dim">18 &times; 4 m</div>
@@ -264,7 +260,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
     <div class="kpi-card c-green">
       <div class="kpi-inner">
-        <div class="kpi-id">BUNCAR ELMAR</div>
+        <div class="kpi-id">BUNCAR BJ</div>
         <div class="kpi-sep"></div>
         <div class="kpi-sublbl">Dimensiuni</div>
         <div class="kpi-dim">— m</div>
@@ -289,8 +285,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
             <option value="">Selecteaza cuva...</option>
             <option>Cuva Auto 1</option>
             <option>Cuva Auto 2</option>
-            <option>Cuva Auto CF</option>
-            <option>Buncar Elmar</option>
+            <option>Cuva CF</option>
+            <option>Buncar BJ</option>
           </select>
         </div>
       </div>
@@ -311,14 +307,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <input class="form-input" type="text" id="f-data-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-data')" autocomplete="off" style="letter-spacing:.05em;"/>
         <input type="hidden" id="f-data"/>
       </div>
-      <div class="form-field">
-        <label class="form-lbl">Ora</label>
-        <input class="form-input" type="text" id="f-ora" placeholder="HH:MM" maxlength="5" oninput="formatTimeInput(this)" autocomplete="off" style="letter-spacing:.08em;"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Echipa *</label>
-        <input class="form-input" type="text" id="f-echipa" placeholder="ex: Leica Bogdan, Vuculescu V."/>
-      </div>
+
       <div class="form-field">
         <label class="form-lbl">Piese de schimb</label>
         <input class="form-input" type="text" id="f-piese" placeholder="ex: Garnitura cauciuc, Suruburi M12"/>
@@ -363,8 +352,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <option value="">Toate cuvele</option>
         <option>Cuva Auto 1</option>
         <option>Cuva Auto 2</option>
-        <option>Cuva Auto CF</option>
-        <option>Buncar Elmar</option>
+        <option>Cuva CF</option>
+        <option>Buncar BJ</option>
       </select>
     </div>
     <div class="select-wrap">
@@ -426,8 +415,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
 <script>
 /* ── CONFIG — setezi URL-urile Google Sheets pentru cuve ── */
-var SHEET_CSV_URL = 'PUNE_URL_CSV_AICI';
-var APPS_SCRIPT_URL = 'PUNE_URL_APPS_SCRIPT_AICI';
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRBOOVNXCjW_YEIo8GOnJay6q0x_E3pSPfFSXauzUvGQ7ONkBu4GTpD4V75-1psIoMd9a7SZtUKy9Pw/pub?gid=0&single=true&output=csv';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOQSPCqikV1YFLpyN_xWHFQRgGNWYVt9WpkIy58csR7VyPKKNT2i8cXX6n-rNDVWgmLQ/exec';
 
 var allData = [];
 var filteredData = [];
@@ -565,7 +554,7 @@ async function loadData(){
 
 /* ── SUBMIT FORM ── */
 function resetForm(){
-  ['f-cuva','f-status','f-data-display','f-data','f-ora','f-echipa','f-piese','f-desc'].forEach(function(id){
+  ['f-cuva','f-status','f-data-display','f-data','f-piese','f-desc'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.value='';
   });
   showMsg('','');
@@ -577,11 +566,11 @@ async function submitRow(){
   var cuva=document.getElementById('f-cuva').value.trim();
   var status=document.getElementById('f-status').value.trim();
   var data=document.getElementById('f-data').value.trim()||document.getElementById('f-data-display').value.trim();
-  var ora=document.getElementById('f-ora').value.trim();
-  var echipa=document.getElementById('f-echipa').value.trim();
+  var ora='';
+  var echipa='';
   var piese=document.getElementById('f-piese').value.trim();
   var desc=document.getElementById('f-desc').value.trim();
-  if(!cuva||!status||!data||!echipa||!desc){showMsg('err','Completeaza campurile obligatorii (*)');return;}
+  if(!cuva||!status||!data||!desc){showMsg('err','Completeaza campurile obligatorii (*)');return;}
   var btn=document.getElementById('btn-submit');
   btn.disabled=true;showMsg('loading','Se trimite...');
   try{
