@@ -624,27 +624,40 @@ function exportPDF(complex){
   var dtEl=document.getElementById('print-date-text');
   if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
 
+  var ph=document.getElementById('print-header');
+  var pf=document.getElementById('print-footer');
+  if(ph)ph.style.display='flex';
+  if(pf)pf.style.display='flex';
+
   if(complex){
-    // Build cards for each visible row
-    var rows=getVisibleRows();
-    var container=document.getElementById('complex-cards');
-    var html='';
-    rows.forEach(function(row){
-      html+='<div class="complex-card">'
-        +'<div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'
-        +buildDetailHTML(row)
-        +'</div>';
-    });
-    container.innerHTML=html;
-    document.body.setAttribute('data-pdf-complex','1');
-    window.print();
-    document.body.removeAttribute('data-pdf-complex');
-    container.innerHTML='';
+    try{
+      var rows=getVisibleRows();
+      var container=document.getElementById('complex-cards');
+      if(!container){alert('Eroare: complex-cards not found');return;}
+      var html='';
+      rows.forEach(function(row){
+        html+='<div class="complex-card">'
+          +'<div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'
+          +buildDetailHTML(row)
+          +'</div>';
+      });
+      container.innerHTML=html;
+      document.body.setAttribute('data-pdf-complex','1');
+      window.print();
+      document.body.removeAttribute('data-pdf-complex');
+      container.innerHTML='';
+    }catch(err){
+      alert('Eroare PDF Complex: '+err.message);
+      document.body.removeAttribute('data-pdf-complex');
+    }
   } else {
     document.body.setAttribute('data-pdf-simple','1');
     window.print();
     document.body.removeAttribute('data-pdf-simple');
   }
+
+  if(ph)ph.style.display='none';
+  if(pf)pf.style.display='none';
 }
 
 function exportExcel(){
