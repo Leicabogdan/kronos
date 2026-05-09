@@ -140,7 +140,7 @@ td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
 .td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
-.td-eq{font-family:var(--title);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;letter-spacing:.06em;}
+.td-eq{font-family:var(--sans);color:var(--amber);font-weight:700;font-size:14px;white-space:nowrap;}
 .td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;text-align:left;}
 .td-dt{font-family:var(--sans);font-size:12px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;font-size:15px;}
@@ -920,8 +920,20 @@ function renderTable() {
   var rows = filteredData.slice();
   if (sortCol >= 0) {
     var sc = sortCol;
+    var isDateCol = (sc === 2 || sc === 4);
+    var timeCol = sc === 2 ? 3 : (sc === 4 ? 5 : -1);
     rows.sort(function(a, b) {
-      return sortDir * String(a[sc]||'').localeCompare(String(b[sc]||''), undefined, {numeric:true, sensitivity:'base'});
+      var va = isDateCol ? dateToSortKey(a[sc]||'') : String(a[sc]||'');
+      var vb = isDateCol ? dateToSortKey(b[sc]||'') : String(b[sc]||'');
+      if (va < vb) return -sortDir;
+      if (va > vb) return sortDir;
+      if (isDateCol && timeCol >= 0) {
+        var ta = String(a[timeCol]||'').replace(':','');
+        var tb = String(b[timeCol]||'').replace(':','');
+        if (ta < tb) return -sortDir;
+        if (ta > tb) return sortDir;
+      }
+      return 0;
     });
   }
   if (!rows.length) {
@@ -977,10 +989,19 @@ function applyFilters() {
 }
 
 function dateToSortKey(str) {
-  // Convert any date format to YYYYMMDD for correct chronological sorting
+  str = String(str||'').trim();
   if (!str) return '';
   var d = getDateParts(str);
-  if (d) return d.y + d.m + (d.d || '01');
+  if (d && d.y && d.y.length === 4 && !isNaN(parseInt(d.y,10))) {
+    return d.y + d.m + (d.d || '01');
+  }
+  // Fallback: try native Date parse
+  var dt = new Date(str);
+  if (!isNaN(dt.getTime())) {
+    return String(dt.getFullYear())
+      + String(dt.getMonth()+1).padStart(2,'0')
+      + String(dt.getDate()).padStart(2,'0');
+  }
   return str;
 }
 
