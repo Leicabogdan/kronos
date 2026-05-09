@@ -142,8 +142,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
 .td-eq{font-family:var(--title);color:var(--amber);font-weight:900;font-size:14px;white-space:nowrap;letter-spacing:.06em;}
 .td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;text-align:left;}
-.td-dt{font-family:var(--mono);font-size:12px;}
-.td-dt .ddate{color:var(--teal);font-weight:700;font-size:13px;}
+.td-dt{font-family:var(--sans);font-size:12px;}
+.td-dt .ddate{color:var(--teal);font-weight:700;font-size:15px;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
 .td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;position:relative;}
 .desc-bubble{
@@ -994,11 +994,19 @@ function sortBy(col) {
   // Apply sort to filteredData
   var sc2 = col;
   var isDateCol = (col === 2 || col === 4); // Inceput / Finalizare
+  var timeCol = col === 2 ? 3 : (col === 4 ? 5 : -1); // paired time column
   filteredData.sort(function(a, b) {
     var va = isDateCol ? dateToSortKey(a[sc2]||'') : String(a[sc2]||'');
     var vb = isDateCol ? dateToSortKey(b[sc2]||'') : String(b[sc2]||'');
     if (va < vb) return -sortDir;
     if (va > vb) return sortDir;
+    // tiebreaker: time
+    if (isDateCol && timeCol >= 0) {
+      var ta = String(a[timeCol]||'').replace(':','');
+      var tb = String(b[timeCol]||'').replace(':','');
+      if (ta < tb) return -sortDir;
+      if (ta > tb) return sortDir;
+    }
     return 0;
   });
   renderTable();
