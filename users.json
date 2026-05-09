@@ -7,28 +7,34 @@
       "role": "APP OWNER"
     },
     {
-      "username": "vali",
-      "password_hash": "30e374baf550c80e5f56ddb34d54a35040cc76fc43af19c5fd857ec8edfc8e8e",
+      "username": "vuculescu",
+      "password_hash": "16d5d4b00b72b78453e8de6675265e32efbef4bb8157d51cb92d91e3cb49e21b",
       "name": "Vuculescu Valentin",
       "role": "COORDINATOR"
     },
     {
-      "username": "alex",
-      "password_hash": "4135aa9dc1b842a653dea846903ddb95bfb8c5a10c504a7fa16e10bc31d1fdf0",
+      "username": "dan",
+      "password_hash": "ec4f2dbb3b140095550c9afbbb69b5d6fd9e814b9da82fad0b34e9fcbe56f1cb",
       "name": "Dan Alexandru",
-      "role": "OPERATOR"
+      "role": "OPERATIUNI SILOZ"
     },
     {
-      "username": "catalin",
-      "password_hash": "8a84602811a8049988848babd8ded0a764daaea62a26c212bff091c20180a466",
+      "username": "stan",
+      "password_hash": "1a5e497a2bfa7bfd8aab38a1d576ed882f4a82e855ec610880b4c186ec3f4e73",
       "name": "Stan Catalin",
-      "role": "MANAGEMENT"
+      "role": "OPERATIUNI SILOZ"
     },
     {
-      "username": "ana",
-      "password_hash": "24d4b96f58da6d4a8512313bbd02a28ebf0ca95dec6e4c86ef78ce7f01e788ac",
+      "username": "petrisor",
+      "password_hash": "235360083d454197096de503ccc77370bfbc1cb3d729248f5d7698be90aa84c8",
       "name": "Petrisor Ana",
       "role": "RAZA DE SOARE"
+    },
+    {
+      "username": "popescu",
+      "password_hash": "912ee1d17d1d3594ebece22ed4bd433d510467e7b7b5723be8d49ed2457c7b2c",
+      "name": "Popescu Adrian",
+      "role": "MANAGEMENT SILOZ"
     }
   ]
 }
