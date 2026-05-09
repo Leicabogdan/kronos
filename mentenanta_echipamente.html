@@ -146,10 +146,9 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;font-size:13px;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
 .td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;position:relative;}
-.td-desc:hover .desc-bubble{display:block;}
 .desc-bubble{
-  display:none;position:absolute;z-index:300;
-  left:0;top:calc(100% + 4px);
+  display:none;position:fixed;z-index:9999;
+  left:auto;
   background:var(--bg2);border:1.5px solid rgba(0,220,180,.4);
   border-radius:10px;padding:12px 14px;
   min-width:280px;max-width:420px;
@@ -944,8 +943,7 @@ function renderTable() {
       + (function(m){var av=m.toLowerCase().indexOf('avarie')>-1;return '<td class="td-motiv"'+(av?' style="color:var(--red);font-weight:700;"':'')+'>'+esc(m)+'</td>';})(row[1]||'')
       + '<td class="td-dt">' + inc + '</td>'
       + '<td class="td-dt">' + fin + '</td>'
-      + '<td class="td-desc">' + esc(row[6]||'')
-      + (row[6] ? '<div class="desc-bubble">' + esc(row[6]) + '</div>' : '') + '</td>'
+      + '<td class="td-desc" data-desc="' + esc(row[6]||'') + '">' + esc(row[6]||'') + '</td>'
       + '<td>' + statusChip(row[7]) + '</td>'
       + '<td class="td-piese" title="' + esc(row[8]||'') + '">' + esc(row[8]||'') + '</td>'
       + '<td class="td-echipa">' + esc(row[9]||'') + '</td>'
@@ -1266,6 +1264,35 @@ function displayToISO(d) {
   if(p.length === 3 && p[2].length === 4) return p[2]+'-'+p[1]+'-'+p[0];
   return d;
 }
+
+(function initDescBubble() {
+  var bubble = document.createElement('div');
+  bubble.id = 'global-desc-bubble';
+  bubble.style.cssText = 'display:none;position:fixed;z-index:9999;background:var(--bg2);border:1.5px solid rgba(0,220,180,.4);border-radius:10px;padding:12px 14px;min-width:280px;max-width:420px;white-space:normal;word-break:break-word;font-size:13px;color:#fff;line-height:1.55;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 1px rgba(0,220,180,.1);pointer-events:none;font-family:var(--sans);';
+  document.body.appendChild(bubble);
+
+  document.addEventListener('mouseover', function(e) {
+    var td = e.target.closest('.td-desc');
+    if (!td) return;
+    var desc = td.getAttribute('data-desc');
+    if (!desc) return;
+    bubble.textContent = desc;
+    bubble.style.display = 'block';
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (!e.target.closest('.td-desc')) return;
+    bubble.style.display = 'none';
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (bubble.style.display === 'none') return;
+    var x = e.clientX + 14;
+    var y = e.clientY + 14;
+    if (x + 440 > window.innerWidth) x = e.clientX - 440;
+    if (y + 200 > window.innerHeight) y = e.clientY - bubble.offsetHeight - 10;
+    bubble.style.left = x + 'px';
+    bubble.style.top = y + 'px';
+  });
+})();
 
 (function init() {
   // Real-time KPI refresh every 60 seconds
