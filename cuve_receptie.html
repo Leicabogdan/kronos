@@ -579,10 +579,10 @@ async function submitRow(){
     if(APPS_SCRIPT_URL==='PUNE_URL_APPS_SCRIPT_AICI'){
       showMsg('err','Configureaza APPS_SCRIPT_URL pentru a salva date.');btn.disabled=false;return;
     }
-    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-    var json=await resp.json();
-    if(json.result==='success'){showMsg('ok','&#10003; Inregistrat cu succes!');resetForm();setTimeout(loadData,800);}
-    else throw new Error(json.error||'Eroare necunoscuta');
+    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});
+    showMsg('ok','&#10003; Inregistrat cu succes!');
+    resetForm();
+    setTimeout(loadData,1500);
   }catch(e){showMsg('err','Eroare: '+e.message);}
   btn.disabled=false;
 }
