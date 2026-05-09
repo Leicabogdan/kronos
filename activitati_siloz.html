@@ -239,49 +239,27 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
   <!-- KPI STRIP -->
   <div class="kpi-strip">
-    <div class="kpi-card c-purple">
-      <div class="kpi-left">
-        <div class="kpi-val" id="k-total">0</div>
-        <div class="kpi-lbl">TOTAL<br>ACTIVITATI</div>
-      </div>
-      <div class="kpi-div"></div>
-      <div class="kpi-right">
-        <div class="kpi-rtitle">Ultimele sarcini</div>
-        <div id="kpi-total-pills"></div>
-      </div>
+    <div class="kpi-card c-purple" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--purple);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Total activitati</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--purple);line-height:1;" id="k-total">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">activitati nefinalizate</div>
     </div>
-    <div class="kpi-card c-blue" style="--kpi-col:var(--blue);">
-      <div class="kpi-left" style="min-width:60px;">
-        <div class="kpi-val" id="k-incurs" style="color:var(--blue);">0</div>
-        <div class="kpi-lbl" style="color:var(--blue);">IN CURS</div>
-      </div>
-      <div class="kpi-div"></div>
-      <div class="kpi-right">
-        <div class="kpi-rtitle" style="color:var(--blue);">In desfasurare</div>
-        <div id="kpi-incurs-pills"></div>
-      </div>
+    <div class="kpi-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-color:rgba(80,144,224,.18);background:rgba(80,144,224,.03);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);border-radius:10px 10px 0 0;"></div>
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--blue);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">In desfasurare</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--blue);line-height:1;" id="k-incurs">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">in curs de desfasurare</div>
     </div>
-    <div class="kpi-card c-green">
-      <div class="kpi-left" style="min-width:60px;">
-        <div class="kpi-val" id="k-finalizat">0</div>
-        <div class="kpi-lbl">FINALIZATE</div>
-      </div>
-      <div class="kpi-div"></div>
-      <div class="kpi-right">
-        <div class="kpi-rtitle">Completate</div>
-        <div id="kpi-fin-pills"></div>
-      </div>
+    <div class="kpi-card c-green" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--green);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Finalizate</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--green);line-height:1;" id="k-finalizat">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">finalizate</div>
     </div>
-    <div class="kpi-card c-red">
-      <div class="kpi-left" style="min-width:60px;">
-        <div class="kpi-val" id="k-depasit">0</div>
-        <div class="kpi-lbl">TERMEN<br>DEPASIT</div>
-      </div>
-      <div class="kpi-div"></div>
-      <div class="kpi-right">
-        <div class="kpi-rtitle">Intarziate</div>
-        <div id="kpi-dep-pills"></div>
-      </div>
+    <div class="kpi-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.02);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.35);border-radius:10px 10px 0 0;"></div>
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:rgba(255,255,255,.6);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Neincepute</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:#fff;line-height:1;" id="k-neinceput">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">sarcini neincepute</div>
     </div>
   </div>
 
@@ -345,6 +323,22 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <option value="3">★★★☆☆ 3 stele</option>
         <option value="2">★★☆☆☆ 2 stele</option>
         <option value="1">★☆☆☆☆ 1 stea</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-luna" onchange="applyFilters()">
+        <option value="">Toate lunile</option>
+        <option value="01">Ianuarie</option><option value="02">Februarie</option><option value="03">Martie</option>
+        <option value="04">Aprilie</option><option value="05">Mai</option><option value="06">Iunie</option>
+        <option value="07">Iulie</option><option value="08">August</option><option value="09">Septembrie</option>
+        <option value="10">Octombrie</option><option value="11">Noiembrie</option><option value="12">Decembrie</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-an" onchange="applyFilters()">
+        <option value="">Toti anii</option>
+        <option value="2024">2024</option><option value="2025">2025</option>
+        <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
@@ -470,8 +464,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 <div id="global-desc-bubble"></div>
 
 <script>
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRxsSJ-_lMOxU2ymhbqacX8m1Rd4bKYAE1VVcAN679sYECrPeFdGqf8rbkNGgoqGHRbUWpYlm94y-rv/pub?gid=735172309&single=true&output=csv';
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMM6EPODQPwkmqi5Wzwl16wu1IKOQx6OkNg4CWs0Tevd4oF_NZorZFVOvVawKhx6YB/exec';
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzURO0xVC8fksuVVLRDoC9GS-YFdlmPQF9NcMAyuTN7S1oR67ANmMaPJ89iNFjstj2z_TKbtFMyeEF/pub?gid=10815710&single=true&output=csv';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMOl17EAV9rvNBxs5FJCiXGDUZv432f9UA8qcL_2aTU1TADz6zSIpDfRqp4fMS28bE/exec';
 
 var allData = [];
 var filteredData = [];
@@ -479,7 +473,7 @@ var selectedRows = new Set();
 var sortCol = -1, sortDir = 1;
 
 /* ── GEAR ── */
-function drawGear(cv){var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;var RT=126*s,RR=98*s,RI=78*s,TC='#9b6dff',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);var grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#12082a');grd.addColorStop(1,'#04050a');c.beginPath();for(var i=0;i<12;i++){var b=(i/12)*Math.PI*2,ta=.18,ra=.26;var a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;var p0=pt(RR,a1),p2=pt(RT,a2),p3=pt(RT,a3),p4=pt(RR,a4);if(!i)c.moveTo(p0[0],p0[1]);else c.lineTo(p0[0],p0[1]);c.lineTo(p2[0],p2[1]);c.lineTo(p3[0],p3[1]);c.lineTo(p4[0],p4[1]);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);var ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#1a0e35');ig.addColorStop(1,'#04050a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(155,109,255,.2)';c.lineWidth=.8*s;c.stroke();for(var m=0;m<60;m++){var a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;var r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;var q1=pt(r1,a),q2=pt(r2,a);c.beginPath();c.moveTo(q1[0],q1[1]);c.lineTo(q2[0],q2[1]);c.strokeStyle=isQ?TC:isH?'rgba(155,109,255,.75)':'rgba(155,109,255,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}var now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(function(x){var p=pt(x[0],x[1]);c.beginPath();c.moveTo(cx,cy);c.lineTo(p[0],p[1]);c.strokeStyle=x[3];c.lineWidth=x[2];c.lineCap='round';c.shadowColor=x[3];c.shadowBlur=x[4];c.stroke();c.shadowBlur=0;});var sA=(secs/60)*Math.PI*2,sp=pt(RI*.76,sA),sc2=pt(-RI*.22,sA);c.beginPath();c.moveTo(sc2[0],sc2[1]);c.lineTo(sp[0],sp[1]);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
+function drawGear(cv){var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;var RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);var grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#12082a');grd.addColorStop(1,'#04050a');c.beginPath();for(var i=0;i<12;i++){var b=(i/12)*Math.PI*2,ta=.18,ra=.26;var a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;var p0=pt(RR,a1),p2=pt(RT,a2),p3=pt(RT,a3),p4=pt(RR,a4);if(!i)c.moveTo(p0[0],p0[1]);else c.lineTo(p0[0],p0[1]);c.lineTo(p2[0],p2[1]);c.lineTo(p3[0],p3[1]);c.lineTo(p4[0],p4[1]);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);var ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#1a0e35');ig.addColorStop(1,'#04050a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(var m=0;m<60;m++){var a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;var r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;var q1=pt(r1,a),q2=pt(r2,a);c.beginPath();c.moveTo(q1[0],q1[1]);c.lineTo(q2[0],q2[1]);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}var now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(function(x){var p=pt(x[0],x[1]);c.beginPath();c.moveTo(cx,cy);c.lineTo(p[0],p[1]);c.strokeStyle=x[3];c.lineWidth=x[2];c.lineCap='round';c.shadowColor=x[3];c.shadowBlur=x[4];c.stroke();c.shadowBlur=0;});var sA=(secs/60)*Math.PI*2,sp=pt(RI*.76,sA),sc2=pt(-RI*.22,sA);c.beginPath();c.moveTo(sc2[0],sc2[1]);c.lineTo(sp[0],sp[1]);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
 (function gl(){drawGear(document.getElementById('gear'));requestAnimationFrame(gl);})();
 
 /* ── CLOCK ── */
@@ -534,31 +528,18 @@ function starsHTML(val){
 
 /* ── KPI UPDATE ── */
 function updateKPI(){
-  var total=allData.length;
-  var incurs=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('curs')>-1;});
   var fin=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('finaliz')>-1;});
-  var now=new Date();now.setHours(0,0,0,0);
-  var dep=allData.filter(function(r){
-    var d=getDateParts(r[4]);
-    if(!d)return false;
-    var dt=new Date(d.y,parseInt(d.m)-1,parseInt(d.d));
-    return dt<now && String(r[1]||'').toLowerCase().indexOf('finaliz')<0 && String(r[1]||'').toLowerCase().indexOf('anulat')<0;
+  var anulat=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('anulat')>-1;});
+  var nefinalizate=allData.filter(function(r){
+    var s=String(r[1]||'').toLowerCase();
+    return s.indexOf('finaliz')<0 && s.indexOf('anulat')<0;
   });
-  document.getElementById('k-total').textContent=total;
+  var incurs=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('curs')>-1;});
+  var neinceput=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('neinceput')>-1||String(r[1]||'').trim()===''});
+  document.getElementById('k-total').textContent=nefinalizate.length;
   document.getElementById('k-incurs').textContent=incurs.length;
   document.getElementById('k-finalizat').textContent=fin.length;
-  document.getElementById('k-depasit').textContent=dep.length;
-
-  function pillsHTML(rows, col){
-    if(!rows.length)return '<span style="font-family:var(--mono);font-size:10px;color:#fff;font-style:italic;">—</span>';
-    return rows.slice(-3).reverse().map(function(r){
-      return '<div class="kpi-pill" style="margin-bottom:3px;"><span style="font-weight:700;font-size:13px;color:'+col+';">'+esc((r[0]||'').substring(0,22))+'</span></div>';
-    }).join('');
-  }
-  document.getElementById('kpi-total-pills').innerHTML=pillsHTML(allData,'var(--purple)');
-  document.getElementById('kpi-incurs-pills').innerHTML=pillsHTML(incurs,'var(--blue)');
-  document.getElementById('kpi-fin-pills').innerHTML=pillsHTML(fin,'var(--green)');
-  document.getElementById('kpi-dep-pills').innerHTML=pillsHTML(dep,'var(--red)');
+  document.getElementById('k-neinceput').textContent=neinceput.length;
 }
 
 /* ── RENDER TABLE ──
@@ -608,10 +589,17 @@ function applyFilters(){
   var stare=document.getElementById('sel-stare').value;
   var stadiu=document.getElementById('sel-stadiu').value;
   var evaluare=document.getElementById('sel-evaluare').value;
+  var luna=document.getElementById('sel-luna')?document.getElementById('sel-luna').value:'';
+  var an=document.getElementById('sel-an')?document.getElementById('sel-an').value:'';
   filteredData=allData.filter(function(row){
     if(stare&&String(row[1]||'').toLowerCase().indexOf(stare.toLowerCase())<0)return false;
     if(stadiu&&String(row[3]||'')!==stadiu)return false;
     if(evaluare&&String(row[5]||'')!==evaluare)return false;
+    if(luna||an){
+      var d=getDateParts(row[4]);
+      if(luna&&(!d||d.m!==luna))return false;
+      if(an&&(!d||d.y!==an))return false;
+    }
     return true;
   });
   sortCol=-1;sortDir=1;
@@ -762,13 +750,26 @@ async function saveEdit(){
 /* ── EXPORT ── */
 function exportPDF(){window.print();}
 function exportExcel(){
-  var headers=['Sarcina','Stare','Responsabil','Stadiu','Termen limita','Evaluare'];
-  var wsData=[headers,...filteredData.map(function(r){return[r[0]||'',r[1]||'',r[2]||'',r[3]||'',r[4]||'',r[5]||''];})];
+  var headers=['Nr.','Sarcina','Stare','Responsabil','Stadiu','Termen limita','Evaluare'];
+  var wsData=[headers];
+  filteredData.forEach(function(r,i){
+    wsData.push([i+1, r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', r[5]||'']);
+  });
   var ws=XLSX.utils.aoa_to_sheet(wsData);
+  // Column widths
+  ws['!cols']=[{wch:5},{wch:50},{wch:22},{wch:22},{wch:14},{wch:16},{wch:10}];
+  // Header style
+  var range=XLSX.utils.decode_range(ws['!ref']);
+  for(var C=range.s.c;C<=range.e.c;C++){
+    var addr=XLSX.utils.encode_cell({r:0,c:C});
+    if(!ws[addr])continue;
+    ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'4B0082'}},alignment:{horizontal:'center'}};
+  }
   var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Activitati Siloz');
   var now=new Date();
-  XLSX.writeFile(wb,'KRONOS_ActivitatiSiloz_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
+  XLSX.writeFile(wb,'KRONOS_ActivitatiSiloz_'+String(now.getDate()).padStart(2,'0')+'.'
+    +String(now.getMonth()+1).padStart(2,'0')+'.'+now.getFullYear()+'.xlsx');
 }
 
 /* ── DATE/TIME HELPERS ── */
