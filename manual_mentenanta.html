@@ -383,9 +383,9 @@ function renderTable(){
   var html='';
   rows.forEach(function(d){
     var cfg = CAT_CFG[d.cat] || {label:d.cat, cls:'cat-teal'};
-      var htmlLink=d.cod.replace(/\s+/g,'_').replace(/-/g,'_')+'.html';
+      var pdfLink=d.cod.replace(/\s+/g,'_')+'.pdf';
       html+='<tr>'
-      +'<td class="td-denumire"><a href="'+htmlLink+'" style="color:#fff;text-decoration:none;" onmouseover="this.style.color=\'var(--teal)\'" onmouseout="this.style.color=\'#fff\'">'+esc(d.denumire)+' <svg style="vertical-align:middle;opacity:.5;" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 9L9 2M9 2H4M9 2v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>'
+      +'<td class="td-denumire"><a href="'+pdfLink+'" target="_blank" style="color:#fff;text-decoration:none;" onmouseover="this.style.color=\'var(--teal)\'" onmouseout="this.style.color=\'#fff\'">'+esc(d.denumire)+' <svg style="vertical-align:middle;opacity:.5;" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 9L9 2M9 2H4M9 2v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a></td>'
       +'<td class="td-cod">'+esc(d.cod)+'</td>'
       +'<td class="td-revizie">'+esc(d.revizia)+'</td>'
       +'<td class="td-data">'+esc(d.data)+'</td>'
