@@ -4,6 +4,25 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PO M04-01 — Mentenanța echipamentelor și instalațiilor din cadrul TCS</title>
+<!-- ZOOM CONTROLS -->
+<div class="zoom-controls">
+  <button class="zoom-btn" onclick="zoomIn()" title="Zoom in">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <span class="zoom-label" id="zoom-label">100%</span>
+  <button class="zoom-btn" onclick="zoomOut()" title="Zoom out">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.8"/>
+      <path d="M7 10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M15.5 15.5L20 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
@@ -47,6 +66,41 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 
 /* ── PAGE / DOC WRAPPER ── */
 .page{padding:32px clamp(16px,5vw,80px) 60px;max-width:1000px;margin:0 auto;}
+
+/* ── ZOOM CONTROLS ── */
+.zoom-controls{
+  position:fixed;
+  right:24px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:300;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.zoom-btn{
+  width:44px;height:44px;
+  background:var(--bg3);
+  border:1.5px solid rgba(0,220,180,.3);
+  border-radius:10px;
+  color:var(--teal);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+  font-size:20px;
+  font-weight:700;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+.zoom-btn:hover{background:rgba(0,220,180,.12);border-color:var(--teal);box-shadow:0 4px 20px rgba(0,220,180,.2);}
+.zoom-label{
+  font-family:var(--mono);
+  font-size:10px;
+  color:rgba(255,255,255,.5);
+  text-align:center;
+  font-weight:700;
+  letter-spacing:.06em;
+}
+@media print{.zoom-controls{display:none!important;}}
 
 /* ── DOCUMENT PAPER STYLE ── */
 .doc{background:#fff;color:#000;border-radius:4px;box-shadow:0 4px 40px rgba(0,0,0,.6);overflow:hidden;}
@@ -465,6 +519,36 @@ updateClock();setInterval(updateClock,1000);
 
 /* ── USER ── */
 (function(){try{var name=sessionStorage.getItem('k_name')||'Leica Bogdan';var role=sessionStorage.getItem('k_role')||'APP OWNER';var parts=name.split(' ');document.getElementById('user-first').textContent=parts[0]||'';document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();document.getElementById('user-role').textContent=role;}catch(e){}})();
+
+/* ── ZOOM ── */
+var currentZoom = 1;
+var zoomStep = 0.1;
+var minZoom = 0.5;
+var maxZoom = 2.0;
+
+function applyZoom(){
+  document.querySelector('.doc').style.transform = 'scale('+currentZoom+')';
+  document.querySelector('.doc').style.transformOrigin = 'top center';
+  // Adjust page height to account for scaled doc
+  var doc = document.querySelector('.doc');
+  var scaledH = doc.scrollHeight * currentZoom;
+  document.querySelector('.page').style.minHeight = scaledH + 'px';
+  document.getElementById('zoom-label').textContent = Math.round(currentZoom*100)+'%';
+}
+
+function zoomIn(){
+  if(currentZoom < maxZoom){ currentZoom = Math.round((currentZoom + zoomStep)*10)/10; applyZoom(); }
+}
+function zoomOut(){
+  if(currentZoom > minZoom){ currentZoom = Math.round((currentZoom - zoomStep)*10)/10; applyZoom(); }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && (e.key==='+' || e.key==='=')){e.preventDefault();zoomIn();}
+  if(e.ctrlKey && e.key==='-'){e.preventDefault();zoomOut();}
+  if(e.ctrlKey && e.key==='0'){e.preventDefault();currentZoom=1;applyZoom();}
+});
 </script>
 </body>
 </html>
