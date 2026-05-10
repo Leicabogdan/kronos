@@ -661,6 +661,14 @@ updateClock();setInterval(updateClock,1000);
 /* ── USER ── */
 (function(){try{var name=sessionStorage.getItem('k_name')||'Leica Bogdan';var role=sessionStorage.getItem('k_role')||'APP OWNER';var parts=name.split(' ');document.getElementById('user-first').textContent=parts[0]||'';document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();document.getElementById('user-role').textContent=role;}catch(e){}})();
 
+/* ── PRINT → redirect to PDF ── */
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey||e.metaKey) && e.key==='p'){
+    e.preventDefault();
+    window.open('PO_M04-01_Mentenanța_echipamentelor_și_instalațiilor_din_cadrul_TCS.pdf','_blank');
+  }
+});
+
 /* ── ZOOM ── */
 var currentZoom = 1;
 var zoomStep = 0.1;
