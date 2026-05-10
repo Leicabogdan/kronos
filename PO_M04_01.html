@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PO M04-01 — Mentenanța echipamentelor și instalațiilor din cadrul TCS</title>
+<script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
+  --border:#1a1d28;--border2:#252836;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100svh;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border2);height:60px;
+  padding:0 clamp(14px,3vw,28px);display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:12px;position:sticky;top:0;z-index:200;}
+.tlogo-wrap{display:flex;align-items:center;gap:clamp(10px,2vw,20px);}
+.tlogo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.tlogo canvas{display:block;width:44px;height:44px;}
+.tlogo-text{display:flex;flex-direction:column;}
+.tlogo-main{font-family:var(--title);font-size:17px;font-weight:900;letter-spacing:.18em;color:#fff;line-height:1;}
+.tlogo-main .o{color:var(--teal);}
+.tlogo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.22em;font-weight:700;margin-top:2px;}
+.nav-links{display:flex;align-items:center;gap:6px;}
+.nav-link{color:#fff;text-decoration:none;font-family:var(--mono);font-size:13px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;background:var(--border);border:1px solid var(--border2);
+  padding:6px 14px;border-radius:7px;transition:all .18s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.nav-link:hover{border-color:rgba(0,220,180,.55);color:var(--teal);background:rgba(0,220,180,.08);}
+.nav-link.active{color:var(--teal);background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.35);}
+.topbar-center{display:flex;flex-direction:column;align-items:center;}
+.topbar-time{font-family:var(--title);font-size:clamp(16px,2.5vw,22px);font-weight:900;color:var(--teal);letter-spacing:.12em;line-height:1;}
+.topbar-date{font-family:var(--mono);font-size:clamp(9px,1.4vw,11px);color:#fff;font-weight:600;letter-spacing:.08em;}
+.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.role-badge{font-size:13px;font-family:var(--mono);background:var(--border);border:1px solid var(--border2);
+  color:var(--green);padding:4px 11px;border-radius:4px;letter-spacing:.08em;font-weight:700;}
+.coord-name-box{background:#0d2420;border:1.5px solid var(--teal);border-radius:8px;padding:3px 12px;text-align:center;line-height:1.25;}
+.coord-name-box .first{font-family:var(--raj);font-size:12px;font-weight:600;color:#fff;display:block;letter-spacing:.1em;}
+.coord-name-box .last{font-family:var(--raj);font-size:15px;font-weight:700;color:var(--teal);display:block;letter-spacing:.12em;}
+
+/* ── PAGE / DOC WRAPPER ── */
+.page{padding:32px clamp(16px,5vw,80px) 60px;max-width:1000px;margin:0 auto;}
+
+/* ── DOCUMENT PAPER STYLE ── */
+.doc{background:#fff;color:#000;border-radius:4px;box-shadow:0 4px 40px rgba(0,0,0,.6);overflow:hidden;}
+
+/* ── DOC HEADER ── */
+.doc-header{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:0;border-bottom:2px solid #000;padding:16px 24px;}
+.doc-logo{display:flex;align-items:center;}
+.doc-logo img{height:52px;}
+.doc-logo-text{font-family:'Times New Roman',serif;font-size:11px;color:#000;line-height:1.4;}
+.doc-title-center{text-align:center;padding:0 20px;}
+.doc-title-center .doc-type{font-family:'Times New Roman',serif;font-style:italic;font-size:12px;color:#000;margin-bottom:4px;}
+.doc-title-center .doc-name{font-family:'Times New Roman',serif;font-size:16px;font-weight:700;color:#000;line-height:1.3;}
+.doc-meta-box{border:1px solid #555;font-family:'Times New Roman',serif;font-size:11px;color:#000;min-width:160px;}
+.doc-meta-row{display:flex;border-bottom:1px solid #999;padding:4px 8px;gap:8px;}
+.doc-meta-row:last-child{border-bottom:none;}
+.doc-meta-lbl{font-style:italic;flex-shrink:0;}
+.doc-meta-val{font-weight:700;}
+
+/* ── APPROBATION TABLE ── */
+.doc-appro{width:100%;border-collapse:collapse;font-family:'Times New Roman',serif;font-size:10px;color:#000;border-top:1px solid #999;}
+.doc-appro td,.doc-appro th{border:1px solid #999;padding:4px 8px;vertical-align:top;}
+.doc-appro th{font-style:italic;font-weight:400;background:#f5f5f5;}
+.doc-appro .appro-val{font-weight:700;}
+.doc-appro .appro-sub{color:#333;}
+.doc-appro .appro-date{color:#000;}
+
+/* ── DISCLAIMER ── */
+.doc-disclaimer{background:#f8f8f8;border-bottom:1px solid #ddd;padding:8px 24px;font-family:'Times New Roman',serif;font-size:9px;color:#333;line-height:1.5;font-style:italic;}
+
+/* ── DOC BODY ── */
+.doc-body{padding:28px 40px 40px;}
+.doc-footer-line{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #999;padding:4px 0;font-family:'Times New Roman',serif;font-size:9px;color:#333;margin-bottom:24px;}
+
+/* ── CHAPTER HEADING ── */
+.ch{background:#1a1a2e;color:#fff;font-family:'Times New Roman',serif;font-size:13px;font-weight:700;
+  padding:6px 12px;margin:24px 0 10px;text-transform:uppercase;letter-spacing:.04em;}
+.sub-ch{font-family:'Times New Roman',serif;font-size:12px;font-weight:700;color:#000;margin:14px 0 6px;}
+.sub-sub-ch{font-family:'Times New Roman',serif;font-size:11px;font-weight:700;color:#000;margin:10px 0 4px;}
+
+/* ── BODY TEXT ── */
+.doc-p{font-family:'Times New Roman',serif;font-size:11px;color:#000;line-height:1.65;margin-bottom:8px;text-align:justify;}
+.doc-ul{font-family:'Times New Roman',serif;font-size:11px;color:#000;line-height:1.65;margin:4px 0 8px 20px;}
+.doc-ul li{margin-bottom:4px;}
+
+/* ── REVISION TABLE ── */
+.rev-table{width:100%;border-collapse:collapse;font-family:'Times New Roman',serif;font-size:11px;color:#000;margin:12px 0;}
+.rev-table th{background:#1a1a2e;color:#fff;border:1px solid #999;padding:6px 10px;text-align:center;font-weight:700;}
+.rev-table td{border:1px solid #999;padding:5px 10px;text-align:center;}
+.rev-table tr:nth-child(even) td{background:#f9f9f9;}
+
+/* ── KPI TABLE ── */
+.kpi-table{width:100%;border-collapse:collapse;font-family:'Times New Roman',serif;font-size:10px;color:#000;margin:12px 0;}
+.kpi-table th{background:#1a1a2e;color:#fff;border:1px solid #999;padding:6px 10px;font-weight:700;}
+.kpi-table td{border:1px solid #999;padding:5px 10px;}
+.kpi-table tr:nth-child(even) td{background:#f9f9f9;}
+.kpi-hl{background:#e8f0e8!important;}
+
+/* ── PRIORITY TABLE ── */
+.prio-table{width:100%;border-collapse:collapse;font-family:'Times New Roman',serif;font-size:10px;color:#000;margin:12px 0;}
+.prio-table th{background:#1a1a2e;color:#fff;border:1px solid #999;padding:6px 10px;font-weight:700;text-align:center;}
+.prio-table td{border:1px solid #999;padding:5px 10px;text-align:center;}
+.p1{background:#ffe0e0;} .p2{background:#fff3cd;} .p3{background:#d4edda;} .p4{background:#f8f9fa;}
+
+/* ── PAGE BREAK ── */
+.page-break{border-top:2px dashed #ccc;margin:28px 0 20px;position:relative;}
+.page-break::after{content:'';display:block;}
+.pg-footer{display:flex;justify-content:space-between;font-family:'Times New Roman',serif;font-size:9px;color:#666;padding:2px 0;border-top:1px solid #ccc;margin-top:4px;}
+
+@media print{
+  body{background:#fff!important;}
+  .topbar{display:none!important;}
+  .page{padding:0!important;max-width:100%!important;}
+  .doc{box-shadow:none!important;}
+  .page-break{page-break-before:always;}
+  @page{margin:10mm;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tlogo-wrap">
+    <a class="tlogo" href="dashboard.html">
+      <canvas id="gear" width="88" height="88" style="width:44px;height:44px;"></canvas>
+      <div class="tlogo-text">
+        <div class="tlogo-main">KR<span class="o">O</span>NOS</div>
+        <div class="tlogo-sub">Maintenance System</div>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a class="nav-link" href="manual_mentenanta.html" style="display:flex;align-items:center;gap:6px;">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 1H2v10h8V4L8 1z" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v3h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        MANUAL
+      </a>
+      <span class="nav-link active" style="cursor:default;">PO M04-01</span>
+    </nav>
+  </div>
+  <div class="topbar-center">
+    <div class="topbar-time" id="top-time">00:00:00</div>
+    <div class="topbar-date" id="top-date"></div>
+  </div>
+  <div class="topbar-right">
+    <span class="role-badge" id="user-role">APP OWNER</span>
+    <div class="coord-name-box">
+      <span class="first" id="user-first">Leica</span>
+      <span class="last" id="user-last">BOGDAN</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+<div class="doc">
+
+  <!-- PAGE 1 — COVER -->
+  <div class="doc-header">
+    <div class="doc-logo">
+      <div style="font-family:'Times New Roman',serif;font-size:22px;font-weight:900;color:#1a1a2e;letter-spacing:2px;border:3px solid #1a1a2e;padding:4px 10px;">SOCEP</div>
+    </div>
+    <div class="doc-title-center">
+      <div class="doc-type">Procedură</div>
+      <div class="doc-name">Mentenanța echipamentelor și instalațiilor din cadrul TCS</div>
+    </div>
+    <div class="doc-meta-box">
+      <div class="doc-meta-row"><span class="doc-meta-lbl">Cod doc.</span><span class="doc-meta-val">PO M04-01</span></div>
+      <div class="doc-meta-row"><span class="doc-meta-lbl">Ediția / Revizia:</span><span class="doc-meta-val">04 / 00</span></div>
+      <div class="doc-meta-row"><span class="doc-meta-lbl">Referențiale:</span><span class="doc-meta-val">ISO 9001:2015<br>ISO 14001:2015</span></div>
+    </div>
+  </div>
+
+  <table class="doc-appro">
+    <tr>
+      <th>Întocmit:</th>
+      <th>Verificat:</th>
+      <th>Aprobat:</th>
+    </tr>
+    <tr>
+      <td>
+        <div class="appro-val">OSCC</div>
+        <div class="appro-val">Bogdan Leica</div>
+        <div class="appro-sub">Inginer Mentenanță</div>
+        <div class="appro-sub">Valentin Vuculescu</div>
+      </td>
+      <td>
+        <div class="appro-val">Director Investiții</div>
+        <div class="appro-val">Lucian Teodorescu</div>
+      </td>
+      <td>
+        <div class="appro-val">DIRECTOR GENERAL</div>
+        <div class="appro-val">Dorinel Cazacu</div>
+      </td>
+    </tr>
+    <tr>
+      <td><span style="font-style:italic;">Semnătura:</span></td>
+      <td><span style="font-style:italic;">Semnătura:</span></td>
+      <td><span style="font-style:italic;">Semnătura:</span></td>
+    </tr>
+    <tr>
+      <td><span style="font-style:italic;">Data:</span> <strong>14.04.2026</strong></td>
+      <td><span style="font-style:italic;">Data:</span> <strong>14.04.2026</strong></td>
+      <td><span style="font-style:italic;">Data:</span> <strong>14.04.2026</strong></td>
+    </tr>
+  </table>
+
+  <div class="doc-disclaimer">
+    Prezentul document este proprietatea SOCEP SA, fiind destinată exclusiv utilizării pentru propriile cerințe.
+    Utilizarea integrală sau parțială a acestui document în orice alt scop sau activitate sau reproducerea parțială / integrală în orice publicație și prin
+    orice procedeu (electronic, mecanic, fotocopiere, microfilmare, etc.) este interzisă fara acordul scris al proprietarului.
+  </div>
+
+  <!-- PAGE 2 — REVIZII -->
+  <div class="doc-body">
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 2 / 17</span></div>
+
+    <div style="text-align:center;font-family:'Times New Roman',serif;font-size:13px;font-weight:700;font-style:italic;margin:16px 0 12px;">LISTA DE CONTROL A REVIZIILOR / MODIFICĂRILOR</div>
+    <table class="rev-table">
+      <tr><th>Ediția</th><th>Nr. rev</th><th>Data</th><th>Pagina, paragraf</th><th>Cauza actualizării / modificării</th></tr>
+      <tr><td>01</td><td>00</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr><td>02</td><td>00</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr><td>03</td><td>00</td><td>-</td><td>-</td><td>-</td></tr>
+      <tr><td>04</td><td>00</td><td>14.04.2026</td><td></td><td>Elaborare inițială</td></tr>
+    </table>
+
+    <!-- PAGE 3 -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 3 / 17</span></div>
+
+    <div class="ch">1. SCOP, DOMENIU DE APLICARE, UTILIZATORI</div>
+    <div class="sub-ch">1.1. Scop</div>
+    <p class="doc-p">Prezenta procedură stabilește cadrul unitar de desfășurare a activității de mentenanță în cadrul Terminalului de Cereale SOCEP S.A. din Portul Constanța, în scopul asigurării funcționării neîntrerupte, sigure și eficiente a echipamentelor și instalațiilor tehnologice care deservesc fluxurile de recepție, depozitare și livrare a cerealelor. Documentul reprezintă piatra de temelie a sistemului de mentenanță al terminalului și constituie referința de bază pentru toate instrucțiunile de lucru, formularele și înregistrările aferente activității.</p>
+    <p class="doc-p">Terminalul operează în regim continuu, 24 de ore din 24, 7 zile din 7, inclusiv în perioadele de vârf ale campaniilor agricole, când volumul manipulat și timpul de staționare al navelor în dană impun o disponibilitate tehnică ridicată a întregului lanț de echipamente. În acest context, mentenanța nu este o activitate secundară exploatării, ci o funcție de producție în sine, al cărei rezultat direct este capacitatea terminalului de a onora contractele comerciale și obligațiile față de operatorii portuari, armatori și autoritățile de reglementare.</p>
+    <p class="doc-p">Procedura urmărește, în mod explicit și măsurabil: reducerea riscului de oprire neplanificată a instalațiilor; prelungirea duratei normate de viață a echipamentelor; limitarea costurilor totale de operare; asigurarea conformității cu cerințele legale aplicabile, inclusiv cele privind supravegherea tehnică ISCIR, securitatea și sănătatea în muncă, protecția mediului și siguranța alimentară a produselor manipulate; asigurarea trasabilității integrale a intervențiilor în vederea demonstrării conformității în cadrul auditurilor interne și externe.</p>
+
+    <div class="sub-ch">1.2. Domeniu de aplicare</div>
+    <p class="doc-p">Procedura se aplică tuturor echipamentelor, instalațiilor și construcțiilor aflate în exploatarea Terminalului de Cereale SOCEP S.A., indiferent de amplasament în incinta terminalului sau în zonele adiacente deservite de fluxul tehnologic. Domeniul acoperă integral infrastructura de transport intern a cerealelor: elevatoare cu cupe, transportoare cu bandă, transportoare cu lanț, șnecuri, cutii de deviere, șibăre, precum și echipamentele de curățare, cântărire, prelevare probe, aspirație și desprăfuire, sistemele de depozitare de tip celulă, utilitățile de forță și iluminat, instalațiile de aer comprimat, sistemele hidraulice și pneumatice, instalațiile de automatizare, senzoristica de proces și mijloacele auxiliare de intervenție.</p>
+    <p class="doc-p">De asemenea, procedura acoperă construcțiile și anexele tehnice a căror stare influențează direct funcționarea echipamentelor: galerii de benzi, turnuri, pasarele, case de scări, platforme de acces, hidroizolații, structuri metalice portante, precum și dotările de securitate la incendiu și instalațiile ATEX din zonele clasificate cu pericol de explozie din cauza prafului combustibil de cereale.</p>
+    <p class="doc-p">Sunt excluse din domeniul prezentei proceduri activitățile care fac obiectul unor proceduri distincte ale sistemului integrat de management: cum sunt achiziția de echipamente noi, investițiile capitale și gestionarea contractelor comerciale, în măsura în care nu generează interfețe directe cu activitatea de mentenanță. Aceste interfețe sunt tratate explicit în capitolele dedicate.</p>
+
+    <!-- PAGE 4 -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 4 / 17</span></div>
+
+    <div class="sub-ch">1.3. Utilizatori</div>
+    <p class="doc-p">Procedura se adresează în primul rând personalului din Departamentul Mentenanță TCS: ingineri, electricieni, mecanici, lăcătuși, sudori, automatiști, care au în sarcină planificarea și execuția intervențiilor.</p>
+    <p class="doc-p">Aceasta este obligatorie și pentru personalul de exploatare care participă la procesul de predare–primire a echipamentelor pentru intervenție, pentru responsabilul ISCIR al unității, pentru coordonatorul SSM, pentru responsabilul de mediu, pentru responsabilul cu siguranța alimentară și pentru conducerea operațională care avizează și aprobă planurile de mentenanță și bugetele aferente.</p>
+    <p class="doc-p">Subcontractanții și prestatorii externi care execută lucrări de mentenanță, reparații, verificări tehnice periodice sau modernizări pe echipamentele terminalului se conformează prevederilor prezentei proceduri pe întreaga durată a activității desfășurate în incinta SOCEP S.A.</p>
+
+    <div class="ch">2. INFORMAȚII CONEXE / DOCUMENTE DE REFERINȚĂ</div>
+    <ul class="doc-ul">
+      <li>SR EN ISO 9001:2015 - Sisteme de management al calității</li>
+      <li>SR EN ISO 14001:2015 - Sisteme de management de mediu</li>
+      <li>SR EN ISO 22000 - Sisteme de management al siguranței alimentelor</li>
+      <li>SR EN ISO 45001 - Sisteme de management al sănătății și securității ocupaționale</li>
+      <li>Legea nr. 64/2008 - funcționarea în condiții de siguranță a instalațiilor sub presiune, instalațiilor de ridicat și a aparatelor consumatoare de combustibil</li>
+      <li>Prescripțiile tehnice ISCIR aplicabile instalațiilor de ridicat, recipientelor sub presiune și aparatelor consumatoare de combustibil din exploatare</li>
+      <li>Directiva 2014/34/UE (ATEX) privind echipamentele și sistemele de protecție destinate utilizării în atmosfere potențial explozive</li>
+      <li>Legea nr. 307/2006 privind apărarea împotriva incendiilor și normele aferente</li>
+      <li>Documentația tehnică a furnizorilor de echipamente - cărți tehnice, manuale de exploatare și mentenanță</li>
+    </ul>
+
+    <div class="ch">3. TERMINOLOGIE ȘI ABREVIERI</div>
+    <ul class="doc-ul">
+      <li><strong>TCS</strong> – Terminal Cereale SOCEP</li>
+      <li><strong>OSCC</strong> – Operator Siloz Cameră de Comandă</li>
+      <li><strong>CCS</strong> – Cameră de Comandă Siloz</li>
+      <li><strong>SSM</strong> – Sănătatea și Securitatea Muncii</li>
+      <li><strong>SU</strong> – Situații de Urgență</li>
+      <li><strong>EIP</strong> – Echipament Individual de Protecție</li>
+      <li><strong>LOTO</strong> – Lockout/Tagout: procedură de blocare fizică (lacăt) și etichetare (tag) a sursei de energie</li>
+      <li><strong>ISCIR</strong> – Inspecția de Stat pentru Controlul Cazanelor, Recipientelor sub Presiune și Instalațiilor de Ridicat</li>
+      <li><strong>Mentenanță proactivă</strong> – activitate prin care defectele potențiale sunt identificate și remediate înainte ca acestea să determine avarii sau opriri neplanificate</li>
+      <li><strong>Mentenanță preventivă</strong> – ansamblul verificărilor, măsurătorilor, reglajelor și înlocuirilor efectuate la intervale stabilite</li>
+      <li><strong>Mentenanță predictivă</strong> – monitorizarea permanentă sau periodică a parametrilor de stare a echipamentelor</li>
+      <li><strong>MTBF</strong> – Mean Time Between Failures – timpul mediu între două defectări succesive</li>
+      <li><strong>MTTR</strong> – Mean Time To Repair – timpul mediu de readucere a echipamentului în stare de funcționare</li>
+      <li><strong>FMEA</strong> – Failure Mode and Effects Analysis – Analiza modurilor de defectare și a efectelor acestora</li>
+      <li><strong>ATEX</strong> – Atmosferă potențial explozivă</li>
+      <li><strong>IL</strong> – Instrucțiune de lucru &nbsp;|&nbsp; <strong>NC</strong> – Neconformitate</li>
+    </ul>
+
+    <!-- PAGE 5 — SSM -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 5-7 / 17</span></div>
+
+    <div class="ch">4. REGULI GENERALE SSM</div>
+    <div class="sub-ch">4.1. Principiu fundamental</div>
+    <p class="doc-p"><strong>Se interzice efectuarea oricărei intervenții asupra echipamentelor, indiferent de natura acesteia (mecanică, electrică, pneumatică), în absența aplicării complete a procedurii LOTO.</strong></p>
+    <p class="doc-p">Aplicarea procedurii LOTO trebuie să includă obligatoriu: izolarea tuturor surselor de energie, blocarea fizică a acestora, etichetarea corespunzătoare și verificarea efectivă a stării de energie zero. Intervenția poate începe exclusiv după confirmarea eliminării complete a oricărei forme de energie periculoasă.</p>
+
+    <div class="sub-ch">4.2. EIP obligatoriu pentru intervenții</div>
+    <div class="sub-sub-ch">4.2.1 Electrician:</div>
+    <ul class="doc-ul">
+      <li><strong>Mănuși electroizolante certificate</strong> (EN IEC 60903) – protecție împotriva electrocutării la lucrul sub tensiune</li>
+      <li><strong>Bocanci electroizolanti</strong> (EN 50321) – limitează trecerea curentului electric prin corp</li>
+      <li><strong>Cască de protecție</strong> (EN 397) – obligatorie în toate zonele operaționale</li>
+      <li><strong>Echipament reflectorizant</strong> (EN ISO 20471) – creșterea vizibilității personalului</li>
+      <li><strong>Ochelari de protecție</strong> (EN 166) – protecția ochilor împotriva particulelor și riscurilor mecanice</li>
+      <li><strong>Covoraș electroizolant</strong> (EN 61111) – izolarea față de sol în timpul lucrărilor la instalații electrice</li>
+    </ul>
+    <div class="sub-sub-ch">4.2.2 Mecanic:</div>
+    <ul class="doc-ul">
+      <li><strong>Mănuși de protecție mecanică</strong> (EN 388) – rezistente la abraziune, tăiere, rupere și perforare</li>
+      <li><strong>Bocanci de protecție cu bombeu metalic</strong> (EN ISO 20345) – impact min. 200 J, talpă antiderapantă</li>
+      <li><strong>Cască de protecție</strong> (EN 397) – obligatorie în toate zonele operaționale</li>
+      <li><strong>Echipament reflectorizant</strong> (EN ISO 20471)</li>
+      <li><strong>Ochelari de protecție</strong> (EN 166)</li>
+      <li><strong>Mască anti-praf</strong> (EN 149) – clase FFP1, FFP2 sau FFP3 în funcție de nivelul de risc</li>
+    </ul>
+
+    <div class="sub-ch">4.3. Reguli – FĂRĂ EXCEPȚII</div>
+    <ul class="doc-ul">
+      <li>Toate sursele de energie se vor izola și bloca prin aplicarea lacătului personal LOTO înainte de începerea oricărei intervenții</li>
+      <li>Fiecare persoană implicată în intervenție este obligată să aplice propriul lacăt LOTO</li>
+      <li>Este strict interzisă îndepărtarea unui dispozitiv LOTO aplicat de un alt angajat</li>
+      <li>Verificarea absenței energiei se va realiza obligatoriu prin măsurare cu aparat omologat și verificat metrologic</li>
+    </ul>
+
+    <div class="sub-ch">4.4. Repunerea echipamentului sub tensiune sau sub sarcină</div>
+    <p class="doc-p">Se va efectua exclusiv după: confirmarea eliminării tuturor riscurilor; retragerea tuturor sculelor și personalului din zona de lucru; îndepărtarea tuturor dispozitivelor LOTO de către fiecare titular.</p>
+
+    <!-- POLITICA -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 8 / 17</span></div>
+
+    <div class="ch">5. POLITICA DE MENTENANȚĂ LA TCS</div>
+    <p class="doc-p">Politica de mentenanță a SOCEP S.A. pornește de la constatarea că uzura componentelor este o caracteristică a ciclului de viață al oricărui echipament, însă ritmul și amploarea acesteia pot fi controlate printr-o strategie coerentă, bazată pe risc și pe date. Terminalul adoptă un model mixt, în care mentenanța proactivă are rol dominant, iar mentenanța reactivă este rezervată situațiilor în care defectul nu a putut fi anticipat.</p>
+    <p class="doc-p">Obiectivul declarat este creșterea fiabilității mijloacelor de producție prin reducerea riscului de întrerupere a fluxurilor tehnologice, cu efect direct asupra eficienței economice a investiției. Acest obiectiv se traduce în ținte măsurabile: disponibilitatea tehnică a liniilor de recepție și expediție, numărul de opriri neplanificate pe lună, durata medie a intervenției corective, consumul specific de piese de schimb și respectarea termenelor scadente pentru verificările ISCIR.</p>
+
+    <div class="sub-ch">5.1. Principiul abordării bazate pe risc</div>
+    <p class="doc-p">Toate deciziile de mentenanță sunt fundamentate prin analiza modurilor de defectare și a efectelor acestora, consemnată în registrul FMEA al departamentului. Registrul conține, pentru fiecare risc identificat, evaluarea severității, a probabilității de apariție și a probabilității de detecție, precum și măsurile de control aplicate.</p>
+
+    <div class="sub-ch">5.2. Echilibrul între mentenanța proactivă și cea reactivă</div>
+    <p class="doc-p">Mentenanța proactivă, cu cele trei componente ale sale: preventivă, predictivă și programată, urmărește optimizarea exploatării și reducerea frecvenței și costului reparațiilor. Raportul țintă urmărit la nivelul terminalului este ca ponderea intervențiilor reactive în totalul orelor de manoperă de mentenanță să nu depășească valorile considerate acceptabile pentru industria silozurilor portuare.</p>
+
+    <!-- TIPURI -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 9-10 / 17</span></div>
+
+    <div class="ch">6. TIPURI DE MENTENANȚĂ APLICATE ÎN TCS</div>
+    <div class="sub-ch">6.1. Mentenanță Proactivă</div>
+    <div class="sub-sub-ch">6.1.1. Mentenanța preventivă</div>
+    <p class="doc-p">Aceasta se realizează printr-o monitorizare constantă, permanentă, a instalației pentru asigurarea funcționării corecte. Mentenanța preventivă se execută pe baza planurilor de mentenanță preventivă întocmite pentru fiecare grupă de echipamente: elevatoare cu cupe, transportoare cu bandă, transportoare cu lanț, șnecuri, cutii de deviere, șibere, filtre, cântare, samplere, compresoare, motoreductoare, sisteme de aer condiționat, senzoristica, etc. Planurile stabilesc frecvența verificărilor, parametrii urmăriți, valorile limită admise și acțiunile corective asociate.</p>
+    <div class="sub-sub-ch">6.1.2. Mentenanța predictivă</div>
+    <p class="doc-p">Mentenanța predictivă presupune un grad ridicat de cunoaștere a echipamentelor și a condițiilor reale de lucru. Echipa de mentenanță selectează componentele și subansamblele considerate critice și le monitorizează cu atenție sporită prin măsurători de vibrații, termografiere, analize de lubrifiant, urmărirea curenților absorbiți si a pieselor de uzură, pentru a anticipa și preveni avariile.</p>
+    <div class="sub-sub-ch">6.1.3. Mentenanța programată</div>
+    <p class="doc-p">Mentenanța programată constă în revizii detaliate ale echipamentelor, efectuate la intervale stabilite atât în ore de funcționare, calendaristic, cât și de disponibilitatea echipamentelor. La echipamente se aplică revizii la 200, 800, 1500 și 8000 de ore, fiecare având un conținut tehnic propriu.</p>
+
+    <div class="sub-ch">6.2. Mentenanță Reactivă</div>
+    <div class="sub-sub-ch">6.2.1. Mentenanța corectivă</div>
+    <p class="doc-p">Mentenanța corectivă reprezintă ansamblul acțiunilor prin care un echipament sau o componentă aflată în curs de deteriorare este readusă la starea inițială sau la o stare optimă de funcționare, înainte ca avaria să se producă efectiv.</p>
+    <div class="sub-sub-ch">6.2.2. Mentenanța de urgență</div>
+    <p class="doc-p">Mentenanța de urgență se aplică atunci când un echipament înregistrează o avarie și este necesară intervenția imediată. Etapele obligatorii sunt: identificarea avariei, oprirea echipamentului, izolarea problemei prin aplicarea procedurilor LOTO, identificarea cauzei, înlăturarea sursei, înlocuirea componentei afectate, reglarea și testarea echipamentului.</p>
+    <p class="doc-p">Orice intervenție reactivă se execută obligatoriu cu permis de lucru și cu procedură LOTO, se înregistrează ca neconformitate și generează o analiză cauzală cu scopul actualizării planului de mentenanță preventivă.</p>
+
+    <!-- ORGANIZARE -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 11-12 / 17</span></div>
+
+    <div class="ch">7. ORGANIZAREA ACTIVITĂȚII DE MENTENANȚĂ</div>
+    <p class="doc-p">Activitatea de mentenanță este coordonată de Director Investiții, prin intermediul inginerului responsabil de mentenanță și al personalului de mentenanță. Echipa de mentenanță este structurată pe patru direcții funcționale distincte: mecanică, electrică, software și operare, fiecare cu responsabilități clar delimitate asupra infrastructurii tehnice a terminalului.</p>
+
+    <div class="ch">8. PLANIFICAREA ȘI EXECUȚIA INTERVENȚIILOR</div>
+    <p class="doc-p">Planificarea mentenanței se realizează anual, prin planul de mentenanță preventivă și trimestrial, prin actualizarea programului operativ. Orizontul anual stabilește reviziile majore, verificările ISCIR scadente, lucrările de reparații capitale și campaniile de înlocuire a pieselor de uzură.</p>
+    <p class="doc-p">Execuția intervențiilor se face pe baza instrucțiunilor de lucru specifice fiecărui echipament sau tip de operațiune. Înainte de începerea lucrării, se verifică îndeplinirea condițiilor de siguranță: oprirea echipamentului, aplicarea LOTO, emiterea permisului de lucru, verificarea existenței sculelor, dispozitivelor și echipamentelor individuale de protecție.</p>
+
+    <div class="ch">9. ORGANIZAREA ECHIPEI DE MENTENANȚĂ</div>
+    <p class="doc-p">Pentru creșterea eficienței, echipa de mentenanță este organizată în subechipe de lucru care execută simultan intervenții pe zone distincte ale instalației, eliminând timpii morți și reducând durata totală a reviziilor.</p>
+    <div class="sub-ch">Matricea de prioritizare a intervențiilor:</div>
+    <table class="prio-table">
+      <tr><th>PRIORITATE</th><th>CRITERIU</th><th>TIP LUCRARE</th><th>TERMEN MAXIM</th></tr>
+      <tr class="p1"><td><strong>P1 – CRITICĂ</strong></td><td>Avarie activă / risc siguranță</td><td>Mentenanță de urgență</td><td>Imediat (&lt; 2 ore)</td></tr>
+      <tr class="p2"><td><strong>P2 – ÎNALTĂ</strong></td><td>Linie în pregătire recepție / livrare</td><td>Revizie pre-operațională</td><td>Anterior demarării operațiunii</td></tr>
+      <tr class="p3"><td><strong>P3 – NORMALĂ</strong></td><td>Linie în exploatare activă</td><td>Preventiv / predictiv programat</td><td>Conform plan mentenanță</td></tr>
+      <tr class="p4"><td><strong>P4 – SCĂZUTĂ</strong></td><td>Linie temporar neutră</td><td>Îmbunătățiri / corecții constructive</td><td>Programabil flexibil</td></tr>
+    </table>
+
+    <!-- KPI -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 13-15 / 17</span></div>
+
+    <div class="ch">10. GESTIUNEA PIESELOR DE SCHIMB ȘI A CONSUMABILELOR</div>
+    <p class="doc-p">Gestiunea pieselor de schimb are ca scop asigurarea disponibilității la momentul potrivit a componentelor necesare execuției intervențiilor planificate și a celor de urgență. Necesarul de piese este stabilit pe baza planurilor de mentenanță preventivă, a istoricului de consum, a recomandărilor furnizorilor de echipamente și a evaluării de risc din registrul FMEA. Pentru echipamentele critice se mențin stocuri minime de siguranță.</p>
+
+    <div class="ch">11. MIJLOACE DE MĂSURARE ȘI CONTROL</div>
+    <p class="doc-p">Mijloacele de măsurare utilizate în activitatea de mentenanță: multimetre, megohmetre, termometre cu infraroșu, aparate de măsură a vibrațiilor, dinamometre, micrometre, șublere, manometre de control; sunt înregistrate într-o evidență distinctă. Aparatele care intră sub incidența metrologiei legale sunt verificate de laboratoare acreditate, iar buletinele de verificare metrologică sunt arhivate.</p>
+
+    <div class="ch">12. COMPETENȚĂ, INSTRUIRE ȘI CONȘTIENTIZARE</div>
+    <p class="doc-p">Personalul departamentului de mentenanță deține calificările profesionale și autorizările legale corespunzătoare activităților desfășurate. Programul anual de instruire acoperă atât tematicile obligatorii prin lege: securitate și sănătate în muncă, situații de urgență, protecția mediului, siguranța alimentară, cât și tematici specifice activității de mentenanță.</p>
+
+    <div class="ch">13. NECONFORMITĂȚI, ACȚIUNI CORECTIVE ȘI PREGĂTIREA PENTRU S.U.</div>
+    <div class="sub-ch">13.1. Tratarea neconformităților</div>
+    <p class="doc-p">Orice abatere identificată în activitatea de mentenanță face obiectul unui raport de neconformitate. Raportul conține descrierea faptelor, dovezile, analiza de cauză și măsurile propuse. Acțiunile corective sunt urmărite până la închidere, iar eficacitatea lor este verificată prin monitorizarea reapariției problemei.</p>
+    <div class="sub-ch">13.2. Pregătirea pentru situații de urgență</div>
+    <p class="doc-p">Departamentul de mentenanță participă la planurile de pregătire pentru situații de urgență ale terminalului: incendiu în siloz, explozie de praf de cereale, avarie majoră la o instalație de transport, scurgere de produs, accident de muncă în timpul intervenției.</p>
+
+    <div class="ch">14. MANAGEMENTUL MODIFICĂRILOR ȘI CONTROLUL DOCUMENTELOR</div>
+    <p class="doc-p">Orice modificare adusă echipamentelor, instalațiilor sau fluxurilor tehnologice este evaluată în prealabil din punct de vedere al impactului asupra siguranței, calității, mediului și siguranței alimentare. Modificările aprobate conduc la actualizarea documentației tehnice și, dacă este cazul, la instruirea personalului.</p>
+
+    <!-- INDICATORI -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 15 / 17</span></div>
+
+    <div class="ch">15. INDICATORI DE PERFORMANȚĂ ȘI ÎMBUNĂTĂȚIRE CONTINUĂ</div>
+    <p class="doc-p">Activitatea de mentenanță este monitorizată prin indicatori de performanță urmăriți lunar: disponibilitatea tehnică a echipamentelor critice, numărul și durata opririlor neplanificate, MTBF și MTTR pentru echipamentele critice, gradul de realizare a planului de mentenanță preventivă, consumul de piese de schimb și abaterile față de buget.</p>
+    <table class="kpi-table">
+      <tr><th>INDICATORI DE PERFORMANȚĂ (KPI)</th><th>FORMULĂ / UNITATE</th><th>ȚINTĂ</th></tr>
+      <tr><td>Disponibilitate echipament (%)</td><td>(Timp funcționare / Timp total) × 100</td><td>&gt; 95%</td></tr>
+      <tr class="kpi-hl"><td>MTBF - Timp mediu între defectări</td><td>Timp total de funcționare / Număr defectări</td><td>în creștere</td></tr>
+      <tr><td>MTTR - Timp mediu de reparare</td><td>Timp total reparații / Număr intervenții</td><td>&lt; 2 ore</td></tr>
+      <tr class="kpi-hl"><td>Rată defectare (%)</td><td>(Nr. defectări / Nr. total echipamente) × 100</td><td>&lt; 5%</td></tr>
+      <tr><td>Respectare plan mentenanță preventivă (%)</td><td>(Lucrări efectuate / Lucrări planificate) × 100</td><td>&gt; 90%</td></tr>
+      <tr class="kpi-hl"><td>Cost mentenanță / echipament</td><td>Cost total mentenanță / Număr echipamente</td><td>optimizat</td></tr>
+      <tr><td>Timp de răspuns intervenții</td><td>Timp de la sesizare la intervenție</td><td>&lt; 30 min</td></tr>
+      <tr class="kpi-hl"><td>Număr opriri neplanificate</td><td>Număr opriri / perioadă</td><td>în scădere</td></tr>
+      <tr><td>Conformitate înregistrări ISCIR</td><td>Scadente respectate / Total scadente [%]</td><td>100%</td></tr>
+    </table>
+
+    <!-- RESPONSABILITATI -->
+    <div class="page-break"></div>
+    <div class="pg-footer"><span>Cod doc: PO M04-01/ 04.00</span><span>Pag. 16-17 / 17</span></div>
+
+    <div class="ch">16. RESPONSABILITĂȚI</div>
+    <ul class="doc-ul">
+      <li><strong>16.1. Directorul General</strong> – aprobă prezenta procedură, planurile anuale de mentenanță și bugetele aferente, asigură resursele necesare implementării.</li>
+      <li><strong>16.2. Directorul Investiții</strong> – verifică conținutul procedurii, coordonează elaborarea planurilor de mentenanță, urmărește execuția acestora, analizează indicatorii de performanță.</li>
+      <li><strong>16.3. Inginerul de Mentenanță</strong> – întocmește planurile, instrucțiunile de lucru și formularele aferente, organizează intervențiile, supraveghează execuția acestora, consemnează rezultatele și întocmește rapoartele periodice.</li>
+      <li><strong>16.4. Personalul de execuție din mentenanță</strong> – aplică prevederile procedurii și ale instrucțiunilor de lucru, completează formularele și rapoartele, respectă normele de securitate.</li>
+      <li><strong>16.5. Personalul de exploatare</strong> – participă la predarea–primirea echipamentelor pentru intervenție, respectă procedurile LOTO, semnalează în timp util abaterile observate.</li>
+      <li><strong>16.6. Responsabilul ISCIR</strong> – asigură respectarea prescripțiilor tehnice specifice, programează verificările periodice, menține evidența documentelor aferente.</li>
+      <li><strong>16.7. Coordonatorul SSM</strong> – verifică respectarea cerințelor de securitate și sănătate în muncă pe durata intervențiilor.</li>
+      <li><strong>16.8. Responsabilul de mediu și responsabilul cu siguranța alimentară</strong> – verifică în domeniul lor de competență, că activitățile de mentenanță nu afectează conformitatea cu cerințele aplicabile.</li>
+    </ul>
+
+    <div class="ch">17. FURNIZORI EXTERNI DE SERVICII DE MENTENANȚĂ</div>
+    <p class="doc-p">Activitățile de mentenanță care depășesc competențele interne: verificări tehnice ISCIR, intervenții pe echipamente sub garanție, lucrări specializate de sudură certificată, expertize tehnice, modernizări, sunt contractate de la furnizori externi calificați. Selecția furnizorilor se face pe baza criteriilor stabilite în procedura de aprovizionare a sistemului integrat de management.</p>
+    <p class="doc-p">Înainte de începerea lucrărilor, furnizorul extern primește o instruire privind regulile interne ale terminalului: circulație, zone clasificate ATEX, proceduri LOTO, gestionarea deșeurilor, situații de urgență, iar instruirea este consemnată într-un formular semnat.</p>
+
+    <div class="ch">18. ANEXE ȘI FORMULARE ASOCIATE</div>
+    <p class="doc-p">Prezenta procedură este însoțită de seria instrucțiunilor de lucru, a formularelor și a rapoartelor, care detaliază modul concret de execuție a intervențiilor pe grupe de echipamente și de consemnare a rezultatelor. Lista completă a documentelor asociate este menținută la zi de inginerul de mentenanță.</p>
+
+    <div class="ch">19. DISPOZIȚII FINALE</div>
+    <p class="doc-p">Procedura la punctul de lucru se regăsește în dosarul de mentenanță, la care au acces toți membrii echipei de mentenanță. Personalul nou angajat semnează de luare la cunoștință înainte de începerea activității. Nerespectarea procedurii atrage măsuri disciplinare conform regulamentului intern.</p>
+
+  </div><!-- doc-body -->
+</div><!-- doc -->
+</div><!-- page -->
+
+<script>
+/* ── GEAR ── */
+function drawGear(cv){var c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;var RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);var grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');c.beginPath();for(var i=0;i<12;i++){var b=(i/12)*Math.PI*2,ta=.18,ra=.26;var a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;var p0=pt(RR,a1),p2=pt(RT,a2),p3=pt(RT,a3),p4=pt(RR,a4);if(!i)c.moveTo(p0[0],p0[1]);else c.lineTo(p0[0],p0[1]);c.lineTo(p2[0],p2[1]);c.lineTo(p3[0],p3[1]);c.lineTo(p4[0],p4[1]);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);var ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(var m=0;m<60;m++){var a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;var r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;var q1=pt(r1,a),q2=pt(r2,a);c.beginPath();c.moveTo(q1[0],q1[1]);c.lineTo(q2[0],q2[1]);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}var now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(function(x){var p=pt(x[0],x[1]);c.beginPath();c.moveTo(cx,cy);c.lineTo(p[0],p[1]);c.strokeStyle=x[3];c.lineWidth=x[2];c.lineCap='round';c.shadowColor=x[3];c.shadowBlur=x[4];c.stroke();c.shadowBlur=0;});var sA=(secs/60)*Math.PI*2,sp=pt(RI*.76,sA),sc2=pt(-RI*.22,sA);c.beginPath();c.moveTo(sc2[0],sc2[1]);c.lineTo(sp[0],sp[1]);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
+(function gl(){drawGear(document.getElementById('gear'));requestAnimationFrame(gl);})();
+
+/* ── CLOCK ── */
+function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+updateClock();setInterval(updateClock,1000);
+
+/* ── USER ── */
+(function(){try{var name=sessionStorage.getItem('k_name')||'Leica Bogdan';var role=sessionStorage.getItem('k_role')||'APP OWNER';var parts=name.split(' ');document.getElementById('user-first').textContent=parts[0]||'';document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();document.getElementById('user-role').textContent=role;}catch(e){}})();
+</script>
+</body>
+</html>
