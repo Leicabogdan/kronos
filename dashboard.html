@@ -889,22 +889,28 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
             <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;text-align:center;">in curs de dezvoltare</div>
           </div>
 
-          <!-- ALERTE ACTIVE -->
+          <!-- REVIZII ACTIVE -->
           <div>
             <div class="sec-hdr" style="margin-bottom:10px;">
-              <div class="sec-title" style="color:var(--red);">Alerte active</div>
+              <div class="sec-title" style="color:var(--amber);">Revizii active</div>
               <div class="sec-line"></div>
-              <div class="sec-count" style="color:var(--red);">8 ACTIVE</div>
+              <a href="ore_functionare.html" style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;letter-spacing:.08em;text-decoration:none;opacity:.7;">DETALII &#8599;</a>
             </div>
-            <div style="display:flex;flex-direction:column;gap:7px;">
-              <div class="alert-item urgent"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Avarie activa &mdash; Banda B-03</div><div class="alert-sub">Blocare mecanica la tambur</div></div><span class="alert-chip chip-red">URGENT</span></div>
-              <div class="alert-item warn"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Scadenta ISCIR &mdash; E-01</div><div class="alert-sub">Expira in 18 zile</div></div><span class="alert-chip chip-amber">18 ZILE</span></div>
-              <div class="alert-item urgent"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Temperatura lagar CC04</div><div class="alert-sub">&gt;70&deg;C &middot; Risc blocare iminent</div></div><span class="alert-chip chip-red">CRITIC</span></div>
-              <div class="alert-item warn"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Revizie apropiata &mdash; E-01</div><div class="alert-sub">La 180h de revizia 1500h</div></div><span class="alert-chip chip-amber">CURAND</span></div>
-              <div class="alert-item info"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#5090e0" stroke-width="1.4"/><path d="M8 7v4M8 5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Stoc piese scazut</div><div class="alert-sub">Cupe 2L: 4 buc &middot; Sub minim</div></div><span class="alert-chip chip-blue">STOC</span></div>
-              <div class="alert-item warn"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#f0a500" stroke-width="1.4"/><path d="M8 5v3M8 10v.5" stroke="#f0a500" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Filtru FS01 &mdash; colmatare</div><div class="alert-sub">Presiune diferentiala depasita</div></div><span class="alert-chip chip-amber">FILTRU</span></div>
-              <div class="alert-item urgent"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L1 14h14L8 2z" stroke="#e05050" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3M8 11.5v.5" stroke="#e05050" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Revizie depasita &mdash; C-01</div><div class="alert-sub">Compresor la 200h neefectuat</div></div><span class="alert-chip chip-red">CRITIC</span></div>
-              <div class="alert-item info"><div class="alert-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#5090e0" stroke-width="1.4"/><path d="M8 7v4M8 5v.5" stroke="#5090e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><div style="flex:1;min-width:0;"><div class="alert-title">Revizie programata &mdash; BC12</div><div class="alert-sub">Schimb ulei reductor planificat</div></div><span class="alert-chip chip-blue">PLAN</span></div>
+            <!-- Depasit prag -->
+            <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--red);letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L1 9.5h9L5.5 1z" stroke="var(--red)" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 4.5v2M5.5 7.5v.3" stroke="var(--red)" stroke-width="1.2" stroke-linecap="round"/></svg>
+              DEPASIT PRAG REVIZIE <span id="dash-rev-over-count" style="background:rgba(224,80,80,.15);border-radius:4px;padding:1px 6px;">0</span>
+            </div>
+            <div id="dash-rev-over-list" style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;">
+              <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Se incarca...</div>
+            </div>
+            <!-- Urmeaza revizie -->
+            <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="var(--amber)" stroke-width="1.3"/><path d="M5.5 3v2.5M5.5 7v.3" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/></svg>
+              ATENTIE — URMEAZA REVIZIE <span id="dash-rev-warn-count" style="background:rgba(240,165,0,.15);border-radius:4px;padding:1px 6px;">0</span>
+            </div>
+            <div id="dash-rev-warn-list" style="display:flex;flex-direction:column;gap:5px;">
+              <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Se incarca...</div>
             </div>
           </div>
 
@@ -1034,6 +1040,81 @@ async function loadDashAvarii() {
 }
 loadDashAvarii();
 setInterval(loadDashAvarii, 60000);
+
+/* REVIZII ACTIVE — from ore_functionare CSV */
+var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G4lws543OACc-LheGGZXV669FZ1UvVw7NQN14Q5wTzjfwupGQjqt7muyFU158-qC9h5Z/pub?gid=0&single=true&output=csv';
+
+(function loadRevizii(){
+  function parseCSV(text){
+    var rows=[],cur=[],cell='',inQ=false;
+    for(var i=0;i<text.length;i++){var ch=text[i];
+      if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
+      else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}
+      else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);cur=[];cell='';}
+      else cell+=ch;}}
+    cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
+  }
+
+  function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  fetch(ORE_DASH_CSV+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'})
+  .then(function(r){return r.text();})
+  .then(function(txt){
+    var rows=parseCSV(txt).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
+    // cols: 0=Echipament, 1=Ore, 2=Rev200, 3=Rev1500, 4=Rev8000
+    // ore_functionare col mapping from sheet
+    var overItems=[], warnItems=[];
+    rows.forEach(function(r){
+      var eq=String(r[0]||'').trim();
+      var ore=parseFloat(r[1])||0;
+      if(!eq)return;
+      [[200,r[2],'200h'],[1500,r[3],'1500h'],[8000,r[4],'8000h']].forEach(function(tp){
+        var thresh=tp[0], revOre=parseFloat(tp[1])||0, label=tp[2];
+        var oreDeAtunci=ore-revOre;
+        var ramase=thresh-oreDeAtunci;
+        if(ramase<0) overItems.push({eq:eq,label:label,dep:Math.abs(ramase)});
+        else if(ramase<=20) warnItems.push({eq:eq,label:label,ramase:ramase});
+      });
+    });
+
+    document.getElementById('dash-rev-over-count').textContent=overItems.length||'0';
+    document.getElementById('dash-rev-warn-count').textContent=warnItems.length||'0';
+
+    var ol=document.getElementById('dash-rev-over-list');
+    if(overItems.length){
+      ol.innerHTML=overItems.slice(0,8).map(function(x){
+        return '<div class="alert-item urgent" style="padding:6px 10px;">'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
+          +'<div class="alert-sub">Depasit cu '+x.dep.toFixed(1)+'h</div>'
+          +'</div>'
+          +'<span class="alert-chip chip-red">+'+x.dep.toFixed(1)+'h</span>'
+          +'</div>';
+      }).join('');
+    } else {
+      ol.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie depasita</div>';
+    }
+
+    var wl=document.getElementById('dash-rev-warn-list');
+    if(warnItems.length){
+      wl.innerHTML=warnItems.slice(0,8).map(function(x){
+        return '<div class="alert-item warn" style="padding:6px 10px;">'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
+          +'<div class="alert-sub">Mai are '+x.ramase.toFixed(1)+'h</div>'
+          +'</div>'
+          +'<span class="alert-chip chip-amber">'+x.ramase.toFixed(1)+'h</span>'
+          +'</div>';
+      }).join('');
+    } else {
+      wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie apropiata</div>';
+    }
+  })
+  .catch(function(){
+    document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Eroare incarcare</div>';
+    document.getElementById('dash-rev-warn-list').innerHTML='';
+  });
+})();
 
 /* SCHIMB ULEI LIVE */
 (function loadUlei() {
