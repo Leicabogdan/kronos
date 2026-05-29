@@ -148,6 +148,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 
 /* ── QUICK ACTIONS ── */
 .quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+@media(max-width:600px){.quick-actions{grid-template-columns:1fr;}}
 .qa-col{display:flex;flex-direction:column;gap:12px;}
 .qa-btn{
   display:flex;align-items:center;gap:14px;
@@ -449,6 +450,8 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .dash-main-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;}
 @media(max-width:1200px){.dash-main-grid{grid-template-columns:1fr 280px;}}
 @media(max-width:900px){.dash-main-grid{grid-template-columns:1fr;}}
+@media(max-width:1100px){.kpi-grid-4{grid-template-columns:1fr 1fr!important;}}
+@media(max-width:600px){.kpi-grid-4{grid-template-columns:1fr!important;}}
 
 /* section header */
 .sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
@@ -761,7 +764,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
           </div>
 
           <!-- TOP STRIP: AVARII + SCHIMB ULEI + 2 EXTRA -->
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;align-items:start;">
+          <div class="kpi-grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;align-items:start;">
 
             <!-- AVARII -->
             <div class="avarii-alarm" style="padding:14px 16px;min-height:0;position:relative;">
