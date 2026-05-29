@@ -229,8 +229,13 @@
   if (target) {
     target.outerHTML = html;
   } else {
-    // Fallback: insereste inainte de primul child al body
-    document.body.insertAdjacentHTML('afterbegin', html);
+    // Injecteaza ca primul child al .app, sau afterbegin body ca fallback
+    var appEl = document.querySelector('.app');
+    if (appEl) {
+      appEl.insertAdjacentHTML('afterbegin', html);
+    } else {
+      document.body.insertAdjacentHTML('afterbegin', html);
+    }
   }
 
   /* ── GEAR ANIMATION ── */

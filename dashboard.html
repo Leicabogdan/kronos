@@ -975,7 +975,7 @@ function drawGear(cv){
   c.beginPath();c.arc(cx,cy,5*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=10*s;c.fill();c.shadowBlur=0;
   c.beginPath();c.arc(cx,cy,2.5*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
 }
-(function gl(){drawGear(document.getElementById('sgear'));requestAnimationFrame(gl);})();
+(function gl(){var cv=document.getElementById('sgear');if(cv)drawGear(cv);requestAnimationFrame(gl);})();
 
 /* ── KPI MINI RINGS ── */
 function drawKpiRing(id,val,col){
