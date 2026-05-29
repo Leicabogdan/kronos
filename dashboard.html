@@ -891,7 +891,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
               <a href="ore_functionare.html" style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;letter-spacing:.08em;text-decoration:none;opacity:.7;">DETALII &#8599;</a>
             </div>
             <!-- Depasit prag -->
-            <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--red);letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+            <div style="font-family:var(--sans);font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L1 9.5h9L5.5 1z" stroke="var(--red)" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 4.5v2M5.5 7.5v.3" stroke="var(--red)" stroke-width="1.2" stroke-linecap="round"/></svg>
               DEPASIT PRAG REVIZIE <span id="dash-rev-over-count" style="background:rgba(224,80,80,.15);border-radius:4px;padding:1px 6px;">0</span>
             </div>
@@ -899,7 +899,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
               <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Se incarca...</div>
             </div>
             <!-- Urmeaza revizie -->
-            <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.1em;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+            <div style="font-family:var(--sans);font-size:14px;font-weight:700;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.5" stroke="var(--amber)" stroke-width="1.3"/><path d="M5.5 3v2.5M5.5 7v.3" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/></svg>
               ATENTIE — URMEAZA REVIZIE <span id="dash-rev-warn-count" style="background:rgba(240,165,0,.15);border-radius:4px;padding:1px 6px;">0</span>
             </div>
@@ -1037,9 +1037,10 @@ setInterval(loadDashAvarii, 60000);
 
 /* REVIZII ACTIVE — from ore_functionare CSV */
 var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G4lws543OACc-LheGGZXV669FZ1UvVw7NQN14Q5wTzjfwupGQjqt7muyFU158-qC9h5Z/pub?gid=0&single=true&output=csv';
+var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
 
 (function loadRevizii(){
-  function parseCSV(text){
+  function parseCSVRev(text){
     var rows=[],cur=[],cell='',inQ=false;
     for(var i=0;i<text.length;i++){var ch=text[i];
       if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
@@ -1048,35 +1049,95 @@ var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G
       else cell+=ch;}}
     cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
   }
-
+  function parseDateRev(s){
+    s=String(s||'').trim();if(!s)return null;
+    var p;
+    if(s.indexOf('/')>-1){p=s.split('/');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+    if(s.indexOf('.')>-1){p=s.split('.');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+    return null;
+  }
   function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-  fetch(ORE_DASH_CSV+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'})
-  .then(function(r){return r.text();})
-  .then(function(txt){
-    var rows=parseCSV(txt).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
-    // cols: 0=Echipament, 1=Ore, 2=Rev200, 3=Rev1500, 4=Rev8000
-    // ore_functionare col mapping from sheet
+  Promise.all([
+    fetch(ORE_DASH_CSV+'&t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}),
+    fetch(MNT_DASH_CSV+'&t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();})
+  ]).then(function(results){
+    var oreRows=parseCSVRev(results[0]).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
+    var mntRows=parseCSVRev(results[1]).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
+
+    // Build history: eq -> [{d,ore}]
+    var history={};
+    oreRows.forEach(function(r){
+      var dt=r[0]||'',eq=(r[1]||'').trim(),ore=parseFloat(r[2]);
+      if(!eq||isNaN(ore))return;
+      var d=parseDateRev(dt);if(!d)return;
+      if(!history[eq])history[eq]=[];
+      history[eq].push({d:d,ore:ore});
+    });
+
+    // Build latestOre: eq -> ore (most recent)
+    var latestOre={};
+    Object.keys(history).forEach(function(eq){
+      var arr=history[eq].sort(function(a,b){return a.d-b.d;});
+      latestOre[eq]=arr[arr.length-1].ore;
+    });
+
+    // Build lastRevizii from mentenanta
+    var lastRevizii={};
+    mntRows.forEach(function(r){
+      while(r.length<12)r.push('');
+      var motiv=(r[1]||'').toLowerCase();
+      var eq=(r[11]||'').trim();
+      var d=parseDateRev(r[2]);
+      if(!eq||!d)return;
+      if(motiv.indexOf('revizie 200')>-1||motiv.indexOf('200h')>-1){
+        if(!lastRevizii[eq])lastRevizii[eq]={};
+        if(!lastRevizii[eq].rev200||d>lastRevizii[eq].rev200)lastRevizii[eq].rev200=d;
+      }
+      if(motiv.indexOf('revizie 1500')>-1||motiv.indexOf('1500h')>-1){
+        if(!lastRevizii[eq])lastRevizii[eq]={};
+        if(!lastRevizii[eq].rev1500||d>lastRevizii[eq].rev1500)lastRevizii[eq].rev1500=d;
+      }
+      if(motiv.indexOf('revizie 8000')>-1||motiv.indexOf('8000h')>-1){
+        if(!lastRevizii[eq])lastRevizii[eq]={};
+        if(!lastRevizii[eq].rev8000||d>lastRevizii[eq].rev8000)lastRevizii[eq].rev8000=d;
+      }
+    });
+
+    // Calculate thresholds
     var overItems=[], warnItems=[];
-    rows.forEach(function(r){
-      var eq=String(r[0]||'').trim();
-      var ore=parseFloat(r[1])||0;
-      if(!eq)return;
-      [[200,r[2],'200h'],[1500,r[3],'1500h'],[8000,r[4],'8000h']].forEach(function(tp){
-        var thresh=tp[0], revOre=parseFloat(tp[1])||0, label=tp[2];
-        var oreDeAtunci=ore-revOre;
+    Object.keys(latestOre).forEach(function(eq){
+      var oreNow=latestOre[eq];
+      var rev=lastRevizii[eq]||{};
+
+      function oreAtDate(revDate){
+        if(!revDate)return 0;
+        var arr=(history[eq]||[]).filter(function(x){return x.d<=revDate;});
+        if(!arr.length)return 0;
+        arr.sort(function(a,b){return a.d-b.d;});
+        return arr[arr.length-1].ore;
+      }
+
+      [[200,rev.rev200,'200h'],[1500,rev.rev1500,'1500h'],[8000,rev.rev8000,'8000h']].forEach(function(tp){
+        var thresh=tp[0], revDate=tp[1], label=tp[2];
+        var oreAtRev=oreAtDate(revDate);
+        var oreDeAtunci=oreNow-oreAtRev;
         var ramase=thresh-oreDeAtunci;
         if(ramase<0) overItems.push({eq:eq,label:label,dep:Math.abs(ramase)});
         else if(ramase<=20) warnItems.push({eq:eq,label:label,ramase:ramase});
       });
     });
 
+    // Sort: over by dep desc, warn by ramase asc
+    overItems.sort(function(a,b){return b.dep-a.dep;});
+    warnItems.sort(function(a,b){return a.ramase-b.ramase;});
+
     document.getElementById('dash-rev-over-count').textContent=overItems.length||'0';
     document.getElementById('dash-rev-warn-count').textContent=warnItems.length||'0';
 
     var ol=document.getElementById('dash-rev-over-list');
     if(overItems.length){
-      ol.innerHTML=overItems.slice(0,8).map(function(x){
+      ol.innerHTML=overItems.slice(0,15).map(function(x){
         return '<div class="alert-item urgent" style="padding:6px 10px;">'
           +'<div style="flex:1;min-width:0;">'
           +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
@@ -1091,7 +1152,7 @@ var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G
 
     var wl=document.getElementById('dash-rev-warn-list');
     if(warnItems.length){
-      wl.innerHTML=warnItems.slice(0,8).map(function(x){
+      wl.innerHTML=warnItems.slice(0,15).map(function(x){
         return '<div class="alert-item warn" style="padding:6px 10px;">'
           +'<div style="flex:1;min-width:0;">'
           +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
@@ -1103,9 +1164,8 @@ var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G
     } else {
       wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie apropiata</div>';
     }
-  })
-  .catch(function(){
-    document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Eroare incarcare</div>';
+  }).catch(function(e){
+    document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Eroare: '+e.message+'</div>';
     document.getElementById('dash-rev-warn-list').innerHTML='';
   });
 })();
