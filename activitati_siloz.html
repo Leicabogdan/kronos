@@ -20,13 +20,29 @@
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
 .app{display:flex;height:100svh;overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-.topbar{height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 clamp(14px,2.5vw,28px);gap:12px;flex-shrink:0;}
-.topbar-title{font-family:var(--title);font-size:clamp(13px,1.8vw,16px);font-weight:900;color:#fff;letter-spacing:.12em;}
-.topbar-sub{font-family:var(--sans);font-size:clamp(10px,1.3vw,12px);color:#fff;font-weight:600;margin-top:2px;}
+
+.topbar{
+  height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;padding:0 clamp(16px,2.5vw,28px);
+  gap:12px;flex-shrink:0;
+}
+.topbar-title{font-family:var(--title);font-size:clamp(14px,2vw,17px);font-weight:900;color:#fff;letter-spacing:.12em;}
+.topbar-sub{font-family:var(--sans);font-size:clamp(11px,1.5vw,13px);color:#fff;font-weight:700;margin-top:2px;}
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.topbar-time-wrap{text-align:right;}
-.topbar-time{font-family:var(--title);font-size:clamp(16px,2vw,20px);color:var(--teal);font-weight:900;letter-spacing:.08em;line-height:1;}
-.topbar-date{font-family:var(--sans);font-size:clamp(9px,1.2vw,11px);color:#fff;font-weight:600;margin-bottom:1px;}
+.topbar-date{font-family:var(--sans);font-size:14px;color:#fff;font-weight:600;margin-bottom:3px;}
+.topbar-time{font-family:var(--title);font-size:22px;color:var(--teal);font-weight:900;letter-spacing:.08em;line-height:1;}
+.notif-btn{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;position:relative;
+}
+.notif-btn:hover{border-color:rgba(0,220,180,.4);}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:7px;height:7px;
+  border-radius:50%;background:var(--red);
+  box-shadow:0 0 8px var(--red);
+}
 .content{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(14px,2.5vw,28px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 @media(max-width:900px){
   [style*="grid-template-columns:1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}
@@ -223,7 +239,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
-  .topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
   .page{padding:0 10mm!important;max-width:100%!important;margin:0!important;}
 
   /* Print header */
@@ -304,20 +320,24 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
 <div class="main">
   <div class="topbar">
-    <div id="mobile-menu-btn" style="display:none;cursor:pointer;padding:4px;" onclick="sbOpenMobile()">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
-    </div>
-    <div>
-      <div class="topbar-title">ACTIVITATI SILOZ</div>
-      <div class="topbar-sub">Terminal Cereale Socep &middot; Port Constanta</div>
-    </div>
-    <div class="topbar-right">
-      <div class="topbar-time-wrap">
-        <div class="topbar-date" id="top-date"></div>
-        <div class="topbar-time" id="top-time">00:00:00</div>
+      <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="topbar-title">ACTIVITATI SILOZ</div>
+        <div class="topbar-sub">Terminal Cereale Socep &middot; Port Constanta</div>
+      </div>
+      <div class="topbar-right">
+        <div>
+          <div class="topbar-date" id="top-date"></div>
+          <div class="topbar-time" id="top-time"></div>
+        </div>
+        <div class="notif-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6v4l-1.5 2h11L12 10V6c0-2.2-1.8-4-4-4z" stroke="#fff" stroke-width="1.4"/><path d="M6.5 14a1.5 1.5 0 003 0" stroke="#fff" stroke-width="1.4"/></svg>
+          <div class="notif-dot"></div>
+        </div>
       </div>
     </div>
-  </div>
 
   <div class="content">
   <div class="page">
