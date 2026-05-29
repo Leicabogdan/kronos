@@ -622,7 +622,7 @@ async function submitRow(){
   btn.disabled=true;showMsg('loading','Se trimite...');
   try{
     var name=sessionStorage.getItem('k_name')||'Necunoscut';
-    var payload={cuva:cuva,data:data,descriere:desc,status:status,piese:piese,adaugat_de:name};
+    var payload={cuva:cuva,data:data,descriere:desc,status:status,piese:piese||'-',adaugat_de:name};
     if(APPS_SCRIPT_URL==='PUNE_URL_APPS_SCRIPT_AICI'){
       showMsg('err','Configureaza APPS_SCRIPT_URL pentru a salva date.');btn.disabled=false;return;
     }
