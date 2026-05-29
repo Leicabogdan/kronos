@@ -450,6 +450,9 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .dash-main-grid{display:grid;grid-template-columns:1fr 260px;gap:12px;align-items:start;min-width:0;}
 @media(max-width:1200px){.dash-main-grid{grid-template-columns:1fr 220px;}}
 @media(max-width:1000px){.dash-main-grid{grid-template-columns:1fr;}}
+.kpi-strip-4{}
+@media(max-width:1100px){.kpi-strip-4{grid-template-columns:1fr 1fr!important;}}
+@media(max-width:600px){.kpi-strip-4{grid-template-columns:1fr!important;}}
 @media(max-width:1100px){.kpi-grid-4{grid-template-columns:1fr 1fr!important;}}
 @media(max-width:600px){.kpi-grid-4{grid-template-columns:1fr!important;}}
 
@@ -739,7 +742,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
       <div class="dash-main-grid">
 
         <!-- LEFT COL -->
-        <div>
+        <div style="min-width:0;">
 
           <!-- QUICK ACTIONS -->
           <div class="quick-actions" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">
@@ -886,7 +889,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
         </div><!-- /left col -->
 
         <!-- RIGHT COL -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0;">
 
 
           <!-- REVIZII ACTIVE -->
