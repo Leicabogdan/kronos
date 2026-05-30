@@ -797,61 +797,54 @@ function statusChip(s) {
   return '<span class="chip ' + cls + '"><span class="dot"></span>' + esc(s||'Apt') + '</span>';
 }
 
-function renderKpiEqPiese(elId, rows) {
+function renderKpiRows(elId, rows, fn) {
   var el = document.getElementById(elId);
   if (!el) return;
   if (!rows.length) { el.innerHTML = '<span class="kpi-empty">Nicio inregistrare</span>'; return; }
-  el.innerHTML = rows.map(function(r) {
-    var eq = esc(r[11] || '—');
-    var piese = esc(String(r[8]||'—').substring(0, 20));
-    return '<div class="eq-pill" style="margin-bottom:3px;">'
-      + '<span class="peq" style="color:var(--amber);">' + eq + '</span>'
-      + '<span class="pmot">' + piese + '</span>'
-      + '</div>';
-  }).join('');
-}
-
-function renderKpiEq(elId, rows) {
-  var el = document.getElementById(elId);
-  if (!el) return;
-  if (!rows.length) { el.innerHTML = '<span class="kpi-empty">Nicio inregistrare</span>'; return; }
-  var color = el.closest('.kpi-card').classList.contains('c-teal') ? 'var(--teal)' :
-              el.closest('.kpi-card').classList.contains('c-amber') ? 'var(--amber)' : 'var(--red)';
-  el.innerHTML = rows.map(function(r) {
-    var eq = esc(r[10] || '—');
-    var mot = esc(String(r[0]||'').substring(0, 16));
-    return '<div class="eq-pill" style="margin-bottom:3px;">'
-      + '<span class="peq" style="color:' + color + ';">' + eq + '</span>'
-      + '<span class="pmot">' + mot + '</span>'
-      + '</div>';
-  }).join('');
+  el.innerHTML = rows.map(fn).join('');
 }
 
 function updateKPI() {
   var thisMonth = allData.filter(function(r) { return isThisMonth(r[1]); });
-  // Total: exclude avarie, necesita interventie, necesita piese
-  var totalOk = thisMonth.filter(function(r) {
-    var s = String(r[6]||'').toLowerCase();
-    var m = String(r[0]||'').toLowerCase();
-    return s.indexOf('avarie') < 0 && s.indexOf('necesita interv') < 0 && s.indexOf('necesita piese') < 0 && m.indexOf('avarie') < 0;
-  });
-  document.getElementById('k-total').textContent = totalOk.length;
-  renderKpiEq('kpi-total-eq', totalOk.slice(-3).reverse());
 
+  // Total = toate interventiile lunii curente
+  document.getElementById('k-total').textContent = thisMonth.length;
+  renderKpiRows('kpi-total-eq', thisMonth.slice(-5).reverse(), function(r) {
+    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(String(r[0]||'').substring(0,22)) + '</span>'
+      + '</div>';
+  });
+
+  // Sub supraveghere = Sub supraveghere + Necesita piese
   var suprav = thisMonth.filter(function(r) {
     var s = String(r[6]||'').toLowerCase();
-    return s.indexOf('supraveg') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('necesita piese') > -1;
+    return s.indexOf('supraveg') > -1 || s.indexOf('necesita piese') > -1;
   });
   document.getElementById('k-suprav').textContent = suprav.length;
-  renderKpiEqPiese('kpi-suprav-eq', suprav.slice(-3).reverse());
+  renderKpiRows('kpi-suprav-eq', suprav.slice(-5).reverse(), function(r) {
+    var piese = String(r[7]||'').trim();
+    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(piese ? piese.substring(0,22) : String(r[6]||'').substring(0,22)) + '</span>'
+      + '</div>';
+  });
 
+  // Avarii = motiv Avarie SAU status Necesita interventie
   var avarii = thisMonth.filter(function(r) {
     var m = String(r[0]||'').toLowerCase();
     var s = String(r[6]||'').toLowerCase();
-    return m.indexOf('avarie') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('avarie') > -1;
+    return m.indexOf('avarie') > -1 || s.indexOf('necesita interv') > -1;
   });
   document.getElementById('k-avarii').textContent = avarii.length;
-  renderKpiEq('kpi-avarii-eq', avarii.slice(-3).reverse());
+  renderKpiRows('kpi-avarii-eq', avarii.slice(-5).reverse(), function(r) {
+    var s = String(r[6]||'').toLowerCase();
+    var label = s.indexOf('necesita interv') > -1 ? 'Necesita interventie' : esc(String(r[0]||'').substring(0,22));
+    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--red);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + label + '</span>'
+      + '</div>';
+  });
 }
 
 function parseCSV(text) {
