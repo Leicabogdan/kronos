@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KRONOS — Activitati Siloz</title>
+<script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
+  --border:#1a1d28;--border2:#252836;
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
+.app{display:flex;height:100svh;overflow:hidden;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+
+.topbar{
+  height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;padding:0 clamp(16px,2.5vw,28px);
+  gap:12px;flex-shrink:0;
+}
+.topbar-title{font-family:var(--title);font-size:clamp(14px,2vw,17px);font-weight:900;color:#fff;letter-spacing:.12em;}
+.topbar-sub{font-family:var(--sans);font-size:clamp(11px,1.5vw,13px);color:#fff;font-weight:700;margin-top:2px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-time{font-family:var(--title);font-size:clamp(16px,2.5vw,22px);font-weight:900;color:var(--teal);letter-spacing:.12em;line-height:1;}
+.topbar-date{font-family:var(--mono);font-size:clamp(9px,1.4vw,11px);color:#fff;font-weight:600;letter-spacing:.08em;}
+.notif-btn{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .18s;position:relative;
+}
+.notif-btn:hover{border-color:rgba(0,220,180,.4);}
+.notif-dot{
+  position:absolute;top:6px;right:6px;width:7px;height:7px;
+  border-radius:50%;background:var(--red);
+  box-shadow:0 0 8px var(--red);
+}
+.content{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(14px,2.5vw,28px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+@media(max-width:900px){
+  [style*="grid-template-columns:1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important;}
+  [style*="grid-template-columns:1fr 300px"]{grid-template-columns:1fr!important;}
+}
+@media(max-width:700px){
+  [style*="grid-template-columns:1fr 1fr 1fr 1fr"]{grid-template-columns:1fr!important;}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+  .content{padding:10px!important;}
+}
+
+/* ── TOPBAR ── */
+.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+/* ── PAGE ── */
+.page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:1800px;margin:0 auto;}
+
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:900px){.kpi-strip{grid-template-columns:1fr 1fr;}}
+.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
+  position:relative;overflow:hidden;display:flex;align-items:stretch;gap:16px;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.c-purple::before{background:var(--purple);}
+.kpi-card.c-amber::before{background:var(--amber);}
+.kpi-card.c-green::before{background:var(--green);}
+.kpi-card.c-red::before{background:var(--red);}
+.kpi-left{display:flex;flex-direction:column;justify-content:center;min-width:70px;}
+.kpi-val{font-family:var(--title);font-size:clamp(28px,3.5vw,42px);font-weight:900;line-height:1;}
+.kpi-card.c-purple .kpi-val{color:var(--purple);}
+.kpi-card.c-amber .kpi-val{color:var(--amber);}
+.kpi-card.c-green .kpi-val{color:var(--green);}
+.kpi-card.c-red .kpi-val{color:var(--red);}
+.kpi-lbl{font-family:var(--title);font-size:clamp(8px,.9vw,10px);font-weight:900;opacity:.55;line-height:1.3;margin-top:4px;white-space:nowrap;}
+.kpi-card.c-purple .kpi-lbl{color:var(--purple);}
+.kpi-card.c-amber .kpi-lbl{color:var(--amber);}
+.kpi-card.c-green .kpi-lbl{color:var(--green);}
+.kpi-card.c-red .kpi-lbl{color:var(--red);}
+.kpi-div{width:1px;background:var(--border2);flex-shrink:0;}
+.kpi-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;}
+.kpi-rtitle{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px;}
+.kpi-card.c-purple .kpi-rtitle{color:var(--purple);}
+.kpi-card.c-amber .kpi-rtitle{color:var(--amber);}
+.kpi-card.c-green .kpi-rtitle{color:var(--green);}
+.kpi-card.c-red .kpi-rtitle{color:var(--red);}
+.kpi-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;
+  font-family:var(--sans);font-size:12px;font-weight:700;
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);}
+
+/* ── FORM ── */
+.add-form-wrap{background:var(--bg3);border:1.5px solid rgba(155,109,255,.22);border-radius:12px;padding:18px 20px;margin-bottom:20px;}
+.add-form-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px 14px;}
+.form-field{display:flex;flex-direction:column;gap:4px;}
+.form-lbl{font-family:var(--mono);font-size:12px;color:var(--purple);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
+.form-input,.form-select,.form-textarea{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:14px;padding:8px 11px;outline:none;transition:border-color .2s;width:100%;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--purple);}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.28);}
+.form-select{appearance:none;-webkit-appearance:none;cursor:pointer;}
+.form-select-wrap{position:relative;display:block;}
+.form-select-wrap::after{content:'\25BC';position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--purple);font-size:9px;pointer-events:none;}
+.form-select-wrap .form-select{padding-right:32px;}
+.form-select option{background:var(--bg3);}
+.form-textarea{resize:vertical;min-height:72px;line-height:1.5;}
+.form-wide{grid-column:1/-1;}
+.form-actions{display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap;}
+.btn-submit{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:8px;background:var(--purple);color:#fff;font-family:var(--title);font-size:12px;font-weight:900;letter-spacing:.1em;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase;}
+.btn-submit:hover{background:#b07dff;box-shadow:0 0 16px rgba(155,109,255,.4);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+.btn-reset{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;background:transparent;border:1.5px solid var(--border2);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;}
+.btn-reset:hover{border-color:rgba(224,80,80,.4);color:var(--red);}
+.form-msg{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 14px;border-radius:6px;}
+.form-msg.ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.3);}
+.form-msg.err{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.3);}
+.form-msg.loading{background:rgba(155,109,255,.08);color:var(--purple);border:1px solid rgba(155,109,255,.2);}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.select-wrap{position:relative;}
+.select-wrap select{appearance:none;-webkit-appearance:none;padding:8px 32px 8px 13px;border-radius:7px;background:var(--bg3);border:1.5px solid rgba(155,109,255,.22);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;outline:none;transition:border-color .2s;min-width:130px;}
+.select-wrap select:hover,.select-wrap select:focus{border-color:var(--purple);}
+.select-wrap::after{content:'▼';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--purple);font-size:9px;pointer-events:none;}
+.select-wrap select option{background:var(--bg3);}
+.toolbar-sep{width:1px;height:28px;background:var(--border2);flex-shrink:0;}
+.tb-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:7px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;border:1.5px solid;white-space:nowrap;}
+.tb-btn.purple{background:rgba(155,109,255,.08);border-color:rgba(155,109,255,.28);color:var(--purple);}
+.tb-btn.purple:hover{background:rgba(155,109,255,.18);border-color:var(--purple);}
+.tb-btn.green{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.28);color:var(--green);}
+.tb-btn.green:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
+.toolbar-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.sel-count{font-family:var(--mono);font-size:12px;color:var(--purple);font-weight:700;white-space:nowrap;}
+
+/* ── TABLE ── */
+.table-wrap{border:1.5px solid rgba(155,109,255,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:900px;font-family:var(--sans);}
+/* Screen col widths: check=3%, nr=3%, sarcina=35%, stare=12%, resp=14%, stadiu=9%, termen=11%, eval=8%, actiuni=5% */
+thead tr.hdr-row th:nth-child(1){width:3%;}
+thead tr.hdr-row th:nth-child(2){width:3%;}
+thead tr.hdr-row th:nth-child(3){width:37%;}
+thead tr.hdr-row th:nth-child(4){width:12%;}
+thead tr.hdr-row th:nth-child(5){width:14%;}
+thead tr.hdr-row th:nth-child(6){width:9%;}
+thead tr.hdr-row th:nth-child(7){width:9%;}
+thead tr.hdr-row th:nth-child(8){width:7%;}
+thead tr.hdr-row th:nth-child(9){width:5%;}
+/* Sarcina wraps */
+tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;}
+thead tr.hdr-row th{font-family:var(--sans);font-size:13px;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:11px 13px;text-align:center;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:2px solid rgba(155,109,255,.35);border-right:1px solid rgba(255,255,255,.06);background:#0e0818;}
+thead tr.hdr-row th:hover{color:var(--purple);background:rgba(155,109,255,.06);}
+thead tr.hdr-row th.sort-asc::after{content:' \2191';color:var(--purple);}
+thead tr.hdr-row th.sort-desc::after{content:' \2193';color:var(--purple);}
+thead tr.hdr-row th.th-check{cursor:default;width:40px;}
+thead tr.hdr-row th:last-child{border-right:none;}
+tbody tr{transition:background .1s;}
+tbody tr:nth-child(odd){background:var(--bg3);}
+tbody tr:nth-child(even){background:var(--bg4);}
+tbody tr:hover{background:rgba(155,109,255,.04)!important;}
+tbody tr.row-selected{background:rgba(155,109,255,.08)!important;}
+td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:14px;text-align:center;}
+td:last-child{border-right:none;}
+td.td-check{text-align:center;padding:10px 8px;width:40px;}
+.row-cb{width:17px;height:17px;accent-color:var(--purple);cursor:pointer;}
+.td-nr{font-family:var(--mono);color:var(--purple);font-weight:700;font-size:13px;}
+.td-sarcina{color:#fff;font-weight:600;font-size:14px;text-align:left;white-space:normal;word-break:break-word;}
+.td-responsabil{color:#fff;font-size:14px;font-weight:600;text-align:left;}
+.td-termen{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--amber);}
+.td-termen.overdue{color:var(--red);}
+.td-termen.ok{color:var(--green);}
+
+/* ── STATUS CHIPS ── */
+.chip-stare{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;font-weight:700;white-space:nowrap;}
+.chip-stare .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.chip-neinceput{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.2);}
+.chip-incurs{background:rgba(80,144,224,.15);color:var(--blue);border:1.5px solid rgba(80,144,224,.4);}
+.chip-finalizat{background:rgba(74,175,112,.15);color:var(--green);border:1.5px solid rgba(74,175,112,.4);}
+.chip-anulat{background:rgba(224,80,80,.12);color:var(--red);border:1.5px solid rgba(224,80,80,.35);}
+
+/* ── STADIU BAR ── */
+.stadiu-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;width:100%;}
+.stadiu-bar-bg{width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.stadiu-bar-fill{height:100%;border-radius:3px;transition:width .3s;}
+.stadiu-pct{font-family:var(--sans);font-size:12px;font-weight:700;}
+
+/* ── STAR RATING ── */
+.stars{display:inline-flex;gap:2px;font-size:16px;line-height:1;padding:0 4px;}
+.star-filled{color:var(--amber);}
+.star-empty{color:rgba(255,255,255,.18);}
+
+/* ── DESC BUBBLE (hover) ── */
+.td-sarcina-cell{position:relative;}
+
+/* ── EDIT MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--bg3);border:1px solid rgba(155,109,255,.35);border-radius:14px;max-width:560px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.7);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--purple);letter-spacing:.1em;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
+.modal-close:hover{color:#fff;}
+
+/* ── TRADEMARK ── */
+.trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:16px;}
+.tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
+.tm-name .lc{color:var(--purple);}.tm-name .bg{color:#fff;}
+.tm-email{font-family:var(--mono);font-size:10px;color:var(--purple);letter-spacing:2px;font-weight:600;margin-top:4px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  a{color:inherit!important;text-decoration:none!important;}
+  a[href]::after{content:none!important;display:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
+  .page{padding:0 10mm!important;max-width:100%!important;margin:0!important;}
+
+  /* Print header */
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:8px 8px 8px 6px;border-bottom:2px solid #3a1a6e;margin-bottom:12px;
+    background:#fff!important;}
+  .print-header-left{display:flex;align-items:center;gap:12px;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
+    font-weight:900;letter-spacing:.15em;color:#3a1a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
+    color:#3a1a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+
+  /* Table */
+  .table-wrap{border:1.5px solid #3a1a6e!important;border-radius:0!important;overflow:visible!important;}
+  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  thead tr.hdr-row th{
+    background:#3a1a6e!important;color:#fff!important;
+    font-size:9px!important;padding:7px 8px!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;
+    font-weight:700!important;letter-spacing:.04em!important;
+    text-align:center!important;border-right:1px solid #4a2a9e!important;
+    white-space:normal!important;
+  }
+  tbody tr{background:#fff!important;}
+  tbody tr:nth-child(even){background:#f5f0ff!important;}
+  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
+    border-bottom:1px solid #d8d0e8!important;border-right:1px solid #d8d0e8!important;
+    vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+
+  /* Hide: checkbox(1), Nr(2) narrow, Actiuni(9) */
+  thead tr.hdr-row th:nth-child(1),
+  tbody td:nth-child(1){display:none!important;}
+  thead tr.hdr-row th:nth-child(9),
+  tbody td:nth-child(9){display:none!important;}
+
+  /* Column widths: Nr(2)=3%, Sarcina(3)=42%, Stare(4)=12%, Responsabil(5)=14%, Stadiu(6)=8%, Termen(7)=10%, Evaluare(8)=7% */
+  thead tr.hdr-row th:nth-child(2){width:3%!important;}
+  thead tr.hdr-row th:nth-child(3){width:42%!important;text-align:left!important;}
+  thead tr.hdr-row th:nth-child(4){width:12%!important;}
+  thead tr.hdr-row th:nth-child(5){width:14%!important;}
+  thead tr.hdr-row th:nth-child(6){width:8%!important;}
+  thead tr.hdr-row th:nth-child(7){width:10%!important;}
+  thead tr.hdr-row th:nth-child(8){width:7%!important;}
+
+  /* Sarcina col: left aligned, full text wrapping */
+  tbody td:nth-child(3){text-align:left!important;padding-left:8px!important;white-space:normal!important;word-break:break-word!important;line-height:1.4!important;}
+  /* Nr col narrow */
+  tbody td:nth-child(2){text-align:center!important;font-size:8px!important;}
+
+  /* Chips and stars: print-friendly */
+  .chip-stare{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
+  .stadiu-wrap{gap:2px!important;min-width:0!important;width:100%!important;max-width:60px!important;margin:0 auto!important;}
+  .stadiu-bar-bg{background:#ddd!important;height:5px!important;width:100%!important;max-width:60px!important;}
+  .stadiu-bar-fill{print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important;}
+  .stadiu-pct{font-size:8px!important;color:#000!important;}
+  .star-filled{color:#c8860a!important;}
+  .star-empty{color:#ccc!important;}
+  .stars{font-size:12px!important;}
+  .td-termen{color:#000!important;}
+
+  /* Print footer */
+  .print-footer{display:block!important;position:fixed;bottom:6mm;left:10mm;right:10mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;padding-top:3px;
+    display:flex;justify-content:space-between;align-items:center;}
+
+  @page{size:A4 landscape;margin:0mm;}
+}
+.print-header{display:none;}
+.print-footer{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<script src="sidebar.js" data-active="ACTIVITATI_SILOZ"></script>
+
+<div class="main">
+  <div class="topbar">
+      <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <div class="topbar-title">ACTIVITATI SILOZ</div>
+        <div class="topbar-sub">Terminal Cereale Socep &middot; Port Constanta</div>
+      </div>
+      <div class="topbar-right">
+        <div>
+          <div class="topbar-date" id="top-date"></div>
+          <div class="topbar-time" id="top-time"></div>
+        </div>
+      </div>
+    </div>
+
+  <div class="content">
+  <div class="page">
+
+  <!-- PRINT FOOTER -->
+  <div class="print-footer" id="print-footer">
+    <span id="print-date-text"></span>
+    <span>KRONOS &trade; &middot; Terminal Cereale SOCEP &middot; Port Constanta</span>
+  </div>
+
+  <!-- PRINT HEADER -->
+  <div class="print-header" id="print-header">
+    <div class="print-header-left">
+      <div>
+        <div class="print-kronos-title">KR<span style="color:#9b6dff;">O</span>NOS</div>
+        <div class="print-kronos-sub">Maintenance System</div>
+      </div>
+      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
+      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#3a1a6e;font-weight:600;">
+        Registru Activitati Siloz<br>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP &middot; Port Constanta</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;">
+      <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#3a1a6e;display:block;">SOCEP</span>
+      <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#7050d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
+    </div>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-card c-purple" style="flex-direction:column;align-items:center;text-align:center;gap:6px;">
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--purple);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Total activitati</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--purple);line-height:1;" id="k-total">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.06em;text-transform:uppercase;">activitati nefinalizate</div>
+    </div>
+    <div class="kpi-card" style="flex-direction:column;align-items:center;text-align:center;gap:6px;border-color:rgba(80,144,224,.18);background:rgba(80,144,224,.03);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--blue);border-radius:10px 10px 0 0;"></div>
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--blue);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">In desfasurare</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--blue);line-height:1;" id="k-incurs">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;">in curs de desfasurare</div>
+    </div>
+    <div class="kpi-card c-green" style="flex-direction:column;align-items:center;text-align:center;gap:6px;">
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:var(--green);letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Finalizate</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:var(--green);line-height:1;" id="k-finalizat">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--green);letter-spacing:.06em;text-transform:uppercase;">finalizate</div>
+    </div>
+    <div class="kpi-card" style="flex-direction:column;align-items:center;text-align:center;gap:6px;border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.02);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.35);border-radius:10px 10px 0 0;"></div>
+      <div style="font-family:var(--title);font-size:9px;font-weight:900;color:#fff;letter-spacing:.18em;text-transform:uppercase;opacity:.7;">Neincepute</div>
+      <div style="font-family:var(--title);font-size:clamp(38px,4.5vw,54px);font-weight:900;color:#fff;line-height:1;" id="k-neinceput">0</div>
+      <div style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;">sarcini neincepute</div>
+    </div>
+  </div>
+
+  <!-- FORM ADAUGARE -->
+  <div class="add-form-wrap">
+    <div class="add-form-title">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="7.5" stroke="var(--purple)" stroke-width="1.4"/><path d="M8.5 5v7M5 8.5h7" stroke="var(--purple)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Adauga activitate noua
+    </div>
+    <div class="form-grid">
+      <div class="form-field form-wide">
+        <label class="form-lbl">Sarcina *</label>
+        <textarea class="form-textarea" id="f-sarcina" placeholder="Descrie sarcina sau activitatea de realizat..." style="min-height:56px;"></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Responsabil *</label>
+        <input class="form-input" type="text" id="f-responsabil" placeholder="ex: Leica Bogdan"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Termen limita</label>
+        <input class="form-input" type="text" id="f-termen-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-termen')" autocomplete="off" style="letter-spacing:.05em;"/>
+        <input type="hidden" id="f-termen"/>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-submit" id="btn-submit" onclick="submitRow()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Inregistreaza
+      </button>
+      <button class="btn-reset" onclick="resetForm()">Reseteaza</button>
+      <span id="form-msg" class="form-msg" style="display:none;"></span>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="select-wrap">
+      <select id="sel-stare" onchange="applyFilters()">
+        <option value="">Toate starile</option>
+        <option value="Neinceput">Neinceput</option>
+        <option value="In curs">In curs de desfasurare</option>
+        <option value="Finalizat">Finalizat</option>
+        <option value="Anulat">Anulat</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-stadiu" onchange="applyFilters()">
+        <option value="">Toate stadiile</option>
+        <option value="5%">5%</option>
+        <option value="25%">25%</option>
+        <option value="50%">50%</option>
+        <option value="75%">75%</option>
+        <option value="Finalizat">Finalizat</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-evaluare" onchange="applyFilters()">
+        <option value="">Toate evaluarile</option>
+        <option value="5">★★★★★ 5 stele</option>
+        <option value="4">★★★★☆ 4 stele</option>
+        <option value="3">★★★☆☆ 3 stele</option>
+        <option value="2">★★☆☆☆ 2 stele</option>
+        <option value="1">★☆☆☆☆ 1 stea</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-luna" onchange="applyFilters()">
+        <option value="">Toate lunile</option>
+        <option value="01">Ianuarie</option><option value="02">Februarie</option><option value="03">Martie</option>
+        <option value="04">Aprilie</option><option value="05">Mai</option><option value="06">Iunie</option>
+        <option value="07">Iulie</option><option value="08">August</option><option value="09">Septembrie</option>
+        <option value="10">Octombrie</option><option value="11">Noiembrie</option><option value="12">Decembrie</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-an" onchange="applyFilters()">
+        <option value="">Toti anii</option>
+        <option value="2024">2024</option><option value="2025">2025</option>
+        <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
+      </select>
+    </div>
+    <div class="toolbar-sep"></div>
+    <button class="tb-btn purple" onclick="loadData()">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7A5 5 0 0 1 12 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 7a5 5 0 0 1-10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 3L12 5l-2 .5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Refresh
+    </button>
+    <div class="toolbar-right">
+      <span class="sel-count" id="sel-count" style="display:none;"></span>
+      <button class="tb-btn green" onclick="exportExcel()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Exporta Excel
+      </button>
+      <button class="tb-btn green" onclick="exportPDF()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Exporta PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr class="hdr-row">
+          <th class="th-check"><input type="checkbox" class="row-cb" id="cb-all" onchange="toggleAll(this)"/></th>
+          <th onclick="sortBy(0)">Nr.</th>
+          <th onclick="sortBy(1)" style="text-align:left;padding-left:16px;">Sarcina</th>
+          <th onclick="sortBy(2)">Stare</th>
+          <th onclick="sortBy(3)">Responsabil</th>
+          <th onclick="sortBy(4)">Stadiu</th>
+          <th onclick="sortBy(5)">Termen limita</th>
+          <th onclick="sortBy(6)">Evaluare</th>
+          <th style="cursor:default;width:80px;">Actiuni</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="9" class="no-data" style="color:var(--purple);text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.1em;">&#9655; Se incarca datele...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="trademark">
+    <div class="tm-name"><span class="lc">LEICA</span> <span class="bg">BOGDAN</span></div>
+    <div class="tm-email">leicabogdan@gmail.com</div>
+    <div class="tm-copy">&#169; 2026 KRONOS&#8482; &#183; ALL RIGHTS RESERVED</div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal-box">
+    <div class="modal-title">
+      EDITEAZA ACTIVITATE
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-field form-wide">
+        <label class="form-lbl">Sarcina *</label>
+        <textarea class="form-textarea" id="e-sarcina" style="min-height:56px;"></textarea>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Stare *</label>
+        <div class="form-select-wrap">
+          <select class="form-select" id="e-stare">
+            <option value="Neinceput">⬜ Neinceput</option>
+            <option value="In curs de desfasurare">🔵 In curs de desfasurare</option>
+            <option value="Finalizat">✅ Finalizat</option>
+            <option value="Anulat">🔴 Anulat</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Responsabil *</label>
+        <input class="form-input" type="text" id="e-responsabil"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Stadiu</label>
+        <div class="form-select-wrap">
+          <select class="form-select" id="e-stadiu">
+            <option value="">—</option>
+            <option value="5%">▪ 5%</option>
+            <option value="25%">▪ 25%</option>
+            <option value="50%">▪ 50%</option>
+            <option value="75%">▪ 75%</option>
+            <option value="Finalizat">✔ Finalizat</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Termen limita</label>
+        <input class="form-input" type="text" id="e-termen-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'e-termen')" style="letter-spacing:.05em;"/>
+        <input type="hidden" id="e-termen"/>
+      </div>
+      <div class="form-field">
+        <label class="form-lbl">Evaluare</label>
+        <div class="form-select-wrap">
+          <select class="form-select" id="e-evaluare">
+            <option value="">Fara evaluare</option>
+            <option value="1">★☆☆☆☆ — 1 stea</option>
+            <option value="2">★★☆☆☆ — 2 stele</option>
+            <option value="3">★★★☆☆ — 3 stele</option>
+            <option value="4">★★★★☆ — 4 stele</option>
+            <option value="5">★★★★★ — 5 stele</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="e-row-id"/>
+    <div class="form-actions" style="margin-top:18px;">
+      <button class="btn-submit" onclick="saveEdit()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Salveaza
+      </button>
+      <button class="btn-reset" onclick="closeEditModal()">Anuleaza</button>
+      <span id="edit-msg" class="form-msg" style="display:none;"></span>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL DESC BUBBLE -->
+<div id="global-desc-bubble"></div>
+
+<script>
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzURO0xVC8fksuVVLRDoC9GS-YFdlmPQF9NcMAyuTN7S1oR67ANmMaPJ89iNFjstj2z_TKbtFMyeEF/pub?output=csv';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMOl17EAV9rvNBxs5FJCiXGDUZv432f9UA8qcL_2aTU1TADz6zSIpDfRqp4fMS28bE/exec';
+
+var allData = [];
+var filteredData = [];
+var selectedRows = new Set();
+var sortCol = -1, sortDir = 1;
+
+/* ── GEAR ── */
+
+
+/* ── CLOCK ── */
+function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];var te=document.getElementById('top-time');var de=document.getElementById('top-date');if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+updateClock();setInterval(updateClock,1000);
+
+/* ── USER ── */
+
+
+/* ── HELPERS ── */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function getDateParts(str){str=String(str||'').trim();if(!str)return null;if(str.indexOf('/')>-1||str.indexOf('.')>-1){var sep=str.indexOf('/')>-1?'/':'.';var p=str.split(sep);if(p.length>=3)return{y:p[2].substring(0,4),m:String(p[1]).padStart(2,'0'),d:String(p[0]).padStart(2,'0')};}if(str.indexOf('-')>-1){var p=str.split('-');if(p.length>=3)return{y:p[0],m:String(p[1]).padStart(2,'0'),d:String(p[2]).substring(0,2).padStart(2,'0')};}return null;}
+
+function dateToSortKey(str){str=String(str||'').trim();if(!str)return '';var d=getDateParts(str);if(d&&d.y&&d.y.length===4&&!isNaN(parseInt(d.y,10)))return d.y+d.m+(d.d||'01');return str;}
+
+function fmtDate(s){s=String(s||'').trim();if(!s)return '—';if(s.indexOf('-')>-1){var p=s.split('-');if(p.length>=3)return p[2].substring(0,2)+'/'+p[1]+'/'+p[0];}return esc(s);}
+
+function termenClass(dateStr){if(!dateStr||dateStr==='—')return '';var d=getDateParts(dateStr);if(!d)return '';var dt=new Date(d.y,parseInt(d.m)-1,parseInt(d.d));var now=new Date();now.setHours(0,0,0,0);if(dt<now)return 'overdue';if((dt-now)<7*24*3600*1000)return 'soon';return 'ok';}
+
+/* ── STARE CHIP ── */
+function stareChip(s){
+  var sl=String(s||'').toLowerCase();
+  var cls='chip-neinceput', label=s||'Neinceput';
+  if(sl.indexOf('curs')>-1){cls='chip-incurs';}
+  else if(sl.indexOf('finaliz')>-1){cls='chip-finalizat';}
+  else if(sl.indexOf('anulat')>-1){cls='chip-anulat';}
+  return '<span class="chip-stare '+cls+'"><span class="dot"></span>'+esc(label)+'</span>';
+}
+
+/* ── STADIU BAR ── */
+function stadiuBar(s){
+  var pctMap={'5%':5,'25%':25,'50%':50,'75%':75,'Finalizat':100,'finalizat':100};
+  var pct=pctMap[s]||0;
+  var colorMap={5:'var(--red)',25:'var(--amber)',50:'var(--amber)',75:'var(--blue)',100:'var(--green)'};
+  var col=colorMap[pct]||'var(--border2)';
+  if(!s)return '<span style="color:rgba(255,255,255,.3);font-size:12px;">—</span>';
+  return '<div class="stadiu-wrap">'
+    +'<div class="stadiu-bar-bg"><div class="stadiu-bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div>'
+    +'<div class="stadiu-pct" style="color:'+col+';">'+esc(s)+'</div>'
+    +'</div>';
+}
+
+/* ── STARS ── */
+function starsHTML(val){
+  var n=parseInt(val)||0;
+  if(!n)return '<span style="color:rgba(255,255,255,.25);font-size:13px;">—</span>';
+  var h='<span class="stars">';
+  for(var i=1;i<=5;i++)h+='<span class="'+(i<=n?'star-filled':'star-empty')+'">★</span>';
+  return h+'</span>';
+}
+
+/* ── KPI UPDATE ── */
+function updateKPI(){
+  var fin=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('finaliz')>-1;});
+  var anulat=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('anulat')>-1;});
+  var nefinalizate=allData.filter(function(r){
+    var s=String(r[1]||'').toLowerCase();
+    return s.indexOf('finaliz')<0 && s.indexOf('anulat')<0;
+  });
+  var incurs=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('curs')>-1;});
+  var neinceput=allData.filter(function(r){return String(r[1]||'').toLowerCase().indexOf('neinceput')>-1||String(r[1]||'').trim()===''});
+  document.getElementById('k-total').textContent=nefinalizate.length;
+  document.getElementById('k-incurs').textContent=incurs.length;
+  document.getElementById('k-finalizat').textContent=fin.length;
+  document.getElementById('k-neinceput').textContent=neinceput.length;
+}
+
+/* ── RENDER TABLE ──
+   Sheet cols: 0=Sarcini, 1=Stare, 2=Responsabil, 3=Stadiu, 4=Termen limita, 5=Evaluare
+*/
+function renderTable(){
+  var tbody=document.getElementById('tbody');
+  var rows=filteredData.slice();
+  if(sortCol>=0){
+    var sc=sortCol;
+    // stadiu order map: 5%=5, 25%=25, 50%=50, 75%=75, Finalizat=100, empty=0
+    var stadiuOrder={'':0,'5%':5,'25%':25,'50%':50,'75%':75,'finalizat':100,'Finalizat':100};
+    // stare order: Neinceput=0, In curs=1, Finalizat=2, Anulat=3
+    var stareOrder=function(s){s=String(s||'').toLowerCase();if(s.indexOf('curs')>-1)return 1;if(s.indexOf('finaliz')>-1)return 2;if(s.indexOf('anulat')>-1)return 3;return 0;};
+    rows.sort(function(a,b){
+      var va,vb;
+      if(sc===0){va=0;vb=0;return 0;} // Nr: no-op, preserves current order
+      else if(sc===1){va=0;vb=0;return 0;} // Sarcina: no sort (text, too arbitrary)
+      else if(sc===2){va=stareOrder(a[1]);vb=stareOrder(b[1]);}  // Stare col=2 maps to data[1]
+      else if(sc===3){va=String(a[2]||'').toLowerCase();vb=String(b[2]||'').toLowerCase();} // Responsabil=data[2]
+      else if(sc===4){va=stadiuOrder[a[3]]||stadiuOrder[String(a[3]||'').toLowerCase()]||0;vb=stadiuOrder[b[3]]||stadiuOrder[String(b[3]||'').toLowerCase()]||0;} // Stadiu=data[3]
+      else if(sc===5){va=dateToSortKey(a[4]||'');vb=dateToSortKey(b[4]||'');} // Termen=data[4]
+      else if(sc===6){va=parseInt(a[5])||0;vb=parseInt(b[5])||0;} // Evaluare=data[5]
+      else{va=String(a[sc]||'');vb=String(b[sc]||'');}
+      if(va<vb)return -sortDir;if(va>vb)return sortDir;return 0;
+    });
+  }
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;color:rgba(255,255,255,.35);">Nicio activitate gasita.</td></tr>';updateSelCount();return;}
+  var html='';
+  rows.forEach(function(row,i){
+    var uid=String(row[0]||'')+String(row[2]||'')+i;
+    var sel=selectedRows.has(uid);
+    var tc=termenClass(row[4]);
+    var tcol=tc==='overdue'?'var(--red)':tc==='soon'?'var(--amber)':'var(--green)';
+    html+='<tr class="'+(sel?'row-selected':'')+'" data-uid="'+esc(uid)+'">'
+      +'<td class="td-check"><input type="checkbox" class="row-cb"'+(sel?' checked':'')+' onchange="toggleRow(this)"/></td>'
+      +'<td class="td-nr">'+(i+1)+'</td>'
+      +'<td class="td-sarcina" style="text-align:left;padding-left:16px;" data-desc="'+esc(row[0]||'')+'">'+esc((row[0]||'').substring(0,60))+((row[0]||'').length>60?'…':'')+'</td>'
+      +'<td>'+stareChip(row[1])+'</td>'
+      +'<td class="td-responsabil">'+esc(row[2]||'')+'</td>'
+      +'<td>'+stadiuBar(row[3])+'</td>'
+      +'<td class="td-termen'+(tc?' '+tc:'')+'" style="color:'+(row[4]?tcol:'rgba(255,255,255,.3)')+';">'+(row[4]?fmtDate(row[4]):'—')+'</td>'
+      +'<td>'+starsHTML(row[5])+'</td>'
+      +'<td style="text-align:center;padding:8px;">'
+      +'<button onclick="openEdit('+i+')" style="background:rgba(74,175,112,.12);border:1px solid rgba(74,175,112,.3);color:var(--green);border-radius:5px;padding:5px 10px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;" title="Editeaza">'
+      +'<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8.5 1.5l2 2L4 10H2v-2L8.5 1.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>'
+      +' Edit</button>'
+      +'</td>'
+      +'</tr>';
+  });
+  tbody.innerHTML=html;
+  updateSelCount();
+}
+
+/* ── FILTERS ── */
+function applyFilters(){
+  var stare=document.getElementById('sel-stare').value;
+  var stadiu=document.getElementById('sel-stadiu').value;
+  var evaluare=document.getElementById('sel-evaluare').value;
+  var luna=document.getElementById('sel-luna')?document.getElementById('sel-luna').value:'';
+  var an=document.getElementById('sel-an')?document.getElementById('sel-an').value:'';
+  filteredData=allData.filter(function(row){
+    if(stare&&String(row[1]||'').toLowerCase().indexOf(stare.toLowerCase())<0)return false;
+    if(stadiu&&String(row[3]||'')!==stadiu)return false;
+    if(evaluare&&String(row[5]||'')!==evaluare)return false;
+    if(luna||an){
+      var d=getDateParts(row[4]);
+      if(luna&&(!d||d.m!==luna))return false;
+      if(an&&(!d||d.y!==an))return false;
+    }
+    return true;
+  });
+  sortCol=-1;sortDir=1;
+  document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
+  selectedRows.clear();
+  renderTable();
+}
+
+function sortBy(col){
+  document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
+  if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
+  var ths=document.querySelectorAll('thead .hdr-row th');
+  var thIdx={0:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8};
+  var ti=thIdx[col];
+  if(ti!==undefined&&ths[ti])ths[ti].classList.add(sortDir===1?'sort-asc':'sort-desc');
+  renderTable();
+}
+
+function toggleRow(cb){var tr=cb.closest('tr');var uid=tr?tr.dataset.uid:'';if(cb.checked)selectedRows.add(uid);else selectedRows.delete(uid);if(tr)tr.classList.toggle('row-selected',cb.checked);document.getElementById('cb-all').checked=false;updateSelCount();}
+function toggleAll(cb){document.querySelectorAll('#tbody .row-cb').forEach(function(box){box.checked=cb.checked;var tr=box.closest('tr');var uid=tr?tr.dataset.uid:'';if(cb.checked)selectedRows.add(uid);else selectedRows.delete(uid);if(tr)tr.classList.toggle('row-selected',cb.checked);});updateSelCount();}
+function updateSelCount(){var sc=document.getElementById('sel-count');if(selectedRows.size>0){sc.style.display='';sc.textContent=selectedRows.size+' selectate';}else sc.style.display='none';}
+
+/* ── LOAD DATA ── */
+function parseCSV(text){var rows=[],cur=[],cell='',inQ=false;for(var i=0;i<text.length;i++){var ch=text[i];if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);return rows;}
+
+async function loadData(){
+  document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;font-family:var(--mono);font-size:13px;color:var(--purple);">&#9655; Se incarca datele...</td></tr>';
+  try{
+    var resp=await fetch(SHEET_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    var text=await resp.text();
+    var rows=parseCSV(text);
+    allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+    allData=allData.map(function(r){while(r.length<6)r.push('');return r;});
+    saveLocal();
+    filteredData=allData.slice();
+    applyFilters();
+    updateKPI();
+  }catch(err){
+    document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;font-family:var(--mono);font-size:13px;color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
+    allData=[];filteredData=[];renderTable();updateKPI();
+  }
+}
+
+/* ── SUBMIT FORM ── */
+function resetForm(){
+  ['f-sarcina','f-responsabil','f-termen-display','f-termen'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  showMsg('form-msg','','');
+}
+function showMsg(elId,type,text){var el=document.getElementById(elId);if(!type){el.style.display='none';return;}el.className='form-msg '+type;el.textContent=text;el.style.display='';}
+
+async function submitRow(){
+  var sarcina=document.getElementById('f-sarcina').value.trim();
+  var responsabil=document.getElementById('f-responsabil').value.trim();
+  var termen=document.getElementById('f-termen').value.trim()||document.getElementById('f-termen-display').value.trim();
+  var stare='Neinceput';
+  var stadiu='';
+  var evaluare='';
+  if(!sarcina||!responsabil){showMsg('form-msg','err','Completeaza campurile obligatorii (*)');return;}
+  var btn=document.getElementById('btn-submit');
+  btn.disabled=true;showMsg('form-msg','loading','Se trimite...');
+  try{
+    var name=sessionStorage.getItem('k_name')||'Necunoscut';
+    var newRow=[sarcina, stare, responsabil, stadiu, termen, evaluare];
+    var payload={sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare,adaugat_de:name};
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var json=await resp.json();
+    if(json.result!=='success') throw new Error(json.error||'Eroare necunoscuta');
+    // Always save locally too
+    allData.push(newRow);
+    filteredData=allData.slice();
+    saveLocal();
+    showMsg('form-msg','ok','✓ Activitate adaugata!');
+    resetForm();
+    renderTable();
+    updateKPI();
+  }catch(e){showMsg('form-msg','err','Eroare: '+e.message);}
+  btn.disabled=false;
+}
+
+/* ── EDIT MODAL ── */
+var editRowIndex=-1;
+function openEdit(idx){
+  editRowIndex=idx;
+  var row=filteredData[idx];
+  document.getElementById('e-sarcina').value=row[0]||'';
+  document.getElementById('e-stare').value=row[1]||'';
+  document.getElementById('e-responsabil').value=row[2]||'';
+  document.getElementById('e-stadiu').value=row[3]||'';
+  // Format termen for display
+  var td=row[4]||'';
+  var disp=td;
+  if(td.indexOf('-')>-1){var p=td.split('-');if(p.length>=3)disp=p[2].substring(0,2)+'/'+p[1]+'/'+p[0];}
+  document.getElementById('e-termen-display').value=disp;
+  document.getElementById('e-termen').value=td;
+  document.getElementById('e-evaluare').value=row[5]||'';
+  showMsg('edit-msg','','');
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
+
+async function saveEdit(){
+  var sarcina=document.getElementById('e-sarcina').value.trim();
+  var stare=document.getElementById('e-stare').value.trim();
+  var responsabil=document.getElementById('e-responsabil').value.trim();
+  var stadiu=document.getElementById('e-stadiu').value.trim();
+  var termen=document.getElementById('e-termen').value.trim()||document.getElementById('e-termen-display').value.trim();
+  var evaluare=document.getElementById('e-evaluare').value.trim();
+  if(!sarcina||!stare||!responsabil){showMsg('edit-msg','err','Campurile marcate cu * sunt obligatorii.');return;}
+  showMsg('edit-msg','loading','Se salveaza...');
+  try{
+    var row=filteredData[editRowIndex];
+    row[0]=sarcina;row[1]=stare;row[2]=responsabil;row[3]=stadiu;row[4]=termen;row[5]=evaluare;
+    // Sync to allData
+    var ai=allData.indexOf(row);
+    if(ai>=0){allData[ai]=row;}
+    saveLocal();
+    try{
+      var payload={action:'edit',sarcini:sarcina,stare:stare,responsabil:responsabil,stadiu:stadiu,termen:termen,evaluare:evaluare};
+      var er=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+      var ej=await er.json();
+      if(ej.result!=='success') throw new Error(ej.error||'Eroare');
+    }catch(ex){showMsg('edit-msg','err','Eroare Apps Script: '+ex.message);return;}
+    renderTable();updateKPI();
+    showMsg('edit-msg','ok','✓ Salvat!');
+    setTimeout(closeEditModal,700);
+  }catch(e){showMsg('edit-msg','err','Eroare: '+e.message);}
+}
+
+/* ── DESC BUBBLE (hover pe sarcina) ── */
+(function initBubble(){
+  var bubble=document.getElementById('global-desc-bubble');
+  bubble.style.cssText='display:none;position:fixed;z-index:9999;background:var(--bg2);border:1.5px solid rgba(155,109,255,.4);border-radius:10px;padding:12px 14px;min-width:280px;max-width:480px;white-space:normal;word-break:break-word;font-size:13px;color:#fff;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,.6);pointer-events:none;font-family:var(--sans);';
+  document.addEventListener('mouseover',function(e){var td=e.target.closest('.td-sarcina');if(!td)return;var desc=td.getAttribute('data-desc');if(!desc)return;bubble.textContent=desc;bubble.style.display='block';});
+  document.addEventListener('mouseout',function(e){if(!e.target.closest('.td-sarcina'))return;bubble.style.display='none';});
+  document.addEventListener('mousemove',function(e){if(bubble.style.display==='none')return;var x=e.clientX+14,y=e.clientY+14;if(x+500>window.innerWidth)x=e.clientX-500;if(y+200>window.innerHeight)y=e.clientY-bubble.offsetHeight-10;bubble.style.left=x+'px';bubble.style.top=y+'px';});
+})();
+
+/* ── EXPORT ── */
+function exportPDF(){
+  var now=new Date();
+  var d=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+  var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var dtEl=document.getElementById('print-date-text');
+  if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
+  // If rows are selected, hide non-selected before print
+  var hasSelected=selectedRows.size>0;
+  var hiddenRows=[];
+  if(hasSelected){
+    document.querySelectorAll('#tbody tr').forEach(function(tr){
+      if(!tr.classList.contains('row-selected')){
+        tr.style.display='none';
+        hiddenRows.push(tr);
+      }
+    });
+  }
+  var ph=document.getElementById('print-header');
+  var pf=document.getElementById('print-footer');
+  if(ph)ph.style.display='flex';
+  if(pf)pf.style.display='flex';
+  window.print();
+  if(ph)ph.style.display='none';
+  if(pf)pf.style.display='none';
+  hiddenRows.forEach(function(tr){tr.style.display='';});
+}
+function exportExcel(){
+  // Use selected rows if any, else all filteredData
+  var dataToExport;
+  if(selectedRows.size>0){
+    dataToExport=[];
+    document.querySelectorAll('#tbody tr.row-selected').forEach(function(tr){
+      var uid=tr.dataset.uid;
+      var idx=filteredData.findIndex(function(r,i){
+        return (String(r[0]||'')+String(r[2]||'')+i)===uid;
+      });
+      if(idx>=0) dataToExport.push(filteredData[idx]);
+    });
+  } else {
+    dataToExport=filteredData;
+  }
+  var headers=['Nr.','Sarcina','Stare','Responsabil','Stadiu','Termen limita','Evaluare'];
+  var wsData=[headers];
+  dataToExport.forEach(function(r,i){
+    var evalN=parseInt(r[5])||0;
+    var evalStr=evalN?(evalN+'/5 '+('★').repeat(evalN)+('☆').repeat(5-evalN)):'';
+    wsData.push([i+1, r[0]||'', r[1]||'', r[2]||'', r[3]||'', r[4]||'', evalStr]);
+  });
+  var ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols']=[{wch:5},{wch:55},{wch:22},{wch:22},{wch:12},{wch:14},{wch:10}];
+  var range=XLSX.utils.decode_range(ws['!ref']);
+  for(var C=range.s.c;C<=range.e.c;C++){
+    var addr=XLSX.utils.encode_cell({r:0,c:C});
+    if(!ws[addr])continue;
+    ws[addr].s={font:{bold:true,color:{rgb:'FFFFFF'}},fill:{fgColor:{rgb:'4B0082'}},alignment:{horizontal:'center'}};
+  }
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Activitati Siloz');
+  var now=new Date();
+  XLSX.writeFile(wb,'KRONOS_ActivitatiSiloz_'+String(now.getDate()).padStart(2,'0')+'.'
+    +String(now.getMonth()+1).padStart(2,'0')+'.'+now.getFullYear()+'.xlsx');
+}
+
+/* ── DATE/TIME HELPERS ── */
+function formatDateInput(el,hiddenId){var v=el.value.replace(/[^0-9]/g,'');var out='';if(v.length>0)out+=v.substring(0,2);if(v.length>=3)out+='/'+v.substring(2,4);if(v.length>=5)out+='/'+v.substring(4,8);el.value=out;var hidden=document.getElementById(hiddenId);if(hidden&&v.length===8)hidden.value=v.substring(4,8)+'-'+v.substring(2,4)+'-'+v.substring(0,2);}
+
+/* ── LOCAL STORAGE ── */
+var LS_KEY='kronos_activitati_siloz';
+function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(allData));}catch(e){}}
+function loadLocal(){try{var d=JSON.parse(localStorage.getItem(LS_KEY)||'null');return d&&d.length?d:null;}catch(e){return null;}}
+
+/* ── INIT ── */
+(function init(){
+  setInterval(loadData,60000);
+  loadData();
+})();
+</script>
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+</body>
+</html>
