@@ -165,11 +165,12 @@ td:last-child{border-right:none;}
   <div class="content">
 
   <!-- KPI -->
-  <div class="kpi-strip">
+  <div class="kpi-strip" style="grid-template-columns:repeat(5,1fr);">
     <div class="kpi-card c-teal"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-total">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--teal);">TOTAL</div></div></div>
     <div class="kpi-card c-blue"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-siemens">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--blue);">SIEMENS</div></div></div>
     <div class="kpi-card c-amber"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-nord">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--amber);">NORD</div></div></div>
     <div class="kpi-card c-green"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-abb">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--green);">ABB</div></div></div>
+    <div class="kpi-card" style="border-top:2px solid var(--red);"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-echtop" style="color:var(--red);">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--red);">ECHTOP</div></div></div>
   </div>
 
   <!-- ADD EQUIPMENT BUTTON -->
@@ -269,20 +270,19 @@ td:last-child{border-right:none;}
   <div class="table-wrap">
     <table id="main-table">
       <colgroup>
-        <col style="width:6%;"/>
-        <col style="width:8%;"/>
-        <col style="width:18%;"/>
+        <col style="width:7%;"/>
         <col style="width:10%;"/>
-        <col style="width:10%;"/>
-        <col style="width:10%;"/>
+        <col style="width:22%;"/>
         <col style="width:12%;"/>
         <col style="width:12%;"/>
-        <col style="width:4%;"/>
+        <col style="width:16%;"/>
+        <col style="width:16%;"/>
+        <col style="width:5%;"/>
       </colgroup>
       <thead>
         <tr class="sec-row">
           <th class="sec-id">ID</th>
-          <th class="sec-motor" colspan="8">MOTOR — click pe rand pentru detalii Motor + Reductor</th>
+          <th class="sec-motor" colspan="7">MOTOR — click pe rand pentru detalii Motor + Reductor</th>
         </tr>
         <tr class="sub-row">
           <th onclick="sortBy(0)">ID</th>
@@ -290,7 +290,6 @@ td:last-child{border-right:none;}
           <th class="th-motor" onclick="sortBy(2)">Model</th>
           <th class="th-motor" onclick="sortBy(3)">Curent</th>
           <th class="th-motor" onclick="sortBy(4)">Putere</th>
-          <th class="th-motor" onclick="sortBy(5)">Turatie</th>
           <th class="th-motor" onclick="sortBy(6)">Rulment DE</th>
           <th class="th-motor" onclick="sortBy(7)">Rulment NE</th>
           <th class="th-motor">&#9432;</th>
@@ -450,6 +449,7 @@ function updateKPI(data){
   document.getElementById('k-siemens').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('SIEMENS');}).length;
   document.getElementById('k-nord').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('NORD');}).length;
   document.getElementById('k-abb').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('ABB');}).length;
+  document.getElementById('k-echtop').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('ECHTOP');}).length;
 }
 function renderTable(){
   var tbody=document.getElementById('tbody');
@@ -465,7 +465,6 @@ function renderTable(){
     html+='<td style="color:#fff;">'+f(row[3])+'</td>';
     html+='<td>'+f(row[4])+'</td>';
     html+='<td style="color:var(--teal);font-weight:700;">'+f(row[5])+'</td>';
-    html+='<td>'+f(row[6])+'</td>';
     html+='<td style="color:var(--blue);font-family:var(--mono);font-size:12px;">'+f(row[7])+'</td>';
     html+='<td style="color:var(--blue);font-family:var(--mono);font-size:12px;">'+f(row[8])+'</td>';
     html+='<td style="color:var(--teal);font-size:16px;cursor:pointer;">&#9432;</td>';
