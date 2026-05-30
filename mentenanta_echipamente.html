@@ -176,7 +176,7 @@ td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:
 td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
-.td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;}
+.td-nr{font-family:var(--mono);color:var(--teal);font-weight:700;font-size:16px;}
 .td-eq{font-family:var(--sans);color:var(--amber);font-weight:700;font-size:14px;white-space:nowrap;}
 .td-motiv{color:#fff;font-weight:600;font-family:var(--sans);font-size:14px;text-align:left;}
 .td-dt{font-family:var(--sans);font-size:12px;}
@@ -436,7 +436,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
               <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
               <option>FS06</option><option>FS07</option>
               <option>FS09</option><option>FS10</option><option>FSCF</option>
-              <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
+              <option>SF201</option><option>SF202</option><option>SF203</option><option>SF221</option><option>SF222</option>
             </optgroup>
             <optgroup label="Filtre punctuale">
               <option>SFB01</option><option>SFB02</option><option>SFB03</option>
@@ -592,7 +592,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
               <option>FS01</option><option>FS02</option><option>FS03</option><option>FS04</option>
               <option>FS06</option><option>FS07</option>
               <option>FS09</option><option>FS10</option><option>FSCF</option>
-              <option>SF201</option><option>SF202</option><option>SF203</option><option>SF211</option><option>SF222</option>
+              <option>SF201</option><option>SF202</option><option>SF203</option><option>SF221</option><option>SF222</option>
             </optgroup>
             <optgroup label="Filtre punctuale">
               <option>SFB01</option><option>SFB02</option><option>SFB03</option>
@@ -942,8 +942,8 @@ function renderTable() {
       + '<td class="td-dt">' + fin + '</td>'
       + '<td class="td-desc" data-desc="' + esc(row[5]||'') + '">' + esc(row[5]||'') + '</td>'
       + '<td>' + statusChip(row[6]) + '</td>'
-      + '<td class="td-piese" title="' + esc(row[7]||'') + '">' + esc(row[7]||'') + '</td>'
-      + '<td class="td-echipa" title="' + esc(row[8]||'') + '">' + esc(row[8]||'') + '</td>'
+      + '<td class="td-piese td-desc" data-desc="' + esc(row[7]||'') + '" title="' + esc(row[7]||'') + '">' + esc(row[7]||'') + '</td>'
+      + '<td class="td-echipa td-desc" data-desc="' + esc(row[8]||'') + '" title="' + esc(row[8]||'') + '">' + esc(row[8]||'') + '</td>'
       + '<td style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:500;">' + esc(row[9]||'') + '</td>'
       + '</tr>';
   });
