@@ -300,7 +300,8 @@ tbody tr:last-child td{border-bottom:none;}
 
 
 /* ── CLOCK ── */
-
+function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];var te=document.getElementById('top-time');var de=document.getElementById('top-date');if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+updateClock();setInterval(updateClock,1000);
 
 /* ── USER ── */
 
