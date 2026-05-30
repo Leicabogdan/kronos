@@ -23,99 +23,6 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 /* ── LAYOUT ── */
 .app{display:flex;height:100svh;overflow:hidden;}
 
-/* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sidebar);flex-shrink:0;
-  background:var(--bg2);
-  border-right:1px solid var(--border2);
-  display:flex;flex-direction:column;
-  height:100svh;overflow:hidden;
-  position:relative;z-index:50;
-  transition:width .25s ease;
-}
-.sidebar.collapsed{width:60px;}
-.sidebar.collapsed .nav-label,
-.sidebar.collapsed .logo-text,
-.sidebar.collapsed .sidebar-footer-text,
-.sidebar.collapsed .nav-section-label{display:none;}
-
-/* logo */
-.sidebar-logo{
-  display:flex;align-items:center;gap:12px;
-  padding:20px 16px 16px;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.sidebar-logo canvas{flex-shrink:0;width:44px!important;height:44px!important;}
-.logo-text{display:flex;flex-direction:column;gap:1px;overflow:hidden;}
-.logo-main{font-family:var(--title);font-size:18px;font-weight:900;letter-spacing:.14em;color:#fff;white-space:nowrap;}
-.logo-main span{color:var(--teal);}
-.logo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.16em;font-weight:700;white-space:nowrap;}
-
-/* nav */
-.sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px;scrollbar-width:none;}
-.sidebar-nav::-webkit-scrollbar{display:none;}
-.nav-section-label{
-  font-family:var(--sans);font-size:13px;color:var(--teal);
-  letter-spacing:.04em;text-transform:uppercase;font-weight:700;
-  padding:12px 8px 6px;
-}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 10px;border-radius:8px;
-  cursor:pointer;transition:all .18s;
-  margin-bottom:2px;text-decoration:none;color:#fff;
-}
-.nav-item:hover{background:rgba(255,255,255,.05);}
-.nav-item.active{background:rgba(0,220,180,.1);border:1px solid rgba(0,220,180,.2);}
-.nav-item.active .nav-icon{color:var(--teal);}
-.nav-item.active .nav-label{color:var(--teal);}
-.nav-icon{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;}
-.nav-label{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.02em;white-space:nowrap;overflow:hidden;}
-.nav-sub{padding-left:24px!important;}
-.nav-sub-dot{width:6px;height:6px;border-radius:50%;background:rgba(0,220,180,.5);flex-shrink:0;margin-right:4px;}
-.sidebar-group-toggle{cursor:pointer;color:var(--teal)!important;}
-.sidebar-group-toggle .nav-icon{color:var(--teal)!important;}
-.sidebar-group-toggle .nav-label{color:var(--teal)!important;}
-.sidebar-group-toggle:hover{background:rgba(0,220,180,.06)!important;}
-.nav-badge{
-  margin-left:auto;min-width:18px;height:18px;border-radius:9px;
-  background:var(--red);color:#fff;
-  font-size:10px;font-weight:700;font-family:var(--mono);
-  display:flex;align-items:center;justify-content:center;padding:0 5px;flex-shrink:0;
-}
-
-/* sidebar footer */
-.sidebar-footer{
-  padding:12px 8px;border-top:1px solid var(--border);flex-shrink:0;
-}
-.sidebar-user{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 10px;border-radius:8px;
-  background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.12);
-}
-.sidebar-user-av{
-  width:30px;height:30px;border-radius:50%;flex-shrink:0;
-  background:#0d2420;border:1.5px solid var(--teal);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--title);font-size:10px;font-weight:900;color:var(--teal);
-}
-.sidebar-footer-text{overflow:hidden;}
-.sidebar-user-name{font-family:var(--raj);font-size:15px;font-weight:700;color:#fff;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sidebar-user-role{font-family:var(--sans);font-size:10px;color:var(--teal);font-weight:700;white-space:nowrap;}
-
-/* collapse btn */
-.sidebar-collapse{
-  position:absolute;top:50%;right:-12px;transform:translateY(-50%);
-  width:24px;height:24px;border-radius:50%;
-  background:var(--bg3);border:1px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:51;transition:all .2s;
-}
-.sidebar-collapse:hover{border-color:var(--teal);color:var(--teal);}
-.sidebar-collapse svg{transition:transform .25s;}
-.sidebar.collapsed .sidebar-collapse svg{transform:rotate(180deg);}
-
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 
@@ -549,175 +456,20 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .days-warn .iscir-days-val,.days-warn .iscir-days-lbl{color:var(--amber);}
 .days-crit .iscir-days-val,.days-crit .iscir-days-lbl{color:var(--red);}
 
-/* mobile sidebar overlay */
-@media(max-width:700px){
-  .sidebar{position:fixed;top:0;left:0;height:100%;z-index:200;transform:translateX(-100%);transition:transform .25s ease,width .25s ease;}
-  .sidebar.mobile-open{transform:translateX(0);}
-  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;}
-  .sidebar-overlay.show{display:block;}
-  .main{width:100%;}
-}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <canvas id="sgear" width="144" height="144" style="width:44px;height:44px;flex-shrink:0;"></canvas>
-      <div class="logo-text">
-        <div class="logo-main">KR<span>O</span>NOS</div>
-        <div class="logo-sub">Maintenance System</div>
-      </div>
-    </div>
-
-    <div class="sidebar-nav">
-      <!-- PRINCIPAL -->
-      <div class="nav-section-label">PRINCIPAL</div>
-      <span class="nav-item active" style="cursor:default;">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 7.5L8 2l6 5.5V14a.5.5 0 01-.5.5h-4V10h-3v4.5H2.5A.5.5 0 012 14V7.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
-        <span class="nav-label">DASHBOARD</span>
-      </span>
-      <a class="nav-item" href="ore_functionare.html">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
-        <span class="nav-label">ORE DE FUNCTIONARE</span>
-      </a>
-
-      <!-- MENTENANTA SI INTRETINERE dropdown -->
-      <div class="nav-item sidebar-group-toggle" onclick="toggleSbMnt()">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.1 3.1l1.4 1.4M11.5 11.5l1.4 1.4M3.1 12.9l1.4-1.4M11.5 4.5l1.4-1.4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-        <span class="nav-label" style="white-space:normal;line-height:1.3;">MENTENANTA SI<br>INTRETINERE</span>
-        <svg id="sb-mnt-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:auto;transition:transform .25s;flex-shrink:0;"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div id="sb-mnt-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
-        <a class="nav-item nav-sub" href="mentenanta_echipamente.html">
-          <div class="nav-icon" style="color:var(--teal);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.9 2.9l1.4 1.4M9.7 9.7l1.4 1.4M2.9 11.1l1.4-1.4M9.7 4.3l1.4-1.4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-          <span class="nav-label" style="color:var(--teal);white-space:normal;line-height:1.3;">MENTENANTA<br>ECHIPAMENTE</span>
-        </a>
-        <span class="nav-item nav-sub" style="cursor:default;opacity:.55;">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 9v3M7 9v3M10 9v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label" style="color:#fff;">AERE CONDITIONATE</span>
-        </span>
-        <a class="nav-item nav-sub" href="cuve_receptie.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 6L7 1l3 5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 6h10v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" stroke="currentColor" stroke-width="1.2"/></svg></div>
-          <span class="nav-label">CUVE RECEPTIE</span>
-        </a>
-      </div>
-
-      <!-- DATE TEHNICE dropdown -->
-      <div class="nav-item sidebar-group-toggle" onclick="toggleSbDt()">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 3h5v10H2zM7 7h7v6H7zM9 3h5v4H9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
-        <span class="nav-label">DATE TEHNICE</span>
-        <svg id="sb-dt-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:auto;transition:transform .25s;flex-shrink:0;"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div id="sb-dt-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
-        <a class="nav-item nav-sub" href="moto_reductoare.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="8" height="7" rx="1.1" stroke="currentColor" stroke-width="1.2"/><path d="M9 6.5h3a.7.7 0 010 1.4H9" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r=".7" fill="currentColor"/></svg></div>
-          <span class="nav-label">MOTO-REDUCTOARE</span>
-        </a>
-        <a class="nav-item nav-sub" href="elevatoare.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="5" y1="1" x2="5" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="9" y1="1" x2="9" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="3" y1="1" x2="11" y2="1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3" y1="13" x2="11" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">ELEVATOARE</span>
-        </a>
-        <a class="nav-item nav-sub" href="transportoare_lant.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="5" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><circle cx="3.5" cy="7.5" r="1.2" stroke="currentColor" stroke-width="1.1"/><circle cx="10.5" cy="7.5" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg></div>
-          <span class="nav-label">TRANS. CU LANT</span>
-        </a>
-        <a class="nav-item nav-sub" href="transportoare_banda.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h10v5a1 1 0 01-1 1H3a1 1 0 01-1-1V5z" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">TRANS. CU BANDA</span>
-        </a>
-        <a class="nav-item nav-sub" href="filtre.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2h10l-4 5v4l-2-1V7L2 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
-          <span class="nav-label">FILTRE</span>
-        </a>
-        <a class="nav-item nav-sub" href="snecuri.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7c1-2 7-2 8 0s-7 2-8 0z" stroke="currentColor" stroke-width="1.2"/><line x1="7" y1="2" x2="7" y2="12" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">SNECURI</span>
-        </a>
-        <a class="nav-item nav-sub" href="cantare.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 10h10M3 10L5 4h4l2 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="4" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg></div>
-          <span class="nav-label">CANTARE</span>
-        </a>
-        <a class="nav-item nav-sub" href="celule_receptie.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7v5h6V7" stroke="currentColor" stroke-width="1.2"/><path d="M3 7h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M7 2L3 7h8L7 2z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
-          <span class="nav-label">CELULE RECEPTIE</span>
-        </a>
-      </div>
-
-      <!-- CONFORMITATE dropdown -->
-      <div class="nav-item sidebar-group-toggle" onclick="toggleSbConf()">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <span class="nav-label">CONFORMITATE</span>
-        <svg id="sb-conf-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:auto;transition:transform .25s;flex-shrink:0;"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div id="sb-conf-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
-        <a class="nav-item nav-sub" href="#">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7l2 2 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <span class="nav-label">ISCIR <span class="nav-badge">2</span></span>
-        </a>
-        <a class="nav-item nav-sub" href="#">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3.5h10M2 7h7M2 10.5h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">RAPOARTE</span>
-        </a>
-      </div>
-
-      <!-- RESURSE dropdown -->
-      <div class="nav-item sidebar-group-toggle" onclick="toggleSbRes()">
-        <div class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="12" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 6V5a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
-        <span class="nav-label">RESURSE</span>
-        <svg id="sb-res-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-left:auto;transition:transform .25s;flex-shrink:0;"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <div id="sb-res-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
-        <a class="nav-item nav-sub" href="manual_mentenanta.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2h10v10H2V2z" stroke="currentColor" stroke-width="1.2"/><path d="M4 5h6M4 7h6M4 9h4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">MANUAL MENTENANTA</span>
-        </a>
-        <a class="nav-item nav-sub" href="stoc_piese.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="5.5" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 5.5V5a2.5 2.5 0 015 0v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">STOC PIESE</span>
-        </a>
-        <a class="nav-item nav-sub" href="analize_ulei.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2c0 0-3.5 3.5-3.5 6a3.5 3.5 0 007 0c0-2.5-3.5-6-3.5-6z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
-          <span class="nav-label">ANALIZE ULEI</span>
-        </a>
-        <a class="nav-item nav-sub" href="manuale_documentatie.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1.5h5.5l3 3v8a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5v-11A.5.5 0 013 1.5z" stroke="currentColor" stroke-width="1.2"/><path d="M8.5 1.5v3h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-          <span class="nav-label" style="white-space:normal;line-height:1.3;">MANUALE SI<br>DOCUMENTATIE</span>
-        </a>
-        <a class="nav-item nav-sub" href="kronos_register.html">
-          <div class="nav-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1.5h5.5l3 3v8a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5v-11A.5.5 0 013 1.5z" stroke="currentColor" stroke-width="1.2"/><path d="M5 7h4M5 9.5h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
-          <span class="nav-label">FISA</span>
-        </a>
-      </div>
-
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-user-av" id="user-av">LB</div>
-        <div class="sidebar-footer-text">
-          <div class="sidebar-user-name" id="user-name">Leica Bogdan</div>
-          <div class="sidebar-user-role" id="user-role">APP OWNER</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-collapse" id="sidebar-toggle" onclick="toggleSidebar()">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-  </div>
-
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMobileSidebar()"></div>
+  <script src="sidebar.js" data-active="DASHBOARD"></script>
 
   <!-- MAIN -->
   <div class="main">
     <!-- TOPBAR -->
     <div class="topbar">
       <!-- mobile menu -->
-      <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="openMobileSidebar()">
+      <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
       </div>
       <div>
@@ -1292,69 +1044,6 @@ async function loadActivitate() {
 loadActivitate();
 setInterval(loadActivitate,60000);
 
-/* ── GEAR ── */
-function drawGear(cv){
-  const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;
-  const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';
-  function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}
-  c.clearRect(0,0,W,H);
-  const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);
-  grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');
-  c.beginPath();
-  for(let i=0;i<12;i++){
-    const b=(i/12)*Math.PI*2,ta=.18,ra=.26;
-    const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;
-    const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);
-    if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);
-    c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);
-    c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);
-  }
-  c.closePath();c.fillStyle=grd;c.fill();
-  c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';
-  c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;
-  c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);
-  const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);
-  ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');
-  c.fillStyle=ig;c.fill();
-  c.strokeStyle=TC;c.lineWidth=2.5*s;c.shadowColor=TC;c.shadowBlur=12*s;c.stroke();c.shadowBlur=0;
-  c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.7*s;c.stroke();
-  for(let m=0;m<60;m++){
-    const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;
-    const r1=RI-(isQ?4:isH?3:1.5)*s,r2=RI-(isQ?14:isH?11:6)*s;
-    const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);
-    c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);
-    c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.7)':'rgba(0,220,180,.28)';
-    c.lineWidth=(isQ?2.2:isH?1.6:.8)*s;c.lineCap='round';
-    c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?6*s:isH?2*s:0;c.stroke();c.shadowBlur=0;
-  }
-  const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;
-  [[RI*.48,(hrs/12)*Math.PI*2,4*s,TC,8*s],[RI*.70,(mins/60)*Math.PI*2,2.5*s,TC,6*s]].forEach(([r,a,lw,col,bl])=>{
-    const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;
-  });
-  const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.75,sA),[scx,scy]=pt(-RI*.2,sA);
-  c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.2*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=6*s;c.stroke();c.shadowBlur=0;
-  c.beginPath();c.arc(cx,cy,5*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=10*s;c.fill();c.shadowBlur=0;
-  c.beginPath();c.arc(cx,cy,2.5*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();
-}
-(function gl(){drawGear(document.getElementById('sgear'));requestAnimationFrame(gl);})();
-
-/* ── KPI MINI RINGS ── */
-function drawKpiRing(id,val,col){
-  const cv=document.getElementById(id);
-  if(!cv)return;
-  const dpr=window.devicePixelRatio||1,disp=cv.offsetWidth||70;
-  cv.width=Math.round(disp*dpr);cv.height=Math.round(disp*dpr);
-  const c=cv.getContext('2d'),CX=cv.width/2,CY=cv.height/2,sc=cv.width/70;
-  const R=26*sc,LW=6*sc;
-  c.clearRect(0,0,cv.width,cv.height);
-  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,Math.PI*2-Math.PI/2);
-  c.strokeStyle='rgba(255,255,255,.07)';c.lineWidth=LW;c.lineCap='round';c.stroke();
-  c.beginPath();c.arc(CX,CY,R,-Math.PI/2,-Math.PI/2+Math.PI*2*val);
-  c.strokeStyle=col;c.lineWidth=LW;c.lineCap='round';c.shadowColor=col;c.shadowBlur=8*sc;c.stroke();c.shadowBlur=0;
-}
-drawKpiRing('kr1',.94,'#00dcb4');
-drawKpiRing('kr2',.98,'#4aaf70');
-
 /* ── CLOCK ── */
 function updateClock(){
   const now=new Date();
@@ -1365,96 +1054,12 @@ function updateClock(){
 }
 updateClock();setInterval(updateClock,1000);
 
-/* ── SIDEBAR ── */
-let sidebarCollapsed=false;
-function toggleSidebar(){
-  sidebarCollapsed=!sidebarCollapsed;
-  document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
-}
-function openMobileSidebar(){
-  document.getElementById('sidebar').classList.add('mobile-open');
-  document.getElementById('sidebar-overlay').classList.add('show');
-}
-function closeMobileSidebar(){
-  document.getElementById('sidebar').classList.remove('mobile-open');
-  document.getElementById('sidebar-overlay').classList.remove('show');
-}
-
 /* mobile topbar menu */
 function checkMobile(){
   const mb=document.getElementById('mobile-menu-btn');
-  if(window.innerWidth<=700)mb.style.display='block';
-  else mb.style.display='none';
+  if(mb){if(window.innerWidth<=700)mb.style.display='block';else mb.style.display='none';}
 }
 checkMobile();window.addEventListener('resize',checkMobile);
-
-/* ── ELEVATOR DROPDOWN ── */
-let elevOpen=false;
-function toggleElevDropdown(){
-  elevOpen=!elevOpen;
-  document.getElementById('elev-dropdown').classList.toggle('open',elevOpen);
-  document.querySelectorAll('.elev-wrapper')[0].classList.toggle('open',elevOpen);
-}
-
-let ccOpen=false;
-function toggleCCDropdown(){
-  ccOpen=!ccOpen;
-  document.getElementById('cc-dropdown').classList.toggle('open',ccOpen);
-  document.querySelectorAll('.elev-wrapper')[1].classList.toggle('open',ccOpen);
-}
-
-let bcOpen=false;
-function toggleBCDropdown(){
-  bcOpen=!bcOpen;
-  document.getElementById('bc-dropdown').classList.toggle('open',bcOpen);
-  document.querySelectorAll('.elev-wrapper')[2].classList.toggle('open',bcOpen);
-}
-
-let filtreOpen=false;
-function toggleFiltreDropdown(){
-  filtreOpen=!filtreOpen;
-  document.getElementById('filtre-dropdown').classList.toggle('open',filtreOpen);
-  document.querySelectorAll('.elev-wrapper')[3].classList.toggle('open',filtreOpen);
-}
-
-let snecuriOpen=false;
-function toggleSnecuriDropdown(){
-  snecuriOpen=!snecuriOpen;
-  document.getElementById('snecuri-dropdown').classList.toggle('open',snecuriOpen);
-  document.querySelectorAll('.elev-wrapper')[4].classList.toggle('open',snecuriOpen);
-}
-let mntOpen=false;
-function toggleMntDropdown(){
-  mntOpen=!mntOpen;
-  document.getElementById('mnt-dropdown').classList.toggle('open',mntOpen);
-  document.querySelectorAll('.elev-wrapper').forEach((w,i)=>{
-    if(w.querySelector('#mnt-dropdown'))w.classList.toggle('open',mntOpen);
-  });
-}
-
-let sbMntOpen=false;
-function toggleGroup(itemsId, arrowId) {
-  var el = document.getElementById(itemsId);
-  var arr = document.getElementById(arrowId);
-  var open = el.style.maxHeight !== '0px' && el.style.maxHeight !== '';
-  if (open) {
-    el.style.maxHeight = '0';
-    if(arr) arr.style.transform = '';
-  } else {
-    // Use visibility trick: temporarily show to get scrollHeight
-    el.style.maxHeight = 'none';
-    var h = el.scrollHeight;
-    el.style.maxHeight = '0';
-    // Force reflow then animate
-    el.offsetHeight;
-    el.style.maxHeight = (h || 500) + 'px';
-    if(arr) arr.style.transform = 'rotate(180deg)';
-  }
-}
-function toggleSbMnt() { toggleGroup('sb-mnt-items','sb-mnt-arrow'); }
-function toggleSbDt()  { toggleGroup('sb-dt-items','sb-dt-arrow'); }
-function toggleSbConf(){ toggleGroup('sb-conf-items','sb-conf-arrow'); }
-function toggleSbRes() { toggleGroup('sb-res-items','sb-res-arrow'); }
 
 const SURV_DATA=[
   {eq:'E01',cod:'Elevator · Siloz Nord',watch:'Lant tractiune, uzura cupe',details:'Joc lant >12mm · Uzura cupe nivel 2 detectata · Urmatoarea verificare la 12000h · Relubrifiere in curs',notify:'Leica Bogdan',status:'warn'},
@@ -1674,23 +1279,6 @@ async function deleteSurv(idx){
 }
 
 survLoad();
-function initUser(){
-  try{
-    var name=sessionStorage.getItem('k_name')||'Leica Bogdan';
-    var role=sessionStorage.getItem('k_role')||'APP OWNER';
-    var nameEl=document.getElementById('user-name');
-    var roleEl=document.getElementById('user-role');
-    var avEl=document.getElementById('user-av');
-    if(nameEl)nameEl.textContent=name;
-    if(roleEl)roleEl.textContent=role;
-    var parts=name.trim().split(' ');
-    var initials=(parts[0]?parts[0][0]:'')+(parts[1]?parts[1][0]:'');
-    if(avEl)avEl.textContent=initials.toUpperCase();
-  }catch(e){}
-}
-// Run immediately and also on load to be safe
-initUser();
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initUser);}
 </script>
 </body>
 </html>
