@@ -517,7 +517,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Echipa *</label>
-        <input class="form-input" type="text" id="f-echipa" placeholder="ex: Leica Bogdan, Vuculescu V."/>
+        <input class="form-input" type="text" id="f-echipa" placeholder="ex: Leica Bogdan, Vuculescu V." value="Elmar + Socep"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Necesar piese de schimb</label>
@@ -1336,6 +1336,15 @@ function displayToISO(d) {
   loadData();
 })();
 
+(function setDefaults(){
+  var now=new Date();
+  var str=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
+  var hid=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var dd=document.getElementById('f-data-fin-display');
+  var dh=document.getElementById('f-data-fin');
+  if(dd)dd.value=str;
+  if(dh)dh.value=hid;
+})();
 function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];var te=document.getElementById('top-time');var de=document.getElementById('top-date');if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
 updateClock();setInterval(updateClock,1000);
 function checkMobile(){var mb=document.getElementById('mobile-menu-btn');if(mb){if(window.innerWidth<=700)mb.style.display='block';else mb.style.display='none';}}
