@@ -107,7 +107,7 @@
 
   /* Determina daca un grup contine pagina activa */
   var MNT_KEYS   = ['MENTENANTA_ECHIPAMENTE','SCHIMB_ULEI','COMPRESOARE','SISTEM_HIDRAULIC','AERE_CONDITIONATE','CUVE_RECEPTIE'];
-  var DT_KEYS    = ['MOTO_REDUCTOARE','ELEVATOARE','TRANS_LANT','TRANS_BANDA','FILTRE','SNECURI','CANTARE','CELULE_RECEPTIE'];
+  var DT_KEYS    = ['MOTOARE','ELEVATOARE','TRANS_LANT','TRANS_BANDA','FILTRE','SNECURI','CANTARE','CELULE_RECEPTIE'];
   var CONF_KEYS  = ['ISCIR','RAPOARTE'];
   var RES_KEYS   = ['MANUAL_MENTENANTA','STOC_PIESE','ANALIZE_ULEI','MANUALE_DOC','FISA'];
 
@@ -172,7 +172,7 @@
       'sbToggleDt', 'sb-dt-arrow', DT_KEYS.indexOf(ACTIVE) > -1
     )}
     <div id="sb-dt-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
-      ${navItem('moto_reductoare.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="8" height="7" rx="1.1" stroke="currentColor" stroke-width="1.2"/><path d="M9 6.5h3a.7.7 0 010 1.4H9" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r=".7" fill="currentColor"/></svg>','MOTO-REDUCTOARE','MOTO_REDUCTOARE','sb-sub')}
+      ${navItem('motoare.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="8" height="7" rx="1.1" stroke="currentColor" stroke-width="1.2"/><path d="M9 6.5h3a.7.7 0 010 1.4H9" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="5" cy="7.5" r=".7" fill="currentColor"/></svg>','MOTOARE','MOTOARE','sb-sub')}
       ${navItem('elevatoare.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><line x1="5" y1="1" x2="5" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="9" y1="1" x2="9" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="3" y1="1" x2="11" y2="1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="3" y1="13" x2="11" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>','ELEVATOARE','ELEVATOARE','sb-sub')}
       ${navItem('transportoare_lant.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="5" width="12" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><circle cx="3.5" cy="7.5" r="1.2" stroke="currentColor" stroke-width="1.1"/><circle cx="10.5" cy="7.5" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg>','TRANS. CU LANT','TRANS_LANT','sb-sub')}
       ${navItem('transportoare_banda.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5h10v5a1 1 0 01-1 1H3a1 1 0 01-1-1V5z" stroke="currentColor" stroke-width="1.2"/><path d="M1 5h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>','TRANS. CU BANDA','TRANS_BANDA','sb-sub')}
