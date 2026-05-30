@@ -876,54 +876,40 @@ async function loadData() {
 }
 
 function renderTable() {
+  var filtered = getFilteredData();
   var tbody = document.getElementById('tbody');
-  var rows = filteredData.slice();
-  if (sortCol >= 0) {
-    var sc = sortCol;
-    var isDateCol = (sc === 2 || sc === 4);
-    var timeCol = sc === 2 ? 3 : (sc === 4 ? 5 : -1);
-    rows.sort(function(a, b) {
-      var va = isDateCol ? dateToSortKey(a[sc]||'') : String(a[sc]||'');
-      var vb = isDateCol ? dateToSortKey(b[sc]||'') : String(b[sc]||'');
-      if (va < vb) return -sortDir;
-      if (va > vb) return sortDir;
-      if (isDateCol && timeCol >= 0) {
-        var ta = String(a[timeCol]||'').replace(':','');
-        var tb = String(b[timeCol]||'').replace(':','');
-        if (ta < tb) return -sortDir;
-        if (ta > tb) return sortDir;
-      }
-      return 0;
-    });
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="10" class="load-state">Nicio inregistrare gasita.</td></tr>';
+    document.getElementById('row-count').textContent = '0 inregistrari';
+    return;
   }
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="11" class="no-data" style="color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';
-    updateSelCount(); return;
-  }
+  document.getElementById('row-count').textContent = filtered.length + ' inregistrari';
   var html = '';
-  rows.forEach(function(row, i) {
-    var uid = String(row[0]||'') + String(row[10]||'') + String(row[2]||'') + i;
+  filtered.forEach(function(row, i) {
+    // Sheet: 0=Motiv, 1=DataInc, 2=OraInc, 3=DataFin, 4=OraFin,
+    //        5=Descriere, 6=Status, 7=Piese, 8=Echipa, 9=AdaugatDe, 10=Echipament
+    var uid = String(row[0]||'') + String(row[10]||'') + String(row[1]||'') + i;
     var sel = selectedRows.has(uid);
-    var inc = '<span class="ddate">' + fmtDate(row[2]||'') + '</span>';
-    if (row[3] && String(row[3]).trim()) inc += '<span class="dtime">' + fmtTime(row[3]) + '</span>';
-    var fin = '<span class="ddate">' + fmtDate(row[4]||'') + '</span>';
-    if (row[5] && String(row[5]).trim()) fin += '<span class="dtime">' + fmtTime(row[5]) + '</span>';
-    html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + esc(uid) + '">'
-      + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleRow(this)"/></td>'
-      + '<td class="td-nr">' + (i+1) + '</td>'
+    var inc = '<span class="ddate">' + fmtDate(row[1]||'') + '</span>';
+    if (row[2] && String(row[2]).trim()) inc += '<span class="dtime">' + fmtTime(row[2]) + '</span>';
+    var fin = '<span class="ddate">' + fmtDate(row[3]||'') + '</span>';
+    if (row[4] && String(row[4]).trim()) fin += '<span class="dtime">' + fmtTime(row[4]) + '</span>';
+    html += '<tr class="data-row' + (sel ? ' row-selected' : '') + '" data-uid="' + esc(uid) + '">'
+      + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleSel(this)"/></td>'
+      + '<td class="td-nr">' + (i + 1) + '</td>'
       + '<td class="td-eq">' + esc(row[10]||'') + '</td>'
-      + (function(m){var av=m.toLowerCase().indexOf('avarie')>-1;return '<td class="td-motiv"'+(av?' style="color:var(--red);font-weight:700;"':'')+'>'+esc(m)+'</td>';})(row[1]||'')
+      + (function(m){var av=m.toLowerCase().indexOf('avarie')>-1;return '<td class="td-motiv"'+(av?' style="color:var(--red);font-weight:700;"':'')+'>'+esc(m)+'</td>';})(row[0]||'')
       + '<td class="td-dt">' + inc + '</td>'
       + '<td class="td-dt">' + fin + '</td>'
-      + '<td class="td-desc" data-desc="' + esc(row[6]||'') + '">' + esc(row[6]||'') + '</td>'
-      + '<td>' + statusChip(row[7]) + '</td>'
-      + '<td class="td-piese" title="' + esc(row[8]||'') + '">' + esc(row[8]||'') + '</td>'
-      + '<td class="td-echipa">' + esc(row[9]||'') + '</td>'
-      + '<td style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:500;">' + esc(row[10]||'') + '</td>'
+      + '<td class="td-desc" data-desc="' + esc(row[5]||'') + '">' + esc(row[5]||'') + '</td>'
+      + '<td>' + statusChip(row[6]) + '</td>'
+      + '<td class="td-piese" title="' + esc(row[7]||'') + '">' + esc(row[7]||'') + '</td>'
+      + '<td class="td-echipa">' + esc(row[8]||'') + '</td>'
+      + '<td style="color:#fff;font-weight:500;">' + esc(row[9]||'') + '</td>'
       + '</tr>';
   });
   tbody.innerHTML = html;
-  updateSelCount();
+  attachDescBubble();
 }
 
 function applyFilters() {
@@ -938,7 +924,7 @@ function applyFilters() {
     if (year && (!d || d.y !== year)) return false;
     if (echip && String(row[11]||'').toUpperCase() !== echip.toUpperCase()) return false;
     if (status && String(row[7]||'').toLowerCase().indexOf(status.toLowerCase()) < 0) return false;
-    if (motiv && String(row[1]||'').toLowerCase().indexOf(motiv.toLowerCase()) < 0) return false;
+    if (motiv && String(row[0]||'').toLowerCase().indexOf(motiv.toLowerCase()) < 0) return false;
     return true;
   });
   sortCol = -1; sortDir = 1;
