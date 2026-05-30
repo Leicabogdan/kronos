@@ -190,15 +190,7 @@ td:last-child{border-right:none;}
     <div class="form-grid">
       <!-- ID + Tip -->
       <div class="form-group"><div class="form-label">ID Echipament *</div><input class="form-input" id="nf-id" placeholder="ex: BC11"/></div>
-      <div class="form-group"><div class="form-label">Tip utilaj</div>
-        <select class="form-input" id="nf-tip">
-          <option value="">— selecteaza —</option>
-          <option>Transportor cu banda</option>
-          <option>Transportor cu lant</option>
-          <option>Elevator</option>
-          <option>Altul</option>
-        </select>
-      </div>
+
 
       <!-- MOTOR -->
       <div class="form-section-label motor">MOTOR</div>
@@ -347,7 +339,7 @@ function saveNewEquip(){
   if(!id){alert('ID-ul este obligatoriu!');return;}
   var payload={
     id:id,
-    tip:document.getElementById('nf-tip').value,
+    tip:(function(){var i=document.getElementById('nf-id').value.trim().toUpperCase();return i.startsWith('BC')?'Transportor cu banda':i.startsWith('CC')?'Transportor cu lant':/^E\d/.test(i)?'Elevator':'';})(),
     m_prod:document.getElementById('nf-m-prod').value,
     m_model:document.getElementById('nf-m-model').value,
     m_serie:document.getElementById('nf-m-serie').value,
@@ -388,7 +380,8 @@ function saveNewEquip(){
   };
   var btn=document.querySelector('.btn-save');
   btn.textContent='SE SALVEAZA...';btn.disabled=true;
-  fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)})
+  var params=new URLSearchParams(payload);
+  fetch(APPS_SCRIPT_URL+'?'+params.toString(),{method:'GET',mode:'no-cors'})
     .then(function(){
       // no-cors returns opaque response — assume success
       var row=[payload.id,payload.tip,payload.m_prod,payload.m_model,payload.m_curent,payload.m_putere,payload.m_turatie,payload.m_rulde,payload.m_rulne,payload.m_tip,payload.r_prod,payload.r_model,payload.r_tur,payload.m_serie,payload.m_tensiune,payload.m_frecventa,payload.m_cosf,payload.m_rand,payload.m_clasa,payload.m_lubr,payload.m_greutate,payload.m_ip,payload.m_temp,payload.m_std,payload.m_izol,payload.m_atex,payload.r_serie,payload.r_turie,payload.r_cuplu,payload.r_putere,payload.r_raport,payload.r_ulei,payload.r_cant,payload.r_poz,payload.r_data,payload.r_greutate,payload.r_atex,payload.r_temp,payload.r_ore];
@@ -470,14 +463,14 @@ function renderTable(){
   rows.forEach(function(row){
     var id=String(row[0]||'');
     html+='<tr class="data-row" data-idx="'+allData.indexOf(row)+'">';
-    html+='<td style="font-family:var(--mono);color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
+    html+='<td style="color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
     var prodColor=String(row[2]||'').toUpperCase().includes('SIEMENS')?'var(--blue)':String(row[2]||'').toUpperCase().includes('NORD')?'var(--amber)':String(row[2]||'').toUpperCase().includes('ABB')?'var(--green)':String(row[2]||'').toUpperCase().includes('ECHTOP')?'var(--red)':'var(--teal)';
     html+='<td style="color:'+prodColor+';font-weight:700;">'+f(row[2])+'</td>';
     html+='<td style="color:#fff;">'+f(row[3])+'</td>';
     html+='<td>'+f(row[4])+'</td>';
     html+='<td style="color:var(--teal);font-weight:700;">'+f(row[5])+'</td>';
-    html+='<td style="color:var(--blue);font-family:var(--mono);">'+f(row[7])+'</td>';
-    html+='<td style="color:var(--blue);font-family:var(--mono);">'+f(row[8])+'</td>';
+    html+='<td style="color:#fff;">'+f(row[7])+'</td>';
+    html+='<td style="color:#fff;">'+f(row[8])+'</td>';
     html+='</tr>';
   });
   tbody.innerHTML=html;
