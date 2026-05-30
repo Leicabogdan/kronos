@@ -810,9 +810,9 @@ function updateKPI() {
   // Total = toate interventiile lunii curente
   document.getElementById('k-total').textContent = thisMonth.length;
   renderKpiRows('kpi-total-eq', thisMonth.slice(-5).reverse(), function(r) {
-    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
-      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(String(r[0]||'').substring(0,22)) + '</span>'
+    return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(String(r[0]||'').substring(0,24)) + '</span>'
       + '</div>';
   });
 
@@ -824,9 +824,9 @@ function updateKPI() {
   document.getElementById('k-suprav').textContent = suprav.length;
   renderKpiRows('kpi-suprav-eq', suprav.slice(-5).reverse(), function(r) {
     var piese = String(r[7]||'').trim();
-    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
-      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(piese ? piese.substring(0,22) : String(r[6]||'').substring(0,22)) + '</span>'
+    return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(piese ? piese.substring(0,24) : String(r[6]||'').substring(0,24)) + '</span>'
       + '</div>';
   });
 
@@ -840,9 +840,9 @@ function updateKPI() {
   renderKpiRows('kpi-avarii-eq', avarii.slice(-5).reverse(), function(r) {
     var s = String(r[6]||'').toLowerCase();
     var label = s.indexOf('necesita interv') > -1 ? 'Necesita interventie' : esc(String(r[0]||'').substring(0,22));
-    return '<div style="display:flex;align-items:center;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
-      + '<span style="font-family:var(--mono);font-size:12px;font-weight:700;color:var(--red);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + label + '</span>'
+    return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
+      + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red);min-width:44px;">' + esc(r[10]||'—') + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + label + '</span>'
       + '</div>';
   });
 }
