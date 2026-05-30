@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KRONOS — Moto-reductoare</title>
+<title>KRONOS — Motoare</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
@@ -16,41 +16,20 @@
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
   --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
   --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --sidebar:220px;
 }
-html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100svh;}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
+.app{display:flex;height:100svh;overflow:hidden;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{height:56px;background:var(--bg2);border-bottom:1px solid var(--border2);display:flex;align-items:center;padding:0 clamp(16px,2.5vw,28px);gap:12px;flex-shrink:0;}
+.topbar-title{font-family:var(--title);font-size:clamp(14px,2vw,17px);font-weight:900;color:#fff;letter-spacing:.12em;}
+.topbar-sub{font-family:var(--sans);font-size:clamp(11px,1.5vw,13px);color:#fff;font-weight:700;margin-top:2px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-date{font-family:var(--sans);font-size:14px;color:#fff;font-weight:600;margin-bottom:3px;}
+.topbar-time{font-family:var(--title);font-size:22px;color:var(--teal);font-weight:900;letter-spacing:.08em;line-height:1;}
+.content{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(14px,2.5vw,28px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 
-/* ── TOPBAR ── */
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border2);height:60px;
-  padding:0 clamp(14px,3vw,28px);display:grid;grid-template-columns:1fr auto 1fr;
-  align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
-.tlogo-wrap{display:flex;align-items:center;gap:clamp(10px,2vw,20px);}
-.tlogo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.tlogo canvas{display:block;width:44px;height:44px;}
-.tlogo-text{display:flex;flex-direction:column;}
-.tlogo-main{font-family:var(--title);font-size:17px;font-weight:900;letter-spacing:.18em;color:#fff;line-height:1;}
-.tlogo-main .o{color:var(--teal);}
-.tlogo-sub{font-family:var(--mono);font-size:8px;color:var(--teal);letter-spacing:.22em;font-weight:700;margin-top:2px;}
-.nav-links{display:flex;align-items:center;gap:6px;}
-.nav-link{color:#fff;text-decoration:none;font-family:var(--mono);font-size:13px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;background:var(--border);border:1px solid var(--border2);
-  padding:6px 14px;border-radius:7px;transition:all .18s;display:flex;align-items:center;gap:7px;white-space:nowrap;}
-.nav-link:hover{border-color:rgba(0,220,180,.55);color:var(--teal);background:rgba(0,220,180,.08);}
-.nav-link.active{color:var(--teal);background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.35);}
-.nav-link.dashboard{font-size:16px;}
-.topbar-center{display:flex;flex-direction:column;align-items:center;gap:1px;}
-.topbar-time{font-family:var(--title);font-size:clamp(16px,2.5vw,22px);font-weight:900;color:var(--teal);letter-spacing:.12em;line-height:1;}
-.topbar-date{font-family:var(--mono);font-size:clamp(9px,1.4vw,11px);color:#fff;font-weight:600;letter-spacing:.08em;}
-.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
-.role-badge{font-size:13px;font-family:var(--mono);background:var(--border);border:1px solid var(--border2);
-  color:var(--green);padding:4px 11px;border-radius:4px;letter-spacing:.08em;font-weight:700;}
-.coord-name-box{background:#0d2420;border:1.5px solid var(--teal);border-radius:8px;padding:3px 12px;text-align:center;line-height:1.25;}
-.coord-name-box .first{font-family:var(--raj);font-size:12px;font-weight:600;color:#fff;display:block;letter-spacing:.1em;}
-.coord-name-box .last{font-family:var(--raj);font-size:15px;font-weight:700;color:var(--teal);display:block;letter-spacing:.12em;}
-
-/* ── PAGE ── */
-.page{padding:clamp(12px,1.5vw,18px) clamp(8px,1.5vw,16px);max-width:100%;margin:0;}
-
-/* ── KPI ── */
+/* KPI */
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
 @media(max-width:700px){.kpi-strip{grid-template-columns:1fr 1fr;}}
 .kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
@@ -61,277 +40,211 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);min-height:100
 .kpi-card.c-green::before{background:var(--green);}
 .kpi-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
 .kpi-val{font-family:var(--title);font-size:clamp(27px,3.7vw,37px);font-weight:900;line-height:1;}
-.kpi-card.c-teal .kpi-val{color:var(--teal);}
-.kpi-card.c-teal .kpi-lbl{color:var(--teal);}
-.kpi-card.c-blue .kpi-val{color:var(--blue);}
-.kpi-card.c-blue .kpi-lbl{color:var(--blue);}
-.kpi-card.c-amber .kpi-val{color:var(--amber);}
-.kpi-card.c-amber .kpi-lbl{color:var(--amber);}
-.kpi-card.c-green .kpi-val{color:var(--green);}
-.kpi-card.c-green .kpi-lbl{color:var(--green);}
+.kpi-card.c-teal .kpi-val,.kpi-card.c-teal .kpi-lbl{color:var(--teal);}
+.kpi-card.c-blue .kpi-val,.kpi-card.c-blue .kpi-lbl{color:var(--blue);}
+.kpi-card.c-amber .kpi-val,.kpi-card.c-amber .kpi-lbl{color:var(--amber);}
+.kpi-card.c-green .kpi-val,.kpi-card.c-green .kpi-lbl{color:var(--green);}
 .kpi-sub{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600;margin-top:5px;}
 
-/* ── FILTER BAR ── */
+/* ADD FORM */
+.add-form-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:18px 20px;margin-bottom:18px;}
+.add-form-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.form-label.motor{color:var(--blue);}
+.form-label.reduct{color:var(--purple);}
+.form-input{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
+.form-input:focus{border-color:var(--teal);}
+.form-input::placeholder{color:rgba(255,255,255,.25);}
+.form-section-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 0 4px;grid-column:1/-1;border-top:1px solid var(--border);margin-top:4px;}
+.form-section-label.motor{color:var(--blue);}
+.form-section-label.reduct{color:var(--purple);}
+.form-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.btn-save{padding:9px 22px;border-radius:8px;background:rgba(0,220,180,.12);border:1.5px solid rgba(0,220,180,.4);color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;}
+.btn-save:hover{background:rgba(0,220,180,.22);border-color:var(--teal);}
+.btn-reset{padding:9px 18px;border-radius:8px;background:transparent;border:1.5px solid var(--border2);color:rgba(255,255,255,.5);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;}
+.btn-reset:hover{border-color:rgba(255,255,255,.3);color:#fff;}
+.add-toggle-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:8px;background:rgba(0,220,180,.08);border:1.5px solid rgba(0,220,180,.3);color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.06em;}
+.add-toggle-btn:hover{background:rgba(0,220,180,.15);border-color:var(--teal);}
+
+/* FILTER BAR */
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
 .search-wrap{position:relative;}
 .search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(0,220,180,.5);}
-.search-input{padding:7px 14px 7px 34px;border-radius:7px;background:rgba(0,220,180,.04);
-  border:1.5px solid rgba(0,220,180,.2);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;
-  outline:none;width:240px;transition:border-color .2s;}
+.search-input{padding:7px 14px 7px 34px;border-radius:7px;background:rgba(0,220,180,.04);border:1.5px solid rgba(0,220,180,.2);color:#fff;font-family:var(--sans);font-size:14px;outline:none;width:220px;transition:border-color .2s;}
 .search-input:focus{border-color:var(--teal);}
 .search-input::placeholder{color:rgba(255,255,255,.35);}
-.filter-btn{padding:7px 18px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);
-  color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
-  transition:all .18s;letter-spacing:.02em;white-space:nowrap;}
+.filter-btn{padding:7px 16px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);color:#fff;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
 .filter-btn:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
 .filter-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.4);color:var(--teal);}
 .export-btns{margin-left:auto;display:flex;gap:8px;}
-.exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:7px;
-  font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
-  transition:all .18s;letter-spacing:.02em;white-space:nowrap;border:1.5px solid;}
+.exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;border:1.5px solid;}
 .exp-btn.pdf{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
 .exp-btn.pdf:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
 .exp-btn.xls{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
 .exp-btn.xls:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
 
-/* ── TABLE — 3-section Excel style ── */
+/* TABLE */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:16px;}
-table{width:100%;border-collapse:collapse;min-width:100%;font-family:'IBM Plex Sans',sans-serif;}
-
-/* Section header row — styled as buttons/pills */
-thead .sec-row th{
-  font-family:var(--title);font-size:15px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
-  padding:10px 18px;text-align:center;
-  border-right:3px solid rgba(0,220,180,.4);
-}
-.sec-id{
-  background:rgba(0,220,180,.18);color:var(--teal);
-  border-right:3px solid rgba(0,220,180,.5)!important;
-  text-shadow:0 0 12px rgba(0,220,180,.4);
-}
-.sec-motor{
-  background:rgba(80,144,224,.18);color:var(--blue);
-  border-right:3px solid rgba(80,144,224,.35)!important;
-  border-left:3px solid rgba(80,144,224,.35)!important;
-}
-.sec-reduct{
-  background:rgba(155,109,255,.18);color:var(--purple);
-  border-right:none!important;
-  border-left:3px solid rgba(155,109,255,.6)!important;
-  border-bottom:2px solid var(--purple)!important;
-}
-
-/* Section header bottom border line per section */
-.sec-id{border-bottom:2px solid var(--teal)!important;}
-.sec-motor{border-bottom:2px solid var(--blue)!important;}
-
-/* Sub-header row */
-thead .sub-row th{
-  font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#fff;letter-spacing:.06em;text-transform:uppercase;
-  font-weight:700;padding:10px 13px;text-align:center;white-space:nowrap;
-  cursor:pointer;user-select:none;transition:all .15s;
-  border-bottom:1.5px solid rgba(255,255,255,.1);
-  border-right:1px solid rgba(255,255,255,.07);
-  background:#081410;
-}
+table{width:100%;border-collapse:collapse;min-width:700px;font-family:var(--sans);}
+thead .sec-row th{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:9px 14px;text-align:center;border-right:3px solid rgba(0,220,180,.4);}
+.sec-id{background:rgba(0,220,180,.18);color:var(--teal);border-right:3px solid rgba(0,220,180,.5)!important;border-bottom:2px solid var(--teal)!important;}
+.sec-motor{background:rgba(80,144,224,.18);color:var(--blue);border-right:none!important;border-left:3px solid rgba(80,144,224,.35)!important;border-bottom:2px solid var(--blue)!important;}
+thead .sub-row th{font-family:var(--sans);font-size:12px;color:#fff;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:9px 12px;text-align:center;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:1.5px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.07);background:#081410;}
 thead .sub-row th:hover{color:var(--teal);background:rgba(0,220,180,.06);}
-thead .sub-row th.sort-asc::after{content:' ↑';color:var(--teal);font-size:12px;}
-thead .sub-row th.sort-desc::after{content:' ↓';color:var(--teal);font-size:12px;}
+thead .sub-row th.sort-asc::after{content:' ↑';color:var(--teal);font-size:11px;}
+thead .sub-row th.sort-desc::after{content:' ↓';color:var(--teal);font-size:11px;}
 thead .sub-row th.th-motor{background:#07101a;border-right:1px solid rgba(80,144,224,.2);color:var(--blue);}
-thead .sub-row th.th-reduct{background:#0c0a20;border-right:1px solid rgba(155,109,255,.2);color:var(--purple);}
 thead .sub-row th:last-child{border-right:none;}
-
-/* Section column delimiters in body */
-.col-motor-first{border-left:3px solid rgba(80,144,224,.2)!important;}
-.col-reduct-first{border-left:3px solid rgba(155,109,255,.2)!important;}
-.col-expand{border-left:2px solid rgba(0,220,180,.1)!important;}
-
-/* Body */
 tbody tr.data-row{transition:background .12s;cursor:pointer;user-select:none;}
-tbody tr.data-row:nth-child(4n+1),tbody tr.data-row:nth-child(4n+2){background:var(--bg3);}
-tbody tr.data-row:nth-child(4n+3),tbody tr.data-row:nth-child(4n){background:var(--bg4);}
+tbody tr.data-row:nth-child(odd){background:var(--bg3);}
+tbody tr.data-row:nth-child(even){background:var(--bg4);}
 tbody tr.data-row:hover{background:rgba(0,220,180,.05)!important;}
-tbody tr.data-row.expanded{background:rgba(0,220,180,.04)!important;}
-td{
-  padding:10px 12px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  border-right:1px solid rgba(255,255,255,.04);
-  vertical-align:middle;font-size:15px;
-  font-family:'IBM Plex Sans',sans-serif;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  text-align:center;
-}
+tbody tr.data-row.expanded{background:rgba(0,220,180,.04)!important;border-left:2px solid var(--teal);}
+td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
 td:last-child{border-right:none;}
-.td-id{font-family:var(--mono);font-weight:900;color:var(--teal);font-size:16px;letter-spacing:.08em;white-space:nowrap;}
-.td-motor{font-size:15px;color:#fff;font-weight:500;}
-.td-motor.prod{color:var(--blue);font-size:15px;font-weight:700;}
-.td-reduct{font-size:15px;color:#fff;font-weight:500;}
-.td-reduct.prod{color:var(--purple);font-size:15px;font-weight:700;}
-.td-expand{text-align:center;white-space:nowrap;}
-/* Expand arrow — clear chevron button style */
-.expand-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:6px;
-  background:rgba(0,220,180,.1);border:1.5px solid rgba(0,220,180,.3);
-  color:var(--teal);font-size:13px;font-weight:700;
-  transition:all .2s;cursor:pointer;
-}
-.data-row:hover .expand-btn{background:rgba(0,220,180,.2);border-color:var(--teal);}
-.expanded .expand-btn{background:rgba(0,220,180,.18);border-color:var(--teal);transform:rotate(180deg);}
-
-/* Expanded details row */
-tbody tr.detail-row{display:none;}
-tbody tr.detail-row.open{display:table-row;}
-tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rgba(0,220,180,.15);padding:16px 20px;}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
-.detail-section-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
-.detail-section-title.motor{color:var(--blue);}
-.detail-section-title.reduct{color:var(--purple);}
-
-.detail-field{display:flex;flex-direction:column;gap:2px;align-items:center;padding:4px 6px;}
-.detail-lbl{font-family:var(--mono);font-size:15px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:center;}
-.detail-val{font-family:'IBM Plex Sans',sans-serif;font-size:15px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
-
-/* Load state */
 .load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
 
-/* ── UPLOAD ── */
-.file-hint{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);margin-top:8px;letter-spacing:.06em;}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;max-width:1100px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;position:relative;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.modal-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.06);border:1px solid var(--border2);color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+.modal-close:hover{background:rgba(224,80,80,.15);border-color:var(--red);color:var(--red);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
+.detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.detail-section-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
+.detail-section-title.motor{color:var(--blue);}
+.detail-section-title.reduct{color:var(--purple);}
+.detail-field{display:flex;flex-direction:column;gap:2px;align-items:center;padding:4px 6px;}
+.detail-lbl{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:center;}
+.detail-val{font-family:var(--sans);font-size:14px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
 
-/* ── PRINT ── */
-@media print{
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  a{color:inherit!important;text-decoration:none!important;}
-  a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;}
-  .topbar,.filter-bar,.file-section,.trademark,.filter-btn,.exp-btn,.nav-links,.search-input,.kpi-strip{display:none!important;}
-  .page{padding:0 8mm!important;max-width:100%!important;margin:0!important;}
-
-  /* Header */
-  #print-header{display:flex!important;align-items:center;justify-content:space-between;
-    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;background:#fff!important;}
-  #print-footer{display:flex!important;position:fixed;bottom:5mm;left:8mm;right:8mm;
-    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;padding-top:3px;justify-content:space-between;}
-
-  /* ── SIMPLE PDF ── */
-  body[data-pdf-simple] .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
-  body[data-pdf-simple] table{width:100%!important;border-collapse:collapse!important;min-width:0!important;}
-  body[data-pdf-simple] thead .sec-row th{background:#1a3a6e!important;color:#fff!important;font-size:8px!important;padding:5px 6px!important;}
-  body[data-pdf-simple] thead .sub-row th{background:#1a3a6e!important;color:#fff!important;font-size:7px!important;padding:5px 6px!important;white-space:normal!important;}
-  body[data-pdf-simple] .sec-motor{background:#0d1f35!important;}
-  body[data-pdf-simple] .sec-reduct{background:#150a28!important;}
-  body[data-pdf-simple] .th-motor{background:#0d1f35!important;}
-  body[data-pdf-simple] .th-reduct{background:#150a28!important;}
-  body[data-pdf-simple] tbody tr:nth-child(even){background:#f0f4fb!important;}
-  body[data-pdf-simple] td{padding:4px 6px!important;font-size:8px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;}
-  body[data-pdf-simple] tbody tr.detail-row{display:none!important;}
-
-  /* ── COMPLEX PDF — only detail cards, no table ── */
-  body[data-pdf-complex] .table-wrap{display:none!important;}
-  body[data-pdf-complex] #complex-cards{display:block!important;}
-  .complex-card{background:#fff!important;border:1px solid #1a3a6e!important;border-radius:6px!important;
-    padding:10px 12px!important;margin-bottom:10px!important;page-break-inside:avoid!important;}
-  .complex-card-id{font-family:'Orbitron',sans-serif!important;font-size:11px!important;
-    font-weight:900!important;color:#1a3a6e!important;letter-spacing:.1em!important;
-    border-bottom:1px solid #d0d8e8!important;padding-bottom:6px!important;margin-bottom:8px!important;}
-  .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  .detail-section{background:#f8f9ff!important;border:1px solid #ccc!important;border-radius:4px!important;padding:6px 8px!important;}
-  .detail-section-title{font-size:9px!important;font-weight:700!important;margin-bottom:6px!important;color:#1a3a6e!important;}
-  .detail-section-title.motor{color:#0d1f35!important;}
-  .detail-section-title.reduct{color:#150a28!important;}
-  .detail-field{padding:2px 4px!important;display:flex!important;flex-direction:column!important;align-items:center!important;}
-  .detail-lbl{font-size:7px!important;color:#007a60!important;font-family:'Share Tech Mono',monospace!important;}
-  .detail-val{font-size:8px!important;color:#000!important;font-weight:600!important;}
-
-  @page{size:A4 landscape;margin:0mm;}
-}
-#print-header{display:none;}
-#print-footer{display:none;}
-#complex-cards{display:none;}
-
-/* ── TRADEMARK ── */
-.trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:28px;}
+/* TRADEMARK */
+.trademark{text-align:center;padding:16px 0 8px;border-top:1px solid var(--border);margin-top:20px;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
 .tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+
+@media(max-width:900px){.kpi-strip{grid-template-columns:1fr 1fr;}.filter-bar{flex-wrap:wrap;}}
+@media(max-width:600px){.kpi-strip{grid-template-columns:1fr;}.export-btns{margin-left:0;}}
+
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.filter-bar,.add-form-wrap,.export-btns,.modal-overlay,.trademark{display:none!important;}
+  .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;}
+  html,body{background:#fff!important;color:#000!important;padding:0!important;}
+}
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <div class="tlogo-wrap">
-    <a class="tlogo" href="dashboard.html">
-      <canvas id="gear" width="88" height="88" style="width:44px;height:44px;"></canvas>
-      <div class="tlogo-text">
-        <div class="tlogo-main">KR<span class="o">O</span>NOS</div>
-        <div class="tlogo-sub">Maintenance System</div>
+<script src="sidebar.js" data-active="MOTOARE"></script>
+
+<div class="main">
+  <div class="topbar">
+    <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div class="topbar-title">MOTOARE</div>
+      <div class="topbar-sub">Terminal Cereale Socep &middot; Port Constanta</div>
+    </div>
+    <div class="topbar-right">
+      <div>
+        <div class="topbar-date" id="top-date"></div>
+        <div class="topbar-time" id="top-time"></div>
       </div>
-    </a>
-    <nav class="nav-links">
-      <a class="nav-link dashboard" href="dashboard.html">
-        <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M1 5.5L6 1l5 4.5V11H8V8H4v3H1V5.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-        DASHBOARD
-      </a>
-      <a class="nav-link active" href="moto_reductoare.html">MOTO-REDUCTOARE</a>
-    </nav>
-  </div>
-  <div class="topbar-center">
-    <div class="topbar-time" id="top-time">00:00:00</div>
-    <div class="topbar-date" id="top-date"></div>
-  </div>
-  <div class="topbar-right">
-    <span class="role-badge" id="user-role">APP OWNER</span>
-    <div class="coord-name-box">
-      <span class="first" id="user-first">Leica</span>
-      <span class="last" id="user-last">BOGDAN</span>
     </div>
   </div>
-</div>
 
-<!-- PAGE -->
-<div class="page">
+  <div class="content">
 
   <!-- KPI -->
   <div class="kpi-strip">
-    <div class="kpi-card c-teal">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="kpi-val" id="k-total">—</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--teal);">TOTAL</div>
+    <div class="kpi-card c-teal"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-total">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--teal);">TOTAL</div></div></div>
+    <div class="kpi-card c-blue"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-siemens">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--blue);">SIEMENS</div></div></div>
+    <div class="kpi-card c-amber"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-nord">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--amber);">NORD</div></div></div>
+    <div class="kpi-card c-green"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-abb">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--green);">ABB</div></div></div>
+  </div>
 
-        </div>
-      </div>
+  <!-- ADD EQUIPMENT BUTTON -->
+  <div style="margin-bottom:12px;">
+    <button class="add-toggle-btn" onclick="toggleAddForm()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span id="add-toggle-label">ADAUGA ECHIPAMENT</span>
+    </button>
+  </div>
+
+  <!-- ADD FORM -->
+  <div class="add-form-wrap" id="add-form-wrap" style="display:none;">
+    <div class="add-form-title">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Adauga echipament nou
     </div>
-    <div class="kpi-card c-blue">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="kpi-val" id="k-siemens">—</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--blue);">SIEMENS</div>
-
-        </div>
+    <div class="form-grid">
+      <!-- ID + Tip -->
+      <div class="form-group"><div class="form-label">ID Echipament *</div><input class="form-input" id="nf-id" placeholder="ex: BC11"/></div>
+      <div class="form-group"><div class="form-label">Tip utilaj</div>
+        <select class="form-input" id="nf-tip">
+          <option value="">— selecteaza —</option>
+          <option>Transportor cu banda</option>
+          <option>Transportor cu lant</option>
+          <option>Elevator</option>
+          <option>Altul</option>
+        </select>
       </div>
+
+      <!-- MOTOR -->
+      <div class="form-section-label motor">MOTOR</div>
+      <div class="form-group"><div class="form-label motor">Producator</div><input class="form-input" id="nf-m-prod" placeholder="SIEMENS / NORD / ABB..."/></div>
+      <div class="form-group"><div class="form-label motor">Model</div><input class="form-input" id="nf-m-model" placeholder="ex: 1CV2282B"/></div>
+      <div class="form-group"><div class="form-label motor">Serie</div><input class="form-input" id="nf-m-serie" placeholder=""/></div>
+      <div class="form-group"><div class="form-label motor">Curent nominal</div><input class="form-input" id="nf-m-curent" placeholder="ex: 133 A"/></div>
+      <div class="form-group"><div class="form-label motor">Putere nominala</div><input class="form-input" id="nf-m-putere" placeholder="ex: 75 kW"/></div>
+      <div class="form-group"><div class="form-label motor">Turatie</div><input class="form-input" id="nf-m-turatie" placeholder="ex: 1485 RPM"/></div>
+      <div class="form-group"><div class="form-label motor">Tensiune nominala</div><input class="form-input" id="nf-m-tensiune" placeholder="ex: 400V Δ / 460V Δ"/></div>
+      <div class="form-group"><div class="form-label motor">Frecventa</div><input class="form-input" id="nf-m-frecventa" placeholder="ex: 50Hz / 60Hz"/></div>
+      <div class="form-group"><div class="form-label motor">Factor de putere (cos φ)</div><input class="form-input" id="nf-m-cosf" placeholder="ex: 0.86"/></div>
+      <div class="form-group"><div class="form-label motor">Randament</div><input class="form-input" id="nf-m-rand" placeholder="ex: 94% / 95%"/></div>
+      <div class="form-group"><div class="form-label motor">Clasa eficienta</div><input class="form-input" id="nf-m-clasa" placeholder="IE2 / IE3"/></div>
+      <div class="form-group"><div class="form-label motor">Rulment DE</div><input class="form-input" id="nf-m-rulde" placeholder="ex: NU317EP"/></div>
+      <div class="form-group"><div class="form-label motor">Rulment NE</div><input class="form-input" id="nf-m-rulne" placeholder="ex: 6317-C3"/></div>
+      <div class="form-group"><div class="form-label motor">Lubrifiant</div><input class="form-input" id="nf-m-lubr" placeholder="ex: UNIREX-N3 40g 6000h"/></div>
+      <div class="form-group"><div class="form-label motor">Greutate</div><input class="form-input" id="nf-m-greutate" placeholder="ex: 740 Kg"/></div>
+      <div class="form-group"><div class="form-label motor">Tip constructie</div><input class="form-input" id="nf-m-tip" placeholder="ex: IMB5"/></div>
+      <div class="form-group"><div class="form-label motor">Grad protectie</div><input class="form-input" id="nf-m-ip" placeholder="ex: IP65"/></div>
+      <div class="form-group"><div class="form-label motor">Clasa izolatie</div><input class="form-input" id="nf-m-izol" placeholder="ex: Th.Cl.155 (F)"/></div>
+      <div class="form-group"><div class="form-label motor">Temperatura functionare</div><input class="form-input" id="nf-m-temp" placeholder="ex: -20°C la +40°C"/></div>
+      <div class="form-group"><div class="form-label motor">Standard</div><input class="form-input" id="nf-m-std" placeholder="ex: EN 60034"/></div>
+      <div class="form-group"><div class="form-label motor">Certificare ATEX</div><input class="form-input" id="nf-m-atex" placeholder="ex: Ex II 2D..."/></div>
+
+      <!-- REDUCTOR -->
+      <div class="form-section-label reduct">REDUCTOR</div>
+      <div class="form-group"><div class="form-label reduct">Producator</div><input class="form-input" id="nf-r-prod" placeholder="ex: NORD"/></div>
+      <div class="form-group"><div class="form-label reduct">Model</div><input class="form-input" id="nf-r-model" placeholder="ex: SK 9082.1..."/></div>
+      <div class="form-group"><div class="form-label reduct">Serie</div><input class="form-input" id="nf-r-serie" placeholder=""/></div>
+      <div class="form-group"><div class="form-label reduct">Turatie intrare</div><input class="form-input" id="nf-r-tur" placeholder="ex: 1485 RPM"/></div>
+      <div class="form-group"><div class="form-label reduct">Turatie nominala arbore iesire</div><input class="form-input" id="nf-r-turie" placeholder="ex: 86 RPM"/></div>
+      <div class="form-group"><div class="form-label reduct">Cuplu nominal arbore iesire</div><input class="form-input" id="nf-r-cuplu" placeholder="ex: 8359 Nm"/></div>
+      <div class="form-group"><div class="form-label reduct">Putere maxima</div><input class="form-input" id="nf-r-putere" placeholder="ex: 75 kW"/></div>
+      <div class="form-group"><div class="form-label reduct">Raport total transmisie</div><input class="form-input" id="nf-r-raport" placeholder="ex: 17.35"/></div>
+      <div class="form-group"><div class="form-label reduct">Tip ulei</div><input class="form-input" id="nf-r-ulei" placeholder="ex: CLP HC 220"/></div>
+      <div class="form-group"><div class="form-label reduct">Cantitate ulei</div><input class="form-input" id="nf-r-cant" placeholder="ex: 17 L"/></div>
+      <div class="form-group"><div class="form-label reduct">Pozitie montaj</div><input class="form-input" id="nf-r-poz" placeholder="ex: M1"/></div>
+      <div class="form-group"><div class="form-label reduct">Data fabricatie</div><input class="form-input" id="nf-r-data" placeholder="ex: 06/2024"/></div>
+      <div class="form-group"><div class="form-label reduct">Greutate</div><input class="form-input" id="nf-r-greutate" placeholder="ex: 1100 Kg"/></div>
+      <div class="form-group"><div class="form-label reduct">Certificare ATEX</div><input class="form-input" id="nf-r-atex" placeholder="ex: II 3D Ex h IIIC T140C Dc"/></div>
+      <div class="form-group"><div class="form-label reduct">Temperatura functionare</div><input class="form-input" id="nf-r-temp" placeholder="ex: -10C pana la +40C"/></div>
+      <div class="form-group"><div class="form-label reduct">Ore functionare estimate</div><input class="form-input" id="nf-r-ore" placeholder="ex: 8000h"/></div>
     </div>
-    <div class="kpi-card c-amber">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="kpi-val" id="k-nord">—</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--amber);">NORD</div>
-
-        </div>
-      </div>
-    </div>
-    <div class="kpi-card c-green">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div class="kpi-val" id="k-abb">—</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="font-family:var(--title);font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1;opacity:.5; color:var(--green);">ABB</div>
-
-        </div>
-      </div>
+    <div class="form-actions">
+      <button class="btn-save" onclick="saveNewEquip()">SALVEAZA</button>
+      <button class="btn-reset" onclick="resetForm()">RESETEAZA</button>
     </div>
   </div>
 
@@ -342,110 +255,160 @@ tbody tr.detail-row td{background:rgba(0,220,180,.02);border-bottom:1px solid rg
       <input class="search-input" id="search-input" type="text" placeholder="Cauta echipament..." oninput="renderTable()"/>
     </div>
     <button class="filter-btn active" data-f="all" onclick="setFilter(this)">Toate</button>
-    <button class="filter-btn" data-f="banda" onclick="setFilter(this)">Transportoare cu banda</button>
-    <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Transportoare cu lant</button>
+    <button class="filter-btn" data-f="banda" onclick="setFilter(this)">Banda</button>
+    <button class="filter-btn" data-f="lant" onclick="setFilter(this)">Lant</button>
     <button class="filter-btn" data-f="elevator" onclick="setFilter(this)">Elevatoare</button>
     <div class="export-btns">
-      <button class="exp-btn pdf" onclick="exportPDF(false)">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        PDF Simplu
-      </button>
-      <button class="exp-btn pdf" onclick="exportPDF(true)" style="background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);color:var(--teal);">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        PDF Complex
-      </button>
-      <button class="exp-btn xls" onclick="exportExcel()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Exporta Excel
-      </button>
+      <button class="exp-btn pdf" onclick="exportPDF(false)">PDF Simplu</button>
+      <button class="exp-btn pdf" style="background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);color:var(--teal);" onclick="exportPDF(true)">PDF Complex</button>
+      <button class="exp-btn xls" onclick="exportExcel()">Export Excel</button>
     </div>
   </div>
 
-  <!-- COMPLEX PDF CARDS -->
-  <div id="complex-cards"></div>
-
-  <!-- TABLE -->
+  <!-- TABLE — only MOTOR columns visible; REDUCTOR in modal -->
   <div class="table-wrap">
     <table id="main-table">
       <colgroup>
-        <col style="width:4%;"/><!-- ID -->
-        <col style="width:5%;"/><!-- M:Producator -->
-        <col style="width:12%;"/><!-- M:Model -->
-        <col style="width:9%;"/><!-- M:Curent -->
-        <col style="width:7%;"/><!-- M:Putere -->
-        <col style="width:7%;"/><!-- M:Turatie -->
-        <col style="width:9%;"/><!-- M:RulDE -->
-        <col style="width:9%;"/><!-- M:RulNE -->
-        <col style="width:5%;"/><!-- R:Producator -->
-        <col style="width:12%;"/><!-- R:Model -->
-        <col style="width:9%;"/><!-- R:Turatie -->
+        <col style="width:6%;"/>
+        <col style="width:8%;"/>
+        <col style="width:18%;"/>
+        <col style="width:10%;"/>
+        <col style="width:10%;"/>
+        <col style="width:10%;"/>
+        <col style="width:12%;"/>
+        <col style="width:12%;"/>
+        <col style="width:4%;"/>
       </colgroup>
       <thead>
         <tr class="sec-row">
           <th class="sec-id">ID</th>
-          <th class="sec-motor" colspan="7">MOTOR</th>
-          <th class="sec-reduct" colspan="3">REDUCTOR</th>
+          <th class="sec-motor" colspan="8">MOTOR — click pe rand pentru detalii Motor + Reductor</th>
         </tr>
         <tr class="sub-row">
           <th onclick="sortBy(0)">ID</th>
-          <th class="th-motor col-motor-first" onclick="sortBy(1)">Prod.</th>
+          <th class="th-motor" onclick="sortBy(1)">Prod.</th>
           <th class="th-motor" onclick="sortBy(2)">Model</th>
-          <th class="th-motor" onclick="sortBy(3)">Curent nominal</th>
-          <th class="th-motor" onclick="sortBy(4)">Putere nominala</th>
+          <th class="th-motor" onclick="sortBy(3)">Curent</th>
+          <th class="th-motor" onclick="sortBy(4)">Putere</th>
           <th class="th-motor" onclick="sortBy(5)">Turatie</th>
           <th class="th-motor" onclick="sortBy(6)">Rulment DE</th>
           <th class="th-motor" onclick="sortBy(7)">Rulment NE</th>
-          <th class="th-reduct col-reduct-first" onclick="sortBy(9)">Prod.</th>
-          <th class="th-reduct" onclick="sortBy(10)">Model</th>
-          <th class="th-reduct" onclick="sortBy(11)">Turatie</th>
+          <th class="th-motor">&#9432;</th>
         </tr>
       </thead>
       <tbody id="tbody">
-        <tr><td colspan="12" class="load-state">Se incarca datele...</td></tr>
+        <tr><td colspan="9" class="load-state">Se incarca datele...</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- UPLOAD -->
-
-  </div>
-
-  <!-- TRADEMARK -->
   <div class="trademark">
     <div class="tm-name"><span class="lc">LEICA</span> <span class="bg">BOGDAN</span></div>
     <div class="tm-email">leicabogdan@gmail.com</div>
-    <div class="tm-copy">© 2026 KRONOS™ · ALL RIGHTS RESERVED</div>
+    <div class="tm-copy">&#169; 2026 KRONOS&#8482; &middot; ALL RIGHTS RESERVED</div>
   </div>
 
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detail-modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&#215;</button>
+    <div id="modal-body"></div>
+  </div>
 </div>
 
+<!-- PRINT -->
+<div id="print-header" style="display:none;"></div>
+<div id="print-footer" style="display:none;"></div>
+<div id="complex-cards" style="display:none;"></div>
+
 <script>
-/* ── GEAR ── */
-function drawGear(cv){const c=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,s=W/300;const RT=126*s,RR=98*s,RI=78*s,TC='#00dcb4',OC='#ff8c00';function pt(r,a){return[cx+r*Math.sin(a),cy-r*Math.cos(a)];}c.clearRect(0,0,W,H);const grd=c.createRadialGradient(cx,cy,RI*.3,cx,cy,RT);grd.addColorStop(0,'#0e2420');grd.addColorStop(1,'#04080a');c.beginPath();for(let i=0;i<12;i++){const b=(i/12)*Math.PI*2,ta=.18,ra=.26;const a1=b-ra/2,a2=b-ta/2,a3=b+ta/2,a4=b+ra/2,a5=((i+1)/12)*Math.PI*2-ra/2;const[x0,y0]=pt(RR,a1),[x2,y2]=pt(RT,a2),[x3,y3]=pt(RT,a3),[x4,y4]=pt(RR,a4);if(!i)c.moveTo(x0,y0);else c.lineTo(x0,y0);c.lineTo(x2,y2);c.lineTo(x3,y3);c.lineTo(x4,y4);c.arc(cx,cy,RR,a4-Math.PI/2,a5-Math.PI/2,false);}c.closePath();c.fillStyle=grd;c.fill();c.strokeStyle=TC;c.lineWidth=2*s;c.lineJoin='round';c.shadowColor=TC;c.shadowBlur=10*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI,0,Math.PI*2);const ig=c.createRadialGradient(cx,cy,0,cx,cy,RI);ig.addColorStop(0,'#0d201c');ig.addColorStop(1,'#050c0a');c.fillStyle=ig;c.fill();c.strokeStyle=TC;c.lineWidth=2.8*s;c.shadowColor=TC;c.shadowBlur=16*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,RI-5*s,0,Math.PI*2);c.strokeStyle='rgba(0,220,180,.2)';c.lineWidth=.8*s;c.stroke();for(let m=0;m<60;m++){const a=(m/60)*Math.PI*2,isH=m%5===0,isQ=m%15===0;const r1=RI-(isQ?5:isH?4:2)*s,r2=RI-(isQ?18:isH?14:8)*s;const[x1,y1]=pt(r1,a),[x2,y2]=pt(r2,a);c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.strokeStyle=isQ?TC:isH?'rgba(0,220,180,.75)':'rgba(0,220,180,.3)';c.lineWidth=(isQ?2.5:isH?1.8:.9)*s;c.lineCap='round';c.shadowColor=isQ||isH?TC:'transparent';c.shadowBlur=isQ?7*s:isH?3*s:0;c.stroke();c.shadowBlur=0;}const now=new Date(),ms=now.getMilliseconds(),secs=now.getSeconds()+ms/1000,mins=now.getMinutes()+secs/60,hrs=(now.getHours()%12)+mins/60;[[RI*.48,(hrs/12)*Math.PI*2,5*s,TC,10*s],[RI*.70,(mins/60)*Math.PI*2,3*s,TC,7*s]].forEach(([r,a,lw,col,bl])=>{const[px,py]=pt(r,a);c.beginPath();c.moveTo(cx,cy);c.lineTo(px,py);c.strokeStyle=col;c.lineWidth=lw;c.lineCap='round';c.shadowColor=col;c.shadowBlur=bl;c.stroke();c.shadowBlur=0;});const sA=(secs/60)*Math.PI*2,[sx,sy]=pt(RI*.76,sA),[scx,scy]=pt(-RI*.22,sA);c.beginPath();c.moveTo(scx,scy);c.lineTo(sx,sy);c.strokeStyle=OC;c.lineWidth=1.5*s;c.lineCap='round';c.shadowColor=OC;c.shadowBlur=7*s;c.stroke();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,6*s,0,Math.PI*2);c.fillStyle=TC;c.shadowColor=TC;c.shadowBlur=14*s;c.fill();c.shadowBlur=0;c.beginPath();c.arc(cx,cy,3*s,0,Math.PI*2);c.fillStyle='#04050a';c.fill();}
-(function gl(){drawGear(document.getElementById('gear'));requestAnimationFrame(gl);})();
-
-/* ── CLOCK ── */
-function updateClock(){const now=new Date();const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];const months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];document.getElementById('top-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');document.getElementById('top-date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
+/* ── CLOCK & MOBILE ── */
+function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];var te=document.getElementById('top-time');var de=document.getElementById('top-date');if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
 updateClock();setInterval(updateClock,1000);
+function checkMobile(){var mb=document.getElementById('mobile-menu-btn');if(mb){if(window.innerWidth<=700)mb.style.display='block';else mb.style.display='none';}}
+checkMobile();window.addEventListener('resize',checkMobile);
 
-/* ── USER ── */
-(function(){try{const name=sessionStorage.getItem('k_name')||'Leica Bogdan';const role=sessionStorage.getItem('k_role')||'APP OWNER';const parts=name.split(' ');document.getElementById('user-first').textContent=parts[0]||'';document.getElementById('user-last').textContent=(parts.slice(1).join(' ')||'').toUpperCase();document.getElementById('user-role').textContent=role;}catch(e){}})();
+/* ── ADD FORM ── */
+var addFormOpen=false;
+function toggleAddForm(){
+  addFormOpen=!addFormOpen;
+  document.getElementById('add-form-wrap').style.display=addFormOpen?'block':'none';
+  document.getElementById('add-toggle-label').textContent=addFormOpen?'INCHIDE FORMULAR':'ADAUGA ECHIPAMENT';
+}
+function resetForm(){
+  document.querySelectorAll('#add-form-wrap .form-input').forEach(function(el){el.value='';if(el.tagName==='SELECT')el.selectedIndex=0;});
+}
+function saveNewEquip(){
+  var id=document.getElementById('nf-id').value.trim().toUpperCase();
+  if(!id){alert('ID-ul este obligatoriu!');return;}
+  var tip=document.getElementById('nf-tip').value;
+  var row=[
+    id, tip,
+    document.getElementById('nf-m-prod').value,
+    document.getElementById('nf-m-model').value,
+    document.getElementById('nf-m-curent').value,
+    document.getElementById('nf-m-putere').value,
+    document.getElementById('nf-m-turatie').value,
+    document.getElementById('nf-m-rulde').value,
+    document.getElementById('nf-m-rulne').value,
+    document.getElementById('nf-m-tip').value,
+    document.getElementById('nf-r-prod').value,
+    document.getElementById('nf-r-model').value,
+    document.getElementById('nf-r-tur').value,
+    document.getElementById('nf-m-serie').value,
+    document.getElementById('nf-m-tensiune').value,
+    document.getElementById('nf-m-frecventa').value,
+    document.getElementById('nf-m-cosf').value,
+    document.getElementById('nf-m-rand').value,
+    document.getElementById('nf-m-clasa').value,
+    document.getElementById('nf-m-lubr').value,
+    document.getElementById('nf-m-greutate').value,
+    document.getElementById('nf-m-ip').value,
+    document.getElementById('nf-m-temp').value,
+    document.getElementById('nf-m-std').value,
+    document.getElementById('nf-m-izol').value,
+    document.getElementById('nf-m-atex').value,
+    document.getElementById('nf-r-serie').value,
+    document.getElementById('nf-r-turie').value,
+    document.getElementById('nf-r-cuplu').value,
+    document.getElementById('nf-r-putere').value,
+    document.getElementById('nf-r-raport').value,
+    document.getElementById('nf-r-ulei').value,
+    document.getElementById('nf-r-cant').value,
+    document.getElementById('nf-r-poz').value,
+    document.getElementById('nf-r-data').value,
+    document.getElementById('nf-r-greutate').value,
+    document.getElementById('nf-r-atex').value,
+    document.getElementById('nf-r-temp').value,
+    document.getElementById('nf-r-ore').value,
+  ];
+  var existing=allData.findIndex(function(r){return String(r[0]).toUpperCase()===id;});
+  if(existing>=0){if(!confirm('ID-ul '+id+' exista deja. Suprascriem?'))return;allData[existing]=row;}
+  else{allData.push(row);}
+  updateKPI(allData);
+  renderTable();
+  resetForm();
+  toggleAddForm();
+}
+
+/* ── MODAL ── */
+function openModal(row){
+  document.getElementById('modal-body').innerHTML=buildDetailHTML(row);
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('detail-modal').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('detail-modal'))closeModal();}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
 /* ── DATA ── */
-let allData=[];
-let currentFilter='all';
-let sortCol=-1,sortDir=1;
-let expandedRows=new Set();
+var allData=[];
+var currentFilter='all';
+var sortCol=-1,sortDir=1;
 
-/* FALLBACK DATA — embedded */
-// Columns: 0=ID, 1=TipUtilaj, 2=M:Produc, 3=M:Model, 4=M:Curent, 5=M:Putere, 6=M:Turatie,
-//          7=M:RulDE, 8=M:RulNE, 9=M:TipConstr, 10=R:Produc, 11=R:Model, 12=R:Turatie
-// Extra detail cols: 13=M:Serie, 14=M:Tensiune, 15=M:Frecventa, 16=M:cosF, 17=M:Randament,
-//                   18=M:ClasaEf, 19=M:Lubrifiant, 20=M:Greutate, 21=M:IP, 22=M:Temp,
-//                   23=M:Standard, 24=M:ClasaIzol, 25=M:ATEX,
-//                   26=R:Serie, 27=R:Tensiune, 28=R:Frecventa, 29=R:Putere, 30=R:cosF,
-//                   31=R:Eficienta, 32=R:ClasaEf, 33=R:Greutate, 34=R:IP, 35=R:Temp,
-//                   36=R:ClasaIzol, 37=R:ATEX
 const FALLBACK=[
   ["BC11","Transportor cu banda","SIEMENS","1CV2220B","65 A","37 kW","1470 RPM","6313-2RSC3","6313-2RSC3","IMB5","NORD","-","-","254687301","400V Δ / 460V Δ","50Hz / 60Hz","0.88","92.7% / 93.6%","IE2","-","295 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","50 Hz","-","0.88","94.6","IE3","-","IP66","-20°C la +40°C","Th.Cl.155 (F)","II 3D Ex tc IIIB T125C Dc"],
   ["BC12","Transportor cu banda","SIEMENS","1CV2280B","132 A / 130 A","75 kW","1485 RPM","NU317EP","6317-C3","IMB5","NORD","SK 160 LH","1465 RPM","254211901","400V Δ / 460V Δ","50Hz / 60Hz","0.87/0.88","94% / 94.5%","IE2","UNIREX-N3 30g 8000h","570 Kg","IP65","-20°C la +40°C","EN 60034","Th.Cl.155 (F)","Ex II 2D Ex tb IIIC T120°C Db","-","-","50 Hz","15 kW","0.88","92.0","IE2","-","IP66","-","Th.Cl.155 (F)","-"],
@@ -473,310 +436,161 @@ const FALLBACK=[
 
 function setFilter(btn){
   document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  currentFilter=btn.dataset.f;
-  renderTable();
+  btn.classList.add('active');currentFilter=btn.dataset.f;renderTable();
 }
-
 function tipFilter(row){
-  const id=String(row[0]).toUpperCase();
+  var id=String(row[0]).toUpperCase();
   if(id.startsWith('BC'))return'banda';
   if(id.startsWith('CC'))return'lant';
   if(/^E\d/.test(id)||id==='E')return'elevator';
   return'other';
 }
-
 function updateKPI(data){
   document.getElementById('k-total').textContent=data.length;
-  document.getElementById('k-siemens').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('SIEMENS')).length;
-  document.getElementById('k-nord').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('NORD')).length;
-  document.getElementById('k-abb').textContent=data.filter(r=>String(r[2]).toUpperCase().includes('ABB')).length;
+  document.getElementById('k-siemens').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('SIEMENS');}).length;
+  document.getElementById('k-nord').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('NORD');}).length;
+  document.getElementById('k-abb').textContent=data.filter(function(r){return String(r[2]).toUpperCase().includes('ABB');}).length;
 }
-
 function renderTable(){
   var tbody=document.getElementById('tbody');
   if(!tbody)return;
   var rows=getVisibleRows();
-  if(!rows.length){tbody.innerHTML='<tr><td colspan="12" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
   var html='';
-  rows.forEach(function(row,i){
+  rows.forEach(function(row){
     var id=String(row[0]||'');
-    var isExp=expandedRows.has(id);
-    var ec=isExp?' expanded':'';
-    html+='<tr class="data-row'+ec+'" data-id="'+id.replace(/"/g,'&quot;')+'">'
-      +'<td style="font-family:var(--mono);color:var(--teal);font-weight:700;font-size:13px;text-align:center;">'+f(row[0])+'</td>'
-      +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[2])+'</td>'
-      +'<td style="color:#fff;font-size:13px;">'+f(row[3])+'</td>'
-      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[4])+'</td>'
-      +'<td style="color:var(--teal);font-weight:700;font-size:13px;text-align:center;">'+f(row[5])+'</td>'
-      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[6])+'</td>'
-      +'<td style="color:var(--blue);font-size:13px;text-align:center;font-family:var(--mono);font-weight:700;">'+f(row[7])+'</td>'
-      +'<td style="color:var(--blue);font-size:13px;text-align:center;font-family:var(--mono);font-weight:700;">'+f(row[8])+'</td>'
-      +'<td style="color:var(--amber);font-weight:700;font-size:13px;">'+f(row[10])+'</td>'
-      +'<td style="color:#fff;font-size:13px;">'+f(row[11])+'</td>'
-      +'<td style="color:#fff;font-size:13px;text-align:center;">'+f(row[12])+'</td>'
-      +'</tr>';
-    if(isExp){
-      html+='<tr class="detail-row open"><td colspan="12">'+buildDetailHTML(row)+'</td></tr>';
-    }
+    html+='<tr class="data-row" data-idx="'+allData.indexOf(row)+'">';
+    html+='<td style="font-family:var(--mono);color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
+    html+='<td style="color:var(--amber);font-weight:700;">'+f(row[2])+'</td>';
+    html+='<td style="color:#fff;">'+f(row[3])+'</td>';
+    html+='<td>'+f(row[4])+'</td>';
+    html+='<td style="color:var(--teal);font-weight:700;">'+f(row[5])+'</td>';
+    html+='<td>'+f(row[6])+'</td>';
+    html+='<td style="color:var(--blue);font-family:var(--mono);font-size:12px;">'+f(row[7])+'</td>';
+    html+='<td style="color:var(--blue);font-family:var(--mono);font-size:12px;">'+f(row[8])+'</td>';
+    html+='<td style="color:var(--teal);font-size:16px;cursor:pointer;">&#9432;</td>';
+    html+='</tr>';
   });
   tbody.innerHTML=html;
-  // Attach click handlers after render
   tbody.querySelectorAll('tr.data-row').forEach(function(tr){
-    tr.addEventListener('click',function(){toggleRow(tr.dataset.id);});
+    tr.addEventListener('click',function(){
+      var idx=parseInt(tr.dataset.idx);
+      if(!isNaN(idx)&&allData[idx])openModal(allData[idx]);
+    });
   });
 }
-
-function toggleRow(id){
-  if(expandedRows.has(id))expandedRows.delete(id);
-  else expandedRows.add(id);
-  renderTable();
-}
-
-
 function getVisibleRows(){
-  let rows=[...allData];
-  if(currentFilter!=='all')rows=rows.filter(r=>tipFilter(r)===currentFilter);
-  const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
-  if(q)rows=rows.filter(r=>r.some(c=>String(c||'').toLowerCase().includes(q)));
+  var rows=allData.slice();
+  if(currentFilter!=='all')rows=rows.filter(function(r){return tipFilter(r)===currentFilter;});
+  var q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
+  if(q)rows=rows.filter(function(r){return r.some(function(c){return String(c||'').toLowerCase().includes(q);});});
   if(sortCol>=0){
-    const colMap=[0,2,3,4,5,6,7,8,10,11,12];
-    rows.sort((a,b)=>{
-      const ci=colMap[sortCol]??sortCol;
+    var colMap=[0,2,3,4,5,6,7,8];
+    rows.sort(function(a,b){
+      var ci=colMap[sortCol]!==undefined?colMap[sortCol]:sortCol;
       return sortDir*String(a[ci]||'').localeCompare(String(b[ci]||''),undefined,{numeric:true});
     });
   }
   return rows;
 }
-
 function f(v){return v&&v!=='-'&&v!=='NaN'?v:'—';}
-
 function buildDetailHTML(row){
-  const mRight=[
-    ['Serie',row[13],'green'],
-    ['Model',row[3],'green'],
-    ['Curent nominal',row[4],'blue'],
-    ['Putere nominala',row[5],'blue'],
-    ['Tensiune nominala',row[14],'blue'],
-    ['Frecventa',row[15],'blue'],
-    ['Randament',row[17],'green'],
-    ['Factor de putere (cos φ)',row[16],'green'],
-    ['Clasa eficienta',row[18],'amber'],
-    ['Turatie',row[6],'#fff'],
+  var mLeft=[
+    ['Rulment DE',row[7],'blue'],['Rulment NE',row[8],'blue'],['Lubrifiant',row[19],'blue'],
+    ['Greutate',row[20],'#fff'],['Tip constructie',row[9],'#fff'],['Grad protectie',row[21],'amber'],
+    ['Clasa izolatie',row[24],'#fff'],['Temperatura functionare',row[22],'#fff'],
+    ['Standard',row[23],'#fff'],['Certificare ATEX',row[25],'red'],
   ];
-  const mLeft=[
-    ['Rulment DE',row[7],'blue'],
-    ['Rulment NE',row[8],'blue'],
-    ['Lubrifiant',row[19],'blue'],
-    ['Greutate',row[20],'#fff'],
-    ['Tip constructie',row[9],'#fff'],
-    ['Grad protectie',row[21],'amber'],
-    ['Clasa izolatie',row[24],'#fff'],
-    ['Temperatura functionare',row[22],'#fff'],
-    ['Standard',row[23],'#fff'],
-    ['Certificare ATEX',row[25],'red'],
+  var mRight=[
+    ['Serie',row[13],'green'],['Model',row[3],'green'],['Curent nominal',row[4],'blue'],
+    ['Putere nominala',row[5],'blue'],['Tensiune nominala',row[14],'blue'],['Frecventa',row[15],'blue'],
+    ['Randament',row[17],'green'],['Factor de putere (cos &#0966;)',row[16],'green'],
+    ['Clasa eficienta',row[18],'amber'],['Turatie',row[6],'#fff'],
   ];
-  const rRight=[
-    ['Serie',row[26],'green'],
-    ['Model',row[11],'green'],
-    ['Turatie',row[12],'#fff'],
-    ['Turatia nominala arbore iesire',row[27],'#fff'],
-    ['Cuplu nominal arbore iesire',row[28],'amber'],
-    ['Putere maxima',row[29],'blue'],
-    ['Raport total de transmisie',row[30],'green'],
+  var rLeft=[
+    ['Pozitie de montaj',row[33],'amber'],['Tip ulei',row[31],'amber'],['Cantitate ulei',row[32],'amber'],
+    ['Greutate',row[35],'#fff'],['Certificare ATEX',row[36],'red'],
+    ['Temperatura functionare',row[37],'#fff'],['Data fabricatie',row[34],'amber'],['Ore functionare estimate',row[38],'amber'],
   ];
-  const rLeft=[
-    ['Pozitie de montaj',row[33],'amber'],
-    ['Tip ulei',row[31],'amber'],
-    ['Cantitate ulei',row[32],'amber'],
-    ['Greutate',row[35],'#fff'],
-    ['Certificare ATEX',row[36],'red'],
-    ['Temperatura functionare',row[37],'#fff'],
-    ['Data fabricatie',row[34],'amber'],
-    ['Ore de functionare estimate',row[38],'amber'],
+  var rRight=[
+    ['Serie',row[26],'green'],['Model',row[11],'green'],['Turatie',row[12],'#fff'],
+    ['Turatia nominala arbore iesire',row[27],'#fff'],['Cuplu nominal arbore iesire',row[28],'amber'],
+    ['Putere maxima',row[29],'blue'],['Raport total de transmisie',row[30],'green'],
   ];
-  const SZ='15px';
   function field(lbl,val,color){
-    const col2=color.startsWith('#')?color:'var(--'+color+')';
-    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:'+SZ+';">'+f(val)+'</div></div>';
+    var col2=color.startsWith('#')?color:'var(--'+color+')';
+    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:14px;">'+f(val)+'</div></div>';
   }
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
-  const hasR=row[10]&&row[10]!=='-';
-  const titleStyle='font-family:var(--sans);font-size:15px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border2);';
-  return '<div class="detail-grid">'
-    +'<div class="detail-section">'
-      +'<div class="detail-section-title motor" style="'+titleStyle+'text-align:center;">Motor '+f(row[0])+' &mdash; '+f(row[2])+'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">'
-        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mLeft)+'</div>'
-        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(mRight)+'</div>'
-      +'</div>'
-    +'</div>'
-    +'<div class="detail-section" style="'+(hasR?'':'opacity:.4')+'">'
-      +'<div class="detail-section-title reduct" style="'+titleStyle+'text-align:center;">'+(hasR?'Reductor '+f(row[0])+' &mdash; '+f(row[10]):'Reductor '+f(row[0])+' &mdash; N/A')+'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">'
-        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(rLeft)+'</div>'
-        +'<div style="display:flex;flex-direction:column;gap:6px;">'+col(rRight)+'</div>'
-      +'</div>'
-    +'</div>'
-  +'</div>';
+  var hasR=row[10]&&row[10]!=='-';
+  return '<div class="detail-grid">'+
+    '<div class="detail-section"><div class="detail-section-title motor">MOTOR '+f(row[0])+' &mdash; '+f(row[2])+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;">'+
+    '<div style="display:flex;flex-direction:column;gap:6px;">'+col(mLeft)+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:6px;">'+col(mRight)+'</div></div></div>'+
+    '<div class="detail-section" style="'+(!hasR?'opacity:.4':'')+'">'+
+    '<div class="detail-section-title reduct">REDUCTOR '+f(row[0])+' &mdash; '+(hasR?f(row[10]):'N/A')+'</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;">'+
+    '<div style="display:flex;flex-direction:column;gap:6px;">'+col(rLeft)+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:6px;">'+col(rRight)+'</div></div></div></div>';
 }
-
 function sortBy(col){
-  document.querySelectorAll('thead .sub-row th').forEach(th=>th.classList.remove('sort-asc','sort-desc'));
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
-  document.querySelectorAll('thead .sub-row th')[col].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
 }
-
 function exportPDF(complex){
-  var now=new Date();
-  var d=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
-  var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  var dtEl=document.getElementById('print-date-text');
-  if(dtEl)dtEl.textContent='Data generarii: '+d+' '+t;
-
-  var ph=document.getElementById('print-header');
-  var pf=document.getElementById('print-footer');
-  if(ph)ph.style.display='flex';
-  if(pf)pf.style.display='flex';
-
   if(complex){
-    try{
-      var rows=getVisibleRows();
-      var container=document.getElementById('complex-cards');
-      if(!container){alert('Eroare: complex-cards not found');return;}
-      var html='';
-      rows.forEach(function(row){
-        html+='<div class="complex-card">'
-          +'<div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'
-          +buildDetailHTML(row)
-          +'</div>';
-      });
-      container.innerHTML=html;
-      document.body.setAttribute('data-pdf-complex','1');
-      window.print();
-      document.body.removeAttribute('data-pdf-complex');
-      container.innerHTML='';
-    }catch(err){
-      alert('Eroare PDF Complex: '+err.message);
-      document.body.removeAttribute('data-pdf-complex');
-    }
+    var rows=getVisibleRows();
+    var container=document.getElementById('complex-cards');
+    var html='';
+    rows.forEach(function(row){html+='<div class="complex-card"><div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'+buildDetailHTML(row)+'</div>';});
+    container.innerHTML=html;container.style.display='block';
+    document.body.setAttribute('data-pdf-complex','1');window.print();
+    document.body.removeAttribute('data-pdf-complex');container.innerHTML='';container.style.display='none';
   } else {
-    document.body.setAttribute('data-pdf-simple','1');
-    window.print();
-    document.body.removeAttribute('data-pdf-simple');
+    document.body.setAttribute('data-pdf-simple','1');window.print();document.body.removeAttribute('data-pdf-simple');
   }
-
-  if(ph)ph.style.display='none';
-  if(pf)pf.style.display='none';
 }
-
 function exportExcel(){
-  const rows=getVisibleRows();
-  const headers=['ID','Tip utilaj','M:Producator','M:Model','M:Curent nominal','M:Putere nominala','M:Turatie','M:Rulment DE','M:Rulment NE','M:Tip constructie','R:Producator','R:Model','R:Turatie'];
-  const wsData=[headers,...rows.map(r=>headers.map((_,i)=>r[i]||''))];
-  const ws=XLSX.utils.aoa_to_sheet(wsData);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Moto-reductoare');
-  const now=new Date();
-  XLSX.writeFile(wb,`KRONOS_MotoReductoare_${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}.xlsx`);
+  var rows=getVisibleRows();
+  var headers=['ID','Tip utilaj','M:Producator','M:Model','M:Curent nominal','M:Putere nominala','M:Turatie','M:Rulment DE','M:Rulment NE','M:Tip constructie','R:Producator','R:Model','R:Turatie'];
+  var wsData=[headers].concat(rows.map(function(r){return headers.map(function(_,i){return r[i]||'';})}));
+  var ws=XLSX.utils.aoa_to_sheet(wsData);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Motoare');
+  var now=new Date();
+  XLSX.writeFile(wb,'KRONOS_Motoare_'+now.getDate()+'.'+( now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
 }
-
-function parseWorkbook(buf){
-  const wb=XLSX.read(buf,{type:'array'});
-  const ws=wb.Sheets[wb.SheetNames[0]];
-  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-  return raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
-}
-
-let fileHandle=null;
-
-async function handleFileBtn(){
-  if(fileHandle){
-    try{const file=await fileHandle.getFile();const buf=await file.arrayBuffer();applyData(parseWorkbook(new Uint8Array(buf)));flashBtn('✓ Actualizat');return;}catch(e){fileHandle=null;}
-  }
-  if(window.showOpenFilePicker){
-    try{
-      const[handle]=await window.showOpenFilePicker({types:[{description:'Excel',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx','.xls']}}],multiple:false});
-      fileHandle=handle;
-      const file=await handle.getFile();const buf=await file.arrayBuffer();
-      applyData(parseWorkbook(new Uint8Array(buf)));
-      document.getElementById('file-btn-label').textContent='Refresh date';
-      return;
-    }catch(e){if(e.name==='AbortError')return;}
-  }
-  document.getElementById('file-input').click();
-}
-
-function loadFromInputFile(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{try{applyData(parseWorkbook(new Uint8Array(e.target.result)));}catch(err){alert('Eroare: '+err.message);}};
-  reader.readAsArrayBuffer(file);
-}
-
-function flashBtn(msg){const lbl=document.getElementById('file-btn-label');if(!lbl)return;const p=lbl.textContent;lbl.textContent=msg;setTimeout(()=>lbl.textContent=p,1500);}
-
-function applyData(data){
-  // Map from Excel format (13 cols: ID, TipUtilaj, M cols, R cols) to internal format
-  allData=data.map(r=>{
-    // Excel cols: 0=ID, 1=M:Produc, 2=M:Model, 3=M:Curent, 4=M:Putere, 5=M:Turatie,
-    //            6=M:RulDE, 7=M:RulNE, 8=M:TipConstr, 9=R:Produc, 10=R:Model, 11=R:Turatie, 12=TipUtilaj
-    return[r[0],r[12],r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],r[9],r[10],r[11]];
-  });
-  updateKPI(allData);
-  expandedRows.clear();
-  renderTable();
-}
-
 function parseCSV(text){
-  const rows=[];let cur=[],cell='',inQ=false;
-  for(let i=0;i<text.length;i++){const ch=text[i];
-    if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
+  var rows=[];var cur=[],cell='',inQ=false;
+  for(var i=0;i<text.length;i++){var ch=text[i];
+    if(inQ){if(ch==='"'&&text[i+1]==='"'){ cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
     else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}
-    else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(x=>x!==''))rows.push(cur);cur=[];cell='';}
+    else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);cur=[];cell='';}
     else cell+=ch;}}
-  cur.push(cell.trim());if(cur.some(x=>x!==''))rows.push(cur);return rows;
+  cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
 }
-
 async function init(){
-  // Fetch from Google Sheets CSV
+  updateKPI(FALLBACK);allData=FALLBACK.slice();renderTable();
   try{
-    const resp=await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vScHFAt_g32bNQ-O6d5Zq3oFt_FILT5zvaKAxe7Njp_eVyf_0Oq_G7SfCOBj6UbBqgLZW147SIPRTeK/pub?gid=0&single=true&output=csv&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
+    var resp=await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vScHFAt_g32bNQ-O6d5Zq3oFt_FILT5zvaKAxe7Njp_eVyf_0Oq_G7SfCOBj6UbBqgLZW147SIPRTeK/pub?gid=0&single=true&output=csv&t='+Date.now(),{cache:'no-store'});
     if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const rows=parseCSV(await resp.text()).slice(1).filter(r=>r.some(c=>c!==''));
+    var rows=parseCSV(await resp.text()).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     if(rows.length){
-      allData=rows.map(r=>{
+      allData=rows.map(function(r){
         while(r.length<39)r.push('');
-        const id=String(r[0]).toUpperCase();
-        let tip='';
+        var id=String(r[0]).toUpperCase();
+        var tip='';
         if(id.startsWith('BC'))tip='Transportor cu banda';
         else if(id.startsWith('CC'))tip='Transportor cu lant';
-        else if(id.startsWith('E'))tip='Elevator';
-        // Sheet: 0=ID,1=M:Produc,2=M:Model,3=M:Serie,4=M:Tensiune,5=M:Frecventa,
-        //  6=M:Curent,7=M:Putere,8=M:cosF,9=M:ClasaEf,10=M:Randament,11=M:Turatie,
-        //  12=M:RulDE,13=M:RulNE,14=M:Lubrifiant,15=M:TipConstr,16=M:Greutate,17=M:IP,
-        //  18=M:Temp,19=M:Standard,20=M:ClasaIzol,21=M:ATEX,
-        //  22=R:Produc,23=R:Model,24=R:Serie,25=R:TuratieIesire,26=R:CupluIesire,
-        //  27=R:Turatie,28=R:Putere,29=R:Raport,30=R:TipUlei,31=R:CantUlei,
-        //  32=R:Pozitie,33=R:DataFab,34=R:Greutate,35=R:ATEX,36=R:TempAmb,37=R:OreEst
-        // Internal: [0=ID,1=Tip,2=M:Produc,3=M:Model,4=M:Curent,5=M:Putere,6=M:Turatie,
-        //  7=M:RulDE,8=M:RulNE,9=M:TipConstr,10=R:Produc,11=R:Model,12=R:Turatie,
-        //  13=M:Serie,14=M:Tensiune,15=M:Frecventa,16=M:cosF,17=M:Randament,18=M:ClasaEf,
-        //  19=M:Lubrifiant,20=M:Greutate,21=M:IP,22=M:Temp,23=M:Standard,24=M:ClasaIzol,25=M:ATEX,
-        //  26=R:Serie,27=R:Tensiune,28=R:Frecventa,29=R:Putere,30=R:cosF,31=R:Eficienta,
-        //  32=R:ClasaEf,33=R:Greutate,34=R:IP,35=R:Temp,36=R:ClasaIzol,37=R:ATEX]
+        else if(/^E\d/.test(id))tip='Elevator';
         return[r[0],tip,r[1],r[2],r[6],r[7],r[11],r[12],r[13],r[15],r[22],r[23],r[27],
                r[3],r[4],r[5],r[8],r[10],r[9],r[14],r[16],r[17],r[18],r[19],r[20],r[21],
                r[24],r[25],r[26],r[28],r[29],r[30],r[31],r[32],r[33],r[34],r[35],r[36],r[37]];
       });
-      updateKPI(allData);
-      expandedRows.clear();
-      renderTable();
+      updateKPI(allData);renderTable();
     }
-  }catch(e){
-    console.warn('CSV fetch failed, using FALLBACK:',e.message);
-  }
+  }catch(e){console.warn('CSV fetch failed:',e.message);}
 }
 init();
 </script>
