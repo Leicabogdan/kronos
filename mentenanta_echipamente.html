@@ -226,9 +226,10 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
   .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
-  .print-header{display:flex!important;align-items:center;justify-content:space-between;
-    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;
-    background:#fff!important;}
+  .print-header{display:block!important;width:100%;border-bottom:2px solid #1a3a6e;margin-bottom:8px;background:#fff!important;}
+  .print-header-inner{display:table-row!important;}
+  .print-header-left-cell{display:table-cell!important;vertical-align:middle;padding:8px 6px;}
+  .print-header-right-cell{display:table-cell!important;vertical-align:middle;padding:8px 16px 8px 0;text-align:right;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
   .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
@@ -240,6 +241,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .print-report-date{font-size:10px;color:#666;margin-top:2px;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  thead{display:table-header-group!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 8px!important;
@@ -285,11 +287,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .no-data{color:#000!important;}
   @page{size:A4 landscape;margin:6mm 8mm 10mm 8mm;}
   .page-break{page-break-before:always;}
-  .print-footer{display:block!important;position:fixed;bottom:8mm;left:12mm;right:12mm;
-    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;padding-top:4px;
-    display:flex;justify-content:space-between;align-items:center;}
-  .print-footer a,.print-footer a::after{display:none!important;content:none!important;}
+  .print-footer{display:none!important;}
   /* suppress browser footer (URL / page number) */
   html{-webkit-print-color-adjust:exact;}
 }
@@ -330,19 +328,26 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
   <!-- PRINT HEADER (only visible when printing) -->
   <div class="print-header" id="print-header">
-    <div class="print-header-left">
-      <div>
-        <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
-        <div class="print-kronos-sub">Maintenance System</div>
+    <div class="print-header-inner">
+      <div class="print-header-left-cell">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div>
+            <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
+            <div class="print-kronos-sub">Maintenance System</div>
+          </div>
+          <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
+          <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
+            Registru Mentenanta Echipamente<br>
+            <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span><br>
+            <span id="print-date-inline" style="font-weight:400;font-size:9px;color:#888;"></span>
+          </div>
+        </div>
       </div>
-      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
-      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
-        Registru Mentenanta Echipamente<br>
-        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span><br>
-        <span id="print-date-inline" style="font-weight:400;font-size:9px;color:#888;"></span>
+      <div class="print-header-right-cell">
+        <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span>
+        <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;"><span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span><span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span></div>
   </div>
 
   <div class="kpi-strip">
@@ -1311,8 +1316,7 @@ function displayToISO(d) {
 
   // Show print header when printing
   window.addEventListener('beforeprint', function() {
-    document.getElementById('print-header').style.display = 'flex';
-    document.getElementById('print-footer').style.display = 'flex';
+    document.getElementById('print-header').style.display = 'block';
     var now = new Date();
     var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
     var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
@@ -1320,7 +1324,6 @@ function displayToISO(d) {
   });
   window.addEventListener('afterprint', function() {
     document.getElementById('print-header').style.display = 'none';
-    document.getElementById('print-footer').style.display = 'none';
   });
   var now = new Date();
   // Set display date DD/MM/YYYY
