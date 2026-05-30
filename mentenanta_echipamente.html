@@ -902,7 +902,7 @@ function renderTable() {
   }
   var html = '';
   rows.forEach(function(row, i) {
-    var uid = String(row[0]||'') + String(row[11]||'') + String(row[2]||'') + i;
+    var uid = String(row[0]||'') + String(row[10]||'') + String(row[2]||'') + i;
     var sel = selectedRows.has(uid);
     var inc = '<span class="ddate">' + fmtDate(row[2]||'') + '</span>';
     if (row[3] && String(row[3]).trim()) inc += '<span class="dtime">' + fmtTime(row[3]) + '</span>';
@@ -911,7 +911,7 @@ function renderTable() {
     html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + esc(uid) + '">'
       + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleRow(this)"/></td>'
       + '<td class="td-nr">' + (i+1) + '</td>'
-      + '<td class="td-eq">' + esc(row[11]||'') + '</td>'
+      + '<td class="td-eq">' + esc(row[10]||'') + '</td>'
       + (function(m){var av=m.toLowerCase().indexOf('avarie')>-1;return '<td class="td-motiv"'+(av?' style="color:var(--red);font-weight:700;"':'')+'>'+esc(m)+'</td>';})(row[1]||'')
       + '<td class="td-dt">' + inc + '</td>'
       + '<td class="td-dt">' + fin + '</td>'
@@ -1112,13 +1112,18 @@ function showMsg(text, type) {
 }
 
 function resetForm() {
-  ['f-ora-inc','f-data-fin','f-ora-fin','f-desc','f-piese','f-echipa'].forEach(function(id) {
+  ['f-ora-inc','f-data-fin','f-ora-fin','f-desc','f-piese'].forEach(function(id) {
     document.getElementById(id).value = '';
   });
+  document.getElementById('f-echipa').value = 'Elmar + Socep';
   var dd=document.getElementById('f-data-fin-display');
   var di=document.getElementById('f-data-inc-display');
-  if(dd)dd.value='';
-  if(di){var n=new Date();di.value=String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+n.getFullYear();}
+  var now2=new Date();
+  var nowStr=String(now2.getDate()).padStart(2,'0')+'/'+String(now2.getMonth()+1).padStart(2,'0')+'/'+now2.getFullYear();
+  var nowHidden=now2.getFullYear()+'-'+String(now2.getMonth()+1).padStart(2,'0')+'-'+String(now2.getDate()).padStart(2,'0');
+  if(dd){dd.value=nowStr;}
+  document.getElementById('f-data-fin').value=nowHidden;
+  if(di){di.value=nowStr;}
   document.getElementById('f-motiv').value = '';
   document.getElementById('f-echipament').value = '';
   document.getElementById('f-status').value = '';
