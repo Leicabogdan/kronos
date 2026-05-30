@@ -394,7 +394,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     <div class="form-grid">
       <div class="form-field">
         <label class="form-lbl">Motiv interventie *</label>
-        <div class="form-select-wrap"><select class="form-select" id="f-motiv">
+        <div class="form-select-wrap"><select class="form-select" id="f-motiv" onchange="onMotivChange()">
           <option value="">Selecteaza motiv...</option>
           <option>Revizie 200h</option><option>Revizie 1500h</option><option>Revizie 8000h</option>
           <option>Gresare</option><option>Verificare la golire celula</option><option>Revizie anuala</option>
@@ -406,7 +406,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <div class="form-field">
         <label class="form-lbl">Echipament *</label>
         <div class="form-select-wrap">
-          <select class="form-select" id="f-echipament" onchange="onEchipamentChange()">
+          <select class="form-select" id="f-echipament" onchange="onEchipamentChange();onMotivChange();">
             <option value="">Selecteaza echipament...</option>
             <optgroup label="Elevatoare">
               <option>E01</option><option>E02</option><option>E03</option><option>E04</option>
@@ -1041,6 +1041,28 @@ function getExportRows() {
     });
   }
   return filteredData;
+}
+
+function onMotivChange() {
+  var motiv = (document.getElementById('f-motiv').value || '').toLowerCase().trim();
+  var echipament = (document.getElementById('f-echipament').value || '').toLowerCase();
+  var descEl = document.getElementById('f-desc');
+  if (!descEl) return;
+  var desc = '';
+  if (motiv === 'schimb ulei') {
+    desc = 'Inlocuire ulei uzat cu altul nou.';
+  } else if (motiv === 'gresare') {
+    desc = 'S-au gresat.';
+  } else if (motiv === 'verificare la golire celula') {
+    desc = 'Verificare roti motrice si tampoane de cauciuc, verificare cruce cardanica, ansamblu biela-manivela si bucsa, verificare strangere suruburi, verificare gresare lagare, verificare snec auxiliar, verificare nivel ulei si verificare de pierderi de ulei. Efectuare tura completa de celula, pozitionare utilaj pe placutele de parcare.';
+  } else if (motiv === 'curatare magneti') {
+    desc = 'S-au indepartat depunerile de praf si obiectele straine din magnet.';
+  } else if (echipament.indexOf('compresor') > -1) {
+    desc = 'S-au curatat filtrele, s-au purjat compresoarele, s-a verificat utilajul si presiunea de aer.';
+  } else if (echipament.indexOf('sistem hidraulic') > -1) {
+    desc = 'Curatare grup hidraulic.';
+  }
+  if (desc) descEl.value = desc;
 }
 
 function onEchipamentChange() {
