@@ -204,7 +204,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   border-left:6px solid transparent;border-right:6px solid transparent;
   border-bottom:6px solid var(--bg2);
 }
-.td-echipa{color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;text-align:left;}
+.td-echipa{color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;text-align:left;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:default;}
 .td-piese{color:#fff;font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;}
 .chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;white-space:nowrap;}
 .chip .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
@@ -943,7 +943,7 @@ function renderTable() {
       + '<td class="td-desc" data-desc="' + esc(row[5]||'') + '">' + esc(row[5]||'') + '</td>'
       + '<td>' + statusChip(row[6]) + '</td>'
       + '<td class="td-piese" title="' + esc(row[7]||'') + '">' + esc(row[7]||'') + '</td>'
-      + '<td class="td-echipa">' + esc(row[8]||'') + '</td>'
+      + '<td class="td-echipa" title="' + esc(row[8]||'') + '">' + esc(row[8]||'') + '</td>'
       + '<td style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:500;">' + esc(row[9]||'') + '</td>'
       + '</tr>';
   });
