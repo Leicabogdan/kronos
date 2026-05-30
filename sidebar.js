@@ -4,7 +4,7 @@
  *
  * Valori valide pentru data-active:
  *   DASHBOARD | ORE_FUNCTIONARE |
- *   MENTENANTA_ECHIPAMENTE | AERE_CONDITIONATE | CUVE_RECEPTIE |
+ *   MENTENANTA_ECHIPAMENTE | SCHIMB_ULEI | AERE_CONDITIONATE | CUVE_RECEPTIE |
  *   MOTO_REDUCTOARE | ELEVATOARE | TRANS_LANT | TRANS_BANDA | FILTRE | SNECURI | CANTARE | CELULE_RECEPTIE |
  *   ISCIR | RAPOARTE |
  *   MANUAL_MENTENANTA | STOC_PIESE | ANALIZE_ULEI | MANUALE_DOC | FISA
@@ -106,7 +106,7 @@
   }
 
   /* Determina daca un grup contine pagina activa */
-  var MNT_KEYS   = ['MENTENANTA_ECHIPAMENTE','AERE_CONDITIONATE','CUVE_RECEPTIE'];
+  var MNT_KEYS   = ['MENTENANTA_ECHIPAMENTE','SCHIMB_ULEI','AERE_CONDITIONATE','CUVE_RECEPTIE'];
   var DT_KEYS    = ['MOTO_REDUCTOARE','ELEVATOARE','TRANS_LANT','TRANS_BANDA','FILTRE','SNECURI','CANTARE','CELULE_RECEPTIE'];
   var CONF_KEYS  = ['ISCIR','RAPOARTE'];
   var RES_KEYS   = ['MANUAL_MENTENANTA','STOC_PIESE','ANALIZE_ULEI','MANUALE_DOC','FISA'];
@@ -144,6 +144,9 @@
       ${navItem('mentenanta_echipamente.html',
         '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M7 1v2M7 11v2M1 7h2M11 7h2M2.9 2.9l1.4 1.4M9.7 9.7l1.4 1.4M2.9 11.1l1.4-1.4M9.7 4.3l1.4-1.4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>',
         'MENTENANTA<br>ECHIPAMENTE', 'MENTENANTA_ECHIPAMENTE', 'sb-sub')}
+      ${navItem('schimb_ulei.html',
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1h4v3l1.5 2.5V11a2 2 0 01-2 2H5.5a2 2 0 01-2-2V6.5L5 4V1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M3.5 6.5h7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>',
+        'SCHIMB ULEI', 'SCHIMB_ULEI', 'sb-sub')}
       <span class="sb-item sb-sub" style="cursor:default;opacity:.55;">
         <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 9v3M7 9v3M10 9v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
         <span class="sb-nav-label">AERE CONDITIONATE</span>
