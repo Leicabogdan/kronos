@@ -222,50 +222,79 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
-  .topbar,.toolbar,.add-form-wrap,.trademark,.modal-overlay,.desc-bubble,.page{padding:0!important;max-width:100%!important;margin:0!important;}
-  .topbar,.toolbar,.trademark,.modal-overlay,.desc-bubble{display:none!important;}
-
-  /* Header */
-  .print-header{
-    display:flex!important;align-items:center;justify-content:space-between;
-    padding:6px 0 8px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;
-    background:#fff!important;width:100%;
-  }
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:12mm!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
+  .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
+  .page{padding:0!important;max-width:100%!important;margin:0!important;}
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:8px 8px 8px 6px;border-bottom:2px solid #1a3a6e;margin-bottom:14px;
+    background:#fff!important;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
-  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:16px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
-  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-footer{display:none!important;}
-
-  /* Table */
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
+    font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
+    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+  
+  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
+    color:#1a3a6e;text-align:right;letter-spacing:.05em;}
+  .print-report-date{font-size:10px;color:#666;margin-top:2px;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
-  thead{display:table-header-group!important;}
-  thead tr th{
+  thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 8px!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    font-weight:700!important;text-align:center!important;
-    border-right:1px solid #2a4a8e!important;
+    font-weight:700!important;letter-spacing:.04em!important;
+    text-align:center!important;border-right:1px solid #2a4a8e!important;
+    white-space:normal!important;
   }
-  tbody tr{background:#fff!important;page-break-inside:avoid!important;break-inside:avoid!important;}
-  tbody tr:nth-child(even){background:#f0f4fb!important;page-break-inside:avoid!important;break-inside:avoid!important;}
-  td{
-    padding:5px 7px!important;font-size:9px!important;color:#000!important;
+  tbody tr{background:#fff!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;}
+  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
     vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
-    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;
-  }
-  /* Descriere col - left aligned */
-  thead tr th:nth-child(5),tbody td:nth-child(5){text-align:left!important;padding-left:8px!important;}
-  /* Hide checkbox col */
-  thead tr th:nth-child(1),tbody td:nth-child(1){display:none!important;}
-  /* Status chip */
-  .chip-apt,.chip-supraveg,.chip-avarie,.chip-oprit{
-    background:transparent!important;border:1px solid #333!important;
-    color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;
-  }
-  @page{size:A4 landscape;margin:8mm 8mm 8mm 8mm;}
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  .td-check,thead .th-check,
+  .col-echipa,.col-piese,.col-adaugat,
+  thead tr.hdr-row th:nth-child(1),
+  thead tr.hdr-row th:nth-child(10),
+  thead tr.hdr-row th:nth-child(11),
+  tbody td:nth-child(1),tbody td:nth-child(10),tbody td:nth-child(11){display:none!important;}
+  /* Hide: checkbox(1), Motiv(4), Echipa(10), Adaugat(11) */
+  thead tr.hdr-row th:nth-child(4),
+  tbody td:nth-child(4){display:none!important;}
+  /* Column widths: Nr(2), Echip(3), Inceput(5), Fin(6), Desc(7), Status(8), Piese(9) */
+  thead tr.hdr-row th:nth-child(2){width:3%!important;}
+  thead tr.hdr-row th:nth-child(3){width:11%!important;}
+  thead tr.hdr-row th:nth-child(5){width:11%!important;}
+  thead tr.hdr-row th:nth-child(6){width:11%!important;}
+  thead tr.hdr-row th:nth-child(7){width:28%!important;}
+  thead tr.hdr-row th:nth-child(8){width:14%!important;}
+  thead tr.hdr-row th:nth-child(9){width:22%!important;font-size:10px!important;}
+  tbody td:nth-child(9){font-size:10px!important;text-align:left!important;}
+  .td-eq{color:#1a3a6e!important;font-weight:700!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-size:9px!important;}
+  .td-motiv{font-size:9px!important;text-align:left!important;}
+  .td-dt{font-size:8px!important;}
+  .td-dt .ddate{font-size:8px!important;font-weight:600!important;}
+  .td-dt .dtime{font-size:7px!important;}
+  .td-dt .ddate{color:#000!important;font-weight:600!important;}
+  .td-dt .dtime{color:#333!important;font-size:8px!important;}
+  .td-desc{max-width:none!important;white-space:normal!important;text-align:left!important;font-size:9px!important;}
+  .desc-bubble{display:none!important;}
+  .chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
+  .no-data{color:#000!important;}
+  @page{size:A4 landscape;margin:0mm;}
+  @page:first{margin:0mm;}
+  @page:left{margin:0mm;}
+  @page:right{margin:0mm;}
+  .page-break{page-break-before:always;}
+  .print-footer{display:block!important;position:fixed;bottom:8mm;left:12mm;right:12mm;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
+    border-top:1px solid #d0d8e8;padding-top:4px;
+    display:flex;justify-content:space-between;align-items:center;}
+  .print-footer a,.print-footer a::after{display:none!important;content:none!important;}
+  /* suppress browser footer (URL / page number) */
+  html{-webkit-print-color-adjust:exact;}
 }
 .print-header{display:none;}
 .print-footer{display:none;}
@@ -312,14 +341,10 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
       <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
         Registru Mentenanta Echipamente<br>
-        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span><br>
-        <span id="print-date-inline" style="font-weight:400;font-size:9px;color:#888;"></span>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;padding:0;line-height:1.1;">
-      <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;display:block;">SOCEP</span>
-      <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
-    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;"><span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span><span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span></div>
   </div>
 
   <div class="kpi-strip">
@@ -458,11 +483,6 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
               <option>Cantar WE01</option><option>Cantar WE02</option>
               <option>Cantar WE03</option><option>Cantar CF</option>
             </optgroup>
-            <optgroup label="Sonde prelevare probe">
-              <option>Sonda Rakoraf 1</option><option>Sonda Rakoraf 2</option>
-            </optgroup>
-            <option>Frane de produs</option>
-            <option>Tubulatura</option>
             <option>Altele</option>
           </select>
         </div>
@@ -614,11 +634,6 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
               <option>Cantar WE01</option><option>Cantar WE02</option>
               <option>Cantar WE03</option><option>Cantar CF</option>
             </optgroup>
-            <optgroup label="Sonde prelevare probe">
-              <option>Sonda Rakoraf 1</option><option>Sonda Rakoraf 2</option>
-            </optgroup>
-            <option>Frane de produs</option>
-            <option>Tubulatura</option>
             <option>Altele</option>
       </select>
     </div>
@@ -777,8 +792,8 @@ function renderKpiEqPiese(elId, rows) {
   if (!el) return;
   if (!rows.length) { el.innerHTML = '<span class="kpi-empty">Nicio inregistrare</span>'; return; }
   el.innerHTML = rows.map(function(r) {
-    var eq = esc(r[0] || '—');
-    var piese = esc(String(r[0]||'—').substring(0, 20));
+    var eq = esc(r[11] || '—');
+    var piese = esc(String(r[8]||'—').substring(0, 20));
     return '<div class="eq-pill" style="margin-bottom:3px;">'
       + '<span class="peq" style="color:var(--amber);">' + eq + '</span>'
       + '<span class="pmot">' + piese + '</span>'
@@ -793,8 +808,8 @@ function renderKpiEq(elId, rows) {
   var color = el.closest('.kpi-card').classList.contains('c-teal') ? 'var(--teal)' :
               el.closest('.kpi-card').classList.contains('c-amber') ? 'var(--amber)' : 'var(--red)';
   el.innerHTML = rows.map(function(r) {
-    var eq = esc(r[0] || '—');
-    var mot = esc(String(r[0]||'').substring(0, 16));
+    var eq = esc(r[11] || '—');
+    var mot = esc(String(r[1]||'').substring(0, 16));
     return '<div class="eq-pill" style="margin-bottom:3px;">'
       + '<span class="peq" style="color:' + color + ';">' + eq + '</span>'
       + '<span class="pmot">' + mot + '</span>'
@@ -803,26 +818,26 @@ function renderKpiEq(elId, rows) {
 }
 
 function updateKPI() {
-  var thisMonth = allData.filter(function(r) { return isThisMonth(r[0]); });
+  var thisMonth = allData.filter(function(r) { return isThisMonth(r[2]); });
   // Total: exclude avarie, necesita interventie, necesita piese
   var totalOk = thisMonth.filter(function(r) {
-    var s = String(r[0]||'').toLowerCase();
-    var m = String(r[0]||'').toLowerCase();
+    var s = String(r[7]||'').toLowerCase();
+    var m = String(r[1]||'').toLowerCase();
     return s.indexOf('avarie') < 0 && s.indexOf('necesita interv') < 0 && s.indexOf('necesita piese') < 0 && m.indexOf('avarie') < 0;
   });
   document.getElementById('k-total').textContent = totalOk.length;
   renderKpiEq('kpi-total-eq', totalOk.slice(-3).reverse());
 
   var suprav = thisMonth.filter(function(r) {
-    var s = String(r[0]||'').toLowerCase();
+    var s = String(r[7]||'').toLowerCase();
     return s.indexOf('supraveg') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('necesita piese') > -1;
   });
   document.getElementById('k-suprav').textContent = suprav.length;
   renderKpiEqPiese('kpi-suprav-eq', suprav.slice(-3).reverse());
 
   var avarii = thisMonth.filter(function(r) {
-    var m = String(r[0]||'').toLowerCase();
-    var s = String(r[0]||'').toLowerCase();
+    var m = String(r[1]||'').toLowerCase();
+    var s = String(r[7]||'').toLowerCase();
     return m.indexOf('avarie') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('avarie') > -1;
   });
   document.getElementById('k-avarii').textContent = avarii.length;
@@ -876,27 +891,41 @@ async function loadData() {
 }
 
 function renderTable() {
-  var filtered = getFilteredData();
   var tbody = document.getElementById('tbody');
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="load-state">Nicio inregistrare gasita.</td></tr>';
-    document.getElementById('row-count').textContent = '0 inregistrari';
-    return;
+  var rows = filteredData.slice();
+  if (sortCol >= 0) {
+    var sc = sortCol;
+    var isDateCol = (sc === 2 || sc === 4);
+    var timeCol = sc === 2 ? 3 : (sc === 4 ? 5 : -1);
+    rows.sort(function(a, b) {
+      var va = isDateCol ? dateToSortKey(a[sc]||'') : String(a[sc]||'');
+      var vb = isDateCol ? dateToSortKey(b[sc]||'') : String(b[sc]||'');
+      if (va < vb) return -sortDir;
+      if (va > vb) return sortDir;
+      if (isDateCol && timeCol >= 0) {
+        var ta = String(a[timeCol]||'').replace(':','');
+        var tb = String(b[timeCol]||'').replace(':','');
+        if (ta < tb) return -sortDir;
+        if (ta > tb) return sortDir;
+      }
+      return 0;
+    });
   }
-  document.getElementById('row-count').textContent = filtered.length + ' inregistrari';
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="11" class="no-data" style="color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';
+    updateSelCount(); return;
+  }
   var html = '';
-  filtered.forEach(function(row, i) {
-    // Sheet: 0=Motiv, 1=DataInc, 2=OraInc, 3=DataFin, 4=OraFin,
-    //        5=Descriere, 6=Status, 7=Piese, 8=Echipa, 9=AdaugatDe, 10=Echipament
+  rows.forEach(function(row, i) {
     var uid = String(row[0]||'') + String(row[10]||'') + String(row[1]||'') + i;
     var sel = selectedRows.has(uid);
     var inc = '<span class="ddate">' + fmtDate(row[1]||'') + '</span>';
     if (row[2] && String(row[2]).trim()) inc += '<span class="dtime">' + fmtTime(row[2]) + '</span>';
     var fin = '<span class="ddate">' + fmtDate(row[3]||'') + '</span>';
     if (row[4] && String(row[4]).trim()) fin += '<span class="dtime">' + fmtTime(row[4]) + '</span>';
-    html += '<tr class="data-row' + (sel ? ' row-selected' : '') + '" data-uid="' + esc(uid) + '">'
-      + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleSel(this)"/></td>'
-      + '<td class="td-nr">' + (i + 1) + '</td>'
+    html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + esc(uid) + '">'
+      + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleRow(this)"/></td>'
+      + '<td class="td-nr">' + (i+1) + '</td>'
       + '<td class="td-eq">' + esc(row[10]||'') + '</td>'
       + (function(m){var av=m.toLowerCase().indexOf('avarie')>-1;return '<td class="td-motiv"'+(av?' style="color:var(--red);font-weight:700;"':'')+'>'+esc(m)+'</td>';})(row[0]||'')
       + '<td class="td-dt">' + inc + '</td>'
@@ -905,11 +934,11 @@ function renderTable() {
       + '<td>' + statusChip(row[6]) + '</td>'
       + '<td class="td-piese" title="' + esc(row[7]||'') + '">' + esc(row[7]||'') + '</td>'
       + '<td class="td-echipa">' + esc(row[8]||'') + '</td>'
-      + '<td style="color:#fff;font-weight:500;">' + esc(row[9]||'') + '</td>'
+      + '<td style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:500;">' + esc(row[9]||'') + '</td>'
       + '</tr>';
   });
   tbody.innerHTML = html;
-  attachDescBubble();
+  updateSelCount();
 }
 
 function applyFilters() {
@@ -919,7 +948,7 @@ function applyFilters() {
   var status = document.getElementById('sel-status').value;
   var motiv = document.getElementById('sel-motiv').value;
   filteredData = allData.filter(function(row) {
-    var d = getDateParts(row[2]);
+    var d = getDateParts(row[1]);
     if (month && (!d || d.m !== month)) return false;
     if (year && (!d || d.y !== year)) return false;
     if (echip && String(row[11]||'').toUpperCase() !== echip.toUpperCase()) return false;
@@ -1105,11 +1134,11 @@ function resetForm() {
   var dd=document.getElementById('f-data-fin-display');
   var di=document.getElementById('f-data-inc-display');
   var now2=new Date();
-  var nowStr=String(now2.getDate()).padStart(2,'0')+'/'+String(now2.getMonth()+1).padStart(2,'0')+'/'+now2.getFullYear();
-  var nowHidden=now2.getFullYear()+'-'+String(now2.getMonth()+1).padStart(2,'0')+'-'+String(now2.getDate()).padStart(2,'0');
-  if(dd){dd.value=nowStr;}
-  document.getElementById('f-data-fin').value=nowHidden;
-  if(di){di.value=nowStr;}
+  var nowStr2=String(now2.getDate()).padStart(2,'0')+'/'+String(now2.getMonth()+1).padStart(2,'0')+'/'+now2.getFullYear();
+  var nowHid2=now2.getFullYear()+'-'+String(now2.getMonth()+1).padStart(2,'0')+'-'+String(now2.getDate()).padStart(2,'0');
+  if(dd){dd.value=nowStr2;}
+  document.getElementById('f-data-fin').value=nowHid2;
+  if(di){di.value=nowStr2;}
   document.getElementById('f-motiv').value = '';
   document.getElementById('f-echipament').value = '';
   document.getElementById('f-status').value = '';
@@ -1176,22 +1205,22 @@ function exportExcel() {
   // Data rows
   rows.forEach(function(r,i){
     var fill = i%2===0 ? '#f5f8ff' : '#ffffff';
-    var status = r[0]||'';
+    var status = r[7]||'';
     var sBg = statusBg[status]||fill;
     var sFg = statusFg[status]||'#0d1b3a';
     t += '<tr>';
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[0]||'')+'</td>';
-    var av=(r[0]||'').toLowerCase().indexOf('avarie')>-1;
-    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdL+'background:'+fill+';">'+(r[0]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[11]||'')+'</td>';
+    var av=(r[1]||'').toLowerCase().indexOf('avarie')>-1;
+    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[1]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[2]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[3]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[4]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[5]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[6]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
-    t += '<td style="'+tdL+'background:'+fill+';">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdL+'background:'+fill+';">'+(r[0]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[8]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[9]||'')+'</td>';
     t += '</tr>';
   });
 
@@ -1207,28 +1236,7 @@ function exportExcel() {
   setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
-function exportPDF() {
-  // Set date in header
-  var now = new Date();
-  var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
-  var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-  var dateEl = document.getElementById('print-date-inline');
-  if(dateEl) dateEl.textContent = 'Data generarii: '+d+' '+t;
-
-  // Hide non-selected rows if selection active
-  var hasSelected = selectedRows.size > 0;
-  var hidden = [];
-  if(hasSelected){
-    document.querySelectorAll('#tbody tr').forEach(function(tr){
-      if(!tr.classList.contains('row-selected')){
-        tr.style.display='none';
-        hidden.push(tr);
-      }
-    });
-  }
-  window.print();
-  hidden.forEach(function(tr){tr.style.display='';});
-}
+function exportPDF() { window.print(); }
 
 // ── DATE / TIME INPUT HELPERS ──
 function formatDateInput(el, hiddenId) {
@@ -1304,14 +1312,15 @@ function displayToISO(d) {
   // Show print header when printing
   window.addEventListener('beforeprint', function() {
     document.getElementById('print-header').style.display = 'flex';
+    document.getElementById('print-footer').style.display = 'flex';
     var now = new Date();
     var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
     var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
-    var el = document.getElementById('print-date-inline');
-    if(el) el.textContent = 'Data generarii: '+d+' '+t;
+    document.getElementById('print-date-text').textContent = 'Data generarii: ' + d + ' ' + t;
   });
   window.addEventListener('afterprint', function() {
     document.getElementById('print-header').style.display = 'none';
+    document.getElementById('print-footer').style.display = 'none';
   });
   var now = new Date();
   // Set display date DD/MM/YYYY
