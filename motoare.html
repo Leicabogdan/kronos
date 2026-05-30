@@ -115,12 +115,12 @@ td:last-child{border-right:none;}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
 .detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
-.detail-section-title{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
+.detail-section-title{font-family:var(--mono);font-size:16px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
 .detail-section-title.motor{color:var(--blue);}
 .detail-section-title.reduct{color:var(--purple);}
 .detail-field{display:flex;flex-direction:column;gap:2px;align-items:center;padding:4px 6px;}
-.detail-lbl{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:center;}
-.detail-val{font-family:var(--sans);font-size:14px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
+.detail-lbl{font-family:var(--mono);font-size:13px;color:var(--teal);letter-spacing:.06em;text-transform:uppercase;font-weight:700;text-align:center;}
+.detail-val{font-family:var(--sans);font-size:18px;color:#fff;font-weight:600;white-space:normal;word-break:break-word;text-align:center;}
 
 /* TRADEMARK */
 .trademark{text-align:center;padding:16px 0 8px;border-top:1px solid var(--border);margin-top:20px;}
@@ -331,6 +331,8 @@ updateClock();setInterval(updateClock,1000);
 function checkMobile(){var mb=document.getElementById('mobile-menu-btn');if(mb){if(window.innerWidth<=700)mb.style.display='block';else mb.style.display='none';}}
 checkMobile();window.addEventListener('resize',checkMobile);
 
+var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwNsRpDcmzvapnJK8mv6OytiXyRWW9S9Vc3Yq_3zRD9vPUTOiEaJZxlqSJpvm5-AXOm/exec';
+
 /* ── ADD FORM ── */
 var addFormOpen=false;
 function toggleAddForm(){
@@ -344,54 +346,69 @@ function resetForm(){
 function saveNewEquip(){
   var id=document.getElementById('nf-id').value.trim().toUpperCase();
   if(!id){alert('ID-ul este obligatoriu!');return;}
-  var tip=document.getElementById('nf-tip').value;
-  var row=[
-    id, tip,
-    document.getElementById('nf-m-prod').value,
-    document.getElementById('nf-m-model').value,
-    document.getElementById('nf-m-curent').value,
-    document.getElementById('nf-m-putere').value,
-    document.getElementById('nf-m-turatie').value,
-    document.getElementById('nf-m-rulde').value,
-    document.getElementById('nf-m-rulne').value,
-    document.getElementById('nf-m-tip').value,
-    document.getElementById('nf-r-prod').value,
-    document.getElementById('nf-r-model').value,
-    document.getElementById('nf-r-tur').value,
-    document.getElementById('nf-m-serie').value,
-    document.getElementById('nf-m-tensiune').value,
-    document.getElementById('nf-m-frecventa').value,
-    document.getElementById('nf-m-cosf').value,
-    document.getElementById('nf-m-rand').value,
-    document.getElementById('nf-m-clasa').value,
-    document.getElementById('nf-m-lubr').value,
-    document.getElementById('nf-m-greutate').value,
-    document.getElementById('nf-m-ip').value,
-    document.getElementById('nf-m-temp').value,
-    document.getElementById('nf-m-std').value,
-    document.getElementById('nf-m-izol').value,
-    document.getElementById('nf-m-atex').value,
-    document.getElementById('nf-r-serie').value,
-    document.getElementById('nf-r-turie').value,
-    document.getElementById('nf-r-cuplu').value,
-    document.getElementById('nf-r-putere').value,
-    document.getElementById('nf-r-raport').value,
-    document.getElementById('nf-r-ulei').value,
-    document.getElementById('nf-r-cant').value,
-    document.getElementById('nf-r-poz').value,
-    document.getElementById('nf-r-data').value,
-    document.getElementById('nf-r-greutate').value,
-    document.getElementById('nf-r-atex').value,
-    document.getElementById('nf-r-temp').value,
-    document.getElementById('nf-r-ore').value,
-  ];
-  var existing=allData.findIndex(function(r){return String(r[0]).toUpperCase()===id;});
-  if(existing>=0){if(!confirm('ID-ul '+id+' exista deja. Suprascriem?'))return;allData[existing]=row;}
-  else{allData.push(row);}
-  updateKPI(allData);
-  renderTable();
-  resetForm();
-  toggleAddForm();
+  var payload={
+    id:id,
+    tip:document.getElementById('nf-tip').value,
+    m_prod:document.getElementById('nf-m-prod').value,
+    m_model:document.getElementById('nf-m-model').value,
+    m_serie:document.getElementById('nf-m-serie').value,
+    m_curent:document.getElementById('nf-m-curent').value,
+    m_putere:document.getElementById('nf-m-putere').value,
+    m_turatie:document.getElementById('nf-m-turatie').value,
+    m_tensiune:document.getElementById('nf-m-tensiune').value,
+    m_frecventa:document.getElementById('nf-m-frecventa').value,
+    m_cosf:document.getElementById('nf-m-cosf').value,
+    m_rand:document.getElementById('nf-m-rand').value,
+    m_clasa:document.getElementById('nf-m-clasa').value,
+    m_rulde:document.getElementById('nf-m-rulde').value,
+    m_rulne:document.getElementById('nf-m-rulne').value,
+    m_lubr:document.getElementById('nf-m-lubr').value,
+    m_greutate:document.getElementById('nf-m-greutate').value,
+    m_tip:document.getElementById('nf-m-tip').value,
+    m_ip:document.getElementById('nf-m-ip').value,
+    m_izol:document.getElementById('nf-m-izol').value,
+    m_temp:document.getElementById('nf-m-temp').value,
+    m_std:document.getElementById('nf-m-std').value,
+    m_atex:document.getElementById('nf-m-atex').value,
+    r_prod:document.getElementById('nf-r-prod').value,
+    r_model:document.getElementById('nf-r-model').value,
+    r_serie:document.getElementById('nf-r-serie').value,
+    r_tur:document.getElementById('nf-r-tur').value,
+    r_turie:document.getElementById('nf-r-turie').value,
+    r_cuplu:document.getElementById('nf-r-cuplu').value,
+    r_putere:document.getElementById('nf-r-putere').value,
+    r_raport:document.getElementById('nf-r-raport').value,
+    r_ulei:document.getElementById('nf-r-ulei').value,
+    r_cant:document.getElementById('nf-r-cant').value,
+    r_poz:document.getElementById('nf-r-poz').value,
+    r_data:document.getElementById('nf-r-data').value,
+    r_greutate:document.getElementById('nf-r-greutate').value,
+    r_atex:document.getElementById('nf-r-atex').value,
+    r_temp:document.getElementById('nf-r-temp').value,
+    r_ore:document.getElementById('nf-r-ore').value,
+  };
+  var btn=document.querySelector('.btn-save');
+  btn.textContent='SE SALVEAZA...';btn.disabled=true;
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.result==='success'){
+        // Add to local data immediately
+        var row=[payload.id,payload.tip,payload.m_prod,payload.m_model,payload.m_curent,payload.m_putere,payload.m_turatie,payload.m_rulde,payload.m_rulne,payload.m_tip,payload.r_prod,payload.r_model,payload.r_tur,payload.m_serie,payload.m_tensiune,payload.m_frecventa,payload.m_cosf,payload.m_rand,payload.m_clasa,payload.m_lubr,payload.m_greutate,payload.m_ip,payload.m_temp,payload.m_std,payload.m_izol,payload.m_atex,payload.r_serie,payload.r_turie,payload.r_cuplu,payload.r_putere,payload.r_raport,payload.r_ulei,payload.r_cant,payload.r_poz,payload.r_data,payload.r_greutate,payload.r_atex,payload.r_temp,payload.r_ore];
+        var existing=allData.findIndex(function(r){return String(r[0]).toUpperCase()===payload.id;});
+        if(existing>=0)allData[existing]=row;else allData.push(row);
+        updateKPI(allData);renderTable();
+        resetForm();toggleAddForm();
+        btn.textContent='SALVEAZA';btn.disabled=false;
+      } else {
+        alert('Eroare la salvare: '+(res.error||'necunoscuta'));
+        btn.textContent='SALVEAZA';btn.disabled=false;
+      }
+    })
+    .catch(function(err){
+      alert('Eroare conexiune: '+err.message);
+      btn.textContent='SALVEAZA';btn.disabled=false;
+    });
 }
 
 /* ── MODAL ── */
@@ -518,7 +535,7 @@ function buildDetailHTML(row){
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
-    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:14px;">'+f(val)+'</div></div>';
+    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:18px;">'+f(val)+'</div></div>';
   }
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
   var hasR=row[10]&&row[10]!=='-';
