@@ -3,7 +3,7 @@
  * Utilizare: <script src="sidebar.js" data-active="DASHBOARD"></script>
  *
  * Valori valide pentru data-active:
- *   DASHBOARD | ORE_FUNCTIONARE |
+ *   DASHBOARD | ACTIVITATI_SILOZ | ORE_FUNCTIONARE |
  *   MENTENANTA_ECHIPAMENTE | AERE_CONDITIONATE | CUVE_RECEPTIE |
  *   MOTO_REDUCTOARE | ELEVATOARE | TRANS_LANT | TRANS_BANDA | FILTRE | SNECURI | CANTARE | CELULE_RECEPTIE |
  *   ISCIR | RAPOARTE |
@@ -129,6 +129,10 @@
     ${navItem('dashboard.html',
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 7.5L8 2l6 5.5V14a.5.5 0 01-.5.5h-4V10h-3v4.5H2.5A.5.5 0 012 14V7.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
       'DASHBOARD', 'DASHBOARD')}
+
+    ${navItem('activitati_siloz.html',
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+      'ACTIVITATI SILOZ', 'ACTIVITATI_SILOZ')}
 
     ${navItem('ore_functionare.html',
       '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.4"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
