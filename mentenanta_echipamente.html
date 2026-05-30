@@ -222,7 +222,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:12mm!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
   .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
@@ -248,8 +248,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     text-align:center!important;border-right:1px solid #2a4a8e!important;
     white-space:normal!important;
   }
-  tbody tr{background:#fff!important;}
-  tbody tr:nth-child(even){background:#f0f4fb!important;}
+  tbody tr{background:#fff!important;page-break-inside:avoid!important;break-inside:avoid!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;page-break-inside:avoid!important;break-inside:avoid!important;}
   td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
     vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
@@ -283,10 +283,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .desc-bubble{display:none!important;}
   .chip{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
   .no-data{color:#000!important;}
-  @page{size:A4 landscape;margin:0mm;}
-  @page:first{margin:0mm;}
-  @page:left{margin:0mm;}
-  @page:right{margin:0mm;}
+  @page{size:A4 landscape;margin:6mm 8mm 10mm 8mm;}
   .page-break{page-break-before:always;}
   .print-footer{display:block!important;position:fixed;bottom:8mm;left:12mm;right:12mm;
     font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
@@ -327,7 +324,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 
   <!-- PRINT FOOTER (only visible when printing) -->
   <div class="print-footer" id="print-footer">
-    <span id="print-date-text"></span>
+    <span>KRONOS &trade; &middot; Terminal Cereale SOCEP &middot; Port Constanta</span>
     <span></span>
   </div>
 
@@ -341,7 +338,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
       <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
         Registru Mentenanta Echipamente<br>
-        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP · Port Constanta</span><br>
+        <span id="print-date-inline" style="font-weight:400;font-size:9px;color:#888;"></span>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;"><span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span><span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span></div>
@@ -1225,7 +1223,20 @@ function exportExcel() {
   setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
-function exportPDF() { window.print(); }
+function exportPDF() {
+  var hasSelected = selectedRows.size > 0;
+  var hidden = [];
+  if (hasSelected) {
+    document.querySelectorAll('#tbody tr').forEach(function(tr) {
+      if (!tr.classList.contains('row-selected')) {
+        tr.style.display = 'none';
+        hidden.push(tr);
+      }
+    });
+  }
+  window.print();
+  hidden.forEach(function(tr){ tr.style.display = ''; });
+}
 
 // ── DATE / TIME INPUT HELPERS ──
 function formatDateInput(el, hiddenId) {
