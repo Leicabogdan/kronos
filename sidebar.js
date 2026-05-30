@@ -106,7 +106,7 @@
   }
 
   /* Determina daca un grup contine pagina activa */
-  var MNT_KEYS   = ['MENTENANTA_ECHIPAMENTE','SCHIMB_ULEI','AERE_CONDITIONATE','CUVE_RECEPTIE'];
+  var MNT_KEYS   = ['MENTENANTA_ECHIPAMENTE','SCHIMB_ULEI','COMPRESOARE','SISTEM_HIDRAULIC','AERE_CONDITIONATE','CUVE_RECEPTIE'];
   var DT_KEYS    = ['MOTO_REDUCTOARE','ELEVATOARE','TRANS_LANT','TRANS_BANDA','FILTRE','SNECURI','CANTARE','CELULE_RECEPTIE'];
   var CONF_KEYS  = ['ISCIR','RAPOARTE'];
   var RES_KEYS   = ['MANUAL_MENTENANTA','STOC_PIESE','ANALIZE_ULEI','MANUALE_DOC','FISA'];
@@ -151,10 +151,15 @@
       ${navItem('schimb_ulei.html',
         '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 1h4v3l1.5 2.5V11a2 2 0 01-2 2H5.5a2 2 0 01-2-2V6.5L5 4V1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M3.5 6.5h7" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>',
         'SCHIMB ULEI', 'SCHIMB_ULEI', 'sb-sub')}
-      <span class="sb-item sb-sub" style="cursor:default;opacity:.55;">
-        <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 9v3M7 9v3M10 9v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-        <span class="sb-nav-label">AERE CONDITIONATE</span>
-      </span>
+      ${navItem('compresoare.html',
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="4" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M10 6.5h2a.5.5 0 010 1h-2M4 4V3a1 1 0 012 0v1M7 4V3a1 1 0 012 0v1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="4.5" cy="7.5" r="1" stroke="currentColor" stroke-width="1.1"/></svg>',
+        'COMPRESOARE', 'COMPRESOARE', 'sb-sub')}
+      ${navItem('sistem_hidraulic.html',
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2h8v3H3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 5v2M4 7h6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M3 7h2v3H3zM9 7h2v3H9z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M4 10v2M10 10v2" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>',
+        'SISTEM HIDRAULIC', 'SISTEM_HIDRAULIC', 'sb-sub')}
+      ${navItem('aere_conditionate.html',
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 9v3M7 9v3M10 9v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+        'AERE CONDITIONATE', 'AERE_CONDITIONATE', 'sb-sub')}
       ${navItem('cuve_receptie.html',
         '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 6L7 1l3 5" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 6h10v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" stroke="currentColor" stroke-width="1.2"/></svg>',
         'CUVE RECEPTIE', 'CUVE_RECEPTIE', 'sb-sub')}
