@@ -706,7 +706,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 </div>
 
 <script>
-var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
+var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?output=csv';
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzHAHnU526qWDJhF9bLsc4RMgpeXPlT5do4sjc365aKW3JlyQ3Pro2DLJZu30jKakm0A/exec';
 
 var allData = [];
@@ -808,8 +808,8 @@ function renderKpiEq(elId, rows) {
   var color = el.closest('.kpi-card').classList.contains('c-teal') ? 'var(--teal)' :
               el.closest('.kpi-card').classList.contains('c-amber') ? 'var(--amber)' : 'var(--red)';
   el.innerHTML = rows.map(function(r) {
-    var eq = esc(r[11] || '—');
-    var mot = esc(String(r[1]||'').substring(0, 16));
+    var eq = esc(r[10] || '—');
+    var mot = esc(String(r[0]||'').substring(0, 16));
     return '<div class="eq-pill" style="margin-bottom:3px;">'
       + '<span class="peq" style="color:' + color + ';">' + eq + '</span>'
       + '<span class="pmot">' + mot + '</span>'
@@ -818,26 +818,26 @@ function renderKpiEq(elId, rows) {
 }
 
 function updateKPI() {
-  var thisMonth = allData.filter(function(r) { return isThisMonth(r[2]); });
+  var thisMonth = allData.filter(function(r) { return isThisMonth(r[1]); });
   // Total: exclude avarie, necesita interventie, necesita piese
   var totalOk = thisMonth.filter(function(r) {
-    var s = String(r[7]||'').toLowerCase();
-    var m = String(r[1]||'').toLowerCase();
+    var s = String(r[6]||'').toLowerCase();
+    var m = String(r[0]||'').toLowerCase();
     return s.indexOf('avarie') < 0 && s.indexOf('necesita interv') < 0 && s.indexOf('necesita piese') < 0 && m.indexOf('avarie') < 0;
   });
   document.getElementById('k-total').textContent = totalOk.length;
   renderKpiEq('kpi-total-eq', totalOk.slice(-3).reverse());
 
   var suprav = thisMonth.filter(function(r) {
-    var s = String(r[7]||'').toLowerCase();
+    var s = String(r[6]||'').toLowerCase();
     return s.indexOf('supraveg') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('necesita piese') > -1;
   });
   document.getElementById('k-suprav').textContent = suprav.length;
   renderKpiEqPiese('kpi-suprav-eq', suprav.slice(-3).reverse());
 
   var avarii = thisMonth.filter(function(r) {
-    var m = String(r[1]||'').toLowerCase();
-    var s = String(r[7]||'').toLowerCase();
+    var m = String(r[0]||'').toLowerCase();
+    var s = String(r[6]||'').toLowerCase();
     return m.indexOf('avarie') > -1 || s.indexOf('necesita interv') > -1 || s.indexOf('avarie') > -1;
   });
   document.getElementById('k-avarii').textContent = avarii.length;
@@ -877,7 +877,7 @@ async function loadData() {
     var text = await resp.text();
     var rows = parseCSV(text);
     allData = rows.slice(1).filter(function(r) { return r.some(function(c) { return c !== ''; }); });
-    allData = allData.map(function(r) { while (r.length < 12) r.push(''); return r; });
+    allData = allData.map(function(r) { while (r.length < 11) r.push(''); return r; });
     filteredData = allData.slice();
     applyFilters();  // applies current month/year filter + renders table + updates KPI
   } catch(err) {
@@ -951,8 +951,8 @@ function applyFilters() {
     var d = getDateParts(row[1]);
     if (month && (!d || d.m !== month)) return false;
     if (year && (!d || d.y !== year)) return false;
-    if (echip && String(row[11]||'').toUpperCase() !== echip.toUpperCase()) return false;
-    if (status && String(row[7]||'').toLowerCase().indexOf(status.toLowerCase()) < 0) return false;
+    if (echip && String(row[10]||'').toUpperCase() !== echip.toUpperCase()) return false;
+    if (status && String(row[6]||'').toLowerCase().indexOf(status.toLowerCase()) < 0) return false;
     if (motiv && String(row[0]||'').toLowerCase().indexOf(motiv.toLowerCase()) < 0) return false;
     return true;
   });
@@ -983,14 +983,14 @@ function dateToSortKey(str) {
 function sortBy(col) {
   document.querySelectorAll('thead .hdr-row th').forEach(function(t) { t.classList.remove('sort-asc','sort-desc'); });
   if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
-  var thMap = {0:1, 11:2, 1:3, 2:4, 4:5, 6:6, 7:7, 8:8, 9:9, 10:10};
+  var thMap = {0:3, 10:2, 1:4, 3:5, 5:6, 6:7, 7:8, 8:9, 9:10};
   var ti = thMap[col];
   var ths = document.querySelectorAll('thead .hdr-row th');
   if (ti !== undefined && ths[ti]) ths[ti].classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
   // Apply sort to filteredData
   var sc2 = col;
-  var isDateCol = (col === 2 || col === 4); // Inceput / Finalizare
-  var timeCol = col === 2 ? 3 : (col === 4 ? 5 : -1); // paired time column
+  var isDateCol = (col === 1 || col === 3); // Inceput / Finalizare
+  var timeCol = col === 1 ? 2 : (col === 3 ? 4 : -1); // paired time column
   filteredData.sort(function(a, b) {
     var va = isDateCol ? dateToSortKey(a[sc2]||'') : String(a[sc2]||'');
     var vb = isDateCol ? dateToSortKey(b[sc2]||'') : String(b[sc2]||'');
