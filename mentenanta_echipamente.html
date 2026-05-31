@@ -224,7 +224,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
-  .app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;max-height:none!important;}
+  .app,.main,.content,.page,.table-wrap,#tbody{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
     padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;
@@ -1196,21 +1196,20 @@ function resetForm() {
 
 function fmtDateXL(s) {
   if (!s) return '';
-  // dd/mm/yyyy
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  s = String(s).trim();
+  // d/m/yyyy or dd/mm/yyyy → dd/mm/yyyy
+  var m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) return m[1].padStart(2,'0')+'/'+m[2].padStart(2,'0')+'/'+m[3];
   // yyyy-mm-dd
-  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (m) return m[3]+'/'+m[2]+'/'+m[1];
+  var m2 = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (m2) return m2[3].padStart(2,'0')+'/'+m2[2].padStart(2,'0')+'/'+m2[1];
   return s;
 }
 function fmtTimeXL(s) {
   if (!s) return '';
   var t = String(s).trim();
-  // Already hh:mm
-  if (/^\d{2}:\d{2}$/.test(t)) return t;
-  // h:mm → 0h:mm
-  var m = t.match(/^(\d):(\d{2})$/);
-  if (m) return '0'+m[1]+':'+m[2];
+  var m = t.match(/^(\d{1,2}):(\d{2})$/);
+  if (m) return m[1].padStart(2,'0')+':'+m[2];
   return t;
 }
 function exportExcel() {
@@ -1307,10 +1306,10 @@ function exportPDF() {
   if(inl) inl.textContent = 'Data generarii: '+d+' '+t;
 
   _pdfHiddenRows = [];
-  if (selectedRows.size > 0) {
+  var hasSelected = document.querySelectorAll('#tbody tr.row-selected').length > 0;
+  if (hasSelected) {
     document.querySelectorAll('#tbody tr.data-row').forEach(function(tr) {
-      var uid = tr.dataset.uid;
-      if (!selectedRows.has(uid)) {
+      if (!tr.classList.contains('row-selected')) {
         tr.style.display = 'none';
         _pdfHiddenRows.push(tr);
       }
