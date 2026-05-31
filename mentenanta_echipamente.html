@@ -1266,10 +1266,10 @@ function exportExcel() {
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[10]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\\/MM\\/YYYY";">'+fmtDateXL(r[1])+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+fmtTimeXL(r[2])+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\\/MM\\/YYYY";">'+fmtDateXL(r[3])+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+fmtTimeXL(r[4])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtDateXL(r[1])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtTimeXL(r[2])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtDateXL(r[3])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtTimeXL(r[4])+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[5]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[7]||'')+'</td>';
