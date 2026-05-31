@@ -898,8 +898,8 @@ function renderTable() {
   var rows = filteredData.slice();
   if (sortCol >= 0) {
     var sc = sortCol;
-    var isDateCol = (sc === 2 || sc === 4);
-    var timeCol = sc === 2 ? 3 : (sc === 4 ? 5 : -1);
+    var isDateCol = (sc === 1 || sc === 3);
+    var timeCol = sc === 1 ? 2 : (sc === 3 ? 4 : -1);
     rows.sort(function(a, b) {
       var va = isDateCol ? dateToSortKey(a[sc]||'') : String(a[sc]||'');
       var vb = isDateCol ? dateToSortKey(b[sc]||'') : String(b[sc]||'');
