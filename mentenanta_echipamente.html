@@ -113,7 +113,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   font-family:var(--sans);font-size:13px;font-weight:700;
   background:rgba(255,255,255,.04);border:1px solid var(--border2);}
 .eq-pill .peq{font-weight:700;font-size:14px;font-family:var(--title);}
-.eq-pill .pmot{font-size:12px;color:#fff;font-family:var(--sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px;}
+.eq-pill .pmot{font-size:12px;color:#fff;font-family:var(--sans);}
 .kpi-card.c-teal .eq-pill .peq{color:var(--teal);}
 .kpi-card.c-amber .eq-pill .peq{color:var(--amber);}
 .kpi-card.c-red .eq-pill .peq{color:var(--red);}
@@ -239,7 +239,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     color:#1a3a6e;text-align:right;letter-spacing:.05em;}
   .print-report-date{font-size:10px;color:#666;margin-top:2px;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
-  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;height:auto!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 8px!important;
@@ -1255,10 +1255,10 @@ function exportExcel() {
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[10]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\/MM\/YYYY";">'+(r[1]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+(r[2]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\/MM\/YYYY";">'+(r[3]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+(r[4]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+String(r[1]||'').replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+String(r[2]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+String(r[3]||'').replace(/^(\d{4})-(\d{2})-(\d{2})$/, '$3/$2/$1')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+String(r[4]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[5]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[7]||'')+'</td>';
@@ -1278,30 +1278,26 @@ function exportExcel() {
   setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
+var _pdfHiddenRows = [];
+
 function exportPDF() {
-  // Set date in header
   var now = new Date();
   var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
   var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   var inl = document.getElementById('print-date-inline');
   if(inl) inl.textContent = 'Data generarii: '+d+' '+t;
 
-  // Hide non-selected rows if selection active
-  var hidden = [];
+  _pdfHiddenRows = [];
   if (selectedRows.size > 0) {
     document.querySelectorAll('#tbody tr.data-row').forEach(function(tr) {
       var uid = tr.getAttribute('data-uid');
       if (!selectedRows.has(uid)) {
         tr.style.display = 'none';
-        hidden.push(tr);
+        _pdfHiddenRows.push(tr);
       }
     });
   }
-
   window.print();
-
-  // Restore hidden rows
-  hidden.forEach(function(tr) { tr.style.display = ''; });
 }
 
 // ── DATE / TIME INPUT HELPERS ──
@@ -1386,6 +1382,8 @@ function displayToISO(d) {
   });
   window.addEventListener('afterprint', function() {
     document.getElementById('print-header').style.display = 'none';
+    _pdfHiddenRows.forEach(function(tr){ tr.style.display = ''; });
+    _pdfHiddenRows = [];
   });
   var now = new Date();
   // Set display date DD/MM/YYYY
