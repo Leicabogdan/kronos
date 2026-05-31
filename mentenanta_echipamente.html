@@ -921,7 +921,7 @@ function renderTable() {
     if (row[2] && String(row[2]).trim()) inc += '<span class="dtime">' + fmtTime(row[2]) + '</span>';
     var fin = '<span class="ddate">' + fmtDate(row[3]||'') + '</span>';
     if (row[4] && String(row[4]).trim()) fin += '<span class="dtime">' + fmtTime(row[4]) + '</span>';
-    html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + esc(uid) + '">'
+    html += '<tr class="' + (sel ? 'row-selected' : '') + '" data-uid="' + uid.replace(/"/g,'&quot;') + '">'
       + '<td class="td-check"><input type="checkbox" class="row-cb"' + (sel ? ' checked' : '') + ' onchange="toggleRow(this)"/></td>'
       + '<td class="td-nr">' + (i+1) + '</td>'
       + '<td class="td-eq">' + esc(row[10]||'') + '</td>'
@@ -1032,7 +1032,7 @@ function updateSelCount() {
 function getExportRows() {
   if (selectedRows.size > 0) {
     return filteredData.filter(function(row, i) {
-      return selectedRows.has(String(row[0]||'') + String(row[11]||'') + String(row[2]||'') + i);
+      return selectedRows.has(String(row[0]||'') + String(row[10]||'') + String(row[1]||'') + i);
     });
   }
   return filteredData;
@@ -1255,10 +1255,10 @@ function exportExcel() {
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[10]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[1]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[2]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[3]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[4]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\/MM\/YYYY";">'+(r[1]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+(r[2]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"DD\/MM\/YYYY";">'+(r[3]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';mso-number-format:"HH:MM";">'+(r[4]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[5]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[7]||'')+'</td>';
