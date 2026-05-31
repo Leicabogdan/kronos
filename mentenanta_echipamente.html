@@ -248,8 +248,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     text-align:center!important;border-right:1px solid #2a4a8e!important;
     white-space:normal!important;
   }
-  tbody tr{background:#fff!important;}
-  tbody tr:nth-child(even){background:#f0f4fb!important;}
+  tbody tr{background:#fff!important;page-break-inside:avoid!important;break-inside:avoid!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;page-break-inside:avoid!important;break-inside:avoid!important;}
   td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
     vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
@@ -1278,7 +1278,31 @@ function exportExcel() {
   setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
-function exportPDF() { window.print(); }
+function exportPDF() {
+  // Set date in header
+  var now = new Date();
+  var d = now.getDate().toString().padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+  var t = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var inl = document.getElementById('print-date-inline');
+  if(inl) inl.textContent = 'Data generarii: '+d+' '+t;
+
+  // Hide non-selected rows if selection active
+  var hidden = [];
+  if (selectedRows.size > 0) {
+    document.querySelectorAll('#tbody tr.data-row').forEach(function(tr) {
+      var uid = tr.getAttribute('data-uid');
+      if (!selectedRows.has(uid)) {
+        tr.style.display = 'none';
+        hidden.push(tr);
+      }
+    });
+  }
+
+  window.print();
+
+  // Restore hidden rows
+  hidden.forEach(function(tr) { tr.style.display = ''; });
+}
 
 // ── DATE / TIME INPUT HELPERS ──
 function formatDateInput(el, hiddenId) {
