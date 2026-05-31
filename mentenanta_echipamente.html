@@ -1243,24 +1243,26 @@ function exportExcel() {
   t += '</tr>';
 
   // Data rows
+  // Sheet: 0=Motiv, 1=DataInc, 2=OraInc, 3=DataFin, 4=OraFin,
+  //        5=Descriere, 6=Status, 7=Piese, 8=Echipa, 9=AdaugatDe, 10=Echipament
   rows.forEach(function(r,i){
-    var fill = i%2===0 ? '#f5f8ff' : '#ffffff';
-    var status = r[7]||'';
+    var fill = i%2===0 ? '#f0f4fb' : '#ffffff';
+    var status = r[6]||'';
     var sBg = statusBg[status]||fill;
     var sFg = statusFg[status]||'#0d1b3a';
+    var av=(r[0]||'').toLowerCase().indexOf('avarie')>-1;
     t += '<tr>';
     t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[11]||'')+'</td>';
-    var av=(r[1]||'').toLowerCase().indexOf('avarie')>-1;
-    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[1]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[10]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+(r[1]||'')+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';">'+(r[2]||'')+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';">'+(r[3]||'')+'</td>';
     t += '<td style="'+tdC+'background:'+fill+';">'+(r[4]||'')+'</td>';
-    t += '<td style="'+tdC+'background:'+fill+';">'+(r[5]||'')+'</td>';
-    t += '<td style="'+tdL+'background:'+fill+';">'+(r[6]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[5]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
     t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[7]||'')+'</td>';
     t += '<td style="'+tdL+'background:'+fill+';">'+(r[8]||'')+'</td>';
-    t += '<td style="'+tdL+'background:'+fill+';">'+(r[9]||'')+'</td>';
     t += '</tr>';
   });
 
