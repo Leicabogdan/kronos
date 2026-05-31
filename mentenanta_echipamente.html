@@ -224,7 +224,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
-  .app,.main,.content,.page,.table-wrap,#tbody{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;}
+  .app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;}
+  .table-wrap{overflow:visible!important;height:auto!important;max-height:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
     padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;
@@ -250,10 +251,11 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   }
   tbody tr{background:#fff!important;page-break-inside:avoid!important;break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;page-break-inside:avoid!important;break-inside:avoid!important;}
-  td{padding:6px 7px!important;font-size:9px!important;color:#000!important;
+  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
-    vertical-align:middle!important;white-space:normal!important;word-break:break-word!important;
+    vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  .td-desc{white-space:normal!important;overflow:visible!important;word-wrap:break-word!important;}
   .td-check,thead .th-check,
   .col-echipa,.col-piese,.col-adaugat,
   thead tr.hdr-row th:nth-child(1),
@@ -1306,11 +1308,12 @@ function exportPDF() {
   if(inl) inl.textContent = 'Data generarii: '+d+' '+t;
 
   _pdfHiddenRows = [];
-  var hasSelected = document.querySelectorAll('#tbody tr.row-selected').length > 0;
-  if (hasSelected) {
-    document.querySelectorAll('#tbody tr.data-row').forEach(function(tr) {
+  var selected = document.querySelectorAll('#tbody tr.row-selected');
+  if (selected.length > 0) {
+    document.querySelectorAll('#tbody tr').forEach(function(tr) {
       if (!tr.classList.contains('row-selected')) {
-        tr.style.display = 'none';
+        tr.setAttribute('data-pdf-hidden','1');
+        tr.style.setProperty('display','none','important');
         _pdfHiddenRows.push(tr);
       }
     });
