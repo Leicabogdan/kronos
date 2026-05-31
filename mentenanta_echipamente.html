@@ -81,17 +81,17 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 
 
 
-.page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:1800px;margin:0 auto;}
-.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.page{padding:clamp(10px,1.5vw,18px) clamp(8px,1.5vw,16px);max-width:100%;margin:0;}
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
 @media(max-width:900px){.kpi-strip{grid-template-columns:1fr;}}
-.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
-  position:relative;overflow:hidden;display:flex;align-items:stretch;gap:16px;}
+.kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;
+  position:relative;overflow:hidden;display:flex;align-items:stretch;gap:12px;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi-card.c-teal::before{background:var(--teal);}
 .kpi-card.c-amber::before{background:var(--amber);}
 .kpi-card.c-red::before{background:var(--red);}
-.kpi-left{display:flex;flex-direction:column;justify-content:center;min-width:90px;}
-.kpi-val{font-family:var(--title);font-size:clamp(32px,4vw,44px);font-weight:900;line-height:1;}
+.kpi-left{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-width:70px;}
+.kpi-val{font-family:var(--title);font-size:clamp(24px,3vw,36px);font-weight:900;line-height:1;}
 .kpi-card.c-teal .kpi-val{color:var(--teal);}
 .kpi-card.c-amber .kpi-val{color:var(--amber);}
 .kpi-card.c-red .kpi-val{color:var(--red);}
@@ -182,7 +182,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-dt{font-family:var(--sans);font-size:12px;}
 .td-dt .ddate{color:var(--teal);font-weight:700;font-size:15px;}
 .td-dt .dtime{color:var(--blue);display:block;font-size:12px;font-weight:600;}
-.td-desc{color:#fff;font-size:13px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;position:relative;}
+.td-desc{color:#fff;font-size:13px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;position:relative;}
 .desc-bubble{
   display:none;position:fixed;z-index:9999;
   left:auto;
