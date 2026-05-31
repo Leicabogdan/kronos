@@ -400,6 +400,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <option>Gresare</option><option>Verificare la golire celula</option><option>Revizie anuala</option>
           <option>Mentenanta si intretinere</option><option>Avarie</option><option>Schimb ulei</option>
           <option>Curatare magneti</option>
+          <option>Inlocuire filtru silicagel</option>
           <option>Luat in evidenta</option><option>Altele</option>
         </select></div>
       </div>
@@ -556,8 +557,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     <div class="select-wrap">
       <select id="sel-year" onchange="applyFilters()">
         <option value="">Toti anii</option>
-        <option value="2024">2024</option><option value="2025">2025</option>
-        <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option>
+        <option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option><option value="2040">2040</option>
       </select>
     </div>
     <div class="toolbar-sep"></div>
@@ -842,7 +842,7 @@ function updateKPI() {
     var label = s.indexOf('necesita interv') > -1 ? 'Necesita interventie' : esc(String(r[0]||'').substring(0,22));
     return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
       + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--red);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + label + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;">' + label + '</span>'
       + '</div>';
   });
 }
@@ -1045,10 +1045,16 @@ function getExportRows() {
 
 function onMotivChange() {
   var motiv = (document.getElementById('f-motiv').value || '').toLowerCase().trim();
-  var echipament = (document.getElementById('f-echipament').value || '').toLowerCase();
+  var eq = (document.getElementById('f-echipament').value || '');
+  var eql = eq.toLowerCase();
   var descEl = document.getElementById('f-desc');
   if (!descEl) return;
   var desc = '';
+
+  // Helper: echipament prefix check
+  function startsWith(prefix) { return eq.toUpperCase().indexOf(prefix.toUpperCase()) === 0; }
+  function hasPrefix(arr) { return arr.some(function(p){ return startsWith(p); }); }
+
   if (motiv === 'schimb ulei') {
     desc = 'Inlocuire ulei uzat cu altul nou.';
   } else if (motiv === 'gresare') {
@@ -1057,10 +1063,20 @@ function onMotivChange() {
     desc = 'Verificare roti motrice si tampoane de cauciuc, verificare cruce cardanica, ansamblu biela-manivela si bucsa, verificare strangere suruburi, verificare gresare lagare, verificare snec auxiliar, verificare nivel ulei si verificare de pierderi de ulei. Efectuare tura completa de celula, pozitionare utilaj pe placutele de parcare.';
   } else if (motiv === 'curatare magneti') {
     desc = 'S-au indepartat depunerile de praf si obiectele straine din magnet.';
-  } else if (echipament.indexOf('compresor') > -1) {
+  } else if (eql.indexOf('compresor') > -1) {
     desc = 'S-au curatat filtrele, s-au purjat compresoarele, s-a verificat utilajul si presiunea de aer.';
-  } else if (echipament.indexOf('sistem hidraulic') > -1) {
+  } else if (eql.indexOf('sistem hidraulic') > -1) {
     desc = 'Curatare grup hidraulic.';
+  } else if (motiv === 'revizie 200h') {
+    if (hasPrefix(['BC'])) {
+      desc = 'Verificare role, verificare aliniament banda si cuplaj, verificare curatitoare de marfa si tambur, curatare de praf si pleava, verificare imbinare banda, efectuare probe.';
+    } else if (hasPrefix(['FS','SF','HA','SFB'])) {
+      desc = 'Verificare vizuala, verificare presiune aer comprimat, verificare stare generala de curatenie, indepartare praf si pleava, curatare saci, verificare ecluza de praf.';
+    } else if (hasPrefix(['CC'])) {
+      desc = 'Indepartare praf si pleava de pe utilaj, verificare centraj roti de lant, verificare stare lant si bolturi, verificare cutit curatitor, verificare sina de atac, verificare tensiune lant, verificare uzura oale si pereti, verificare cuplaj elastic. Efectuare probe in modul manual.';
+    } else if (hasPrefix(['E'])) {
+      desc = 'Eliberare picior de marfa, verificare aliniament tambur si banda, verificare uzura picior, verificare cupe, verificare imbinare banda, verificare placa deviere marfa, verificare moto-reductor, curatare statie actionare si intindere, moto-reductor si lagare.';
+    }
   }
   if (desc) descEl.value = desc;
 }
@@ -1329,10 +1345,10 @@ function displayToISO(d) {
 })();
 
 (function init() {
-  // Real-time KPI refresh every 60 seconds
+  // Real-time KPI refresh every 10 minutes
   setInterval(function() {
     loadData();
-  }, 60000);
+  }, 600000);
 
   // Show print header when printing
   window.addEventListener('beforeprint', function() {
