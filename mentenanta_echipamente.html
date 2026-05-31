@@ -1233,79 +1233,54 @@ function exportExcel() {
   var tdC = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;';
   var tdL = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:left;';
 
-  // Build SpreadsheetML XML for proper date/time formatting
-  var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  xml += '<?mso-application progid="Excel.Sheet"?>\n';
-  xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"';
-  xml += ' xmlns:o="urn:schemas-microsoft-com:office:office"';
-  xml += ' xmlns:x="urn:schemas-microsoft-com:office:excel"';
-  xml += ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n';
-  xml += '<Styles>\n';
-  xml += '<Style ss:ID="Default"></Style>\n';
-  xml += '<Style ss:ID="hdr"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1A3A6E" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style>\n';
-  xml += '<Style ss:ID="even"><Interior ss:Color="#F0F4FB" ss:Pattern="Solid"/></Style>\n';
-  xml += '<Style ss:ID="odd"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/></Style>\n';
-  xml += '<Style ss:ID="date_e"><Interior ss:Color="#F0F4FB" ss:Pattern="Solid"/><NumberFormat ss:Format="DD/MM/YYYY"/></Style>\n';
-  xml += '<Style ss:ID="date_o"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/><NumberFormat ss:Format="DD/MM/YYYY"/></Style>\n';
-  xml += '<Style ss:ID="time_e"><Interior ss:Color="#F0F4FB" ss:Pattern="Solid"/><NumberFormat ss:Format="HH:MM"/></Style>\n';
-  xml += '<Style ss:ID="time_o"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/><NumberFormat ss:Format="HH:MM"/></Style>\n';
-  xml += '</Styles>\n';
-  xml += '<Worksheet ss:Name="Mentenanta Echipamente">\n<Table>\n';
+  var th = 'background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  var tdC = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;white-space:nowrap;';
+  var tdL = 'padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:left;';
 
-  function xmlCell(val, styleId, type) {
-    type = type || 'String';
-    return '<Cell ss:StyleID="'+styleId+'"><Data ss:Type="'+type+'">'+String(val||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</Data></Cell>';
-  }
-  function parseExcelDate(s) {
-    // dd/mm/yyyy or d/m/yyyy → Excel serial number
-    s = String(s||'').trim();
-    var m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-    if (!m) { var m2 = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/); if(m2) m = [null,m2[3],m2[2],m2[1]]; }
-    if (!m) return null;
-    var d = new Date(parseInt(m[3]),parseInt(m[2])-1,parseInt(m[1]));
-    if (isNaN(d)) return null;
-    var epoch = new Date(1899,11,30);
-    return Math.round((d - epoch) / 86400000);
-  }
-  function parseExcelTime(s) {
-    s = String(s||'').trim();
-    var m = s.match(/^(\d{1,2}):(\d{2})$/);
-    if (!m) return null;
-    return (parseInt(m[1])*60 + parseInt(m[2])) / 1440;
-  }
-
-  // Header row
-  xml += '<Row>';
+  var t = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+  t += '<head><meta charset="UTF-8">';
+  t += '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+  t += '<x:Name>Mentenanta Echipamente</x:Name>';
+  t += '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  t += '</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+  t += '</head><body>';
+  t += '<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
+  t += '<tr><td colspan="11" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS &mdash; Registru Mentenanta Echipamente</td></tr>';
+  t += '<tr><td colspan="7" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP &middot; Port Constanta</td>';
+  t += '<td colspan="4" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
+  t += '<tr><td colspan="11" style="height:8px;background:#ffffff;"></td></tr>';
+  t += '<tr>';
   ['Nr.','Echipament','Motiv interventie','Data inceput','Ora inceput','Data finalizare','Ora finalizare','Descriere lucrari','Status utilaj','Piese de schimb','Echipa'].forEach(function(h){
-    xml += xmlCell(h,'hdr');
+    t += '<td style="'+th+'">'+h+'</td>';
   });
-  xml += '</Row>\n';
+  t += '</tr>';
+
+  var statusBg = {'Apt de functionare':'#e8f8f0','Sub supraveghere':'#fff8e1','Necesita interventie':'#feecec','Necesita piese de schimb':'#fff0e0'};
+  var statusFg = {'Apt de functionare':'#1a7a4a','Sub supraveghere':'#8a6000','Necesita interventie':'#8a1a1a','Necesita piese de schimb':'#8a4a00'};
 
   rows.forEach(function(r,i){
-    var sty = i%2===0 ? 'even' : 'odd';
-    var dsty = i%2===0 ? 'date_e' : 'date_o';
-    var tsty = i%2===0 ? 'time_e' : 'time_o';
-    var dInc = parseExcelDate(r[1]);
-    var dFin = parseExcelDate(r[3]);
-    var tInc = parseExcelTime(r[2]);
-    var tFin = parseExcelTime(r[4]);
-    xml += '<Row>';
-    xml += xmlCell(i+1, sty, 'Number');
-    xml += xmlCell(r[10]||'', sty);
-    xml += xmlCell(r[0]||'', sty);
-    xml += dInc ? '<Cell ss:StyleID="'+dsty+'"><Data ss:Type="Number">'+dInc+'</Data></Cell>' : xmlCell(r[1]||'', sty);
-    xml += tInc !== null ? '<Cell ss:StyleID="'+tsty+'"><Data ss:Type="Number">'+tInc+'</Data></Cell>' : xmlCell(r[2]||'', sty);
-    xml += dFin ? '<Cell ss:StyleID="'+dsty+'"><Data ss:Type="Number">'+dFin+'</Data></Cell>' : xmlCell(r[3]||'', sty);
-    xml += tFin !== null ? '<Cell ss:StyleID="'+tsty+'"><Data ss:Type="Number">'+tFin+'</Data></Cell>' : xmlCell(r[4]||'', sty);
-    xml += xmlCell(r[5]||'', sty);
-    xml += xmlCell(r[6]||'', sty);
-    xml += xmlCell(r[7]||'', sty);
-    xml += xmlCell(r[8]||'', sty);
-    xml += '</Row>\n';
+    var fill = i%2===0 ? '#f0f4fb' : '#ffffff';
+    var status = r[6]||'';
+    var sBg = statusBg[status]||fill;
+    var sFg = statusFg[status]||'#0d1b3a';
+    var av=(r[0]||'').toLowerCase().indexOf('avarie')>-1;
+    t += '<tr>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(i+1)+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';color:#1a3a6e;font-weight:bold;">'+(r[10]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';'+(av?'color:#e05050;font-weight:bold;':'')+'">'+(r[0]||'')+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtDateXL(r[1])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtTimeXL(r[2])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtDateXL(r[3])+'</td>';
+    t += '<td style="'+tdC+'background:'+fill+';">'+fmtTimeXL(r[4])+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[5]||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</td>';
+    t += '<td style="'+tdC+'background:'+sBg+';color:'+sFg+';font-weight:bold;">'+status+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[7]||'')+'</td>';
+    t += '<td style="'+tdL+'background:'+fill+';">'+(r[8]||'')+'</td>';
+    t += '</tr>';
   });
-  xml += '</Table>\n</Worksheet>\n</Workbook>';
+  t += '</table></body></html>';
 
-  var blob = new Blob([xml], {type:'application/vnd.ms-excel;charset=utf-8'});
+  var blob = new Blob([t], {type:'application/vnd.ms-excel;charset=utf-8'});
   var link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = 'KRONOS_Mentenanta_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xls';
