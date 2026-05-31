@@ -1199,19 +1199,19 @@ function resetForm() {
 function fmtDateXL(s) {
   if (!s) return '';
   s = String(s).trim();
-  // d/m/yyyy or dd/mm/yyyy → dd/mm/yyyy
+  // d/m/yyyy or dd/mm/yyyy → yyyy-mm-dd (Excel auto-detects as Date)
   var m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if (m) return m[1].padStart(2,'0')+'/'+m[2].padStart(2,'0')+'/'+m[3];
-  // yyyy-mm-dd
-  var m2 = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
-  if (m2) return m2[3].padStart(2,'0')+'/'+m2[2].padStart(2,'0')+'/'+m2[1];
+  if (m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  // already yyyy-mm-dd
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
   return s;
 }
 function fmtTimeXL(s) {
   if (!s) return '';
   var t = String(s).trim();
+  // h:mm or hh:mm → hh:mm:ss (Excel auto-detects as Time)
   var m = t.match(/^(\d{1,2}):(\d{2})$/);
-  if (m) return m[1].padStart(2,'0')+':'+m[2];
+  if (m) return m[1].padStart(2,'0')+':'+m[2]+':00';
   return t;
 }
 function exportExcel() {
