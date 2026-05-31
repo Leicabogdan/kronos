@@ -224,7 +224,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
-  .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
+  .app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;max-height:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
     padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;
@@ -238,8 +238,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
     color:#1a3a6e;text-align:right;letter-spacing:.05em;}
   .print-report-date{font-size:10px;color:#666;margin-top:2px;}
-  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;}
-  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;height:auto!important;}
+  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;display:block!important;}
+  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead tr.hdr-row th{
     background:#1a3a6e!important;color:#fff!important;
     font-size:9px!important;padding:7px 8px!important;
@@ -807,7 +807,7 @@ function updateKPI() {
   renderKpiRows('kpi-total-eq', thisMonth.slice(-5).reverse(), function(r) {
     return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
       + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(String(r[0]||'').substring(0,24)) + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;">' + esc(r[0]||'—') + '</span>'
       + '</div>';
   });
 
@@ -821,7 +821,7 @@ function updateKPI() {
     var piese = String(r[7]||'').trim();
     return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
       + '<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);min-width:44px;">' + esc(r[10]||'—') + '</span>'
-      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(piese ? piese.substring(0,24) : String(r[6]||'').substring(0,24)) + '</span>'
+      + '<span style="font-family:var(--sans);font-size:13px;font-weight:500;color:#fff;">' + esc(piese ? piese : (r[6]||'—')) + '</span>'
       + '</div>';
   });
 
@@ -1194,6 +1194,25 @@ function resetForm() {
     now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
 }
 
+function fmtDateXL(s) {
+  if (!s) return '';
+  // dd/mm/yyyy
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  // yyyy-mm-dd
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[3]+'/'+m[2]+'/'+m[1];
+  return s;
+}
+function fmtTimeXL(s) {
+  if (!s) return '';
+  var t = String(s).trim();
+  // Already hh:mm
+  if (/^\d{2}:\d{2}$/.test(t)) return t;
+  // h:mm → 0h:mm
+  var m = t.match(/^(\d):(\d{2})$/);
+  if (m) return '0'+m[1]+':'+m[2];
+  return t;
+}
 function exportExcel() {
   var rows = getExportRows();
   var now = new Date();
@@ -1290,7 +1309,7 @@ function exportPDF() {
   _pdfHiddenRows = [];
   if (selectedRows.size > 0) {
     document.querySelectorAll('#tbody tr.data-row').forEach(function(tr) {
-      var uid = tr.getAttribute('data-uid');
+      var uid = tr.dataset.uid;
       if (!selectedRows.has(uid)) {
         tr.style.display = 'none';
         _pdfHiddenRows.push(tr);
