@@ -222,9 +222,9 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;height:auto!important;overflow:visible!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip{display:none!important;}
-  .app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;}
+  html,body,.app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;min-height:0!important;}
   .table-wrap{overflow:visible!important;height:auto!important;max-height:none!important;}
   .page{padding:0!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;
@@ -1241,7 +1241,7 @@ function exportExcel() {
   xml += ' xmlns:x="urn:schemas-microsoft-com:office:excel"';
   xml += ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n';
   xml += '<Styles>\n';
-  xml += '<Style ss:ID="Default"><Alignment ss:WrapText="1"/></Style>\n';
+  xml += '<Style ss:ID="Default"></Style>\n';
   xml += '<Style ss:ID="hdr"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1A3A6E" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/></Style>\n';
   xml += '<Style ss:ID="even"><Interior ss:Color="#F0F4FB" ss:Pattern="Solid"/></Style>\n';
   xml += '<Style ss:ID="odd"><Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/></Style>\n';
