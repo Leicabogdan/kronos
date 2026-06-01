@@ -84,7 +84,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .info-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;}
 .info-item{display:flex;gap:10px;align-items:flex-start;}
 .info-emoji{width:32px;height:32px;border-radius:8px;background:rgba(0,220,180,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.info-title{font-family:var(--sans);font-size:13px;color:var(--teal);font-weight:600;margin-bottom:4px;}
+.info-title{font-family:var(--sans);font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.04em;margin-bottom:4px;}
 .info-text{font-family:var(--sans);font-size:13px;color:#fff;font-weight:500;line-height:1.55;}
 
 /* ── FILTER / ACTION BAR ── */
@@ -106,12 +106,10 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .filter-btn.f-ok.active{background:rgba(74,175,112,.1);border-color:rgba(74,175,112,.4);color:var(--green);}
 .export-btns{margin-left:auto;display:flex;gap:8px;}
 .exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:7px;
-  font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;
-  transition:all .18s;letter-spacing:.08em;white-space:nowrap;border:1.5px solid;}
-.exp-btn.pdf{background:rgba(224,80,80,.08);border-color:rgba(224,80,80,.35);color:var(--red);}
-.exp-btn.pdf:hover{background:rgba(224,80,80,.18);border-color:var(--red);}
-.exp-btn.xls{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
-.exp-btn.xls:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
+  font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .18s;white-space:nowrap;border:1.5px solid rgba(0,220,180,.3);
+  background:rgba(0,220,180,.05);color:var(--teal);}
+.exp-btn:hover{background:rgba(0,220,180,.12);border-color:var(--teal);}
 
 /* ── TABLE — Excel style ── */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;}
@@ -149,7 +147,7 @@ tbody tr:last-child td{border-bottom:none;}
 .sdot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 .load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;
   color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
-.td-obs{font-family:var(--sans);font-size:13px;color:#fff;}
+.td-obs{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.8);}
 .btn-edit{padding:4px 12px;border-radius:5px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.3);color:var(--teal);font-family:var(--sans);font-size:12px;cursor:pointer;transition:all .15s;}
 .btn-edit:hover{background:rgba(0,220,180,.18);}
 
@@ -336,7 +334,9 @@ const STATUS_ORDER={late:0,soon:1,ok:2,new:3};
 function parseRoDate(str){
   if(!str)return null;
   const s=String(str).trim();
-  const p=s.split('.');
+  // suporta dd.mm.yyyy si dd/mm/yyyy
+  const sep=s.includes('/')? '/': '.';
+  const p=s.split(sep);
   if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[1]-1,+p[0]);
   const d=new Date(s);
   return isNaN(d)?null:d;
@@ -407,7 +407,7 @@ function renderTable(){
     <td><span class="td-date">${r[4]||''}</span></td>
     <td><span class="td-date">${r[5]||''}</span></td>
     <td>${statusChip(getStatus(r))}</td>
-    <td class="td-obs-cell"><span class="td-obs">${r[7]||''}</span></td>
+    <td class="td-obs-cell"><span class="td-obs">${r[6]||''}</span></td>
     <td class="no-print" style="text-align:center;"><button class="btn-edit" onclick="editRow(this)" title="Editeaza">&#9998;</button></td>
   </tr>`).join('');
 }
@@ -453,17 +453,22 @@ function exportExcel(){
   const th='background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
   const tdC='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;white-space:nowrap;';
   const tdL='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:left;';
+  const COLS=8; // Echipament TipUlei Cant DataPrelev DataSchimb DataUrm Status Obs
   let t='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
   t+='<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
   t+='<x:Name>Schimb Ulei</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
   t+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
   t+='<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
-  t+='<tr><td colspan="9" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS &mdash; Registru Schimb Ulei</td></tr>';
-  t+='<tr><td colspan="7" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;">Terminal Cereale SOCEP &middot; Port Constanta</td>';
-  t+='<td colspan="2" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
-  t+='<tr><td colspan="9" style="height:6px;background:#fff;"></td></tr>';
+  // Rand 1 - titlu KRONOS, colspan exact 8
+  t+=`<tr><td colspan="${COLS}" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS — Registru Schimb Ulei</td></tr>`;
+  // Rand 2 - SOCEP info, colspan exact 8
+  t+=`<tr><td colspan="6" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;">Terminal Cereale SOCEP · Port Constanta</td>`;
+  t+=`<td colspan="2" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;">Data generare: ${dateStr} ${timeStr}</td></tr>`;
+  // Rand 3 - spatiu
+  t+=`<tr><td colspan="${COLS}" style="height:6px;background:#fff;"></td></tr>`;
+  // Header coloane
   t+='<tr>';
-  ['Nr. diagrama','Tip ulei','Cantitate','Prelevare proba','Data schimb ulei','Urmatorul schimb','Status','Observatii'].forEach(h=>{t+='<td style="'+th+'">'+h+'</td>';});
+  ['Echipament','Tip ulei','Cantitate','Prelevare proba','Data schimb ulei','Urmatorul schimb','Status','Observatii'].forEach(h=>{t+='<td style="'+th+'">'+h+'</td>';});
   t+='</tr>';
   const statusBg={ok:'#e8f8f0',soon:'#fff8e1',late:'#feecec',new:'#e8f0fe'};
   const statusFg={ok:'#1a7a4a',soon:'#8a6000',late:'#8a1a1a',new:'#1a3a8a'};
@@ -479,7 +484,7 @@ function exportExcel(){
     t+=`<td style="${tdC}background:${fill};">${r[4]||''}</td>`;
     t+=`<td style="${tdC}background:${fill};">${r[5]||''}</td>`;
     t+=`<td style="${tdC}background:${sBg};color:${sFg};font-weight:bold;">${statusLabel[st]||''}</td>`;
-    t+=`<td style="${tdL}background:${fill};">${r[7]||''}</td>`;
+    t+=`<td style="${tdL}background:${fill};">${r[6]||''}</td>`;
     t+='</tr>';
   });
   t+='</table></body></html>';
@@ -536,10 +541,9 @@ function editRow(btn){
   const tr=btn.closest('tr');
   if(!tr)return;
   const editing=tr.dataset.editing==='1';
-  // Cols vizibile: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(skip), 7=Obs
-  const editCols=[0,1,2,3,4,5,7];
+  // Editabile: 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 7=Obs (cells[7])
+  const editCols=[3,4,5,7];
   if(editing){
-    // ── SALVARE ──
     tr.dataset.editing='0';
     editCols.forEach(i=>{
       const cell=tr.cells[i];
@@ -548,94 +552,91 @@ function editRow(btn){
       cell.style.background='';
       cell.style.outline='none';
     });
-    btn.textContent='✎';
+    btn.textContent='⏳';
     btn.disabled=true;
-    btn.style.opacity='0.5';
+    btn.style.opacity='0.6';
     tr.style.outline='none';
 
     const rowIndex=parseInt(tr.dataset.rowIndex||'-1');
     const payload={
       action:'update',
       rowIndex:rowIndex,
-      echipament:tr.cells[0]?tr.cells[0].innerText.trim():'',
-      tipUlei:tr.cells[1]?tr.cells[1].innerText.trim():'',
-      cantitate:tr.cells[2]?tr.cells[2].innerText.trim():'',
+      echipament:   tr.cells[0]?tr.cells[0].innerText.trim():'',
+      tipUlei:      tr.cells[1]?tr.cells[1].innerText.trim():'',
+      cantitate:    tr.cells[2]?tr.cells[2].innerText.trim():'',
       dataPrelevare:tr.cells[3]?tr.cells[3].innerText.trim():'',
-      dataSchimb:tr.cells[4]?tr.cells[4].innerText.trim():'',
+      dataSchimb:   tr.cells[4]?tr.cells[4].innerText.trim():'',
       dataUrmatorul:tr.cells[5]?tr.cells[5].innerText.trim():'',
-      observatii:tr.cells[7]?tr.cells[7].innerText.trim():''
+      observatii:   tr.cells[7]?tr.cells[7].innerText.trim():''
     };
 
-    fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)})
-      .then(r=>r.json())
-      .then(d=>{
-        if(d.status==='ok'){
-          btn.textContent='✔';
-          btn.style.color='var(--green)';
-          setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},1500);
-          loadData(); // refresh din sheet
-        } else {
-          btn.textContent='✗';
-          btn.style.color='var(--red)';
-          setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},2000);
-          console.error('Eroare salvare:',d);
-        }
-      })
-      .catch(e=>{
-        btn.textContent='✗';
-        btn.style.color='var(--red)';
-        setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},2000);
-        console.error('Fetch error:',e);
-      });
+    fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload)
+    })
+    .then(()=>{
+      btn.textContent='✔';
+      btn.style.color='var(--green)';
+      btn.style.opacity='1';
+      setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;loadData();},1200);
+    })
+    .catch(e=>{
+      btn.textContent='✗';
+      btn.style.color='var(--red)';
+      btn.style.opacity='1';
+      setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;},2000);
+      console.error('Fetch error:',e);
+    });
   } else {
-    // ── ACTIVARE EDITARE ──
     tr.dataset.editing='1';
     editCols.forEach(i=>{
       const cell=tr.cells[i];
       if(!cell)return;
       cell.contentEditable='true';
-      cell.style.background='rgba(0,220,180,.06)';
-      cell.style.outline='1px solid rgba(0,220,180,.3)';
+      cell.style.background='rgba(0,220,180,.07)';
+      cell.style.outline='1px solid rgba(0,220,180,.35)';
     });
     btn.textContent='✔';
-    tr.cells[7]&&tr.cells[7].focus();
+    tr.cells[3]&&tr.cells[3].focus();
   }
 }
 
-/* ── FALLBACK DATA — schema: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(ignorat), 7=Obs ── */
+/* ── FALLBACK DATA — schema 7 col: 0=Echipament 1=TipUlei 2=Cant 3=DataPrelev 4=DataSchimb 5=DataUrm 6=Obs ── */
 const FALLBACK_DATA=[
-  ["BC11","CLP PG 220","10L","20.01.2025","24.07.2025","24.07.2027","",""],
-  ["BC12","CLP PG 220","17L","27.01.2025","01.08.2025","01.08.2027","",""],
-  ["BC32","CLP PG 220","10L","15.01.2025","01.08.2025","01.08.2027","",""],
-  ["BC34","CLP PG 220","17L","15.01.2025","01.08.2025","01.08.2027","",""],
-  ["BC41","CLP PG 220","6.5L","31.01.2025","24.07.2025","24.07.2027","",""],
-  ["BC42","CLP PG 220","6.5L","31.01.2025","31.07.2025","31.07.2027","",""],
-  ["BC47","CLP PG 220","6.5L","31.01.2025","23.07.2025","23.07.2027","",""],
-  ["BC48","CLP PG 220","6.5L","27.01.2025","23.07.2025","23.07.2027","",""],
-  ["CC01","CLP PG 220","41L","21.01.2025","07.08.2025","07.08.2027","",""],
-  ["CC02","CLP PG 220","17L","21.01.2025","07.08.2025","07.08.2027","",""],
-  ["CC03","CLP PG 220","41L","15.01.2025","28.07.2025","28.07.2027","",""],
-  ["CC04","CLP PG 220","17L","15.01.2025","28.07.2025","28.07.2027","",""],
-  ["CC10-1 SL","CLP PG 220","38.5L","27.01.2025","Reductor nou - 11.2023","01.11.2025","",""],
-  ["CC10-2 SL","CLP PG 220","38.5L","27.01.2025","01.08.2025","01.08.2027","",""],
-  ["CC11","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027","",""],
-  ["CC11 SL","CLP PG 220","78L","27.01.2025","01.08.2025","01.08.2027","",""],
-  ["CC12","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027","",""],
-  ["CC13","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027","",""],
-  ["CC14","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027","",""],
-  ["CC15","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027","",""],
-  ["CC16","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027","",""],
-  ["CC19","CLP PG 220","41L","20.01.2025","24.07.2025","24.07.2027","",""],
-  ["CC202","CLP PG 220","10L","27.01.2025","07.08.2025","07.08.2027","",""],
-  ["CC51","CLP PG 220","41L","31.01.2025","12.08.2025","12.08.2027","",""],
-  ["CC52","CLP PG 220","6.5L","31.01.2025","07.08.2025","07.08.2027","",""],
-  ["CC53","CLP PG 220","10L","15.01.2025","31.07.2025","31.07.2027","",""],
-  ["E01","CLP HC 220","36L","20.01.2025","14.08.2025","14.08.2027","",""],
-  ["E02","CLP HC 220","36L","21.01.2025","22.07.2025","22.07.2027","",""],
-  ["E03","CLP HC 220","35L","15.01.2025","28.07.2025","28.07.2027","",""],
-  ["E51","CLP HC 220","88L","27.01.2025","12.08.2025","12.08.2027","",""],
-  ["E81","CLP PG 220","17L","31.01.2025","23.07.2025","23.07.2027","",""],
-  ["E82","CLP HC 220","59L","15.01.2025","24.06.2025","24.06.2027","",""],
+  ["BC11","CLP PG 220","10L","20.01.2025","24.07.2025","24.07.2027",""],
+  ["BC12","CLP PG 220","17L","27.01.2025","01.08.2025","01.08.2027",""],
+  ["BC32","CLP PG 220","10L","15.01.2025","01.08.2025","01.08.2027",""],
+  ["BC34","CLP PG 220","17L","15.01.2025","01.08.2025","01.08.2027",""],
+  ["BC41","CLP PG 220","6.5L","31.01.2025","24.07.2025","24.07.2027",""],
+  ["BC42","CLP PG 220","6.5L","31.01.2025","31.07.2025","31.07.2027",""],
+  ["BC47","CLP PG 220","6.5L","31.01.2025","23.07.2025","23.07.2027",""],
+  ["BC48","CLP PG 220","6.5L","27.01.2025","23.07.2025","23.07.2027",""],
+  ["CC01","CLP PG 220","41L","21.01.2025","07.08.2025","07.08.2027",""],
+  ["CC02","CLP PG 220","17L","21.01.2025","07.08.2025","07.08.2027",""],
+  ["CC03","CLP PG 220","41L","15.01.2025","28.07.2025","28.07.2027",""],
+  ["CC04","CLP PG 220","17L","15.01.2025","28.07.2025","28.07.2027",""],
+  ["CC10-1 SL","CLP PG 220","38.5L","27.01.2025","26.05.2026","01.11.2025",""],
+  ["CC10-2 SL","CLP PG 220","38.5L","27.01.2025","01.08.2025","01.08.2027",""],
+  ["CC11","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027",""],
+  ["CC11 SL","CLP PG 220","78L","27.01.2025","01.08.2025","01.08.2027",""],
+  ["CC12","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027",""],
+  ["CC13","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027",""],
+  ["CC14","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027",""],
+  ["CC15","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027",""],
+  ["CC16","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027",""],
+  ["CC19","CLP PG 220","41L","20.01.2025","24.07.2025","24.07.2027",""],
+  ["CC202","CLP PG 220","10L","27.01.2025","07.08.2025","07.08.2027",""],
+  ["CC51","CLP PG 220","41L","31.01.2025","12.08.2025","12.08.2027",""],
+  ["CC52","CLP PG 220","6.5L","31.01.2025","07.08.2025","07.08.2027",""],
+  ["CC53","CLP PG 220","10L","15.01.2025","31.07.2025","31.07.2027",""],
+  ["E01","CLP HC 220","36L","20.01.2025","14.08.2025","14.08.2027",""],
+  ["E02","CLP HC 220","36L","21.01.2025","22.07.2025","22.07.2027",""],
+  ["E03","CLP HC 220","35L","15.01.2025","28.07.2025","28.07.2027",""],
+  ["E51","CLP HC 220","88L","27.01.2025","12.08.2025","12.08.2027",""],
+  ["E81","CLP PG 220","17L","31.01.2025","23.07.2025","23.07.2027",""],
+  ["E82","CLP HC 220","59L","15.01.2025","24.06.2025","24.06.2027",""],
 ];
 
 /* ── INIT ──
