@@ -9,7 +9,6 @@
 <title>KRONOS — Schimb Ulei</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -81,12 +80,12 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-sub{font-family:var(--mono);font-size:10px;color:#fff;font-weight:600;margin-top:5px;}
 
 /* ── INFO PANEL ── */
-.info-panel{background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.15);border-radius:12px;padding:18px 20px;margin-bottom:20px;}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.info-panel{background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.15);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start;}
 .info-item{display:flex;gap:10px;align-items:flex-start;}
 .info-emoji{width:32px;height:32px;border-radius:8px;background:rgba(0,220,180,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.info-title{font-family:var(--mono);font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.08em;margin-bottom:3px;}
-.info-text{font-size:12px;color:#fff;font-weight:600;line-height:1.55;}
+.info-title{font-family:var(--sans);font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.04em;margin-bottom:4px;}
+.info-text{font-family:var(--sans);font-size:13px;color:#fff;font-weight:500;line-height:1.55;}
 
 /* ── FILTER / ACTION BAR ── */
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
@@ -187,6 +186,7 @@ tbody tr:last-child td{border-bottom:none;}
   .td-ulei{color:#000!important;font-weight:700!important;}
   .td-date,.td-cant{color:#000!important;}
   .chip{border:1px solid #333!important;background:transparent!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;}
+  .no-print{display:none!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
 }
 
@@ -272,13 +272,13 @@ tbody tr:last-child td{border-bottom:none;}
     <button class="filter-btn f-soon" data-f="soon" onclick="setFilter(this)">Curand</button>
     <button class="filter-btn f-ok" data-f="ok" onclick="setFilter(this)">In termen</button>
     <div class="export-btns">
-      <button class="exp-btn xls" onclick="exportPDF()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7h1c.5 0 .8.3.8.8S6 8.5 5.5 8.5H4.5V7zM4.5 8.5V10M8 7v3M8 7h1a1 1 0 010 2H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Exporta PDF
-      </button>
       <button class="exp-btn xls" onclick="exportExcel()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7l1.5 2.5L4.5 12M9.5 7l-1.5 2.5L9.5 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Exporta Excel
+      </button>
+      <button class="exp-btn pdf" onclick="exportPDF()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7h1c.5 0 .8.3.8.8S6 8.5 5.5 8.5H4.5V7zM4.5 8.5V10M8 7v3M8 7h1a1 1 0 010 2H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Exporta PDF
       </button>
     </div>
   </div>
@@ -288,12 +288,12 @@ tbody tr:last-child td{border-bottom:none;}
     <table id="main-table">
       <thead>
         <tr>
-          <th onclick="sortBy(1)">Nr. diagrama</th>
+          <th onclick="sortBy(1)">Echipament</th>
           <th onclick="sortBy(2)">Tip ulei</th>
           <th onclick="sortBy(3)">Cantitate</th>
-          <th onclick="sortBy(4)">Prelevare proba</th>
+          <th onclick="sortBy(4)">Data Prelevare probe</th>
           <th onclick="sortBy(5)">Data schimb ulei</th>
-          <th onclick="sortBy(6)">Urmatorul schimb</th>
+          <th onclick="sortBy(6)">Data urmatorul schimb</th>
           <th onclick="sortBy(7)">Status</th>
           <th style="cursor:default;">Observatii</th>
           <th style="cursor:default;width:60px;text-align:center;">Edit</th>
@@ -305,15 +305,7 @@ tbody tr:last-child td{border-bottom:none;}
     </table>
   </div>
 
-  <!-- FILE LOAD / REFRESH — always visible locally -->
-  <div class="file-section" id="file-section">
-    <button class="file-btn" id="file-btn" onclick="handleFileBtn()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v9M4 6l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <span id="file-btn-label">Incarca schimb_ulei.xlsx</span>
-    </button>
-    <input type="file" id="file-input" accept=".xlsx,.xls" onchange="loadFromInputFile(this)"/>
-    <div class="file-hint" id="file-hint">Selecteaza fisierul Excel de pe calculatorul tau</div>
-  </div>
+
 
   <!-- TRADEMARK -->
   <div class="trademark">
@@ -359,6 +351,16 @@ function getStatus(row){
   return'ok';
 }
 
+function oilColor(tipUlei){
+  const t=String(tipUlei||'').toLowerCase();
+  if(t.includes('clp pg'))return'#5090e0';
+  if(t.includes('clp hc'))return'#00dcb4';
+  if(t.includes('shell'))return'#f0a500';
+  if(t.includes('mobil'))return'#e05050';
+  if(t.includes('total'))return'#9b6dff';
+  if(t.includes('castrol'))return'#4aaf70';
+  return'#ffffff';
+}
 function statusChip(s){
   const map={
     ok:`<span class="chip chip-ok"><span class="sdot"></span>In termen</span>`,
@@ -399,14 +401,14 @@ function renderTable(){
   if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
   tbody.innerHTML=rows.map(r=>`<tr>
     <td><span class="td-nr">${r[1]||''}</span></td>
-    <td><span class="td-ulei">${r[2]||''}</span></td>
+    <td><span style="font-family:var(--sans);font-size:13px;font-weight:700;color:${oilColor(r[2])};">${r[2]||''}</span></td>
     <td><span class="td-cant">${r[3]||''}</span></td>
     <td><span class="td-date">${r[4]||''}</span></td>
     <td><span class="td-date">${r[5]||''}</span></td>
     <td><span class="td-date">${r[6]||''}</span></td>
     <td>${statusChip(getStatus(r))}</td>
-    <td><span class="td-obs">${r[8]||''}</span></td>
-    <td style="text-align:center;"><button class="btn-edit" onclick="editRow(this)" title="Editeaza">&#9998;</button></td>
+    <td class="td-obs-cell"><span class="td-obs">${r[8]||''}</span></td>
+    <td class="no-print" style="text-align:center;"><button class="btn-edit" onclick="editRow(this)" title="Editeaza">&#9998;</button></td>
   </tr>`).join('');
 }
 
@@ -489,12 +491,20 @@ function exportExcel(){
   setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }
 
-/* ── PARSE WORKBOOK ── */
-function parseWorkbook(buf){
-  const wb=XLSX.read(buf,{type:'array'});
-  const ws=wb.Sheets[wb.SheetNames[0]];
-  const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-  return raw.slice(1).filter(r=>r.some(c=>String(c).trim()!=''));
+const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vS6QB_pe0FGVTqmpUgaJ6rLYDTjOg5X0rr814HgkNcg7ufrH9LHuDmOXlSRtEewmNYUhZwIEgEm9Wem/pub?gid=0&single=true&output=csv';
+
+function parseCSV(txt){
+  return txt.trim().split('\n').map(row=>{
+    const cells=[];let cur='',inQ=false;
+    for(let i=0;i<row.length;i++){
+      const ch=row[i];
+      if(ch==='"'){if(inQ&&row[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+      else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}
+      else cur+=ch;
+    }
+    cells.push(cur.trim());
+    return cells;
+  });
 }
 
 function applyData(data){
@@ -503,96 +513,47 @@ function applyData(data){
   renderTable();
 }
 
-/* ── FILE SYSTEM ACCESS API (modern browsers) ── */
-let fileHandle=null;
-
-async function handleFileBtn(){
-  // If we have a handle already → Refresh (re-read same file without dialog)
-  if(fileHandle){
-    try{
-      const file=await fileHandle.getFile();
-      const buf=await file.arrayBuffer();
-      applyData(parseWorkbook(new Uint8Array(buf)));
-      flashBtn('✓ Actualizat');
-      return;
-    }catch(e){
-      fileHandle=null; // permission lost, fall through to picker
-    }
+async function loadData(){
+  try{
+    const resp=await fetch(SHEET_URL+'&t='+Date.now(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const rows=parseCSV(await resp.text()).slice(1).filter(r=>r.some(c=>c!=''));
+    applyData(rows);
+  }catch(e){
+    console.warn('CSV fetch failed:',e);
+    applyData(FALLBACK_DATA);
   }
-  // File System Access API — no dialog on refresh
-  if(window.showOpenFilePicker){
-    try{
-      const [handle]=await window.showOpenFilePicker({
-        types:[{description:'Excel',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx','.xls']}}],
-        multiple:false
-      });
-      fileHandle=handle;
-      const file=await handle.getFile();
-      const buf=await file.arrayBuffer();
-      applyData(parseWorkbook(new Uint8Array(buf)));
-      setBtnRefreshMode();
-      return;
-    }catch(e){
-      if(e.name==='AbortError')return; // user cancelled
-    }
-  }
-  // Fallback — classic <input file>
-  document.getElementById('file-input').click();
-}
-
-function loadFromInputFile(input){
-  const file=input.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      applyData(parseWorkbook(new Uint8Array(e.target.result)));
-      setBtnRefreshMode();
-    }catch(err){alert('Eroare la citirea fisierului: '+err.message);}
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function setBtnRefreshMode(){
-  const lbl=document.getElementById('file-btn-label');
-  const hint=document.getElementById('file-hint');
-  if(lbl)lbl.textContent='Refresh date';
-  if(hint)hint.textContent='Reciteste fisierul Excel — modifica, salveaza, da Refresh';
-  const btn=document.getElementById('file-btn');
-  if(btn){
-    btn.innerHTML=btn.innerHTML.replace(
-      /M8 2v9M4 6l4-4 4 4/,
-      'M2 6.5A4.5 4.5 0 016.5 2c1.5 0 2.8.7 3.7 1.8M12 6.5A4.5 4.5 0 016.5 11c-1.5 0-2.8-.7-3.7-1.8M9.5 1.5L10.5 4l-2.5.5M3.5 11.5L2.5 9l2.5-.5'
-    );
-    const svgEl=btn.querySelector('svg');
-    if(svgEl)svgEl.setAttribute('viewBox','0 0 13 13');
-    document.getElementById('file-btn-label').textContent='Refresh date';
-  }
-}
-
-function flashBtn(msg){
-  const lbl=document.getElementById('file-btn-label');
-  if(!lbl)return;
-  const prev=lbl.textContent;
-  lbl.textContent=msg;
-  setTimeout(()=>lbl.textContent=prev,1500);
 }
 
 /* ── EDIT ROW ── */
 function editRow(btn){
   const tr=btn.closest('tr');
   if(!tr)return;
-  const obsCell=tr.cells[tr.cells.length-2]; // Observatii column
-  if(obsCell.contentEditable==='true'){
-    obsCell.contentEditable='false';
-    obsCell.style.background='';
+  const editing=tr.dataset.editing==='1';
+  // Cols: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(skip), 7=Obs
+  const editCols=[0,1,2,3,4,5,7];
+  if(editing){
+    tr.dataset.editing='0';
+    editCols.forEach(i=>{
+      const cell=tr.cells[i];
+      if(!cell)return;
+      cell.contentEditable='false';
+      cell.style.background='';
+      cell.style.outline='none';
+    });
     btn.textContent='✎';
+    tr.style.outline='none';
   } else {
-    obsCell.contentEditable='true';
-    obsCell.style.background='rgba(0,220,180,.08)';
-    obsCell.style.outline='none';
-    obsCell.focus();
+    tr.dataset.editing='1';
+    editCols.forEach(i=>{
+      const cell=tr.cells[i];
+      if(!cell)return;
+      cell.contentEditable='true';
+      cell.style.background='rgba(0,220,180,.06)';
+      cell.style.outline='1px solid rgba(0,220,180,.3)';
+    });
     btn.textContent='✔';
+    tr.cells[7]&&tr.cells[7].focus();
   }
 }
 
@@ -638,25 +599,9 @@ const FALLBACK_DATA=[
    3. Pe server: ascunde butonul de fisier (nu e necesar)
    4. Local: butonul ramane vizibil pentru incarcarea unui Excel actualizat
 ── */
-async function init(){
-  // Paso 1 — populare imediata cu date embedded
-  applyData(FALLBACK_DATA);
-
-  // Paso 2 — incearca fetch in fundal fara sa blocheze UI
-  try{
-    const resp=await fetch('edit/schimb_ulei.xlsx?t='+Date.now());
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const buf=await resp.arrayBuffer();
-    applyData(parseWorkbook(new Uint8Array(buf)));
-    // Server mode: ascunde butonul de upload — datele vin automat
-    const sec=document.getElementById('file-section');
-    if(sec)sec.style.display='none';
-  }catch(err){
-    // Local mode — FALLBACK deja afisat, butonul de fisier e vizibil
-    // Nimic de facut — tabelul e deja populat
-  }
-}
-init();
+applyData(FALLBACK_DATA);
+loadData();
+setInterval(loadData,600000);
 </script>
   </div><!-- /content -->
 </div><!-- /main -->
