@@ -1011,40 +1011,39 @@ async function loadActivitate() {
     if(!el) return;
     if(!recent.length){el.innerHTML='<div style="padding:14px;font-family:var(--sans);font-size:15px;color:#fff;">Nicio activitate inregistrata.</div>';return;}
     el.innerHTML = recent.map(function(r){
-      // Sheet: 0=Motiv, 1=DataInc, 2=OraInc, 3=DataFin, 4=OraFin, 5=Descriere, 6=Status, 7=Piese, 8=Echipa, 9=AdaugatDe, 10=Echipament
       var motiv=r[0]||'', di=r[1]||'', oi=r[2]||'', df=r[3]||'', of2=r[4]||'', desc=r[5]||'', status=r[6]||'', piese=r[7]||'', echipa=r[8]||'', eq=r[10]||'';
       var av=motiv.toLowerCase().indexOf('avarie')>-1;
-      // Motiv color (same as mentenanta_echipamente)
       var mc=av?'var(--red)':'var(--teal)';
-      // Status color
-      var sc=status.indexOf('Apt')>-1?'var(--green)':status.indexOf('supraveg')>-1||status.indexOf('Supraveg')>-1?'var(--amber)':status.indexOf('Necesita')>-1?'var(--red)':'rgba(255,255,255,.5)';
-      var scBg=status.indexOf('Apt')>-1?'rgba(74,175,112,.12)':status.indexOf('supraveg')>-1||status.indexOf('Supraveg')>-1?'rgba(240,165,0,.12)':status.indexOf('Necesita')>-1?'rgba(224,80,80,.12)':'rgba(255,255,255,.05)';
-      // Echipa color (purple like mentenanta)
-      var line='1px solid rgba(255,255,255,.06)';
-      return '<div style="padding:10px 14px;border-bottom:'+line+';display:flex;gap:12px;align-items:stretch;">'
-        // Left bar
+      var sc=status.indexOf('Apt')>-1?'var(--green)':status.indexOf('upraveg')>-1?'var(--amber)':status.indexOf('Necesita')>-1?'var(--red)':'rgba(255,255,255,.5)';
+      var scBg=status.indexOf('Apt')>-1?'rgba(74,175,112,.12)':status.indexOf('upraveg')>-1?'rgba(240,165,0,.12)':status.indexOf('Necesita')>-1?'rgba(224,80,80,.12)':'rgba(255,255,255,.05)';
+      var monoSz='font-family:var(--mono);font-size:13px;font-weight:600;';
+      return '<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:10px;align-items:stretch;">'
         +'<div style="width:3px;border-radius:2px;background:'+mc+';flex-shrink:0;"></div>'
         +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">'
-        // ROW 1: ▶ ora+data inceput (alb, dreapta) | ■ ora+data finalizare (alb, stanga)
-        +'<div style="display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:13px;">'
-        +(oi?'<span style="color:var(--teal);">&#9654; '+oi+'</span>':'')
-        +(di?'<span style="color:#fff;font-weight:600;">'+di+'</span>':'')
-        +(df||of2?'<span style="margin-left:auto;display:flex;align-items:center;gap:8px;">':'')
-        +(of2?'<span style="color:rgba(255,255,255,.55);">&#9632; '+of2+'</span>':'')
-        +(df?'<span style="color:#fff;font-weight:600;">'+df+'</span>':'')
-        +(df||of2?'</span>':'')
+        // ROW 1: ▶ ora data | motiv + echipament | ■ ora data
+        +'<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;flex-wrap:nowrap;">'
+          // START
+          +(oi?'<span style="color:var(--teal);font-weight:700;">&#9654; '+oi+'</span>':'')
+          +(di?'<span style="color:#fff;font-weight:600;">'+di+'</span>':'')
+          // MOTIV + ECHIPAMENT (centru)
+          +'<span style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 8px;">'
+            +(eq?'<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">'+eq+'</span>':'')
+            +(motiv?'<span style="font-family:var(--sans);font-size:13px;font-weight:700;color:'+mc+';">'+motiv+'</span>':'')
+          +'</span>'
+          // END (rosu ■)
+          +(of2||df?'<span style="display:flex;align-items:center;gap:6px;">'
+            +(of2?'<span style="color:var(--red);font-weight:700;">&#9632; '+of2+'</span>':'')
+            +(df?'<span style="color:#fff;font-weight:600;">'+df+'</span>':'')
+          +'</span>':'')
         +'</div>'
-        // ROW 2: motiv (color) + descriere (alb)
-        +'<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">'
-        +(motiv?'<span style="font-family:var(--sans);font-size:13px;font-weight:700;color:'+mc+';white-space:nowrap;flex-shrink:0;">'+motiv+'</span>':'')
-        +(desc?'<span style="font-family:var(--sans);font-size:13px;color:#fff;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 140px);">'+desc+'</span>':'')
-        +'</div>'
+        // ROW 2: descriere (text wrap complet)
+        +(desc?'<div style="font-family:var(--sans);font-size:13px;color:#fff;font-weight:400;white-space:normal;word-break:break-word;line-height:1.5;">'+desc+'</div>':'')
         // ROW 3: status chip
         +(status?'<div><span style="font-family:var(--sans);font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;background:'+scBg+';color:'+sc+';border:1px solid '+sc+'55;display:inline-block;">&#9679; '+status+'</span></div>':'')
         // ROW 4: echipa + piese
         +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
-        +(echipa?'<span style="font-family:var(--sans);font-size:12px;color:var(--purple);font-weight:600;">&#8801; '+echipa+'</span>':'')
-        +(piese?'<span style="font-family:var(--mono);font-size:12px;color:var(--blue);">&#9670; '+piese+'</span>':'')
+          +(echipa?'<span style="font-family:var(--sans);font-size:12px;color:var(--purple);font-weight:600;">&#8801; '+echipa+'</span>':'')
+          +(piese?'<span style="font-family:var(--mono);font-size:12px;color:var(--blue);">&#9670; '+piese+'</span>':'')
         +'</div>'
         +'</div>'
         +'</div>';
