@@ -81,7 +81,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 
 /* ── INFO PANEL ── */
 .info-panel{background:rgba(0,220,180,.04);border:1px solid rgba(0,220,180,.15);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;align-items:start;}
+.info-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;}
 .info-item{display:flex;gap:10px;align-items:flex-start;}
 .info-emoji{width:32px;height:32px;border-radius:8px;background:rgba(0,220,180,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
 .info-title{font-family:var(--sans);font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.04em;margin-bottom:4px;}
@@ -288,13 +288,13 @@ tbody tr:last-child td{border-bottom:none;}
     <table id="main-table">
       <thead>
         <tr>
-          <th onclick="sortBy(1)">Echipament</th>
-          <th onclick="sortBy(2)">Tip ulei</th>
-          <th onclick="sortBy(3)">Cantitate</th>
-          <th onclick="sortBy(4)">Data Prelevare probe</th>
-          <th onclick="sortBy(5)">Data schimb ulei</th>
-          <th onclick="sortBy(6)">Data urmatorul schimb</th>
-          <th onclick="sortBy(7)">Status</th>
+          <th onclick="sortBy(0)">Echipament</th>
+          <th onclick="sortBy(1)">Tip ulei</th>
+          <th onclick="sortBy(2)">Cantitate</th>
+          <th onclick="sortBy(3)">Data Prelevare probe</th>
+          <th onclick="sortBy(4)">Data schimb ulei</th>
+          <th onclick="sortBy(5)">Data urmatorul schimb</th>
+          <th onclick="sortBy(6)">Status</th>
           <th style="cursor:default;">Observatii</th>
           <th style="cursor:default;width:60px;text-align:center;">Edit</th>
         </tr>
@@ -343,7 +343,7 @@ function parseRoDate(str){
 }
 
 function getStatus(row){
-  const next=parseRoDate(row[6]);
+  const next=parseRoDate(row[5]);
   if(!next)return'new';
   const diff=(next-new Date())/86400000;
   if(diff<0)return'late';
@@ -386,9 +386,9 @@ function getVisibleRows(){
   if(q)rows=rows.filter(r=>r.some(c=>String(c).toLowerCase().includes(q)));
   if(sortCol>=0){
     rows.sort((a,b)=>{
-      if(sortCol===7){return sortDir*((STATUS_ORDER[getStatus(a)]??99)-(STATUS_ORDER[getStatus(b)]??99));}
+      if(sortCol===6){return sortDir*((STATUS_ORDER[getStatus(a)]??99)-(STATUS_ORDER[getStatus(b)]??99));}
       const av=String(a[sortCol]||''),bv=String(b[sortCol]||'');
-      if(sortCol>=4&&sortCol<=6){const da=parseRoDate(av),db=parseRoDate(bv);if(da&&db)return sortDir*(da-db);}
+      if(sortCol>=3&&sortCol<=5){const da=parseRoDate(av),db=parseRoDate(bv);if(da&&db)return sortDir*(da-db);}
       return sortDir*av.localeCompare(bv,'ro',{numeric:true});
     });
   }
@@ -400,14 +400,14 @@ function renderTable(){
   const tbody=document.getElementById('tbody');
   if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
   tbody.innerHTML=rows.map(r=>`<tr>
-    <td><span class="td-nr">${r[1]||''}</span></td>
-    <td><span style="font-family:var(--sans);font-size:13px;font-weight:700;color:${oilColor(r[2])};">${r[2]||''}</span></td>
-    <td><span class="td-cant">${r[3]||''}</span></td>
+    <td><span class="td-nr">${r[0]||''}</span></td>
+    <td><span style="font-family:var(--sans);font-size:13px;font-weight:700;color:${oilColor(r[1])};">${r[1]||''}</span></td>
+    <td><span class="td-cant">${r[2]||''}</span></td>
+    <td><span class="td-date">${r[3]||''}</span></td>
     <td><span class="td-date">${r[4]||''}</span></td>
     <td><span class="td-date">${r[5]||''}</span></td>
-    <td><span class="td-date">${r[6]||''}</span></td>
     <td>${statusChip(getStatus(r))}</td>
-    <td class="td-obs-cell"><span class="td-obs">${r[8]||''}</span></td>
+    <td class="td-obs-cell"><span class="td-obs">${r[7]||''}</span></td>
     <td class="no-print" style="text-align:center;"><button class="btn-edit" onclick="editRow(this)" title="Editeaza">&#9998;</button></td>
   </tr>`).join('');
 }
@@ -472,14 +472,14 @@ function exportExcel(){
     const st=getStatus(r);
     const sBg=statusBg[st]||fill, sFg=statusFg[st]||'#000';
     t+='<tr>';
-    t+=`<td style="${tdC}background:${fill};color:#1a3a6e;font-weight:bold;">${r[1]||''}</td>`;
-    t+=`<td style="${tdC}background:${fill};color:#5090e0;font-weight:bold;">${r[2]||''}</td>`;
+    t+=`<td style="${tdC}background:${fill};color:#1a3a6e;font-weight:bold;">${r[0]||''}</td>`;
+    t+=`<td style="${tdC}background:${fill};color:${oilColor(r[1])};font-weight:bold;">${r[1]||''}</td>`;
+    t+=`<td style="${tdC}background:${fill};">${r[2]||''}</td>`;
     t+=`<td style="${tdC}background:${fill};">${r[3]||''}</td>`;
     t+=`<td style="${tdC}background:${fill};">${r[4]||''}</td>`;
     t+=`<td style="${tdC}background:${fill};">${r[5]||''}</td>`;
-    t+=`<td style="${tdC}background:${fill};">${r[6]||''}</td>`;
     t+=`<td style="${tdC}background:${sBg};color:${sFg};font-weight:bold;">${statusLabel[st]||''}</td>`;
-    t+=`<td style="${tdL}background:${fill};">${r[8]||''}</td>`;
+    t+=`<td style="${tdL}background:${fill};">${r[7]||''}</td>`;
     t+='</tr>';
   });
   t+='</table></body></html>';
