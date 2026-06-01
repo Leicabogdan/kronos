@@ -97,8 +97,8 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .search-input:focus{border-color:var(--teal);}
 .search-input::placeholder{color:rgba(255,255,255,.35);}
 .filter-btn{padding:7px 18px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);
-  color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;
-  transition:all .18s;letter-spacing:.08em;white-space:nowrap;}
+  color:#fff;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .18s;white-space:nowrap;}
 .filter-btn:hover{border-color:rgba(0,220,180,.4);color:var(--teal);}
 .filter-btn.active{background:rgba(0,220,180,.1);border-color:rgba(0,220,180,.4);color:var(--teal);}
 .filter-btn.f-late.active{background:rgba(224,80,80,.1);border-color:rgba(224,80,80,.4);color:var(--red);}
@@ -399,7 +399,7 @@ function renderTable(){
   const rows=getVisibleRows();
   const tbody=document.getElementById('tbody');
   if(!rows.length){tbody.innerHTML='<tr><td colspan="9" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
-  tbody.innerHTML=rows.map(r=>`<tr>
+  tbody.innerHTML=rows.map((r,i)=>`<tr data-row-index="${r._sheetRow||i+2}">
     <td><span class="td-nr">${r[0]||''}</span></td>
     <td><span style="font-family:var(--sans);font-size:13px;font-weight:700;color:${oilColor(r[1])};">${r[1]||''}</span></td>
     <td><span class="td-cant">${r[2]||''}</span></td>
@@ -517,7 +517,10 @@ async function loadData(){
   try{
     const resp=await fetch(SHEET_URL+'&t='+Date.now(),{cache:'no-store'});
     if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const rows=parseCSV(await resp.text()).slice(1).filter(r=>r.some(c=>c!=''));
+    const rawRows=parseCSV(await resp.text());
+    const rows=rawRows.slice(1).filter(r=>r.some(c=>c!=''));
+    // Ataseaza numarul de rand din sheet (header=1, date incep de la 2)
+    rows.forEach((r,i)=>{r._sheetRow=i+2;});
     applyData(rows);
   }catch(e){
     console.warn('CSV fetch failed:',e);
@@ -525,14 +528,18 @@ async function loadData(){
   }
 }
 
+/* ── APPS SCRIPT URL — pentru salvare edits în Google Sheets ── */
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyJxN4OXTLXF_2NpHcLgsSneYDu-S5oOkbhERnIXamuHwO8fdgZrdsHlJaqqt-TBf5pTA/exec';
+
 /* ── EDIT ROW ── */
 function editRow(btn){
   const tr=btn.closest('tr');
   if(!tr)return;
   const editing=tr.dataset.editing==='1';
-  // Cols: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(skip), 7=Obs
+  // Cols vizibile: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(skip), 7=Obs
   const editCols=[0,1,2,3,4,5,7];
   if(editing){
+    // ── SALVARE ──
     tr.dataset.editing='0';
     editCols.forEach(i=>{
       const cell=tr.cells[i];
@@ -542,8 +549,46 @@ function editRow(btn){
       cell.style.outline='none';
     });
     btn.textContent='✎';
+    btn.disabled=true;
+    btn.style.opacity='0.5';
     tr.style.outline='none';
+
+    const rowIndex=parseInt(tr.dataset.rowIndex||'-1');
+    const payload={
+      action:'update',
+      rowIndex:rowIndex,
+      echipament:tr.cells[0]?tr.cells[0].innerText.trim():'',
+      tipUlei:tr.cells[1]?tr.cells[1].innerText.trim():'',
+      cantitate:tr.cells[2]?tr.cells[2].innerText.trim():'',
+      dataPrelevare:tr.cells[3]?tr.cells[3].innerText.trim():'',
+      dataSchimb:tr.cells[4]?tr.cells[4].innerText.trim():'',
+      dataUrmatorul:tr.cells[5]?tr.cells[5].innerText.trim():'',
+      observatii:tr.cells[7]?tr.cells[7].innerText.trim():''
+    };
+
+    fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)})
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.status==='ok'){
+          btn.textContent='✔';
+          btn.style.color='var(--green)';
+          setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},1500);
+          loadData(); // refresh din sheet
+        } else {
+          btn.textContent='✗';
+          btn.style.color='var(--red)';
+          setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},2000);
+          console.error('Eroare salvare:',d);
+        }
+      })
+      .catch(e=>{
+        btn.textContent='✗';
+        btn.style.color='var(--red)';
+        setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;btn.style.opacity='1';},2000);
+        console.error('Fetch error:',e);
+      });
   } else {
+    // ── ACTIVARE EDITARE ──
     tr.dataset.editing='1';
     editCols.forEach(i=>{
       const cell=tr.cells[i];
@@ -557,40 +602,40 @@ function editRow(btn){
   }
 }
 
-/* ── FALLBACK DATA — embedded, always available ── */
+/* ── FALLBACK DATA — schema: 0=Echipament, 1=TipUlei, 2=Cant, 3=DataPrelev, 4=DataSchimb, 5=DataUrm, 6=Status(ignorat), 7=Obs ── */
 const FALLBACK_DATA=[
-  ["Transportor cu banda","BC11","CLP PG 220","10L","20.01.2025","24.07.2025","24.07.2027"],
-  ["Transportor cu banda","BC12","CLP PG 220","17L","27.01.2025","01.08.2025","01.08.2027"],
-  ["Transportor cu banda","BC32","CLP PG 220","10L","15.01.2025","01.08.2025","01.08.2027"],
-  ["Transportor cu banda","BC34","CLP PG 220","17L","15.01.2025","01.08.2025","01.08.2027"],
-  ["Transportor cu banda","BC41","CLP PG 220","6.5L","31.01.2025","24.07.2025","24.07.2027"],
-  ["Transportor cu banda","BC42","CLP PG 220","6.5L","31.01.2025","31.07.2025","31.07.2027"],
-  ["Transportor cu banda","BC47","CLP PG 220","6.5L","31.01.2025","23.07.2025","23.07.2027"],
-  ["Transportor cu banda","BC48","CLP PG 220","6.5L","27.01.2025","23.07.2025","23.07.2027"],
-  ["Transportor cu lant","CC01","CLP PG 220","41L","21.01.2025","07.08.2025","07.08.2027"],
-  ["Transportor cu lant","CC02","CLP PG 220","17L","21.01.2025","07.08.2025","07.08.2027"],
-  ["Transportor cu lant","CC03","CLP PG 220","41L","15.01.2025","28.07.2025","28.07.2027"],
-  ["Transportor cu lant","CC04","CLP PG 220","17L","15.01.2025","28.07.2025","28.07.2027"],
-  ["Transportor cu lant","CC10-1 SL","CLP PG 220","38.5L","27.01.2025","Reductor nou - 11.2023","01.11.2025"],
-  ["Transportor cu lant","CC10-2 SL","CLP PG 220","38.5L","27.01.2025","01.08.2025","01.08.2027"],
-  ["Transportor cu lant","CC11","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027"],
-  ["Transportor cu lant","CC11 SL","CLP PG 220","78L","27.01.2025","01.08.2025","01.08.2027"],
-  ["Transportor cu lant","CC12","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027"],
-  ["Transportor cu lant","CC13","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027"],
-  ["Transportor cu lant","CC14","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027"],
-  ["Transportor cu lant","CC15","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027"],
-  ["Transportor cu lant","CC16","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027"],
-  ["Transportor cu lant","CC19","CLP PG 220","41L","20.01.2025","24.07.2025","24.07.2027"],
-  ["Transportor cu lant","CC202","CLP PG 220","10L","27.01.2025","07.08.2025","07.08.2027"],
-  ["Transportor cu lant","CC51","CLP PG 220","41L","31.01.2025","12.08.2025","12.08.2027"],
-  ["Transportor cu lant","CC52","CLP PG 220","6.5L","31.01.2025","07.08.2025","07.08.2027"],
-  ["Transportor cu lant","CC53","CLP PG 220","10L","15.01.2025","31.07.2025","31.07.2027"],
-  ["Elevator","E01","CLP HC 220","36L","20.01.2025","14.08.2025","14.08.2027"],
-  ["Elevator","E02","CLP HC 220","36L","21.01.2025","22.07.2025","22.07.2027"],
-  ["Elevator","E03","CLP HC 220","35L","15.01.2025","28.07.2025","28.07.2027"],
-  ["Elevator","E51","CLP HC 220","88L","27.01.2025","12.08.2025","12.08.2027"],
-  ["Elevator","E81","CLP PG 220","17L","31.01.2025","23.07.2025","23.07.2027"],
-  ["Elevator","E82","CLP HC 220","59L","15.01.2025","24.06.2025","24.06.2027"],
+  ["BC11","CLP PG 220","10L","20.01.2025","24.07.2025","24.07.2027","",""],
+  ["BC12","CLP PG 220","17L","27.01.2025","01.08.2025","01.08.2027","",""],
+  ["BC32","CLP PG 220","10L","15.01.2025","01.08.2025","01.08.2027","",""],
+  ["BC34","CLP PG 220","17L","15.01.2025","01.08.2025","01.08.2027","",""],
+  ["BC41","CLP PG 220","6.5L","31.01.2025","24.07.2025","24.07.2027","",""],
+  ["BC42","CLP PG 220","6.5L","31.01.2025","31.07.2025","31.07.2027","",""],
+  ["BC47","CLP PG 220","6.5L","31.01.2025","23.07.2025","23.07.2027","",""],
+  ["BC48","CLP PG 220","6.5L","27.01.2025","23.07.2025","23.07.2027","",""],
+  ["CC01","CLP PG 220","41L","21.01.2025","07.08.2025","07.08.2027","",""],
+  ["CC02","CLP PG 220","17L","21.01.2025","07.08.2025","07.08.2027","",""],
+  ["CC03","CLP PG 220","41L","15.01.2025","28.07.2025","28.07.2027","",""],
+  ["CC04","CLP PG 220","17L","15.01.2025","28.07.2025","28.07.2027","",""],
+  ["CC10-1 SL","CLP PG 220","38.5L","27.01.2025","Reductor nou - 11.2023","01.11.2025","",""],
+  ["CC10-2 SL","CLP PG 220","38.5L","27.01.2025","01.08.2025","01.08.2027","",""],
+  ["CC11","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027","",""],
+  ["CC11 SL","CLP PG 220","78L","27.01.2025","01.08.2025","01.08.2027","",""],
+  ["CC12","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027","",""],
+  ["CC13","CLP PG 220","41L","20.01.2025","08.08.2025","08.08.2027","",""],
+  ["CC14","CLP PG 220","17L","20.01.2025","25.07.2025","25.07.2027","",""],
+  ["CC15","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027","",""],
+  ["CC16","CLP PG 220","17L","15.01.2025","08.08.2025","08.08.2027","",""],
+  ["CC19","CLP PG 220","41L","20.01.2025","24.07.2025","24.07.2027","",""],
+  ["CC202","CLP PG 220","10L","27.01.2025","07.08.2025","07.08.2027","",""],
+  ["CC51","CLP PG 220","41L","31.01.2025","12.08.2025","12.08.2027","",""],
+  ["CC52","CLP PG 220","6.5L","31.01.2025","07.08.2025","07.08.2027","",""],
+  ["CC53","CLP PG 220","10L","15.01.2025","31.07.2025","31.07.2027","",""],
+  ["E01","CLP HC 220","36L","20.01.2025","14.08.2025","14.08.2027","",""],
+  ["E02","CLP HC 220","36L","21.01.2025","22.07.2025","22.07.2027","",""],
+  ["E03","CLP HC 220","35L","15.01.2025","28.07.2025","28.07.2027","",""],
+  ["E51","CLP HC 220","88L","27.01.2025","12.08.2025","12.08.2027","",""],
+  ["E81","CLP PG 220","17L","31.01.2025","23.07.2025","23.07.2027","",""],
+  ["E82","CLP HC 220","59L","15.01.2025","24.06.2025","24.06.2027","",""],
 ];
 
 /* ── INIT ──
