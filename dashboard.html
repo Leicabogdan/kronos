@@ -1016,34 +1016,30 @@ async function loadActivitate() {
       var mc=av?'var(--red)':'var(--teal)';
       var sc=status.indexOf('Apt')>-1?'var(--green)':status.indexOf('upraveg')>-1?'var(--amber)':status.indexOf('Necesita')>-1?'var(--red)':'rgba(255,255,255,.5)';
       var scBg=status.indexOf('Apt')>-1?'rgba(74,175,112,.12)':status.indexOf('upraveg')>-1?'rgba(240,165,0,.12)':status.indexOf('Necesita')>-1?'rgba(224,80,80,.12)':'rgba(255,255,255,.05)';
-      var monoSz='font-family:var(--mono);font-size:13px;font-weight:600;';
-      return '<div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:10px;align-items:stretch;">'
+      return '<div style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;gap:10px;align-items:stretch;">'
         +'<div style="width:3px;border-radius:2px;background:'+mc+';flex-shrink:0;"></div>'
-        +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">'
-        // ROW 1: ▶ ora data | motiv + echipament | ■ ora data
-        +'<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;flex-wrap:nowrap;">'
-          // START
-          +(oi?'<span style="color:var(--teal);font-weight:700;">&#9654; '+oi+'</span>':'')
+        +'<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">'
+        // ROW 1: ▶(teal) ora(alb) data(alb) | echipament(amber bold) motiv(color) | ■(red) ora(alb) data(alb)
+        +'<div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;flex-wrap:nowrap;">'
+          +(oi?'<span style="color:var(--teal);">&#9654;</span><span style="color:#fff;font-weight:700;">'+oi+'</span>':'')
           +(di?'<span style="color:#fff;font-weight:600;">'+di+'</span>':'')
-          // MOTIV + ECHIPAMENT (centru)
-          +'<span style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 8px;">'
-            +(eq?'<span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber);">'+eq+'</span>':'')
-            +(motiv?'<span style="font-family:var(--sans);font-size:13px;font-weight:700;color:'+mc+';">'+motiv+'</span>':'')
+          +'<span style="flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 8px;">'
+            +(eq?'<span style="font-family:var(--mono);font-size:15px;font-weight:700;color:var(--amber);">'+eq+'</span>':'')
+            +(motiv?'<span style="font-family:var(--sans);font-size:15px;font-weight:700;color:'+mc+';">'+motiv+'</span>':'')
           +'</span>'
-          // END (rosu ■)
           +(of2||df?'<span style="display:flex;align-items:center;gap:6px;">'
-            +(of2?'<span style="color:var(--red);font-weight:700;">&#9632; '+of2+'</span>':'')
+            +(of2?'<span style="color:var(--red);">&#9632;</span><span style="color:#fff;font-weight:700;">'+of2+'</span>':'')
             +(df?'<span style="color:#fff;font-weight:600;">'+df+'</span>':'')
           +'</span>':'')
         +'</div>'
-        // ROW 2: descriere (text wrap complet)
-        +(desc?'<div style="font-family:var(--sans);font-size:13px;color:#fff;font-weight:400;white-space:normal;word-break:break-word;line-height:1.5;">'+desc+'</div>':'')
+        // ROW 2: descriere completa
+        +(desc?'<div style="font-family:var(--sans);font-size:14px;color:#fff;font-weight:400;white-space:normal;word-break:break-word;line-height:1.5;">'+desc+'</div>':'')
         // ROW 3: status chip
-        +(status?'<div><span style="font-family:var(--sans);font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;background:'+scBg+';color:'+sc+';border:1px solid '+sc+'55;display:inline-block;">&#9679; '+status+'</span></div>':'')
-        // ROW 4: echipa + piese
-        +'<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
-          +(echipa?'<span style="font-family:var(--sans);font-size:12px;color:var(--purple);font-weight:600;">&#8801; '+echipa+'</span>':'')
-          +(piese?'<span style="font-family:var(--mono);font-size:12px;color:var(--blue);">&#9670; '+piese+'</span>':'')
+        +(status?'<div><span style="font-family:var(--sans);font-size:13px;font-weight:700;padding:3px 12px;border-radius:6px;background:'+scBg+';color:'+sc+';border:1px solid '+sc+'55;display:inline-block;">&#9679; '+status+'</span></div>':'')
+        // ROW 4: Echipa stanga, Piese dreapta
+        +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">'
+          +(echipa?'<span style="font-family:var(--sans);font-size:13px;color:var(--purple);font-weight:600;">Echipa: '+echipa+'</span>':'<span></span>')
+          +(piese?'<span style="font-family:var(--sans);font-size:13px;color:var(--blue);font-weight:600;">Piese: '+piese+'</span>':'')
         +'</div>'
         +'</div>'
         +'</div>';
