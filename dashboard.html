@@ -532,20 +532,25 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
             </div>
 
             <!-- SCHIMB ULEI -->
-            <div class="widget-card widget-bicolor" onclick="window.location='schimb_ulei.html'" style="cursor:pointer;height:100%;">
+            <div class="widget-card widget-bicolor" onclick="window.location='schimb_ulei.html'" style="cursor:pointer;height:100%;display:flex;flex-direction:column;">
               <div style="font-family:var(--title);font-size:10px;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:10px;">SCHIMB ULEI REDUCTOARE</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <!-- KPI row: CURAND + DEPASIT -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
                 <div style="text-align:center;">
-                  <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--amber);" id="dash-ulei-curand">...</div>
-                  <div style="font-family:var(--sans);font-size:10px;color:var(--amber);font-weight:700;">CURAND</div>
-                  <div style="font-family:var(--sans);font-size:10px;color:#fff;">&lt;90 zile</div>
+                  <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+                    <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--amber);" id="dash-ulei-curand">...</div>
+                    <div style="font-family:var(--sans);font-size:10px;color:var(--amber);font-weight:700;">CURAND (&lt;90 zile)</div>
+                  </div>
                 </div>
                 <div style="text-align:center;">
-                  <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--red);" id="dash-ulei-depasit">...</div>
-                  <div style="font-family:var(--sans);font-size:10px;color:var(--red);font-weight:700;">DEPASIT</div>
-                  <div style="font-family:var(--sans);font-size:10px;color:#fff;">data trecuta</div>
+                  <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+                    <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--red);" id="dash-ulei-depasit">...</div>
+                    <div style="font-family:var(--sans);font-size:10px;color:var(--red);font-weight:700;">DEPASIT</div>
+                  </div>
                 </div>
               </div>
+              <!-- Lista echipamente cu scroll -->
+              <div id="dash-ulei-list" style="flex:1;overflow-y:auto;max-height:120px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(0,220,180,.3) transparent;"></div>
             </div>
 
             <!-- NEIMPLEMENTAT 1 -->
@@ -933,56 +938,77 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
 
 /* SCHIMB ULEI LIVE */
 (function loadUlei() {
-  // Date din schimb_ulei.html FALLBACK_DATA — col[6] = Urmatorul schimb
-  var FALLBACK = [
-    {nr:'BC11',next:'24.07.2027'},
-    {nr:'BC12',next:'01.08.2027'},
-    {nr:'BC32',next:'01.08.2027'},
-    {nr:'BC34',next:'01.08.2027'},
-    {nr:'BC41',next:'24.07.2027'},
-    {nr:'BC42',next:'31.07.2027'},
-    {nr:'BC47',next:'23.07.2027'},
-    {nr:'BC48',next:'23.07.2027'},
-    {nr:'CC01',next:'07.08.2027'},
-    {nr:'CC02',next:'07.08.2027'},
-    {nr:'CC03',next:'28.07.2027'},
-    {nr:'CC04',next:'28.07.2027'},
-    {nr:'CC10-1 SL',next:'01.11.2025'},
-    {nr:'CC10-2 SL',next:'01.08.2027'},
-    {nr:'CC11',next:'08.08.2027'},
-    {nr:'CC11 SL',next:'01.08.2027'},
-    {nr:'CC12',next:'25.07.2027'},
-    {nr:'CC13',next:'08.08.2027'},
-    {nr:'CC14',next:'25.07.2027'},
-    {nr:'CC15',next:'08.08.2027'},
-    {nr:'CC16',next:'08.08.2027'},
-    {nr:'CC19',next:'24.07.2027'},
-    {nr:'CC202',next:'07.08.2027'},
-    {nr:'CC51',next:'12.08.2027'},
-    {nr:'CC52',next:'07.08.2027'},
-    {nr:'CC53',next:'31.07.2027'},
-    {nr:'E01',next:'14.08.2027'},
-    {nr:'E02',next:'22.07.2027'},
-    {nr:'E03',next:'28.07.2027'},
-    {nr:'E51',next:'12.08.2027'},
-    {nr:'E81',next:'23.07.2027'},
-    {nr:'E82',next:'24.06.2027'}
-  ];
-  var now = new Date(); now.setHours(0,0,0,0);
-  var curand = 0, depasit = 0;
-  FALLBACK.forEach(function(r) {
-    if (!r.next) return;
-    var p = r.next.split('.');
-    if (p.length < 3) return;
-    var next = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
-    var diff = Math.floor((next - now) / (1000*60*60*24));
-    if (diff < 0) depasit++;
-    else if (diff < 90) curand++;
-  });
-  var ec = document.getElementById('dash-ulei-curand');
-  var ed = document.getElementById('dash-ulei-depasit');
-  if (ec) ec.textContent = curand;
-  if (ed) ed.textContent = depasit;
+  var ULEI_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6QB_pe0FGVTqmpUgaJ6rLYDTjOg5X0rr814HgkNcg7ufrH9LHuDmOXlSRtEewmNYUhZwIEgEm9Wem/pub?gid=0&single=true&output=csv';
+
+  function parseDate(str) {
+    if (!str) return null;
+    var s = String(str).trim();
+    var sep = s.indexOf('/') > -1 ? '/' : '.';
+    var p = s.split(sep);
+    if (p.length === 3 && p[2].length === 4) return new Date(+p[2], +p[1]-1, +p[0]);
+    var d = new Date(s); return isNaN(d) ? null : d;
+  }
+
+  function parseCSV(txt) {
+    return txt.trim().split('\n').map(function(row) {
+      var cells=[],cur='',inQ=false;
+      for(var i=0;i<row.length;i++){
+        var ch=row[i];
+        if(ch==='"'){if(inQ&&row[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+        else if(ch===','&&!inQ){cells.push(cur.trim());cur='';}
+        else cur+=ch;
+      }
+      cells.push(cur.trim());
+      return cells;
+    });
+  }
+
+  function render(rows) {
+    var now = new Date(); now.setHours(0,0,0,0);
+    var curand = [], depasit = [];
+    rows.forEach(function(r) {
+      var echip = r[0] || '';
+      var nextStr = r[5] || ''; // col 5 = Data urmatorul schimb
+      var next = parseDate(nextStr);
+      if (!next) return;
+      var diff = Math.floor((next - now) / (1000*60*60*24));
+      if (diff < 0) depasit.push({echip: echip, diff: diff});
+      else if (diff < 90) curand.push({echip: echip, diff: diff});
+    });
+
+    var ec = document.getElementById('dash-ulei-curand');
+    var ed = document.getElementById('dash-ulei-depasit');
+    var el = document.getElementById('dash-ulei-list');
+    if (ec) ec.textContent = curand.length;
+    if (ed) ed.textContent = depasit.length;
+
+    if (el) {
+      var html = '';
+      // depasit first (red), then curand (amber)
+      depasit.forEach(function(item) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;border-radius:5px;background:rgba(224,80,80,.1);border:1px solid rgba(224,80,80,.25);">' +
+          '<span style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;">' + item.echip + '</span>' +
+          '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">DEPASIT ' + Math.abs(item.diff) + 'z</span>' +
+          '</div>';
+      });
+      curand.forEach(function(item) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;border-radius:5px;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);">' +
+          '<span style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;">' + item.echip + '</span>' +
+          '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;">' + item.diff + 'z</span>' +
+          '</div>';
+      });
+      if (!html) html = '<div style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.4);padding:4px 8px;">Toate echipamentele in termen</div>';
+      el.innerHTML = html;
+    }
+  }
+
+  fetch(ULEI_CSV + '&t=' + Date.now(), {cache:'no-store'})
+    .then(function(r){ return r.text(); })
+    .then(function(txt){
+      var rows = parseCSV(txt).slice(1).filter(function(r){ return r.some(function(c){ return c!=''; }); });
+      render(rows);
+    })
+    .catch(function(){ /* silently fail, no fallback needed */ });
 })();
 
 /* ACTIVITATE RECENTA */
