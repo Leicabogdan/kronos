@@ -84,7 +84,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .info-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;}
 .info-item{display:flex;gap:10px;align-items:flex-start;}
 .info-emoji{width:32px;height:32px;border-radius:8px;background:rgba(0,220,180,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.info-title{font-family:var(--sans);font-size:12px;color:var(--teal);font-weight:700;letter-spacing:.04em;margin-bottom:4px;}
+.info-title{font-family:var(--sans);font-size:13px;color:var(--teal);font-weight:600;margin-bottom:4px;}
 .info-text{font-family:var(--sans);font-size:13px;color:#fff;font-weight:500;line-height:1.55;}
 
 /* ── FILTER / ACTION BAR ── */
@@ -106,12 +106,10 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .filter-btn.f-ok.active{background:rgba(74,175,112,.1);border-color:rgba(74,175,112,.4);color:var(--green);}
 .export-btns{margin-left:auto;display:flex;gap:8px;}
 .exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:7px;
-  font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;
-  transition:all .18s;letter-spacing:.08em;white-space:nowrap;border:1.5px solid;}
-.exp-btn.pdf{background:rgba(224,80,80,.08);border-color:rgba(224,80,80,.35);color:var(--red);}
-.exp-btn.pdf:hover{background:rgba(224,80,80,.18);border-color:var(--red);}
-.exp-btn.xls{background:rgba(74,175,112,.08);border-color:rgba(74,175,112,.35);color:var(--green);}
-.exp-btn.xls:hover{background:rgba(74,175,112,.18);border-color:var(--green);}
+  font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .18s;white-space:nowrap;border:1.5px solid rgba(0,220,180,.3);
+  background:rgba(0,220,180,.05);color:var(--teal);}
+.exp-btn:hover{background:rgba(0,220,180,.12);border-color:var(--teal);}
 
 /* ── TABLE — Excel style ── */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;overflow-x:auto;}
@@ -149,7 +147,7 @@ tbody tr:last-child td{border-bottom:none;}
 .sdot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
 .load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;
   color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
-.td-obs{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.8);}
+.td-obs{font-family:var(--sans);font-size:13px;color:#fff;font-weight:600;}
 .btn-edit{padding:4px 12px;border-radius:5px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.3);color:var(--teal);font-family:var(--sans);font-size:12px;cursor:pointer;transition:all .15s;}
 .btn-edit:hover{background:rgba(0,220,180,.18);}
 
@@ -336,7 +334,8 @@ const STATUS_ORDER={late:0,soon:1,ok:2,new:3};
 function parseRoDate(str){
   if(!str)return null;
   const s=String(str).trim();
-  const p=s.split('.');
+  const sep=s.includes('/')?'/':'.';
+  const p=s.split(sep);
   if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[1]-1,+p[0]);
   const d=new Date(s);
   return isNaN(d)?null:d;
