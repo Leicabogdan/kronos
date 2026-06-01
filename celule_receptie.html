@@ -89,23 +89,23 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 /* SUMMARY STRIP */
 .summary-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
 @media(max-width:800px){.summary-strip{grid-template-columns:1fr 1fr;}}
-.sum-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;position:relative;overflow:hidden;text-align:center;}
+.sum-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;position:relative;overflow:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .sum-card.c-teal::before{background:var(--teal);}
 .sum-card.c-blue::before{background:var(--blue);}
 .sum-card.c-amber::before{background:var(--amber);}
 .sum-card.c-green::before{background:var(--green);}
-.sum-lbl{font-family:var(--mono);font-size:18px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:7px;}
+.sum-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;margin-bottom:4px;}
 .sum-card.c-teal .sum-lbl{color:var(--teal);}
 .sum-card.c-blue .sum-lbl{color:var(--blue);}
 .sum-card.c-amber .sum-lbl{color:var(--amber);}
 .sum-card.c-green .sum-lbl{color:var(--green);}
-.sum-val{font-family:var(--title);font-size:clamp(22px,3vw,34px);font-weight:900;line-height:1;}
+.sum-val{font-family:var(--title);font-size:clamp(18px,2.2vw,26px);font-weight:900;line-height:1;}
 .sum-card.c-teal .sum-val{color:var(--teal);}
 .sum-card.c-blue .sum-val{color:var(--blue);}
 .sum-card.c-amber .sum-val{color:var(--amber);}
 .sum-card.c-green .sum-val{color:var(--green);}
-.sum-sub{font-family:var(--mono);font-size:22px;color:#fff;font-weight:600;margin-top:6px;}
+.sum-sub{font-family:var(--mono);font-size:13px;color:#fff;font-weight:600;margin-top:4px;}
 
 /* SECTION HEADER */
 .section-header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
@@ -116,8 +116,10 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   background:rgba(0,220,180,.07);border:1px solid rgba(0,220,180,.22);color:var(--teal);}
 
 /* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:20px;}
-@media(max-width:560px){.kpi-grid{grid-template-columns:1fr;}}
+.kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px;}
+@media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr;}}
 
 /* KPI CARD */
 .kpi-card{
@@ -144,12 +146,12 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 }
 .card-id{
   font-family:var(--title);font-weight:900;letter-spacing:.2em;
-  font-size:clamp(22px,2.8vw,28px);line-height:1;color:var(--teal);
+  font-size:clamp(14px,1.5vw,18px);line-height:1;color:var(--teal);
   text-shadow:0 0 22px rgba(0,220,180,.22);
 }
 .card-badge{
-  font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:.08em;
-  text-transform:uppercase;padding:4px 9px;border-radius:12px;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 7px;border-radius:10px;
   background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.2);color:var(--teal);
 }
 
@@ -157,14 +159,14 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .card-body{padding:10px 16px 14px;}
 .field-row{
   display:flex;align-items:center;justify-content:space-between;
-  padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);
 }
 .field-row:last-child{border-bottom:none;}
 .field-lbl{
-  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:#fff;flex-shrink:0;padding-right:12px;font-size:18px;letter-spacing:.06em;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:rgba(255,255,255,.7);flex-shrink:0;padding-right:12px;
 }
-.field-val{font-family:var(--sans);font-size:30px;font-weight:700;text-align:right;}
+.field-val{font-family:var(--sans);font-size:16px;font-weight:700;text-align:right;}
 .fv-inaltime{color:var(--teal);}
 .fv-diametru{color:var(--blue);}
 .fv-volum{color:var(--amber);}
