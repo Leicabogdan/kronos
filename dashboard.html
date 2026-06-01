@@ -519,33 +519,33 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
           </div>
 
           <!-- TOP STRIP: AVARII + SCHIMB ULEI + 2 EXTRA -->
-          <div class="kpi-grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;align-items:start;">
+          <div class="kpi-grid-4" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;align-items:stretch;">
 
             <!-- AVARII -->
-            <div class="avarii-alarm" style="padding:14px 16px;min-height:0;position:relative;">
-              <div style="font-family:var(--sans);font-size:10px;font-weight:700;color:#fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Avarii luna curenta</div>
-              <div style="font-family:var(--title);font-size:clamp(36px,4vw,52px);font-weight:900;color:#fff;line-height:1;" id="dash-avarii-count">&#8212;</div>
-              <div id="dash-avarii-sub" style="font-size:11px;color:#fff;font-family:var(--sans);font-weight:600;margin-top:6px;">se incarca...</div>
-              <div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;" id="dash-avarii-rows">
-                <div style="font-family:var(--sans);font-size:11px;color:#fff;">Se incarca...</div>
+            <div class="avarii-alarm" style="padding:14px 16px;position:relative;display:flex;flex-direction:column;">
+              <div style="font-family:var(--sans);font-size:10px;font-weight:700;color:#fff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Avarii ultimele 3 luni</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:10px;">
+                <div style="font-family:var(--title);font-size:clamp(36px,4vw,52px);font-weight:900;color:#fff;line-height:1;" id="dash-avarii-count">—</div>
+                <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.6);font-weight:600;">avarii totale</div>
+              </div>
+              <div id="dash-avarii-rows" style="flex:1;overflow-y:auto;max-height:110px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(224,80,80,.3) transparent;">
+                <div style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
               </div>
             </div>
 
             <!-- SCHIMB ULEI -->
-            <div class="widget-card widget-bicolor" onclick="window.location='schimb_ulei.html'" style="cursor:pointer;height:100%;display:flex;flex-direction:column;">
+            <div class="widget-card widget-bicolor" onclick="window.location='schimb_ulei.html'" style="cursor:pointer;display:flex;flex-direction:column;">
               <div style="font-family:var(--title);font-size:10px;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:10px;">SCHIMB ULEI REDUCTOARE</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0;">
-                <!-- CURAND -->
                 <div style="display:flex;flex-direction:column;min-height:0;">
-                  <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;">
+                  <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:6px;">
                     <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--amber);" id="dash-ulei-curand">...</div>
                     <div style="font-family:var(--sans);font-size:10px;color:var(--amber);font-weight:700;">CURAND (&lt;90 zile)</div>
                   </div>
                   <div id="dash-ulei-curand-list" style="overflow-y:auto;max-height:110px;display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:rgba(240,165,0,.3) transparent;"></div>
                 </div>
-                <!-- DEPASIT -->
                 <div style="display:flex;flex-direction:column;min-height:0;">
-                  <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;">
+                  <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:6px;">
                     <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--red);" id="dash-ulei-depasit">...</div>
                     <div style="font-family:var(--sans);font-size:10px;color:var(--red);font-weight:700;">DEPASIT</div>
                   </div>
@@ -707,7 +707,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 </div><!-- /app -->
 
 <script>
-/* ── AVARII DASHBOARD LOADER ── */
+/* ── AVARII DASHBOARD LOADER — ultimele 3 luni, >5 per echipament ── */
 var DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv&t=';
 function parseDashCSV(text) {
   var rows = [], cur = [], cell = '', inQ = false;
@@ -732,69 +732,73 @@ function parseDashCSV(text) {
   if (cur.some(function(c){return c!==''})) rows.push(cur);
   return rows;
 }
-function getMonthYear(str) {
+function parseRowDate(str) {
   str = String(str||'').trim();
-  if (str.indexOf('/') > -1) { var p=str.split('/'); if(p.length>=3) return {m:p[1].padStart(2,'0'),y:p[2].substring(0,4)}; }
-  if (str.indexOf('.') > -1) { var p=str.split('.'); if(p.length>=3) return {m:p[1].padStart(2,'0'),y:p[2].substring(0,4)}; }
-  if (str.indexOf('-') > -1) { var p=str.split('-'); if(p.length>=2) return {m:p[1].padStart(2,'0'),y:p[0]}; }
-  return null;
+  var sep = str.indexOf('/') > -1 ? '/' : str.indexOf('.') > -1 ? '.' : null;
+  if (!sep) return null;
+  var p = str.split(sep);
+  if (p.length < 3) return null;
+  return new Date(+p[2].substring(0,4), +p[1]-1, +p[0]);
 }
-function isThisMonthDash(dateStr) {
-  var d = getMonthYear(dateStr);
+function isLast3Months(dateStr) {
+  var d = parseRowDate(dateStr);
   if (!d) return false;
-  var now = new Date();
-  return d.m === String(now.getMonth()+1).padStart(2,'0') && d.y === String(now.getFullYear());
+  var cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 3); cutoff.setHours(0,0,0,0);
+  return d >= cutoff;
 }
 async function loadDashAvarii() {
   try {
     var resp = await fetch(DASH_CSV + Date.now() + '&r=' + Math.random(), {cache:'no-store'});
     if (!resp.ok) throw new Error('HTTP '+resp.status);
-    var text = await resp.text();
-    var rows = parseDashCSV(text).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+    var rows = parseDashCSV(await resp.text()).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     rows = rows.map(function(r){while(r.length<11)r.push('');return r;});
-    // Filter avarii this month: motiv contains 'avarie' OR status contains 'necesita interv' or 'avarie'
-    var now = new Date();
+
+    // col: 0=Motiv 1=DataInc 2=OraInc 3=DataFin 4=OraFin 5=Descriere 6=StatusUtilaj 7=PieseSchimb 8=Echipa 9=AdaugatDe 10=Echipament
     var avarii = rows.filter(function(r){
-      var m = String(r[1]||'').toLowerCase();
-      var s = String(r[7]||'').toLowerCase();
-      return isThisMonthDash(r[2]) && (m.indexOf('avarie')>-1 || s.indexOf('necesita interv')>-1 || s.indexOf('avarie')>-1);
+      var m = String(r[0]||'').toLowerCase();
+      var s = String(r[6]||'').toLowerCase();
+      return isLast3Months(r[1]) && (m.indexOf('avarie')>-1 || s.indexOf('necesita interv')>-1 || s.indexOf('avarie')>-1);
     });
+
     // Count by equipment
     var eqCounts = {};
     avarii.forEach(function(r){
-      var eq = r[11]||r[11]||'Necunoscut';
-      eqCounts[eq] = (eqCounts[eq]||0)+1;
+      var eq = String(r[10]||r[0]||'Necunoscut').trim();
+      eqCounts[eq] = (eqCounts[eq]||0) + 1;
     });
-    // Sort by count desc
-    var sorted = Object.keys(eqCounts).sort(function(a,b){return eqCounts[b]-eqCounts[a];}).slice(0,5);
+
+    // Filter >5 avarii, sort desc
+    var sorted = Object.keys(eqCounts)
+      .filter(function(eq){ return eqCounts[eq] > 5; })
+      .sort(function(a,b){ return eqCounts[b] - eqCounts[a]; });
+
     var maxCount = sorted.length ? eqCounts[sorted[0]] : 1;
-    // Update count
+
     document.getElementById('dash-avarii-count').textContent = avarii.length || '0';
-    document.getElementById('dash-avarii-sub').textContent = sorted.length + ' echipamente · luna curenta';
-    // Also update total interventii count
+
+    // Update total interventii
     var intervEl = document.getElementById('dash-interv-count');
     var intervSub = document.getElementById('dash-interv-sub');
-    var totalInterv = rows.filter(function(r){ return isThisMonthDash(r[2]); }).length;
+    var totalInterv = rows.filter(function(r){ return isLast3Months(r[1]); }).length;
     if(intervEl) intervEl.textContent = totalInterv || '0';
-    if(intervSub) intervSub.textContent = 'inregistrari luna curenta';
-    // Update rows
+    if(intervSub) intervSub.textContent = 'inregistrari ultimele 3 luni';
+
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:15px;color:#fff;font-weight:500;padding:4px 0;">Nicio avarie inregistrata luna aceasta</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:12px;color:rgba(255,255,255,.5);padding:4px 0;">Nicio avarie cu peste 5 inregistrari</div>';
       return;
     }
-    var html2 = '';
-    sorted.forEach(function(eq, idx) {
+    rowsEl.innerHTML = sorted.map(function(eq, idx) {
       var cnt = eqCounts[eq];
       var pct = Math.round((cnt/maxCount)*100);
-      var color = idx===0?'var(--red)':idx===1?'rgba(224,80,80,.8)':'rgba(224,80,80,.6)';
-      html2 += '<div class="hotspot-row">'
-        +'<div class="hotspot-eq" style="min-width:80px;font-size:12px;font-weight:700;font-family:var(--sans);padding-left:4px;">'+eq+'</div>'
-        +'<div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:'+pct+'%;background:'+color+';"></div></div>'
-        +'<div class="hotspot-count" style="color:'+color+';">' + cnt + ' avarie</div>'
-        +'</div>';
-    });
-    rowsEl.innerHTML = html2;
+      var alpha = idx === 0 ? '1' : idx === 1 ? '.8' : '.6';
+      var color = 'rgba(224,80,80,'+alpha+')';
+      return '<div class="hotspot-row">'
+        + '<div class="hotspot-eq" style="min-width:90px;font-size:11px;">'+eq+'</div>'
+        + '<div class="hotspot-bar-wrap"><div class="hotspot-bar" style="width:'+pct+'%;background:'+color+';"></div></div>'
+        + '<div class="hotspot-count" style="color:'+color+';">'+cnt+'</div>'
+        + '</div>';
+    }).join('');
   } catch(err) {
     document.getElementById('dash-avarii-rows').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Eroare incarcare date</div>';
   }
@@ -940,7 +944,6 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
 /* SCHIMB ULEI LIVE */
 (function loadUlei() {
   var ULEI_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6QB_pe0FGVTqmpUgaJ6rLYDTjOg5X0rr814HgkNcg7ufrH9LHuDmOXlSRtEewmNYUhZwIEgEm9Wem/pub?gid=0&single=true&output=csv';
-
   function parseDate(str) {
     if (!str) return null;
     var s = String(str).trim();
@@ -949,7 +952,6 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
     if (p.length === 3 && p[2].length === 4) return new Date(+p[2], +p[1]-1, +p[0]);
     var d = new Date(s); return isNaN(d) ? null : d;
   }
-
   function parseCSV(txt) {
     return txt.trim().split('\n').map(function(row) {
       var cells=[],cur='',inQ=false;
@@ -963,48 +965,40 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
       return cells;
     });
   }
-
   function render(rows) {
     var now = new Date(); now.setHours(0,0,0,0);
     var curand = [], depasit = [];
     rows.forEach(function(r) {
       var echip = r[0] || '';
-      var next = parseDate(r[5]); // col 5 = Data urmatorul schimb
+      var next = parseDate(r[5]);
       if (!next) return;
       var diff = Math.floor((next - now) / (1000*60*60*24));
       if (diff < 0) depasit.push({echip: echip, diff: diff});
       else if (diff < 90) curand.push({echip: echip, diff: diff});
     });
-
-    // Update counts
     var ec = document.getElementById('dash-ulei-curand');
     var ed = document.getElementById('dash-ulei-depasit');
     if (ec) ec.textContent = curand.length;
     if (ed) ed.textContent = depasit.length;
-
-    // Populate CURAND list
     var elC = document.getElementById('dash-ulei-curand-list');
     if (elC) {
       elC.innerHTML = curand.length ? curand.map(function(item) {
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);">' +
-          '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>' +
-          '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;">' + item.diff + 'z</span>' +
-          '</div>';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);">'
+          + '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>'
+          + '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;">' + item.diff + 'z</span>'
+          + '</div>';
       }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
     }
-
-    // Populate DEPASIT list
     var elD = document.getElementById('dash-ulei-depasit-list');
     if (elD) {
       elD.innerHTML = depasit.length ? depasit.map(function(item) {
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.2);">' +
-          '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>' +
-          '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">-' + Math.abs(item.diff) + 'z</span>' +
-          '</div>';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.2);">'
+          + '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>'
+          + '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">-' + Math.abs(item.diff) + 'z</span>'
+          + '</div>';
       }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
     }
   }
-
   fetch(ULEI_CSV + '&t=' + Date.now(), {cache:'no-store'})
     .then(function(r){ return r.text(); })
     .then(function(txt){
