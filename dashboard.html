@@ -534,23 +534,24 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
             <!-- SCHIMB ULEI -->
             <div class="widget-card widget-bicolor" onclick="window.location='schimb_ulei.html'" style="cursor:pointer;height:100%;display:flex;flex-direction:column;">
               <div style="font-family:var(--title);font-size:10px;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:10px;">SCHIMB ULEI REDUCTOARE</div>
-              <!-- KPI row: CURAND + DEPASIT -->
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-                <div style="text-align:center;">
-                  <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0;">
+                <!-- CURAND -->
+                <div style="display:flex;flex-direction:column;min-height:0;">
+                  <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;">
                     <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--amber);" id="dash-ulei-curand">...</div>
                     <div style="font-family:var(--sans);font-size:10px;color:var(--amber);font-weight:700;">CURAND (&lt;90 zile)</div>
                   </div>
+                  <div id="dash-ulei-curand-list" style="overflow-y:auto;max-height:110px;display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:rgba(240,165,0,.3) transparent;"></div>
                 </div>
-                <div style="text-align:center;">
-                  <div style="display:flex;align-items:baseline;justify-content:center;gap:6px;">
+                <!-- DEPASIT -->
+                <div style="display:flex;flex-direction:column;min-height:0;">
+                  <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px;">
                     <div style="font-family:var(--title);font-size:clamp(28px,3vw,38px);font-weight:900;color:var(--red);" id="dash-ulei-depasit">...</div>
                     <div style="font-family:var(--sans);font-size:10px;color:var(--red);font-weight:700;">DEPASIT</div>
                   </div>
+                  <div id="dash-ulei-depasit-list" style="overflow-y:auto;max-height:110px;display:flex;flex-direction:column;gap:3px;scrollbar-width:thin;scrollbar-color:rgba(224,80,80,.3) transparent;"></div>
                 </div>
               </div>
-              <!-- Lista echipamente cu scroll -->
-              <div id="dash-ulei-list" style="flex:1;overflow-y:auto;max-height:120px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(0,220,180,.3) transparent;"></div>
             </div>
 
             <!-- NEIMPLEMENTAT 1 -->
@@ -968,37 +969,39 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
     var curand = [], depasit = [];
     rows.forEach(function(r) {
       var echip = r[0] || '';
-      var nextStr = r[5] || ''; // col 5 = Data urmatorul schimb
-      var next = parseDate(nextStr);
+      var next = parseDate(r[5]); // col 5 = Data urmatorul schimb
       if (!next) return;
       var diff = Math.floor((next - now) / (1000*60*60*24));
       if (diff < 0) depasit.push({echip: echip, diff: diff});
       else if (diff < 90) curand.push({echip: echip, diff: diff});
     });
 
+    // Update counts
     var ec = document.getElementById('dash-ulei-curand');
     var ed = document.getElementById('dash-ulei-depasit');
-    var el = document.getElementById('dash-ulei-list');
     if (ec) ec.textContent = curand.length;
     if (ed) ed.textContent = depasit.length;
 
-    if (el) {
-      var html = '';
-      // depasit first (red), then curand (amber)
-      depasit.forEach(function(item) {
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;border-radius:5px;background:rgba(224,80,80,.1);border:1px solid rgba(224,80,80,.25);">' +
-          '<span style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;">' + item.echip + '</span>' +
-          '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">DEPASIT ' + Math.abs(item.diff) + 'z</span>' +
-          '</div>';
-      });
-      curand.forEach(function(item) {
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;border-radius:5px;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);">' +
-          '<span style="font-family:var(--sans);font-size:11px;font-weight:700;color:#fff;">' + item.echip + '</span>' +
+    // Populate CURAND list
+    var elC = document.getElementById('dash-ulei-curand-list');
+    if (elC) {
+      elC.innerHTML = curand.length ? curand.map(function(item) {
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);">' +
+          '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>' +
           '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;">' + item.diff + 'z</span>' +
           '</div>';
-      });
-      if (!html) html = '<div style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.4);padding:4px 8px;">Toate echipamentele in termen</div>';
-      el.innerHTML = html;
+      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
+    }
+
+    // Populate DEPASIT list
+    var elD = document.getElementById('dash-ulei-depasit-list');
+    if (elD) {
+      elD.innerHTML = depasit.length ? depasit.map(function(item) {
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 6px;border-radius:4px;background:rgba(224,80,80,.08);border:1px solid rgba(224,80,80,.2);">' +
+          '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>' +
+          '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">-' + Math.abs(item.diff) + 'z</span>' +
+          '</div>';
+      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
     }
   }
 
@@ -1008,7 +1011,7 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
       var rows = parseCSV(txt).slice(1).filter(function(r){ return r.some(function(c){ return c!=''; }); });
       render(rows);
     })
-    .catch(function(){ /* silently fail, no fallback needed */ });
+    .catch(function(){});
 })();
 
 /* ACTIVITATE RECENTA */
