@@ -785,7 +785,7 @@ async function loadDashAvarii() {
 
     var rowsEl = document.getElementById('dash-avarii-rows');
     if (!sorted.length) {
-      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:12px;color:#fff;padding:4px 0;">Nicio avarie cu peste 5 inregistrari</div>';
+      rowsEl.innerHTML = '<div style="font-family:var(--sans);font-size:12px;color:#fff;padding:4px 0;">Nici un echipament cu peste 5 avarii inregistrate</div>';
       return;
     }
     rowsEl.innerHTML = sorted.map(function(eq, idx) {
