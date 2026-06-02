@@ -769,7 +769,7 @@ async function loadDashAvarii() {
 
     // Filter >5 avarii, sort desc
     var sorted = Object.keys(eqCounts)
-      .filter(function(eq){ return eqCounts[eq] > 5; })
+      .filter(function(eq){ return eqCounts[eq] >= 5; })
       .sort(function(a,b){ return eqCounts[b] - eqCounts[a]; });
 
     var maxCount = sorted.length ? eqCounts[sorted[0]] : 1;
