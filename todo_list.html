@@ -638,7 +638,7 @@ async function loadData(){
     var text=await resp.text();
     var rows=parseCSV(text);
     allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
-    allData=allData.map(function(r){while(r.length<5)r.push('');return r;});
+    allData=allData.map(function(r,i){while(r.length<5)r.push('');r._sheetRow=i+2;return r;}); // +2: skip header + 1-indexed
     filteredData=allData.slice();applyFilters();updateKPI();
   }catch(err){
     document.getElementById('tbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;font-family:var(--mono);font-size:13px;color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
@@ -701,9 +701,9 @@ async function saveEdit(){
   showMsg('edit-msg','loading','Se salveaza...');
   try{
     var row=filteredData[editRowIndex];
-    var rowIndex=allData.indexOf(row)+2; // +2: 1-indexed + header row
+    var rowIndex=row._sheetRow;
+    if(!rowIndex||rowIndex<2)throw new Error('Nu se poate determina randul. Reincarca pagina.');
     row[0]=todo;row[1]=termen;row[2]=stare;row[3]=dataAdd;row[4]=adaugat;
-    var ai=allData.indexOf(row);if(ai>=0)allData[ai]=row;
     var params=new URLSearchParams({action:'edit',rowIndex:rowIndex,todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat});
     var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:params});
     var json=await resp.json();
