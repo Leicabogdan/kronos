@@ -362,10 +362,11 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       <select id="sel-adaugat" onchange="applyFilters()">
         <option value="">Toti utilizatorii</option>
         <option value="Leica Bogdan">Leica Bogdan</option>
-        <option value="Ion Popescu">Ion Popescu</option>
-        <option value="Andrei Ionescu">Andrei Ionescu</option>
-        <option value="Mihai Constantin">Mihai Constantin</option>
-        <option value="George Popa">George Popa</option>
+        <option value="Vuculescu Valentin">Vuculescu Valentin</option>
+        <option value="Dan Alexandru">Dan Alexandru</option>
+        <option value="Stan Catalin">Stan Catalin</option>
+        <option value="Petrisor Ana">Petrisor Ana</option>
+        <option value="Popescu Adrian">Popescu Adrian</option>
       </select>
     </div>
     <input class="search-input" type="text" id="search-box" placeholder="&#128269; Cauta in TO-DO..." oninput="applyFilters()"/>
@@ -455,7 +456,16 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Adaugat de *</label>
-        <input class="form-input" type="text" id="e-adaugat" placeholder="ex: Leica Bogdan"/>
+        <div class="form-select-wrap">
+          <select class="form-select" id="e-adaugat">
+            <option value="Leica Bogdan">Leica Bogdan</option>
+            <option value="Vuculescu Valentin">Vuculescu Valentin</option>
+            <option value="Dan Alexandru">Dan Alexandru</option>
+            <option value="Stan Catalin">Stan Catalin</option>
+            <option value="Petrisor Ana">Petrisor Ana</option>
+            <option value="Popescu Adrian">Popescu Adrian</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="form-actions" style="margin-top:18px;">
@@ -653,12 +663,13 @@ async function submitRow(){
   var btn=document.getElementById('btn-submit');
   btn.disabled=true;showMsg('form-msg','loading','Se trimite in Google Sheets...');
   try{
-    var payload={todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+    var params=new URLSearchParams({action:'add',todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat});
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:params});
     var json=await resp.json();
     if(json.result!=='success')throw new Error(json.error||'Eroare necunoscuta');
     allData.push([todo,termen,stare,dataAdd,adaugat]);
     filteredData=allData.slice();showMsg('form-msg','ok','✓ TO-DO inregistrat!');resetForm();renderTable();updateKPI();
+    setTimeout(loadData,2000);
   }catch(e){showMsg('form-msg','err','Eroare: '+e.message);}
   btn.disabled=false;
 }
@@ -690,13 +701,15 @@ async function saveEdit(){
   showMsg('edit-msg','loading','Se salveaza...');
   try{
     var row=filteredData[editRowIndex];
+    var rowIndex=allData.indexOf(row)+2; // +2: 1-indexed + header row
     row[0]=todo;row[1]=termen;row[2]=stare;row[3]=dataAdd;row[4]=adaugat;
     var ai=allData.indexOf(row);if(ai>=0)allData[ai]=row;
-    var payload={action:'edit',todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-    var er=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
-    var ej=await er.json();
-    if(ej.result!=='success')throw new Error(ej.error||'Eroare');
+    var params=new URLSearchParams({action:'edit',rowIndex:rowIndex,todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat});
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:params});
+    var json=await resp.json();
+    if(json.result!=='success')throw new Error(json.error||'Eroare');
     renderTable();updateKPI();showMsg('edit-msg','ok','✓ Salvat!');setTimeout(closeEditModal,700);
+    setTimeout(loadData,2000);
   }catch(e){showMsg('edit-msg','err','Eroare: '+e.message);}
 }
 
