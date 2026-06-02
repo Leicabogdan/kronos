@@ -219,6 +219,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
     vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;
     font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  td.td-todo,tbody td:nth-child(3){white-space:normal!important;overflow:visible!important;
+    text-overflow:clip!important;word-break:break-word!important;text-align:left!important;max-width:none!important;}
   /* Hide: checkbox(1), Actiuni(8) */
   thead tr.hdr-row th:nth-child(1),tbody td:nth-child(1){display:none!important;}
   thead tr.hdr-row th:nth-child(8),tbody td:nth-child(8){display:none!important;}
@@ -592,7 +594,7 @@ function renderTable(){
     html+='<tr class="'+(sel?'row-selected':'')+'" data-uid="'+esc(uid)+'" data-idx="'+i+'">'
       +'<td class="td-check"><input type="checkbox" class="row-cb"'+(sel?' checked':'')+' onchange="toggleRow(this)"/></td>'
       +'<td class="td-nr">'+(i+1)+'</td>'
-      +'<td class="td-todo" style="text-align:left;padding-left:16px;" data-desc="'+esc(row[0]||'')+'">'+esc((row[0]||'').substring(0,70))+((row[0]||'').length>70?'…':'')+'</td>'
+      +'<td class="td-todo" style="text-align:left;padding-left:16px;" data-desc="'+esc(row[0]||'')+'">'+esc(row[0]||'')+'</td>'
       +'<td>'+stareChip(row[2])+'</td>'
       +'<td class="td-termen'+(tc?' '+tc:'')+'" style="color:'+(row[1]?tcol:'rgba(255,255,255,.3)')+';">'+(row[1]?fmtDate(row[1]):'—')+'</td>'
       +'<td class="td-data-add">'+(row[3]?fmtDate(row[3]):'—')+'</td>'
