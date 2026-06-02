@@ -195,9 +195,9 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
   .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
     color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
-    color:#1a3a6e;text-align:right;letter-spacing:.05em;}
-  .print-report-date{font-size:10px;color:#666;margin-top:2px;}
+  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;
+    font-weight:700;color:#1a3a6e;text-align:right;letter-spacing:.08em;text-transform:uppercase;}
+  .print-report-date{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#444;margin-top:3px;text-align:right;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;display:block!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead{display:table-header-group!important;}
@@ -261,14 +261,22 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   <!-- PRINT HEADER -->
   <div class="print-header" id="print-header">
     <div class="print-header-left">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="#1a3a6e" stroke-width="1.8"/><path d="M16 9v7l4 2" stroke="#1a3a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <!-- KRONOS logo SVG -->
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="19" cy="19" r="17" stroke="#1a3a6e" stroke-width="2"/>
+        <circle cx="19" cy="19" r="13" stroke="#1a3a6e" stroke-width="1" opacity=".35"/>
+        <path d="M19 8v11l6 3.5" stroke="#1a3a6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="19" cy="19" r="1.5" fill="#1a3a6e"/>
+        <path d="M19 4v2M19 32v2M4 19h2M32 19h2" stroke="#1a3a6e" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
       <div>
         <div class="print-kronos-title">KRONOS</div>
-        <div class="print-kronos-sub">Terminal Cereale SOCEP &middot; Port Constanta</div>
+        <div class="print-kronos-sub">SISTEM INTEGRAT DE MANAGEMENT MENTENANTA</div>
       </div>
     </div>
-    <div>
-      <div class="print-report-title">TO-DO LIST &mdash; Mentenanta Siloz</div>
+    <div style="text-align:right;">
+      <div class="print-report-title">TO-DO LIST &mdash; MENTENANTA SILOZ</div>
+      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:10px;color:#1a3a6e;font-weight:600;margin-top:1px;">Terminal Cereale SOCEP &middot; Port Constanta</div>
       <div class="print-report-date" id="print-date-inline"></div>
     </div>
   </div>
@@ -608,7 +616,13 @@ function applyFilters(){
   });
   sortCol=-1;sortDir=1;
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
-  selectedRows.clear();renderTable();
+  selectedRows.clear();
+  // ── auto-sort: Urgent > In curs > Neinceput > Finalizat > Anulat
+  var stareOrder=function(s){s=String(s||'').toLowerCase();if(s.indexOf('urgent')>-1)return 0;if(s.indexOf('curs')>-1)return 1;if(s.indexOf('neinceput')>-1||s==='')return 2;if(s.indexOf('finaliz')>-1)return 3;return 4;};
+  filteredData.sort(function(a,b){return stareOrder(a[2])-stareOrder(b[2]);});
+  // mark header col Stare as sorted
+  var ths=document.querySelectorAll('thead .hdr-row th');if(ths[3])ths[3].classList.add('sort-asc');
+  renderTable();
 }
 function sortBy(col){
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
