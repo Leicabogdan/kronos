@@ -110,6 +110,8 @@
   var DT_KEYS    = ['MOTOARE','ELEVATOARE','TRANS_LANT','TRANS_BANDA','FILTRE','SNECURI','CANTARE','CELULE_RECEPTIE'];
   var CONF_KEYS  = ['ISCIR','RAPOARTE'];
   var RES_KEYS   = ['MANUAL_MENTENANTA','STOC_PIESE','ANALIZE_ULEI','MANUALE_DOC','FISA'];
+  var PERM_KEYS  = ['PERMIS_FOC','PERMIS_SPATII'];
+  var TODO_KEY   = ['TODO_LIST'];
 
   /* ── HTML ── */
   var html = `
@@ -214,6 +216,26 @@
       ${navItem('kronos_register.html','<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1.5h5.5l3 3v8a.5.5 0 01-.5.5H3a.5.5 0 01-.5-.5v-11A.5.5 0 013 1.5z" stroke="currentColor" stroke-width="1.2"/><path d="M5 7h4M5 9.5h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>','FISA','FISA','sb-sub')}
     </div>
 
+    <!-- PERMISE DE LUCRU -->
+    ${groupToggle(
+      'PERMISE DE LUCRU',
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M11 10l1.5 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+      'sbTogglePerm', 'sb-perm-arrow', PERM_KEYS.indexOf(ACTIVE) > -1
+    )}
+    <div id="sb-perm-items" style="max-height:0;overflow:hidden;transition:max-height .35s ease;">
+      <a class="sb-item sb-sub ${isActive('PERMIS_FOC')?'active':''}" href="permis_foc.html">
+        <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5c0 0 3 3 3 5.5a3 3 0 01-6 0c0-1.5 1-3 1-3s0 2 2 2c0-2-0-4.5 0-4.5z" stroke="var(--amber)" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+        <span class="sb-nav-label" style="white-space:normal;line-height:1.3;">PERMIS FOC<br>DESCHIS</span>
+      </a>
+      <a class="sb-item sb-sub ${isActive('PERMIS_SPATII')?'active':''}" href="permis_spatii.html">
+        <div class="sb-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="10" height="8" rx="1.2" stroke="currentColor" stroke-width="1.2"/><path d="M5 4V3.5a2 2 0 014 0V4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="7" cy="8" r="1.2" stroke="currentColor" stroke-width="1.1"/></svg></div>
+        <span class="sb-nav-label" style="white-space:normal;line-height:1.3;">PERMIS SPATII<br>INCHISE</span>
+      </a>
+    </div>
+
+    <!-- TO-DO LIST -->
+    ${navItem('todo_list.html','<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8.5l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>','TO-DO LIST','TODO_LIST','')}
+
   </div><!-- /sb-nav -->
 
   <div class="sb-footer">
@@ -309,6 +331,7 @@
   window.sbToggleDt   = function(){ sbToggleGroup('sb-dt-items',   'sb-dt-arrow');   };
   window.sbToggleConf = function(){ sbToggleGroup('sb-conf-items', 'sb-conf-arrow'); };
   window.sbToggleRes  = function(){ sbToggleGroup('sb-res-items',  'sb-res-arrow');  };
+  window.sbTogglePerm = function(){ sbToggleGroup('sb-perm-items', 'sb-perm-arrow'); };
 
   /* Auto-expand grupul activ */
   var autoExpand = {
@@ -316,6 +339,7 @@
     'sb-dt-items':   DT_KEYS,
     'sb-conf-items': CONF_KEYS,
     'sb-res-items':  RES_KEYS,
+    'sb-perm-items': PERM_KEYS,
   };
   Object.keys(autoExpand).forEach(function(id) {
     if (autoExpand[id].indexOf(ACTIVE) > -1) {
