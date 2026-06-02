@@ -150,7 +150,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-termen.overdue{color:var(--red);}
 .td-termen.soon{color:var(--amber);}
 .td-termen.ok{color:var(--green);}
-.td-data-add{font-family:var(--mono);font-size:13px;color:#fff;}
+.td-data-add{font-family:var(--sans);font-size:14px;font-weight:700;color:#fff;}
 .td-adaugat{font-size:13px;font-weight:600;color:#fff;}
 
 /* ── CHIPS ── */
@@ -182,30 +182,52 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a{color:inherit!important;text-decoration:none!important;}
   a[href]::after{content:none!important;display:none!important;}
-  html,body,.app,.main,.content,.page{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;overflow:visible!important;height:auto!important;max-height:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;height:auto!important;overflow:visible!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
-  .app,.main{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
-  .content{overflow:visible!important;height:auto!important;}
-  .page{padding:0 10mm!important;max-width:100%!important;margin:0!important;}
-  .print-header{display:flex!important;align-items:center;justify-content:space-between;padding:8px 8px 8px 6px;border-bottom:2px solid #004d40;margin-bottom:12px;background:#fff!important;}
+  html,body,.app,.main,.content,.page{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;min-height:0!important;}
+  .table-wrap{overflow:visible!important;height:auto!important;max-height:none!important;}
+  .page{padding:0!important;max-width:100%!important;margin:0!important;}
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;
+    padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;
+    background:#fff!important;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
-  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.15em;color:#004d40;}
-  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#004d40;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  .print-right{text-align:right;}
-  .print-doc-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:700;color:#004d40;}
-  .print-date{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#444;margin-top:2px;}
-  .table-wrap{border:1.5px solid #004d40!important;border-radius:0!important;overflow:visible!important;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;
+    font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
+    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+  .print-report-title{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;
+    color:#1a3a6e;text-align:right;letter-spacing:.05em;}
+  .print-report-date{font-size:10px;color:#666;margin-top:2px;}
+  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;display:block!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead{display:table-header-group!important;}
-  thead tr.hdr-row th{background:#004d40!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;text-align:center!important;border-right:1px solid #00695c!important;white-space:normal!important;}
+  thead tr.hdr-row th{
+    background:#1a3a6e!important;color:#fff!important;
+    font-size:9px!important;padding:7px 8px!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;
+    font-weight:700!important;letter-spacing:.04em!important;
+    text-align:center!important;border-right:1px solid #2a4a8e!important;
+    white-space:normal!important;
+  }
   tbody tr{background:#fff!important;page-break-inside:avoid!important;}
-  tbody tr:nth-child(even){background:#e8f5e9!important;page-break-inside:avoid!important;}
-  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #c8e6c9!important;border-right:1px solid #c8e6c9!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
-  tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;text-align:left!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;page-break-inside:avoid!important;}
+  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;
+    border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
+    vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;
+    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  /* Hide: checkbox(1), Actiuni(8) */
   thead tr.hdr-row th:nth-child(1),tbody td:nth-child(1){display:none!important;}
   thead tr.hdr-row th:nth-child(8),tbody td:nth-child(8){display:none!important;}
+  /* Col widths: Nr(2)=4%, Todo(3)=36%, Stare(4)=12%, Termen(5)=13%, DataAdd(6)=13%, AdaugatDe(7)=22% */
+  thead tr.hdr-row th:nth-child(2){width:4%!important;}
+  thead tr.hdr-row th:nth-child(3){width:36%!important;}
+  thead tr.hdr-row th:nth-child(4){width:12%!important;}
+  thead tr.hdr-row th:nth-child(5){width:13%!important;}
+  thead tr.hdr-row th:nth-child(6){width:13%!important;}
+  thead tr.hdr-row th:nth-child(7){width:22%!important;}
+  tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;text-align:left!important;padding-left:8px!important;}
   .chip-stare{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
-  .td-termen,.td-data-add,.td-adaugat{color:#000!important;}
+  .td-termen,.td-data-add,.td-adaugat{color:#000!important;font-size:9px!important;font-weight:600!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
 }
 .print-header{display:none;}
@@ -239,22 +261,22 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   <!-- PRINT HEADER -->
   <div class="print-header" id="print-header">
     <div class="print-header-left">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="#004d40" stroke-width="1.8"/><path d="M16 9v7l4 2" stroke="#004d40" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="#1a3a6e" stroke-width="1.8"/><path d="M16 9v7l4 2" stroke="#1a3a6e" stroke-width="1.8" stroke-linecap="round"/></svg>
       <div>
         <div class="print-kronos-title">KRONOS</div>
         <div class="print-kronos-sub">Terminal Cereale SOCEP &middot; Port Constanta</div>
       </div>
     </div>
-    <div class="print-right">
-      <div class="print-doc-title">TO-DO LIST &mdash; Mentenanta Siloz</div>
-      <div class="print-date" id="print-date-inline"></div>
+    <div>
+      <div class="print-report-title">TO-DO LIST &mdash; Mentenanta Siloz</div>
+      <div class="print-report-date" id="print-date-inline"></div>
     </div>
   </div>
 
   <!-- KPI STRIP -->
   <div class="kpi-strip">
     <div class="kpi-card c-teal">
-      <div class="kpi-lbl">Total TO-DO</div>
+      <div class="kpi-lbl">Total</div>
       <div class="kpi-val" id="k-total">0</div>
       <div class="kpi-sub">inregistrate</div>
     </div>
@@ -328,6 +350,22 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <option value="">Toti anii</option>
         <option value="2024">2024</option><option value="2025">2025</option>
         <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
+        <option value="2029">2029</option><option value="2030">2030</option>
+        <option value="2031">2031</option><option value="2032">2032</option>
+        <option value="2033">2033</option><option value="2034">2034</option>
+        <option value="2035">2035</option><option value="2036">2036</option>
+        <option value="2037">2037</option><option value="2038">2038</option>
+        <option value="2039">2039</option><option value="2040">2040</option>
+      </select>
+    </div>
+    <div class="select-wrap">
+      <select id="sel-adaugat" onchange="applyFilters()">
+        <option value="">Toti utilizatorii</option>
+        <option value="Leica Bogdan">Leica Bogdan</option>
+        <option value="Ion Popescu">Ion Popescu</option>
+        <option value="Andrei Ionescu">Andrei Ionescu</option>
+        <option value="Mihai Constantin">Mihai Constantin</option>
+        <option value="George Popa">George Popa</option>
       </select>
     </div>
     <input class="search-input" type="text" id="search-box" placeholder="&#128269; Cauta in TO-DO..." oninput="applyFilters()"/>
@@ -549,10 +587,12 @@ function applyFilters(){
   var stare=document.getElementById('sel-stare').value;
   var luna=document.getElementById('sel-luna').value;
   var an=document.getElementById('sel-an').value;
+  var adaugatF=document.getElementById('sel-adaugat').value;
   var search=(document.getElementById('search-box').value||'').toLowerCase().trim();
   filteredData=allData.filter(function(row){
     if(stare&&String(row[2]||'').toLowerCase().indexOf(stare.toLowerCase())<0)return false;
     if(luna||an){var d=getDateParts(row[1]);if(luna&&(!d||d.m!==luna))return false;if(an&&(!d||d.y!==an))return false;}
+    if(adaugatF&&String(row[4]||'').toLowerCase().indexOf(adaugatF.toLowerCase())<0)return false;
     if(search){var combined=(String(row[0]||'')+' '+String(row[4]||'')).toLowerCase();if(combined.indexOf(search)<0)return false;}
     return true;
   });
@@ -614,7 +654,7 @@ async function submitRow(){
   btn.disabled=true;showMsg('form-msg','loading','Se trimite in Google Sheets...');
   try{
     var payload={todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
     var json=await resp.json();
     if(json.result!=='success')throw new Error(json.error||'Eroare necunoscuta');
     allData.push([todo,termen,stare,dataAdd,adaugat]);
@@ -653,7 +693,7 @@ async function saveEdit(){
     row[0]=todo;row[1]=termen;row[2]=stare;row[3]=dataAdd;row[4]=adaugat;
     var ai=allData.indexOf(row);if(ai>=0)allData[ai]=row;
     var payload={action:'edit',todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-    var er=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var er=await fetch(APPS_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
     var ej=await er.json();
     if(ej.result!=='success')throw new Error(ej.error||'Eroare');
     renderTable();updateKPI();showMsg('edit-msg','ok','✓ Salvat!');setTimeout(closeEditModal,700);
