@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TO-DO List — KRONOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04050a;--bg2:#0a0c14;--bg3:#10131e;--border:rgba(255,255,255,.07);
+  --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
+  --sans:'IBM Plex Sans',sans-serif;--title:'Orbitron',sans-serif;--mono:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
+.app{display:flex;height:100vh;overflow:hidden;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;
+  background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-gear{color:var(--teal);animation:spin 12s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.topbar-title{font-family:var(--title);font-size:13px;font-weight:700;color:#fff;letter-spacing:.05em;}
+.topbar-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--sans);}
+.topbar-clock{font-family:var(--mono);font-size:13px;color:var(--teal);letter-spacing:.08em;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:clamp(10px,1.5vw,18px) clamp(8px,1.5vw,16px);max-width:100%;margin:0;}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.page-title{font-family:var(--title);font-size:clamp(14px,2vw,18px);font-weight:900;color:var(--teal);letter-spacing:.08em;}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;
+  display:flex;align-items:center;gap:12px;}
+.kpi-left{display:flex;align-items:center;justify-content:center;text-align:center;min-width:70px;}
+.kpi-val{font-family:var(--title);font-size:clamp(24px,3vw,36px);font-weight:900;line-height:1;}
+.kpi-right{display:flex;flex-direction:column;gap:2px;}
+.kpi-lbl{font-family:var(--sans);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.55);}
+.kpi-list{display:flex;flex-direction:column;gap:2px;margin-top:4px;}
+.kpi-item{font-family:var(--sans);font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.search-wrap{position:relative;flex:0 0 200px;}
+.search-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;
+  padding:7px 10px 7px 30px;color:#fff;font-family:var(--sans);font-size:12px;outline:none;}
+.search-wrap input:focus{border-color:rgba(0,220,180,.4);}
+.search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.3);pointer-events:none;}
+.filter-btn{padding:7px 18px;border-radius:7px;background:var(--bg3);border:1.5px solid var(--border);
+  color:#fff;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.filter-btn.active{background:rgba(0,220,180,.12);border-color:var(--teal);color:var(--teal);}
+.filter-btn:hover:not(.active){border-color:rgba(0,220,180,.3);}
+.export-btns{margin-left:auto;display:flex;gap:8px;}
+.exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:7px;
+  font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all .18s;
+  white-space:nowrap;border:1.5px solid rgba(0,220,180,.3);background:rgba(0,220,180,.05);color:var(--teal);}
+.exp-btn:hover{background:rgba(0,220,180,.12);border-color:var(--teal);}
+
+/* TABLE */
+.table-wrap{border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;table-layout:auto;}
+thead tr{background:var(--bg3);}
+th{font-family:var(--sans);font-size:11px;font-weight:700;color:rgba(255,255,255,.55);
+  text-transform:uppercase;letter-spacing:.06em;padding:11px 12px;text-align:left;
+  border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none;}
+th:hover{color:#fff;}
+th.sort-asc::after{content:' ▲';font-size:9px;}
+th.sort-desc::after{content:' ▼';font-size:9px;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,.03);}
+td{padding:9px 12px;font-family:var(--sans);font-size:13px;color:#fff;vertical-align:middle;}
+.load-state{text-align:center;padding:30px;color:rgba(255,255,255,.35);font-size:13px;}
+
+/* STATUS CHIPS */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:5px;
+  font-family:var(--sans);font-size:11px;font-weight:700;white-space:nowrap;}
+.chip::before{content:'●';font-size:7px;}
+.chip-open{background:rgba(80,144,224,.12);border:1px solid rgba(80,144,224,.3);color:var(--blue);}
+.chip-progress{background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:var(--amber);}
+.chip-done{background:rgba(74,175,112,.12);border:1px solid rgba(74,175,112,.3);color:var(--green);}
+.chip-blocked{background:rgba(224,80,80,.12);border:1px solid rgba(224,80,80,.3);color:var(--red);}
+
+/* PRIORITY */
+.prio-high{color:var(--red);font-weight:700;}
+.prio-med{color:var(--amber);font-weight:700;}
+.prio-low{color:rgba(255,255,255,.5);font-weight:600;}
+
+/* EDIT BTN */
+.btn-edit{padding:4px 10px;border-radius:5px;background:rgba(0,220,180,.08);
+  border:1px solid rgba(0,220,180,.3);color:var(--teal);font-family:var(--sans);
+  font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-edit:hover{background:rgba(0,220,180,.18);}
+
+/* PRINT */
+@media print{
+  @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
+  html,body,.app,.main,.content,.page{overflow:visible!important;height:auto!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.kpi-strip,.exp-btn,.btn-edit,.no-print{display:none!important;}
+  body{background:#fff!important;color:#000!important;}
+  .table-wrap{border:1px solid #ccc!important;border-radius:0!important;}
+  table{width:100%!important;table-layout:auto!important;border-collapse:collapse!important;}
+  th{background:#1a3a6e!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:8pt!important;padding:5px 6px!important;}
+  td{font-size:8pt!important;padding:4px 6px!important;color:#000!important;border-bottom:1px solid #ddd!important;}
+  tbody tr:nth-child(even) td{background:#f0f4fb!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .chip{font-size:7pt!important;padding:1px 4px!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .chip-open{background:rgba(80,144,224,.18)!important;color:#1a4a8a!important;border:1px solid rgba(80,144,224,.4)!important;}
+  .chip-progress{background:rgba(240,165,0,.18)!important;color:#8a5a00!important;border:1px solid rgba(240,165,0,.4)!important;}
+  .chip-done{background:rgba(74,175,112,.18)!important;color:#1a6a3a!important;border:1px solid rgba(74,175,112,.4)!important;}
+  .chip-blocked{background:rgba(224,80,80,.18)!important;color:#8a1a1a!important;border:1px solid rgba(224,80,80,.4)!important;}
+  .print-header{display:block!important;}
+  thead{display:table-header-group;}
+  tbody tr{page-break-inside:avoid;}
+  td{white-space:nowrap;}
+}
+.print-header{display:none;margin-bottom:12px;}
+.print-logo{font-family:var(--title,'Orbitron'),sans-serif;font-size:18pt;font-weight:900;color:#1a3a6e;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="kronos-sidebar-root" class="kronos-sidebar"></div>
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <svg class="topbar-gear" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="topbar-title">KRONOS <span style="font-size:10px;color:rgba(255,255,255,.4);font-family:var(--sans);">/ TO-DO LIST</span></div>
+          <div class="topbar-sub">Terminal Cereale SOCEP · Port Constanta</div>
+        </div>
+      </div>
+      <div class="topbar-clock" id="topbar-clock">--:--:--</div>
+    </div>
+
+    <div class="content">
+      <div class="print-header">
+        <div class="print-logo">KRONOS</div>
+        <div style="font-size:11pt;color:#1a3a6e;font-weight:700;">TO-DO List — Terminal Cereale SOCEP · Port Constanta</div>
+        <div style="font-size:9pt;color:#555;" id="print-date"></div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-strip">
+        <div class="kpi-card" style="border-top:2px solid var(--teal);">
+          <div class="kpi-left"><div class="kpi-val" id="kpi-total" style="color:var(--teal);">—</div></div>
+          <div class="kpi-right"><div class="kpi-lbl">Total</div><div class="kpi-list" id="kpi-total-list"></div></div>
+        </div>
+        <div class="kpi-card" style="border-top:2px solid var(--blue);">
+          <div class="kpi-left"><div class="kpi-val" id="kpi-open" style="color:var(--blue);">—</div></div>
+          <div class="kpi-right"><div class="kpi-lbl">Deschis</div><div class="kpi-list" id="kpi-open-list"></div></div>
+        </div>
+        <div class="kpi-card" style="border-top:2px solid var(--amber);">
+          <div class="kpi-left"><div class="kpi-val" id="kpi-progress" style="color:var(--amber);">—</div></div>
+          <div class="kpi-right"><div class="kpi-lbl">În lucru</div><div class="kpi-list" id="kpi-progress-list"></div></div>
+        </div>
+        <div class="kpi-card" style="border-top:2px solid var(--red);">
+          <div class="kpi-left"><div class="kpi-val" id="kpi-overdue" style="color:var(--red);">—</div></div>
+          <div class="kpi-right"><div class="kpi-lbl">Depășit termen</div><div class="kpi-list" id="kpi-overdue-list"></div></div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M9 9l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="search-input" placeholder="Cauta task..." oninput="renderTable()">
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all',this)">Toate</button>
+        <button class="filter-btn" onclick="setFilter('Deschis',this)">Deschis</button>
+        <button class="filter-btn" onclick="setFilter('In lucru',this)">În lucru</button>
+        <button class="filter-btn" onclick="setFilter('Finalizat',this)">Finalizat</button>
+        <button class="filter-btn" onclick="setFilter('Blocat',this)">Blocat</button>
+        <div class="export-btns">
+          <button class="exp-btn" onclick="exportExcel()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7l1.5 2.5L4.5 12M9.5 7l-1.5 2.5L9.5 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Exporta Excel
+          </button>
+          <button class="exp-btn" onclick="exportPDF()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 1h6l3 3v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 1v3h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4.5 7h1c.5 0 .8.3.8.8S6 8.5 5.5 8.5H4.5V7zM4.5 8.5V10M8 7v3M8 7h1a1 1 0 010 2H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Exporta PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table id="main-table">
+          <thead>
+            <tr>
+              <th onclick="sortBy(0)">To-do</th>
+              <th onclick="sortBy(1)">Termen limită</th>
+              <th onclick="sortBy(2)">Stare</th>
+              <th onclick="sortBy(3)">Data adăugare</th>
+              <th onclick="sortBy(4)">Adăugat de</th>
+              <th class="no-print" style="cursor:default;width:60px;text-align:center;">Edit</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6" class="load-state">Se incarca...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script src="sidebar.js"></script>
+<script>
+/* ── CONFIG ── */
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSi0gcrrKtM4JEwJDmIMCFZSRDshDzLfGs7GH1lI5oNlGN6Pr3-prMHQvtfmf-TR4I4H-we4IghPjq9/pub?gid=0&single=true&output=csv';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/PUNE_APPS_SCRIPT_URL/exec';
+
+/* ── STATE ── */
+let allData = [], currentFilter = 'all', sortCol = -1, sortDir = 1;
+
+/* ── CLOCK ── */
+function updateClock(){
+  const now=new Date();
+  const d=String(now.getDate()).padStart(2,'0');
+  const mo=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+  const y=now.getFullYear();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  const days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];
+  document.getElementById('topbar-clock').textContent=`${days[now.getDay()]}, ${d} ${mo} ${y}  ${h}:${m}:${s}`;
+}
+setInterval(updateClock,1000); updateClock();
+
+/* ── CSV PARSER ── */
+function parseCSV(txt){
+  const rows=[];let cur=[],cell='',inQ=false;
+  for(let i=0;i<txt.length;i++){
+    const ch=txt[i];
+    if(inQ){if(ch==='"'&&txt[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
+    else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}
+    else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(c=>c!=''))rows.push(cur);cur=[];cell='';}
+    else cell+=ch;}
+  }
+  cur.push(cell.trim());if(cur.some(c=>c!=''))rows.push(cur);
+  return rows;
+}
+
+/* ── DATE PARSE ── */
+function parseDate(str){
+  if(!str)return null;
+  const s=String(str).trim();
+  const sep=s.includes('/')?'/':'.';
+  const p=s.split(sep);
+  if(p.length===3&&p[2].length===4)return new Date(+p[2],+p[1]-1,+p[0]);
+  const d=new Date(s);return isNaN(d)?null:d;
+}
+
+/* ── STATUS CHIP ── */
+function statusChip(stare){
+  const s=String(stare||'').trim();
+  const map={
+    'Deschis':   ['chip-open',   'DESCHIS'],
+    'In lucru':  ['chip-progress','IN LUCRU'],
+    'Finalizat': ['chip-done',   'FINALIZAT'],
+    'Blocat':    ['chip-blocked', 'BLOCAT'],
+  };
+  const [cls,lbl]=map[s]||['chip-open','DESCHIS'];
+  return `<span class="chip ${cls}">${lbl}</span>`;
+}
+
+/* ── OVERDUE CHECK ── */
+function isOverdue(row){
+  const stare=String(row[2]||'').trim();
+  if(stare==='Finalizat')return false;
+  const d=parseDate(row[1]);
+  if(!d)return false;
+  const now=new Date();now.setHours(0,0,0,0);
+  return d<now;
+}
+
+/* ── FILTER & SORT ── */
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function getVisibleRows(){
+  let rows=[...allData];
+  if(currentFilter!=='all')rows=rows.filter(r=>String(r[2]||'').trim()===currentFilter);
+  const q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
+  if(q)rows=rows.filter(r=>r.some(c=>String(c).toLowerCase().includes(q)));
+  if(sortCol>=0){
+    rows.sort((a,b)=>{
+      const av=String(a[sortCol]||''),bv=String(b[sortCol]||'');
+      if(sortCol===1||sortCol===3){const da=parseDate(av),db=parseDate(bv);if(da&&db)return sortDir*(da-db);}
+      return sortDir*av.localeCompare(bv,'ro',{numeric:true});
+    });
+  }
+  return rows;
+}
+
+let lastSortCol=-1;
+function sortBy(col){
+  if(lastSortCol===col)sortDir*=-1;else{sortDir=1;lastSortCol=col;}
+  sortCol=col;
+  document.querySelectorAll('th').forEach((th,i)=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(i===col)th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+  });
+  renderTable();
+}
+
+/* ── RENDER TABLE ── */
+function renderTable(){
+  const rows=getVisibleRows();
+  const tbody=document.getElementById('tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="load-state">Nicio inregistrare gasita.</td></tr>';return;}
+  tbody.innerHTML=rows.map((r,i)=>{
+    const overdue=isOverdue(r);
+    return `<tr data-row-index="${r._sheetRow||i+2}">
+      <td style="font-weight:600;color:${overdue?'var(--red)':'#fff'};">${r[0]||''}</td>
+      <td style="font-family:var(--sans);font-size:13px;font-weight:600;color:${overdue?'var(--red)':'#fff'};">${r[1]||''}</td>
+      <td>${statusChip(r[2])}</td>
+      <td style="font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.6);">${r[3]||''}</td>
+      <td style="font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.7);">${r[4]||''}</td>
+      <td class="no-print" style="text-align:center;"><button class="btn-edit" onclick="editRow(this)">&#9998;</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── UPDATE KPI ── */
+function updateKPI(rows){
+  const now=new Date();now.setHours(0,0,0,0);
+  const total=rows.length;
+  const open=rows.filter(r=>String(r[2]||'').trim()==='Deschis');
+  const progress=rows.filter(r=>String(r[2]||'').trim()==='In lucru');
+  const overdue=rows.filter(r=>isOverdue(r));
+
+  document.getElementById('kpi-total').textContent=total;
+  document.getElementById('kpi-open').textContent=open.length;
+  document.getElementById('kpi-progress').textContent=progress.length;
+  document.getElementById('kpi-overdue').textContent=overdue.length;
+
+  const fill=(id,arr)=>{
+    const el=document.getElementById(id);
+    el.innerHTML=arr.slice(0,5).map(r=>`<div class="kpi-item">${r[0]||''}</div>`).join('');
+  };
+  fill('kpi-total-list',rows.slice(0,5));
+  fill('kpi-open-list',open);
+  fill('kpi-progress-list',progress);
+  fill('kpi-overdue-list',overdue);
+}
+
+/* ── LOAD DATA ── */
+async function loadData(){
+  try{
+    const resp=await fetch(SHEET_URL+'&t='+Date.now(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const rawRows=parseCSV(await resp.text());
+    const rows=rawRows.slice(1).filter(r=>r.some(c=>c!=''));
+    rows.forEach((r,i)=>{r._sheetRow=i+2;while(r.length<5)r.push('');});
+    allData=rows;
+    updateKPI(rows);
+    renderTable();
+  }catch(e){
+    console.warn('CSV fetch failed:',e);
+    document.getElementById('tbody').innerHTML='<tr><td colspan="6" class="load-state">Eroare incarcare date.</td></tr>';
+  }
+}
+
+/* ── EDIT ROW ── */
+function editRow(btn){
+  const tr=btn.closest('tr');
+  if(!tr)return;
+  const editing=tr.dataset.editing==='1';
+  const editCols=[0,1,2,3,4];
+  if(editing){
+    tr.dataset.editing='0';
+    editCols.forEach(i=>{
+      const cell=tr.cells[i];
+      if(!cell)return;
+      cell.contentEditable='false';
+      cell.style.background='';
+      cell.style.outline='none';
+    });
+    btn.textContent='⏳';btn.disabled=true;btn.style.opacity='0.6';
+    const rowIndex=parseInt(tr.dataset.rowIndex||'-1');
+    const payload={
+      action:'update',rowIndex,
+      todo:       tr.cells[0]?tr.cells[0].innerText.trim():'',
+      termen:     tr.cells[1]?tr.cells[1].innerText.trim():'',
+      stare:      tr.cells[2]?tr.cells[2].innerText.trim():'',
+      dataAdaug:  tr.cells[3]?tr.cells[3].innerText.trim():'',
+      adaugatDe:  tr.cells[4]?tr.cells[4].innerText.trim():'',
+    };
+    fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})
+      .then(()=>{
+        btn.textContent='✔';btn.style.color='var(--green)';btn.style.opacity='1';
+        setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;loadData();},1200);
+      })
+      .catch(e=>{
+        btn.textContent='✗';btn.style.color='var(--red)';btn.style.opacity='1';
+        setTimeout(()=>{btn.textContent='✎';btn.style.color='';btn.disabled=false;},2000);
+      });
+  }else{
+    tr.dataset.editing='1';
+    editCols.forEach(i=>{
+      const cell=tr.cells[i];if(!cell)return;
+      cell.contentEditable='true';
+      cell.style.background='rgba(0,220,180,.07)';
+      cell.style.outline='1px solid rgba(0,220,180,.35)';
+    });
+    btn.textContent='✔';
+    tr.cells[0]&&tr.cells[0].focus();
+  }
+}
+
+/* ── EXPORT EXCEL ── */
+function exportExcel(){
+  const rows=getVisibleRows();
+  const now=new Date();
+  const dateStr=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
+  const timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const COLS=5;
+  const th='background:#1a3a6e;color:#fff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:left;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  const tdC='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;';
+  const statusLabel={'Deschis':'Deschis','In lucru':'In lucru','Finalizat':'Finalizat','Blocat':'Blocat'};
+  let t='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+  t+='<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+  t+='<x:Name>TO-DO List</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  t+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
+  t+='<table style="border-collapse:collapse;font-family:Calibri,Arial,sans-serif;">';
+  t+=`<tr><td colspan="${COLS}" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;">KRONOS — TO-DO List</td></tr>`;
+  t+=`<tr><td colspan="3" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;">Terminal Cereale SOCEP · Port Constanta</td>`;
+  t+=`<td colspan="2" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;">Data generare: ${dateStr} ${timeStr}</td></tr>`;
+  t+=`<tr><td colspan="${COLS}" style="height:6px;background:#fff;"></td></tr>`;
+  t+='<tr>';
+  ['To-do','Termen limita','Stare','Data adaugare','Adaugat de'].forEach(h=>{t+=`<td style="${th}">${h}</td>`;});
+  t+='</tr>';
+  const statusBg={'Deschis':'#e8f0fe','In lucru':'#fff8e1','Finalizat':'#e8f8f0','Blocat':'#feecec'};
+  const statusFg={'Deschis':'#1a3a8a','In lucru':'#8a6000','Finalizat':'#1a7a4a','Blocat':'#8a1a1a'};
+  rows.forEach((r,i)=>{
+    const fill=i%2===0?'#f0f4fb':'#ffffff';
+    const st=String(r[2]||'Deschis').trim();
+    const sBg=statusBg[st]||fill,sFg=statusFg[st]||'#000';
+    t+='<tr>';
+    t+=`<td style="${tdC}background:${fill};font-weight:600;">${r[0]||''}</td>`;
+    t+=`<td style="${tdC}background:${fill};">${r[1]||''}</td>`;
+    t+=`<td style="${tdC}background:${sBg};color:${sFg};font-weight:bold;">${st}</td>`;
+    t+=`<td style="${tdC}background:${fill};">${r[3]||''}</td>`;
+    t+=`<td style="${tdC}background:${fill};">${r[4]||''}</td>`;
+    t+='</tr>';
+  });
+  t+='</table></body></html>';
+  const blob=new Blob([t],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download=`KRONOS_TODO_${now.getDate()}.${now.getMonth()+1}.${now.getFullYear()}.xls`;
+  document.body.appendChild(link);link.click();document.body.removeChild(link);
+  setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+
+/* ── EXPORT PDF ── */
+function exportPDF(){
+  document.getElementById('print-date').textContent='Data generarii: '+new Date().toLocaleString('ro-RO');
+  window.print();
+}
+
+/* ── INIT ── */
+loadData();
+setInterval(loadData,600000);
+</script>
+</body>
+</html>
+ECHO_END
