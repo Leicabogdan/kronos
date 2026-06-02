@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>KRONOS — Todo List</title>
+<title>KRONOS — TO-DO List</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
@@ -14,40 +14,12 @@
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --acc:var(--teal);
   --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
   --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
 .app{display:flex;height:100svh;overflow:hidden;}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-
-/* ── SIDEBAR (identical to activitati_siloz) ── */
-.kronos-sidebar{
-  width:220px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border2);
-  display:flex;flex-direction:column;overflow:hidden;transition:width .22s;position:relative;z-index:200;
-}
-.kronos-sidebar.collapsed{width:52px;}
-.sb-logo{display:flex;align-items:center;gap:10px;padding:0 14px;height:56px;border-bottom:1px solid var(--border2);flex-shrink:0;overflow:hidden;}
-.sb-logo-icon{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.sb-logo-text{font-family:var(--title);font-size:15px;font-weight:900;letter-spacing:.18em;color:var(--teal);white-space:nowrap;overflow:hidden;}
-.sb-toggle{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:5px;transition:color .15s,background .15s;}
-.sb-toggle:hover{color:#fff;background:rgba(255,255,255,.06);}
-.sb-nav{flex:1;overflow-y:auto;padding:10px 0;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
-.sb-section{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.18em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:10px 16px 4px;white-space:nowrap;overflow:hidden;}
-.kronos-sidebar.collapsed .sb-section{visibility:hidden;}
-.sb-link{display:flex;align-items:center;gap:10px;padding:9px 14px;color:rgba(255,255,255,.6);text-decoration:none;font-family:var(--sans);font-size:13px;font-weight:600;border-left:2px solid transparent;transition:all .15s;white-space:nowrap;overflow:hidden;cursor:pointer;}
-.sb-link:hover{color:#fff;background:rgba(255,255,255,.04);}
-.sb-link.active{color:var(--teal);border-left-color:var(--teal);background:rgba(0,220,180,.06);}
-.sb-link svg{flex-shrink:0;}
-.sb-link-text{overflow:hidden;white-space:nowrap;}
-.kronos-sidebar.collapsed .sb-link-text,.kronos-sidebar.collapsed .sb-section{opacity:0;pointer-events:none;}
-.sb-overlay{display:none;position:fixed;inset:0;z-index:190;background:rgba(0,0,0,.5);}
-@media(max-width:768px){
-  .kronos-sidebar{position:fixed;top:0;left:0;height:100%;z-index:300;transform:translateX(-100%);transition:transform .22s;}
-  .kronos-sidebar.mobile-open{transform:translateX(0);}
-  .sb-overlay.active{display:block;}
-}
 
 /* ── TOPBAR ── */
 .topbar{
@@ -75,9 +47,13 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px 18px;
   position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0;}
+.kpi-card.c-teal{border-color:rgba(0,220,180,.18);background:rgba(0,220,180,.03);}
 .kpi-card.c-teal::before{background:var(--teal);}
+.kpi-card.c-amber{border-color:rgba(240,165,0,.18);background:rgba(240,165,0,.03);}
 .kpi-card.c-amber::before{background:var(--amber);}
+.kpi-card.c-green{border-color:rgba(74,175,112,.18);background:rgba(74,175,112,.03);}
 .kpi-card.c-green::before{background:var(--green);}
+.kpi-card.c-red{border-color:rgba(224,80,80,.18);background:rgba(224,80,80,.03);}
 .kpi-card.c-red::before{background:var(--red);}
 .kpi-lbl{font-family:var(--title);font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.7;}
 .kpi-card.c-teal .kpi-lbl{color:var(--teal);}
@@ -147,11 +123,11 @@ table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:780px;fon
 thead tr.hdr-row th:nth-child(1){width:3%;}
 thead tr.hdr-row th:nth-child(2){width:3%;}
 thead tr.hdr-row th:nth-child(3){width:36%;}
-thead tr.hdr-row th:nth-child(4){width:12%;}
+thead tr.hdr-row th:nth-child(4){width:13%;}
 thead tr.hdr-row th:nth-child(5){width:13%;}
 thead tr.hdr-row th:nth-child(6){width:13%;}
 thead tr.hdr-row th:nth-child(7){width:13%;}
-thead tr.hdr-row th:nth-child(8){width:7%;}
+thead tr.hdr-row th:nth-child(8){width:6%;}
 tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;}
 thead tr.hdr-row th{font-family:var(--sans);font-size:13px;color:#fff;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:11px 13px;text-align:center;white-space:nowrap;cursor:pointer;user-select:none;transition:all .15s;border-bottom:2px solid rgba(0,220,180,.35);border-right:1px solid rgba(255,255,255,.06);background:#051210;}
 thead tr.hdr-row th:hover{color:var(--teal);background:rgba(0,220,180,.06);}
@@ -164,7 +140,7 @@ tbody tr:nth-child(odd){background:var(--bg3);}
 tbody tr:nth-child(even){background:var(--bg4);}
 tbody tr:hover{background:rgba(0,220,180,.04)!important;}
 tbody tr.row-selected{background:rgba(0,220,180,.08)!important;}
-td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:14px;text-align:center;}
+td{padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:14px;text-align:center;color:#fff;}
 td:last-child{border-right:none;}
 td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .row-cb{width:17px;height:17px;accent-color:var(--teal);cursor:pointer;}
@@ -174,20 +150,17 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .td-termen.overdue{color:var(--red);}
 .td-termen.soon{color:var(--amber);}
 .td-termen.ok{color:var(--green);}
-.td-data-add{font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.55);}
-.td-adaugat{font-size:13px;color:rgba(255,255,255,.75);font-weight:600;}
+.td-data-add{font-family:var(--mono);font-size:13px;color:#fff;}
+.td-adaugat{font-size:13px;font-weight:600;color:#fff;}
 
-/* ── STATUS CHIPS ── */
+/* ── CHIPS ── */
 .chip-stare{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;font-weight:700;white-space:nowrap;}
 .chip-stare .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
-.chip-neinceput{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.2);}
+.chip-neinceput{background:rgba(255,255,255,.07);color:#fff;border:1.5px solid rgba(255,255,255,.2);}
 .chip-incurs{background:rgba(80,144,224,.15);color:var(--blue);border:1.5px solid rgba(80,144,224,.4);}
 .chip-finalizat{background:rgba(74,175,112,.15);color:var(--green);border:1.5px solid rgba(74,175,112,.4);}
 .chip-anulat{background:rgba(224,80,80,.12);color:var(--red);border:1.5px solid rgba(224,80,80,.35);}
 .chip-urgent{background:rgba(240,165,0,.13);color:var(--amber);border:1.5px solid rgba(240,165,0,.4);}
-
-/* ── BUBBLE HOVER ── */
-.td-todo-cell{position:relative;}
 
 /* ── EDIT MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:center;justify-content:center;padding:20px;}
@@ -211,6 +184,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   a[href]::after{content:none!important;display:none!important;}
   html,body,.app,.main,.content,.page{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;overflow:visible!important;height:auto!important;max-height:none!important;}
   .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.modal-overlay{display:none!important;}
+  .app,.main{display:block!important;overflow:visible!important;height:auto!important;width:100%!important;}
+  .content{overflow:visible!important;height:auto!important;}
   .page{padding:0 10mm!important;max-width:100%!important;margin:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;padding:8px 8px 8px 6px;border-bottom:2px solid #004d40;margin-bottom:12px;background:#fff!important;}
   .print-header-left{display:flex;align-items:center;gap:12px;}
@@ -222,23 +197,15 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   .table-wrap{border:1.5px solid #004d40!important;border-radius:0!important;overflow:visible!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead{display:table-header-group!important;}
-  thead tr.hdr-row th{background:#004d40!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;letter-spacing:.04em!important;text-align:center!important;border-right:1px solid #00695c!important;white-space:normal!important;}
+  thead tr.hdr-row th{background:#004d40!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;text-align:center!important;border-right:1px solid #00695c!important;white-space:normal!important;}
   tbody tr{background:#fff!important;page-break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#e8f5e9!important;page-break-inside:avoid!important;}
   td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #c8e6c9!important;border-right:1px solid #c8e6c9!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
   tbody td:nth-child(3){white-space:normal!important;word-break:break-word!important;text-align:left!important;}
   thead tr.hdr-row th:nth-child(1),tbody td:nth-child(1){display:none!important;}
   thead tr.hdr-row th:nth-child(8),tbody td:nth-child(8){display:none!important;}
-  thead tr.hdr-row th:nth-child(2){width:4%!important;}
-  thead tr.hdr-row th:nth-child(3){width:38%!important;text-align:left!important;}
-  thead tr.hdr-row th:nth-child(4){width:13%!important;}
-  thead tr.hdr-row th:nth-child(5){width:13%!important;}
-  thead tr.hdr-row th:nth-child(6){width:13%!important;}
-  thead tr.hdr-row th:nth-child(7){width:13%!important;}
-  tbody td:nth-child(2){text-align:center!important;font-size:8px!important;}
   .chip-stare{background:transparent!important;border:1px solid #333!important;color:#000!important;font-size:8px!important;padding:2px 5px!important;border-radius:3px!important;}
-  .td-termen{color:#000!important;}
-  .td-data-add,.td-adaugat{color:#333!important;}
+  .td-termen,.td-data-add,.td-adaugat{color:#000!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
 }
 .print-header{display:none;}
@@ -247,52 +214,15 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 <body>
 <div class="app">
 
-<!-- SIDEBAR -->
-<aside class="kronos-sidebar" id="sidebar">
-  <div class="sb-logo">
-    <div class="sb-logo-icon">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="12" stroke="var(--teal)" stroke-width="1.6"/>
-        <path d="M14 8v6l4 2" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="sb-logo-text">KRONOS</span>
-    <button class="sb-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M3 8h10M3 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-  <nav class="sb-nav">
-    <div class="sb-section">MENIU</div>
-    <a class="sb-link" href="index.html">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8L8 2l6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M4 8v6h3v-3h2v3h3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="sb-link-text">Dashboard</span>
-    </a>
-    <a class="sb-link" href="activitati_siloz.html">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M5 8h6M5 5h6M5 11h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      <span class="sb-link-text">Activitati Siloz</span>
-    </a>
-    <a class="sb-link active" href="todo_list.html">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h7M3 12h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="11" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M11 11l.8.8 1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="sb-link-text">Todo List</span>
-    </a>
-    <div class="sb-section">SISTEM</div>
-    <a class="sb-link" href="#" onclick="sessionStorage.clear();window.location.replace('index.html');return false;">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3H3a1 1 0 00-1 1v8a1 1 0 001 1h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10 5l3 3-3 3M13 8H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="sb-link-text">Deconectare</span>
-    </a>
-  </nav>
-</aside>
-<div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+<script src="sidebar.js" data-active="TODO_LIST"></script>
 
-<!-- MAIN -->
 <div class="main">
-  <!-- TOPBAR -->
   <div class="topbar">
-    <button class="notif-btn" onclick="toggleSidebarMobile()" style="display:none;" id="mob-menu-btn">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-    </button>
+    <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
     <div>
-      <div class="topbar-title">TODO LIST</div>
+      <div class="topbar-title">TO-DO LIST</div>
       <div class="topbar-sub">Terminal Cereale SOCEP &middot; Port Constanta</div>
     </div>
     <div class="topbar-right">
@@ -303,7 +233,6 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     </div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
   <div class="page">
 
@@ -317,7 +246,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
     </div>
     <div class="print-right">
-      <div class="print-doc-title">LISTA TODO &mdash; Mentenanta Siloz</div>
+      <div class="print-doc-title">TO-DO LIST &mdash; Mentenanta Siloz</div>
       <div class="print-date" id="print-date-inline"></div>
     </div>
   </div>
@@ -325,7 +254,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   <!-- KPI STRIP -->
   <div class="kpi-strip">
     <div class="kpi-card c-teal">
-      <div class="kpi-lbl">Total todo</div>
+      <div class="kpi-lbl">Total TO-DO</div>
       <div class="kpi-val" id="k-total">0</div>
       <div class="kpi-sub">inregistrate</div>
     </div>
@@ -350,7 +279,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   <div class="add-form-wrap">
     <div class="add-form-title">
       <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="7.5" stroke="var(--teal)" stroke-width="1.4"/><path d="M8.5 5v7M5 8.5h7" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round"/></svg>
-      Adauga todo nou
+      Inregistrare noua
     </div>
     <div class="form-grid">
       <div class="form-field form-wide">
@@ -359,12 +288,8 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Termen limita</label>
-        <input class="form-input" type="text" id="f-termen-display" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'f-termen')" autocomplete="off" style="letter-spacing:.05em;"/>
+        <input class="form-input" type="text" id="f-termen-display" placeholder="ZZ/LL/AAAA  —  optional" maxlength="10" oninput="formatDateInput(this,'f-termen')" autocomplete="off" style="letter-spacing:.05em;"/>
         <input type="hidden" id="f-termen"/>
-      </div>
-      <div class="form-field">
-        <label class="form-lbl">Adaugat de *</label>
-        <input class="form-input" type="text" id="f-adaugat" placeholder="ex: Leica Bogdan"/>
       </div>
     </div>
     <div class="form-actions">
@@ -405,7 +330,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
         <option value="2026">2026</option><option value="2027">2027</option><option value="2028">2028</option>
       </select>
     </div>
-    <input class="search-input" type="text" id="search-box" placeholder="&#128269; Cauta in todo..." oninput="applyFilters()"/>
+    <input class="search-input" type="text" id="search-box" placeholder="&#128269; Cauta in TO-DO..." oninput="applyFilters()"/>
     <div class="toolbar-sep"></div>
     <button class="tb-btn teal" onclick="loadData()">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7A5 5 0 0 1 12 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 7a5 5 0 0 1-10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 3L12 5l-2 .5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -424,8 +349,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
     </div>
   </div>
 
-  <!-- TABLE -->
-  <!-- Sheet cols: 0=Todo, 1=Termen, 2=Stare, 3=DataAdaugare, 4=AdaugatDe -->
+  <!-- TABLE  Sheet cols: 0=Todo, 1=Termen, 2=Stare, 3=DataAdaugare, 4=AdaugatDe -->
   <div class="table-wrap">
     <table id="main-table">
       <thead>
@@ -437,11 +361,11 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
           <th onclick="sortBy(3)">Termen limita</th>
           <th onclick="sortBy(4)">Data adaugare</th>
           <th onclick="sortBy(5)">Adaugat de</th>
-          <th style="cursor:default;width:80px;">Actiuni</th>
+          <th style="cursor:default;">Actiuni</th>
         </tr>
       </thead>
       <tbody id="tbody">
-        <tr><td colspan="8" class="no-data" style="color:var(--teal);text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.1em;">&#9655; Se incarca datele...</td></tr>
+        <tr><td colspan="8" style="color:var(--teal);text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.1em;">&#9655; Se incarca datele...</td></tr>
       </tbody>
     </table>
   </div>
@@ -461,7 +385,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 <div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
   <div class="modal-box">
     <div class="modal-title">
-      EDITEAZA TODO
+      EDITEAZA TO-DO
       <button class="modal-close" onclick="closeEditModal()">&times;</button>
     </div>
     <div class="form-grid">
@@ -488,15 +412,14 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
       </div>
       <div class="form-field">
         <label class="form-lbl">Data adaugare</label>
-        <input class="form-input" type="text" id="e-data-add" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'e-data-add-hidden')" autocomplete="off"/>
-        <input type="hidden" id="e-data-add-hidden"/>
+        <input class="form-input" type="text" id="e-data-add" placeholder="ZZ/LL/AAAA" maxlength="10" oninput="formatDateInput(this,'e-data-add-h')" autocomplete="off"/>
+        <input type="hidden" id="e-data-add-h"/>
       </div>
       <div class="form-field">
         <label class="form-lbl">Adaugat de *</label>
         <input class="form-input" type="text" id="e-adaugat" placeholder="ex: Leica Bogdan"/>
       </div>
     </div>
-    <input type="hidden" id="e-row-id"/>
     <div class="form-actions" style="margin-top:18px;">
       <button class="btn-submit" onclick="saveEdit()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -508,48 +431,23 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
   </div>
 </div>
 
-<!-- GLOBAL DESC BUBBLE -->
+<!-- BUBBLE -->
 <div id="global-desc-bubble"></div>
 
 <script>
 /* ── CONFIG ── */
 var SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSi0gcrrKtM4JEwJDmIMCFZSRDshDzLfGs7GH1lI5oNlGN6Pr3-prMHQvtfmf-TR4I4H-we4IghPjq9/pub?gid=0&single=true&output=csv';
-var APPS_SCRIPT_URL = ''; /* TODO: adauga URL Apps Script pentru scriere */
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzxIqhQ_gjVChGq8QV1MPjN01IsyYmDeSfdgEpeh0MYBGNRN0JuD1ByI73y2-RjM-mY/exec';
 
 /* ── STATE ── */
-var allData = [];
-var filteredData = [];
-var selectedRows = new Set();
-var sortCol = -1, sortDir = 1;
-
-/* ── SIDEBAR ── */
-function toggleSidebar(){
-  var sb=document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  try{localStorage.setItem('kronos_sb_collapsed',sb.classList.contains('collapsed')?'1':'0');}catch(e){}
-}
-function toggleSidebarMobile(){
-  document.getElementById('sidebar').classList.add('mobile-open');
-  document.getElementById('sb-overlay').classList.add('active');
-}
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('mobile-open');
-  document.getElementById('sb-overlay').classList.remove('active');
-}
-(function(){
-  try{if(localStorage.getItem('kronos_sb_collapsed')==='1')document.getElementById('sidebar').classList.add('collapsed');}catch(e){}
-  if(window.innerWidth<=768){
-    document.getElementById('mob-menu-btn').style.display='flex';
-  }
-})();
+var allData=[], filteredData=[], selectedRows=new Set(), sortCol=-1, sortDir=1;
 
 /* ── CLOCK ── */
 function updateClock(){
   var now=new Date();
   var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];
   var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
-  var te=document.getElementById('top-time');
-  var de=document.getElementById('top-date');
+  var te=document.getElementById('top-time'), de=document.getElementById('top-date');
   if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
   if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
 }
@@ -557,7 +455,6 @@ updateClock();setInterval(updateClock,1000);
 
 /* ── HELPERS ── */
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
 function getDateParts(str){
   str=String(str||'').trim();if(!str)return null;
   if(str.indexOf('/')>-1||str.indexOf('.')>-1){var sep=str.indexOf('/')>-1?'/':'.';var p=str.split(sep);if(p.length>=3)return{y:p[2].substring(0,4),m:String(p[1]).padStart(2,'0'),d:String(p[0]).padStart(2,'0')};}
@@ -571,77 +468,60 @@ function termenClass(dateStr){
   var d=getDateParts(dateStr);if(!d)return '';
   var dt=new Date(d.y,parseInt(d.m)-1,parseInt(d.d));
   var now=new Date();now.setHours(0,0,0,0);
-  if(dt<now)return 'overdue';
-  if((dt-now)<7*24*3600*1000)return 'soon';
-  return 'ok';
+  if(dt<now)return 'overdue';if((dt-now)<7*24*3600*1000)return 'soon';return 'ok';
 }
 function todayStr(){var n=new Date();return String(n.getDate()).padStart(2,'0')+'/'+String(n.getMonth()+1).padStart(2,'0')+'/'+n.getFullYear();}
-
-/* ── DATE INPUT FORMAT ── */
 function formatDateInput(el,hiddenId){
   var v=el.value.replace(/[^0-9]/g,'');var out='';
-  if(v.length>0)out+=v.substring(0,2);
-  if(v.length>=3)out+='/'+v.substring(2,4);
-  if(v.length>=5)out+='/'+v.substring(4,8);
+  if(v.length>0)out+=v.substring(0,2);if(v.length>=3)out+='/'+v.substring(2,4);if(v.length>=5)out+='/'+v.substring(4,8);
   el.value=out;
   var hidden=document.getElementById(hiddenId);
   if(hidden&&v.length===8)hidden.value=v.substring(4,8)+'-'+v.substring(2,4)+'-'+v.substring(0,2);
 }
 
-/* ── STARE CHIP ── */
+/* ── CHIP ── */
 function stareChip(s){
   var sl=String(s||'').toLowerCase();
   var cls='chip-neinceput', label=s||'Neinceput';
-  if(sl.indexOf('curs')>-1){cls='chip-incurs';}
-  else if(sl.indexOf('finaliz')>-1){cls='chip-finalizat';}
-  else if(sl.indexOf('anulat')>-1){cls='chip-anulat';}
-  else if(sl.indexOf('urgent')>-1){cls='chip-urgent';}
+  if(sl.indexOf('curs')>-1)cls='chip-incurs';
+  else if(sl.indexOf('finaliz')>-1)cls='chip-finalizat';
+  else if(sl.indexOf('anulat')>-1)cls='chip-anulat';
+  else if(sl.indexOf('urgent')>-1)cls='chip-urgent';
   return '<span class="chip-stare '+cls+'"><span class="dot"></span>'+esc(label)+'</span>';
 }
 
-/* ── KPI UPDATE ── */
+/* ── KPI ── */
 function updateKPI(){
   var now=new Date();now.setHours(0,0,0,0);
-  var total=allData.length;
-  var pending=allData.filter(function(r){var s=String(r[2]||'').toLowerCase();return s.indexOf('finaliz')<0&&s.indexOf('anulat')<0&&s.indexOf('curs')<0&&s.indexOf('urgent')<0;}).length;
-  var done=allData.filter(function(r){return String(r[2]||'').toLowerCase().indexOf('finaliz')>-1;}).length;
-  var overdue=allData.filter(function(r){
-    var s=String(r[2]||'').toLowerCase();
-    if(s.indexOf('finaliz')>-1||s.indexOf('anulat')>-1)return false;
+  document.getElementById('k-total').textContent=allData.length;
+  document.getElementById('k-pending').textContent=allData.filter(function(r){var s=String(r[2]||'').toLowerCase();return s.indexOf('finaliz')<0&&s.indexOf('anulat')<0&&s.indexOf('curs')<0&&s.indexOf('urgent')<0;}).length;
+  document.getElementById('k-done').textContent=allData.filter(function(r){return String(r[2]||'').toLowerCase().indexOf('finaliz')>-1;}).length;
+  document.getElementById('k-overdue').textContent=allData.filter(function(r){
+    var s=String(r[2]||'').toLowerCase();if(s.indexOf('finaliz')>-1||s.indexOf('anulat')>-1)return false;
     var d=getDateParts(r[1]);if(!d)return false;
-    var dt=new Date(d.y,parseInt(d.m)-1,parseInt(d.d));
-    return dt<now;
+    return new Date(d.y,parseInt(d.m)-1,parseInt(d.d))<now;
   }).length;
-  document.getElementById('k-total').textContent=total;
-  document.getElementById('k-pending').textContent=pending;
-  document.getElementById('k-done').textContent=done;
-  document.getElementById('k-overdue').textContent=overdue;
 }
 
-/* ── RENDER TABLE ──
-   Sheet cols: 0=Todo, 1=Termen, 2=Stare, 3=DataAdaugare, 4=AdaugatDe
-*/
+/* ── RENDER TABLE ── */
 function renderTable(){
   var tbody=document.getElementById('tbody');
   var rows=filteredData.slice();
   if(sortCol>=0){
     var sc=sortCol;
-    var stareOrder=function(s){s=String(s||'').toLowerCase();if(s.indexOf('urgent')>-1)return 0;if(s.indexOf('curs')>-1)return 1;if(s.indexOf('neinceput')>-1||s==='')return 2;if(s.indexOf('finaliz')>-1)return 3;if(s.indexOf('anulat')>-1)return 4;return 2;};
+    var stareOrder=function(s){s=String(s||'').toLowerCase();if(s.indexOf('urgent')>-1)return 0;if(s.indexOf('curs')>-1)return 1;if(s.indexOf('neinceput')>-1||s==='')return 2;if(s.indexOf('finaliz')>-1)return 3;return 4;};
     rows.sort(function(a,b){
       var va,vb;
-      if(sc===1){va=String(a[0]||'').toLowerCase();vb=String(b[0]||'').toLowerCase();}    // Todo text
-      else if(sc===2){va=stareOrder(a[2]);vb=stareOrder(b[2]);}                           // Stare
-      else if(sc===3){va=dateToSortKey(a[1]||'');vb=dateToSortKey(b[1]||'');}             // Termen
-      else if(sc===4){va=dateToSortKey(a[3]||'');vb=dateToSortKey(b[3]||'');}             // DataAdd
-      else if(sc===5){va=String(a[4]||'').toLowerCase();vb=String(b[4]||'').toLowerCase();} // AdaugatDe
+      if(sc===1){va=String(a[0]||'').toLowerCase();vb=String(b[0]||'').toLowerCase();}
+      else if(sc===2){va=stareOrder(a[2]);vb=stareOrder(b[2]);}
+      else if(sc===3){va=dateToSortKey(a[1]||'');vb=dateToSortKey(b[1]||'');}
+      else if(sc===4){va=dateToSortKey(a[3]||'');vb=dateToSortKey(b[3]||'');}
+      else if(sc===5){va=String(a[4]||'').toLowerCase();vb=String(b[4]||'').toLowerCase();}
       else{va=0;vb=0;return 0;}
       if(va<vb)return -sortDir;if(va>vb)return sortDir;return 0;
     });
   }
-  if(!rows.length){
-    tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';
-    updateSelCount();return;
-  }
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';updateSelCount();return;}
   var html='';
   rows.forEach(function(row,i){
     var uid=String(row[0]||'')+String(row[4]||'')+i;
@@ -656,11 +536,8 @@ function renderTable(){
       +'<td class="td-termen'+(tc?' '+tc:'')+'" style="color:'+(row[1]?tcol:'rgba(255,255,255,.3)')+';">'+(row[1]?fmtDate(row[1]):'—')+'</td>'
       +'<td class="td-data-add">'+(row[3]?fmtDate(row[3]):'—')+'</td>'
       +'<td class="td-adaugat">'+esc(row[4]||'')+'</td>'
-      +'<td>'
-      +'<button onclick="openEdit('+i+')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.25);color:var(--teal);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);">'
-      +'<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M8 2l2 2-6 6H2V8l6-6z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-      +' Edit</button>'
-      +'</td>'
+      +'<td><button onclick="openEdit('+i+')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.25);color:var(--teal);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);">'
+      +'<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M8 2l2 2-6 6H2V8l6-6z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Edit</button></td>'
       +'</tr>';
   });
   tbody.innerHTML=html;
@@ -675,53 +552,32 @@ function applyFilters(){
   var search=(document.getElementById('search-box').value||'').toLowerCase().trim();
   filteredData=allData.filter(function(row){
     if(stare&&String(row[2]||'').toLowerCase().indexOf(stare.toLowerCase())<0)return false;
-    if(luna||an){
-      var d=getDateParts(row[1]);
-      if(luna&&(!d||d.m!==luna))return false;
-      if(an&&(!d||d.y!==an))return false;
-    }
-    if(search){
-      var combined=(String(row[0]||'')+' '+String(row[4]||'')).toLowerCase();
-      if(combined.indexOf(search)<0)return false;
-    }
+    if(luna||an){var d=getDateParts(row[1]);if(luna&&(!d||d.m!==luna))return false;if(an&&(!d||d.y!==an))return false;}
+    if(search){var combined=(String(row[0]||'')+' '+String(row[4]||'')).toLowerCase();if(combined.indexOf(search)<0)return false;}
     return true;
   });
   sortCol=-1;sortDir=1;
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
-  selectedRows.clear();
-  renderTable();
+  selectedRows.clear();renderTable();
 }
-
 function sortBy(col){
   document.querySelectorAll('thead .hdr-row th').forEach(function(t){t.classList.remove('sort-asc','sort-desc');});
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
   var ths=document.querySelectorAll('thead .hdr-row th');
-  var thIdx={1:2,2:3,3:4,4:5,5:6};
-  var ti=thIdx[col];
+  var m={1:2,2:3,3:4,4:5,5:6};var ti=m[col];
   if(ti!==undefined&&ths[ti])ths[ti].classList.add(sortDir===1?'sort-asc':'sort-desc');
   renderTable();
 }
-
 function toggleRow(cb){var tr=cb.closest('tr');var uid=tr?tr.dataset.uid:'';if(cb.checked)selectedRows.add(uid);else selectedRows.delete(uid);if(tr)tr.classList.toggle('row-selected',cb.checked);document.getElementById('cb-all').checked=false;updateSelCount();}
 function toggleAll(cb){document.querySelectorAll('#tbody .row-cb').forEach(function(box){box.checked=cb.checked;var tr=box.closest('tr');var uid=tr?tr.dataset.uid:'';if(cb.checked)selectedRows.add(uid);else selectedRows.delete(uid);if(tr)tr.classList.toggle('row-selected',cb.checked);});updateSelCount();}
 function updateSelCount(){var sc=document.getElementById('sel-count');if(selectedRows.size>0){sc.style.display='';sc.textContent=selectedRows.size+' selectate';}else sc.style.display='none';}
 
-/* ── CSV PARSER ── */
+/* ── CSV ── */
 function parseCSV(text){
   var rows=[],cur=[],cell='',inQ=false;
-  for(var i=0;i<text.length;i++){
-    var ch=text[i];
-    if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}
-    else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}
-  }
-  cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);
-  return rows;
+  for(var i=0;i<text.length;i++){var ch=text[i];if(inQ){if(ch==='"'&&text[i+1]==='"'){cell+='"';i++;}else if(ch==='"')inQ=false;else cell+=ch;}else{if(ch==='"')inQ=true;else if(ch===','){cur.push(cell.trim());cell='';}else if(ch==='\r'){}else if(ch==='\n'){cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);cur=[];cell='';}else cell+=ch;}}
+  cur.push(cell.trim());if(cur.some(function(c){return c!=='';}))rows.push(cur);return rows;
 }
-
-/* ── LOCAL STORAGE ── */
-var LS_KEY='kronos_todo_list';
-function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(allData));}catch(e){}}
-function loadLocal(){try{var d=JSON.parse(localStorage.getItem(LS_KEY)||'null');return d&&d.length?d:null;}catch(e){return null;}}
 
 /* ── LOAD DATA ── */
 async function loadData(){
@@ -731,84 +587,56 @@ async function loadData(){
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     var text=await resp.text();
     var rows=parseCSV(text);
-    // Skip header row; cols: Todo, Termen, Stare, DataAdaugare, AdaugatDe
     allData=rows.slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     allData=allData.map(function(r){while(r.length<5)r.push('');return r;});
-    saveLocal();
-    filteredData=allData.slice();
-    applyFilters();
-    updateKPI();
+    filteredData=allData.slice();applyFilters();updateKPI();
   }catch(err){
-    var cached=loadLocal();
-    if(cached&&cached.length){
-      allData=cached;filteredData=allData.slice();
-      document.getElementById('tbody').innerHTML='';
-      applyFilters();updateKPI();
-      console.warn('Folosind date locale (cache). Eroare retea:',err.message);
-    } else {
-      document.getElementById('tbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;font-family:var(--mono);font-size:13px;color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
-      allData=[];filteredData=[];renderTable();updateKPI();
-    }
+    document.getElementById('tbody').innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;font-family:var(--mono);font-size:13px;color:var(--red);">Eroare: '+esc(err.message)+'</td></tr>';
+    allData=[];filteredData=[];renderTable();updateKPI();
   }
 }
 
-/* ── FORM SUBMIT ── */
+/* ── FORM ── */
 function resetForm(){
-  ['f-todo','f-adaugat','f-termen-display','f-termen'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['f-todo','f-termen-display','f-termen'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   showMsg('form-msg','','');
 }
 function showMsg(elId,type,text){var el=document.getElementById(elId);if(!type){el.style.display='none';return;}el.className='form-msg '+type;el.textContent=text;el.style.display='';}
 
 async function submitRow(){
   var todo=document.getElementById('f-todo').value.trim();
-  var adaugat=document.getElementById('f-adaugat').value.trim()||sessionStorage.getItem('k_name')||'Necunoscut';
+  if(!todo){showMsg('form-msg','err','Completeaza campul To-do (*)');return;}
   var termen=document.getElementById('f-termen').value.trim()||document.getElementById('f-termen-display').value.trim();
+  var adaugat=sessionStorage.getItem('k_name')||'Necunoscut';
   var stare='Neinceput';
   var dataAdd=todayStr();
-  if(!todo){showMsg('form-msg','err','Completeaza campul To-do (*)');return;}
   var btn=document.getElementById('btn-submit');
-  btn.disabled=true;showMsg('form-msg','loading','Se trimite...');
+  btn.disabled=true;showMsg('form-msg','loading','Se trimite in Google Sheets...');
   try{
-    var newRow=[todo, termen, stare, dataAdd, adaugat];
-    if(APPS_SCRIPT_URL){
-      var payload={todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-      var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-      var json=await resp.json();
-      if(json.result!=='success') throw new Error(json.error||'Eroare necunoscuta');
-    }
-    allData.push(newRow);
-    filteredData=allData.slice();
-    saveLocal();
-    showMsg('form-msg','ok','✓ Todo adaugat!');
-    resetForm();
-    renderTable();
-    updateKPI();
+    var payload={todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
+    var resp=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var json=await resp.json();
+    if(json.result!=='success')throw new Error(json.error||'Eroare necunoscuta');
+    allData.push([todo,termen,stare,dataAdd,adaugat]);
+    filteredData=allData.slice();showMsg('form-msg','ok','✓ TO-DO inregistrat!');resetForm();renderTable();updateKPI();
   }catch(e){showMsg('form-msg','err','Eroare: '+e.message);}
   btn.disabled=false;
 }
 
-/* ── EDIT MODAL ── */
+/* ── EDIT ── */
 var editRowIndex=-1;
 function openEdit(idx){
-  editRowIndex=idx;
-  var row=filteredData[idx];
+  editRowIndex=idx;var row=filteredData[idx];
   document.getElementById('e-todo').value=row[0]||'';
   document.getElementById('e-stare').value=row[2]||'Neinceput';
-  // Termen
-  var td=row[1]||'';
-  var disp=td;
+  var td=row[1]||'';var disp=td;
   if(td.indexOf('-')>-1){var p=td.split('-');if(p.length>=3)disp=p[2].substring(0,2)+'/'+p[1]+'/'+p[0];}
-  document.getElementById('e-termen-display').value=disp;
-  document.getElementById('e-termen').value=td;
-  // Data adaugare
-  var da=row[3]||'';
-  var dispDa=da;
+  document.getElementById('e-termen-display').value=disp;document.getElementById('e-termen').value=td;
+  var da=row[3]||'';var dispDa=da;
   if(da.indexOf('-')>-1){var p=da.split('-');if(p.length>=3)dispDa=p[2].substring(0,2)+'/'+p[1]+'/'+p[0];}
-  document.getElementById('e-data-add').value=dispDa;
-  document.getElementById('e-data-add-hidden').value=da;
+  document.getElementById('e-data-add').value=dispDa;document.getElementById('e-data-add-h').value=da;
   document.getElementById('e-adaugat').value=row[4]||'';
-  showMsg('edit-msg','','');
-  document.getElementById('edit-modal').classList.add('open');
+  showMsg('edit-msg','','');document.getElementById('edit-modal').classList.add('open');
 }
 function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
 
@@ -816,7 +644,7 @@ async function saveEdit(){
   var todo=document.getElementById('e-todo').value.trim();
   var stare=document.getElementById('e-stare').value.trim();
   var termen=document.getElementById('e-termen').value.trim()||document.getElementById('e-termen-display').value.trim();
-  var dataAdd=document.getElementById('e-data-add-hidden').value.trim()||document.getElementById('e-data-add').value.trim();
+  var dataAdd=document.getElementById('e-data-add-h').value.trim()||document.getElementById('e-data-add').value.trim();
   var adaugat=document.getElementById('e-adaugat').value.trim();
   if(!todo||!stare){showMsg('edit-msg','err','Campurile marcate cu * sunt obligatorii.');return;}
   showMsg('edit-msg','loading','Se salveaza...');
@@ -824,21 +652,16 @@ async function saveEdit(){
     var row=filteredData[editRowIndex];
     row[0]=todo;row[1]=termen;row[2]=stare;row[3]=dataAdd;row[4]=adaugat;
     var ai=allData.indexOf(row);if(ai>=0)allData[ai]=row;
-    saveLocal();
-    if(APPS_SCRIPT_URL){
-      var payload={action:'edit',todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
-      var er=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
-      var ej=await er.json();
-      if(ej.result!=='success') throw new Error(ej.error||'Eroare');
-    }
-    renderTable();updateKPI();
-    showMsg('edit-msg','ok','✓ Salvat!');
-    setTimeout(closeEditModal,700);
+    var payload={action:'edit',todo:todo,termen:termen,stare:stare,data_adaugare:dataAdd,adaugat_de:adaugat};
+    var er=await fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    var ej=await er.json();
+    if(ej.result!=='success')throw new Error(ej.error||'Eroare');
+    renderTable();updateKPI();showMsg('edit-msg','ok','✓ Salvat!');setTimeout(closeEditModal,700);
   }catch(e){showMsg('edit-msg','err','Eroare: '+e.message);}
 }
 
-/* ── BUBBLE HOVER ── */
-(function initBubble(){
+/* ── BUBBLE ── */
+(function(){
   var bubble=document.getElementById('global-desc-bubble');
   bubble.style.cssText='display:none;position:fixed;z-index:9999;background:var(--bg2);border:1.5px solid rgba(0,220,180,.4);border-radius:10px;padding:12px 14px;min-width:280px;max-width:480px;white-space:normal;word-break:break-word;font-size:13px;color:#fff;line-height:1.6;box-shadow:0 8px 32px rgba(0,0,0,.6);pointer-events:none;font-family:var(--sans);';
   document.addEventListener('mouseover',function(e){var td=e.target.closest('.td-todo');if(!td)return;var desc=td.getAttribute('data-desc');if(!desc)return;bubble.textContent=desc;bubble.style.display='block';});
@@ -852,21 +675,15 @@ function exportPDF(){
   var now=new Date();
   var d=String(now.getDate()).padStart(2,'0')+'/'+(now.getMonth()+1).toString().padStart(2,'0')+'/'+now.getFullYear();
   var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  var inl=document.getElementById('print-date-inline');
-  if(inl)inl.textContent='Data generarii: '+d+' '+t;
+  var inl=document.getElementById('print-date-inline');if(inl)inl.textContent='Data generarii: '+d+' '+t;
   _pdfHiddenRows=[];
   var hasSel=document.querySelectorAll('#tbody tr.row-selected').length>0;
-  if(hasSel){
-    document.querySelectorAll('#tbody tr').forEach(function(tr){
-      if(!tr.classList.contains('row-selected')){tr.style.setProperty('display','none','important');_pdfHiddenRows.push(tr);}
-    });
-  }
-  var ph=document.getElementById('print-header');
-  if(ph)ph.style.display='flex';
+  if(hasSel){document.querySelectorAll('#tbody tr').forEach(function(tr){if(!tr.classList.contains('row-selected')){tr.style.setProperty('display','none','important');_pdfHiddenRows.push(tr);}});}
+  document.getElementById('print-header').style.display='flex';
   window.print();
 }
 window.addEventListener('afterprint',function(){
-  var ph=document.getElementById('print-header');if(ph)ph.style.display='none';
+  document.getElementById('print-header').style.display='none';
   _pdfHiddenRows.forEach(function(tr){tr.style.display='';});_pdfHiddenRows=[];
 });
 
@@ -879,10 +696,9 @@ function exportExcel(){
   if(selectedRows.size>0){
     rows=[];
     document.querySelectorAll('#tbody tr.row-selected').forEach(function(tr){
-      var idx=parseInt(tr.dataset.idx);
-      if(!isNaN(idx)&&filteredData[idx])rows.push(filteredData[idx]);
+      var idx=parseInt(tr.dataset.idx);if(!isNaN(idx)&&filteredData[idx])rows.push(filteredData[idx]);
     });
-  } else {rows=filteredData;}
+  }else{rows=filteredData;}
   var th='background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
   var tdC='padding:5px 7px;border:1px solid #b8d8d8;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;white-space:nowrap;';
   var tdL='padding:5px 7px;border:1px solid #b8d8d8;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:left;';
@@ -890,10 +706,10 @@ function exportExcel(){
   var stateFg={'Finalizat':'#1a7a4a','In curs':'#8a6000','Neinceput':'#004d40','Urgent':'#8a4a00','Anulat':'#8a1a1a'};
   var t='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
   t+='<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
-  t+='<x:Name>Todo List</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  t+='<x:Name>TO-DO List</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
   t+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
   t+='<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
-  t+='<tr><td colspan="6" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS &mdash; Lista Todo Mentenanta</td></tr>';
+  t+='<tr><td colspan="6" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS &mdash; TO-DO List Mentenanta</td></tr>';
   t+='<tr><td colspan="4" style="background:#d6e8f7;color:#003a3a;font-weight:bold;font-size:11pt;padding:5px 12px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP &middot; Port Constanta</td>';
   t+='<td colspan="2" style="background:#d6e8f7;color:#007060;font-size:10pt;padding:5px 12px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
   t+='<tr><td colspan="6" style="height:6px;background:#ffffff;"></td></tr>';
@@ -902,9 +718,7 @@ function exportExcel(){
   t+='</tr>';
   rows.forEach(function(r,i){
     var fill=i%2===0?'#f0f8f8':'#ffffff';
-    var stare=r[2]||'';
-    var sBg=stateColors[stare]||fill;
-    var sFg=stateFg[stare]||'#003a3a';
+    var stare=r[2]||'';var sBg=stateColors[stare]||fill;var sFg=stateFg[stare]||'#003a3a';
     t+='<tr>';
     t+='<td style="'+tdC+'background:'+fill+';color:#004d40;font-weight:bold;">'+(i+1)+'</td>';
     t+='<td style="'+tdL+'background:'+fill+';">'+(r[0]||'')+'</td>';
@@ -918,21 +732,17 @@ function exportExcel(){
   var blob=new Blob([t],{type:'application/vnd.ms-excel;charset=utf-8'});
   var link=document.createElement('a');
   link.href=URL.createObjectURL(blob);
-  link.download='KRONOS_TodoList_'+String(now.getDate()).padStart(2,'0')+'.'
+  link.download='KRONOS_TODOList_'+String(now.getDate()).padStart(2,'0')+'.'
     +String(now.getMonth()+1).padStart(2,'0')+'.'+now.getFullYear()+'.xls';
   document.body.appendChild(link);link.click();document.body.removeChild(link);
   setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 
 /* ── INIT ── */
-(function init(){
-  // Prefill "Adaugat de" from session
-  var name=sessionStorage.getItem('k_name');
-  if(name){var el=document.getElementById('f-adaugat');if(el)el.value=name;}
-  setInterval(loadData,600000);
-  loadData();
+(function(){
+  setInterval(loadData,600000);loadData();
+  if(window.innerWidth<=768){var btn=document.getElementById('mobile-menu-btn');if(btn)btn.style.display='flex';}
 })();
 </script>
-
 </body>
 </html>
