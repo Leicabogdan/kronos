@@ -652,6 +652,15 @@ function processData(){
   latestOre={};
   Object.keys(history).forEach(function(eq){
     var arr=history[eq].sort(function(a,b){return a.d-b.d;});
+    // Reconstructie LIFETIME: orice scadere a contorului = reset software/contor.
+    // Cumulam mai departe ca si cum nu s-ar fi resetat (offset += brut dinainte de scadere).
+    var ofs=0, pRaw=null;
+    arr.forEach(function(x){
+      var raw=x.ore;
+      if(pRaw!==null && raw<pRaw) ofs+=pRaw;
+      x.ore=Math.round((raw+ofs)*10)/10;
+      pRaw=raw;
+    });
     var last=arr[arr.length-1];
     var prev=arr.length>1?arr[arr.length-2]:null;
     var delta=prev?Math.round((last.ore-prev.ore)*10)/10:null;
