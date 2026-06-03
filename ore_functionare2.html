@@ -6,7 +6,7 @@
 <title>KRONOS — Ore Functionare Echipamente</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -145,10 +145,6 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   letter-spacing:.1em;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase;}
 .btn-submit:hover{background:#00f0c8;box-shadow:0 0 16px rgba(0,220,180,.3);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-.btn-reset{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;
-  background:transparent;border:1.5px solid var(--border2);color:#fff;
-  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;}
-.btn-reset:hover{border-color:rgba(224,80,80,.4);color:var(--red);}
 .form-msg{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 14px;border-radius:6px;}
 .form-msg.ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.3);}
 .form-msg.err{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.3);}
@@ -419,6 +415,7 @@ td:last-child{border-right:none;}
         <option value="8000">8000h</option>
         <option value="warn24">Urmeaza in 24h</option>
         <option value="zile5">Urmeaza in 5 zile</option>
+        <option value="over">Depasit prag</option>
       </select>
     </div>
     <input type="text" class="search-input" id="search-eq" placeholder="Cauta echipament..." oninput="applyFilters()"/>
@@ -462,7 +459,7 @@ td:last-child{border-right:none;}
 
 <script>
 // ── CONFIG ──
-var ORE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G4lws543OACc-LheGGZXV669FZ1UvVw7NQN14Q5wTzjfwupGQjqt7muyFU158-qC9h5Z/pub?gid=0&single=true&output=csv';
+var ORE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT31ixew8_v3TPJvGstjeu_VPSyx1NDy8FL5MenfPCwvm4Lgiyb_UzPuq9cdm8r-rYLUEx4FmUyDIbR/pub?gid=0&single=true&output=csv';
 var MNT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbjRVEFXTG6nYfVcDip2xfyb7h6-0rx0cfnT8BKKG3ZbOmO5_25tAkV2exgXfMV0dw/exec';
 
@@ -513,7 +510,8 @@ function getCategorie(eq) {
 }
 
 // ── STATE ──
-var allRows = [];       // raw CSV rows from ore sheet
+var allRows = [];       // body rows (wide) din ore sheet
+var oreHeader = [];     // header row (col 0 = ECHIPAMENT, restul = date)
 var mntRows = [];       // raw CSV rows from mentenanta sheet
 var latestOre = {};     // {eq: {ore, data, delta, regim}}
 var lastRevizii = {};   // {eq: {rev200: date, rev1500: date, rev8000: date}}
@@ -548,9 +546,10 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function parseDate(s){
   s=String(s||'').trim();
   if(!s)return null;
-  if(s.indexOf('/')>-1){var p=s.split('/');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
-  if(s.indexOf('.')>-1){var p=s.split('.');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
-  if(s.indexOf('-')>-1){var p=s.split('-');if(p.length>=3)return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+  function yr(y){y=parseInt(y);return (y>=0&&y<100)?2000+y:y;}
+  if(s.indexOf('/')>-1){var p=s.split('/');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+  if(s.indexOf('.')>-1){var p=s.split('.');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+  if(s.indexOf('-')>-1){var p=s.split('-');if(p.length>=3)return new Date(yr(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
   return null;
 }
 function fmtDate(d){
@@ -588,7 +587,9 @@ async function loadData(){
     var r1=await fetch(ORE_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
     if(!r1.ok)throw new Error('HTTP '+r1.status+' (Ore Functionare)');
     var t1=await r1.text();
-    allRows=parseCSV(t1).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+    var parsedOre=parseCSV(t1).filter(function(r){return r.some(function(c){return c!=='';});});
+    oreHeader=parsedOre.length?parsedOre[0]:[];
+    allRows=parsedOre.slice(1);
 
     // Load mentenanta for last revizii dates
     var r2=await fetch(MNT_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
@@ -608,16 +609,44 @@ async function loadData(){
   }
 }
 
+// Rata h/zi: alege intre media ponderata (ultimele <=5 intervale) si Δ-ul curent.
+// Regula: prea putine date -> doar curentul; pauza punctuala (curent 0) -> media;
+// regim stabil (abatere <=40%) -> media (mai putin zgomot);
+// regim schimbat -> conservator (rata mai mare => revizie estimata mai devreme).
+function estimRate(arr){
+  if(!arr||arr.length<2)return null;
+  var DAY=1000*60*60*24, r2=function(x){return Math.round(x*100)/100;};
+  var last=arr[arr.length-1], prev=arr[arr.length-2];
+  var dCur=Math.max(1,Math.round((last.d-prev.d)/DAY));
+  var rateCur=(last.ore-prev.ore)/dCur;
+  var win=arr.slice(-6); // pana la 5 intervale
+  var w0=win[0], wDays=Math.max(1,Math.round((last.d-w0.d)/DAY));
+  var rateAvg=(last.ore-w0.ore)/wDays;
+  if(arr.length<3)return r2(rateCur);
+  if(rateCur<=0)return rateAvg>0?r2(rateAvg):null;
+  var dev=Math.abs(rateCur-rateAvg)/(rateAvg||1);
+  if(dev<=0.4)return r2(rateAvg);
+  return r2(Math.max(rateCur,rateAvg));
+}
 function processData(){
-  // Build latestOre: last reading per equipment
+  // Build latestOre: format WIDE (col 0 = echipament, header = date pe coloane)
   var history={};
+  var dateCols=[];
+  for(var ci=1;ci<oreHeader.length;ci++){
+    var dc=parseDate(oreHeader[ci]);
+    if(dc)dateCols.push({i:ci,d:dc});
+  }
   allRows.forEach(function(r){
-    var dt=r[0]||'', eq=(r[1]||'').trim(), ore=parseFloat(r[2]);
-    if(!eq||isNaN(ore))return;
-    var d=parseDate(dt);
-    if(!d)return;
-    if(!history[eq])history[eq]=[];
-    history[eq].push({d:d,ore:ore});
+    var eq=(r[0]||'').trim();
+    if(!eq)return;
+    dateCols.forEach(function(col){
+      var raw=r[col.i];
+      if(raw===undefined||raw==='')return;
+      var ore=parseFloat(raw);
+      if(isNaN(ore))return;
+      if(!history[eq])history[eq]=[];
+      history[eq].push({d:col.d,ore:ore});
+    });
   });
   // Sort by date, compute latest + delta + regim
   latestOre={};
@@ -626,8 +655,7 @@ function processData(){
     var last=arr[arr.length-1];
     var prev=arr.length>1?arr[arr.length-2]:null;
     var delta=prev?Math.round((last.ore-prev.ore)*10)/10:null;
-    var intervalDays=prev?Math.max(1,Math.round((last.d-prev.d)/(1000*60*60*24))):null;
-    var regimInterval=(prev&&intervalDays)?Math.round(((last.ore-prev.ore)/intervalDays)*100)/100:null;
+    var regimInterval=estimRate(arr);
     var first=arr[0];
     var daysDiff=Math.max(1,Math.round((last.d-first.d)/(1000*60*60*24)));
     var regim=Math.round((last.ore/daysDiff)*100)/100;
@@ -808,6 +836,10 @@ function applyFilters(){
              (row.z8000!==null&&row.z8000>=0&&row.z8000<=5);
       if(!z)return false;
     }
+    else if(revFilter==='over'){
+      var o=(row.t200&&row.t200.ramase<0)||(row.t1500&&row.t1500.ramase<0)||(row.t8000&&row.t8000.ramase<0);
+      if(!o)return false;
+    }
     return true;
   });
   renderTable();
@@ -940,7 +972,7 @@ async function submitOre(){
     var result=await resp.json();
     if(result.status==='ok'){
       showMsg('Inregistrat cu succes!','ok');
-      resetFormOre();
+      clearFormOre();
       setTimeout(loadData,2000);
     }else throw new Error(result.error||'Eroare necunoscuta');
   }catch(err){showMsg('Eroare: '+err.message,'err');}
@@ -951,7 +983,7 @@ function showMsg(text,type){
   el.textContent=text;el.className='form-msg '+type;el.style.display='';
   if(type==='ok')setTimeout(function(){el.style.display='none';},4000);
 }
-function resetFormOre(){
+function clearFormOre(){
   document.getElementById('f-echip').value='';
   document.getElementById('f-data').value='';
   document.getElementById('f-ore').value='';
