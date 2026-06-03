@@ -6,8 +6,7 @@
 <title>KRONOS — Ore Functionare Echipamente</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -15,8 +14,8 @@
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --mono:'Roboto',sans-serif;--sans:'Roboto',sans-serif;
+  --title:'Roboto',sans-serif;--raj:'Roboto',sans-serif;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
 .app{display:flex;height:100svh;overflow:hidden;}
@@ -82,7 +81,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 
 
 
-.page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:1800px;margin:0 auto;}
+.page{padding:clamp(16px,2vw,24px) clamp(16px,3vw,32px);max-width:100%;margin:0;}
 /* KPI — 3 wide casete */
 .kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;}
 @media(max-width:900px){.kpi-strip{grid-template-columns:1fr;}}
@@ -107,16 +106,18 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-card.c-amber .kpi-sub{color:var(--amber);}
 .kpi-card.c-red .kpi-sub{color:var(--red);}
 .kpi-list{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
-.kpi-pill{display:flex;align-items:center;justify-content:space-between;
+.kpi-pill{display:grid;grid-template-columns:1fr 104px 84px;align-items:center;gap:8px;
   padding:4px 10px;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:600;}
 .kpi-card.c-amber .kpi-pill{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.2);}
 .kpi-card.c-red .kpi-pill{background:rgba(224,80,80,.1);border:1px solid rgba(224,80,80,.2);}
-.kpi-pill .pill-eq{font-family:var(--mono);font-weight:700;color:#fff;}
-.kpi-pill .pill-info{font-size:11px;color:rgba(255,255,255,.7);}
+.kpi-card.c-teal .kpi-pill{background:rgba(0,220,180,.1);border:1px solid rgba(0,220,180,.2);}
+.kpi-pill .pill-eq{font-family:var(--mono);font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kpi-pill .pill-info{font-size:11px;color:#fff;text-align:center;white-space:nowrap;}
 .kpi-pill .pill-badge{font-family:var(--mono);font-size:11px;font-weight:700;
-  padding:2px 7px;border-radius:10px;}
+  padding:2px 7px;border-radius:10px;text-align:center;justify-self:end;min-width:64px;}
 .kpi-card.c-amber .kpi-pill .pill-badge{background:rgba(240,165,0,.2);color:var(--amber);}
 .kpi-card.c-red .kpi-pill .pill-badge{background:rgba(224,80,80,.2);color:var(--red);}
+.kpi-card.c-teal .kpi-pill .pill-badge{background:rgba(0,220,180,.2);color:var(--teal);}
 /* FORM */
 .add-form-wrap{background:var(--bg3);border:1.5px solid rgba(0,220,180,.22);border-radius:12px;
   padding:18px 20px;margin-bottom:20px;}
@@ -144,10 +145,6 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   letter-spacing:.1em;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase;}
 .btn-submit:hover{background:#00f0c8;box-shadow:0 0 16px rgba(0,220,180,.3);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-.btn-reset{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;
-  background:transparent;border:1.5px solid var(--border2);color:#fff;
-  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;}
-.btn-reset:hover{border-color:rgba(224,80,80,.4);color:var(--red);}
 .form-msg{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 14px;border-radius:6px;}
 .form-msg.ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.3);}
 .form-msg.err{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.3);}
@@ -183,7 +180,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;padding:8px 13px;
   outline:none;transition:border-color .2s;min-width:160px;}
 .search-input:focus{border-color:var(--teal);}
-.search-input::placeholder{color:rgba(255,255,255,.35);}
+.search-input::placeholder{color:rgba(255,255,255,.45);}
 .toolbar-right{margin-left:auto;}
 /* TABLE */
 .table-wrap{border:1.5px solid rgba(0,220,180,.3);border-radius:10px;overflow:hidden;margin-bottom:24px;width:100%;}
@@ -217,85 +214,14 @@ td:last-child{border-right:none;}
 .th-ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.3);}
 .th-warn{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.3);}
 .th-over{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.3);}
-.th-na{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);}
+.th-na{background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.1);}
 .no-data{text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.1em;}
 /* TRADEMARK */
 .trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:16px;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
-.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
-@media print{
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  a{color:inherit!important;text-decoration:none!important;}
-  a[href]::after{content:none!important;display:none!important;}
-  html,body{background:#fff!important;color:#000!important;
-    font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    margin:0!important;padding:0 12mm!important;}
-  .kronos-sidebar,.sb-overlay,.topbar,.toolbar,.add-form-wrap,.trademark,.kpi-strip,.chart-wrap{display:none!important;}
-  .page{padding:0!important;max-width:100%!important;margin:0!important;}
-  /* Header: normal flow, visible once on page 1 */
-  .print-header{
-    display:flex!important;align-items:center;justify-content:space-between;
-    padding:8px 0 8px 0;border-bottom:2px solid #1a3a6e;margin-bottom:8px;
-    background:#fff!important;}
-  .print-header-left{display:flex;align-items:center;gap:12px;}
-  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;
-    font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
-  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;
-    color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
-  /* Footer: fixed bottom, every page */
-  .print-footer{
-    display:block!important;position:fixed;bottom:0;left:0;right:0;
-    padding:3px 12mm;background:#fff!important;
-    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:8px;color:#555;
-    border-top:1px solid #d0d8e8;}
-  /* Table */
-  .table-wrap{border:none!important;border-radius:0!important;
-    overflow:visible!important;width:100%!important;}
-  table{width:100%!important;table-layout:fixed!important;
-    border-collapse:collapse!important;border:1.5px solid #1a3a6e!important;}
-  /* thead repeats column labels on every page */
-  thead{display:table-header-group!important;}
-  tbody{display:table-row-group!important;}
-  thead tr.hdr-row th{
-    background:#1a3a6e!important;color:#fff!important;
-    font-size:9px!important;padding:7px 6px!important;
-    font-family:'IBM Plex Sans',Arial,sans-serif!important;
-    font-weight:700!important;text-align:center!important;
-    border-right:1px solid #2a4a8e!important;white-space:normal!important;}
-  tbody tr{background:#fff!important;page-break-inside:avoid!important;}
-  tbody tr:nth-child(even){background:#f0f4fb!important;}
-  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;
-    border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;
-    vertical-align:middle!important;white-space:normal!important;
-    word-break:break-word!important;
-    font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
-  thead tr.hdr-row th:nth-child(1){width:4%!important;}
-  thead tr.hdr-row th:nth-child(2){width:9%!important;}
-  thead tr.hdr-row th:nth-child(3){width:8%!important;}
-  thead tr.hdr-row th:nth-child(4){width:10%!important;}
-  thead tr.hdr-row th:nth-child(5){width:10%!important;}
-  thead tr.hdr-row th:nth-child(6){width:8%!important;}
-  thead tr.hdr-row th:nth-child(7){width:9%!important;}
-  thead tr.hdr-row th:nth-child(8){width:14%!important;}
-  thead tr.hdr-row th:nth-child(9){width:14%!important;}
-  thead tr.hdr-row th:nth-child(10){width:14%!important;}
-  .td-nr{color:#1a3a6e!important;font-weight:700!important;}
-  .td-eq{color:#1a3a6e!important;font-weight:700!important;font-size:9px!important;}
-  .td-cod{color:#000!important;font-size:8px!important;}
-  .td-ore{font-weight:700!important;}
-  .th-chip{background:transparent!important;font-size:8px!important;
-    padding:2px 5px!important;border-radius:3px!important;}
-  .th-ok{border:1px solid #1a7a4a!important;color:#1a7a4a!important;}
-  .th-warn{border:1px solid #8a6000!important;color:#8a6000!important;}
-  .th-over{border:1px solid #8a1a1a!important;color:#8a1a1a!important;font-weight:700!important;}
-  .th-na{border:1px solid #aaa!important;color:#aaa!important;}
-  @page{size:A4 landscape;margin:10mm 0 14mm 0;}
-  html{-webkit-print-color-adjust:exact;}
-}
-.print-header{display:none;}
-.print-footer{display:none;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -323,54 +249,30 @@ td:last-child{border-right:none;}
   <div class="content">
   <div class="page">
 
-  <!-- PRINT HEADER (only visible when printing) -->
-  <div class="print-header" id="print-header" style="background:#fff;">
-    <div class="print-header-left">
-      <div>
-        <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
-        <div class="print-kronos-sub">Maintenance System</div>
-      </div>
-      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
-      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
-        Registru Ore Functionare Echipamente<br>
-        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP &middot; Port Constanta</span>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-start;padding:0 16px 0 0;line-height:1.1;">
-      <span style="font-family:Arial Black,Arial,sans-serif;font-size:28px;font-weight:900;color:#1a3a6e;letter-spacing:0px;display:block;">SOCEP</span>
-      <span style="font-family:Arial,sans-serif;font-size:9px;letter-spacing:5px;color:#5090d0;font-weight:400;display:block;margin-top:2px;">PORT OPERATOR</span>
-    </div>
-  </div>
-  <div class="print-footer" id="print-footer" style="background:#fff;">
-    <span id="print-date-text"></span>
-    <span></span>
-  </div>
-
-
   <!-- KPI -->
   <div class="kpi-strip">
     <div class="kpi-card c-teal">
       <div class="kpi-top">
         <div>
-          <div class="kpi-num" id="k-ore-total">—</div>
-          <div class="kpi-sub">ore adaugate interval curent</div>
+          <div class="kpi-num" id="k-5zile-count">—</div>
+          <div class="kpi-sub">estimat dupa regim interval</div>
         </div>
-        <div class="kpi-title">ORE<br>ADAUGATE<br>SAPT.</div>
+        <div class="kpi-title">REVIZIE<br>IN 5<br>ZILE</div>
       </div>
-      <div class="kpi-list" id="k-ore-list">
-        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
+      <div class="kpi-list" id="k-5zile-list">
+        <div style="font-family:var(--mono);font-size:11px;color:#fff;">Se incarca...</div>
       </div>
     </div>
     <div class="kpi-card c-amber">
       <div class="kpi-top">
         <div>
           <div class="kpi-num" id="k-warn-count">—</div>
-          <div class="kpi-sub">in 20h de prag revizie</div>
+          <div class="kpi-sub">in 24h de prag revizie</div>
         </div>
         <div class="kpi-title">ATENTIE<br>URMEAZA<br>REVIZIE</div>
       </div>
       <div class="kpi-list" id="k-warn-list">
-        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
+        <div style="font-family:var(--mono);font-size:11px;color:#fff;">Se incarca...</div>
       </div>
     </div>
     <div class="kpi-card c-red">
@@ -382,7 +284,7 @@ td:last-child{border-right:none;}
         <div class="kpi-title">DEPASIT<br>PRAG<br>REVIZIE</div>
       </div>
       <div class="kpi-list" id="k-over-list">
-        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
+        <div style="font-family:var(--mono);font-size:11px;color:#fff;">Se incarca...</div>
       </div>
     </div></div><!-- /kpi-strip -->
 
@@ -471,7 +373,6 @@ td:last-child{border-right:none;}
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Inregistreaza
       </button>
-      <button class="btn-reset" onclick="resetFormOre()">Reseteaza</button>
       <span id="form-msg" class="form-msg" style="display:none;"></span>
     </div>
   </div>
@@ -499,12 +400,11 @@ td:last-child{border-right:none;}
     <div class="select-wrap">
       <select id="sel-categorie" onchange="applyFilters()">
         <option value="">Toate categoriile</option>
-        <option value="banda">Trans. banda</option>
-        <option value="lant">Trans. lant</option>
+        <option value="banda">Transportor cu banda</option>
+        <option value="lant">Transportor cu lant</option>
         <option value="elevator">Elevator</option>
         <option value="filtru">Filtru</option>
         <option value="cantar">Cantar</option>
-        <option value="sampler">Sampler</option>
       </select>
     </div>
     <div class="select-wrap">
@@ -513,7 +413,8 @@ td:last-child{border-right:none;}
         <option value="200">200h</option>
         <option value="1500">1500h</option>
         <option value="8000">8000h</option>
-        <option value="warn">In 20h de prag</option>
+        <option value="warn24">Urmeaza in 24h</option>
+        <option value="zile5">Urmeaza in 5 zile</option>
         <option value="over">Depasit prag</option>
       </select>
     </div>
@@ -522,10 +423,6 @@ td:last-child{border-right:none;}
     <button class="tb-btn teal" onclick="loadData()">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 7A5 5 0 0 1 12 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12 7a5 5 0 0 1-10 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M10.5 3L12 5l-2 .5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Refresh
-    </button>
-    <button class="tb-btn teal" onclick="window.print()">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 1h8v5H3z" stroke="currentColor" stroke-width="1.2"/><path d="M3 6H1v6h12V6h-2" stroke="currentColor" stroke-width="1.2"/><path d="M3 9h8v4H3z" stroke="currentColor" stroke-width="1.2"/></svg>
-      Exporta
     </button>
   </div>
 
@@ -562,9 +459,9 @@ td:last-child{border-right:none;}
 
 <script>
 // ── CONFIG ──
-var ORE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G4lws543OACc-LheGGZXV669FZ1UvVw7NQN14Q5wTzjfwupGQjqt7muyFU158-qC9h5Z/pub?gid=0&single=true&output=csv';
+var ORE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT31ixew8_v3TPJvGstjeu_VPSyx1NDy8FL5MenfPCwvm4Lgiyb_UzPuq9cdm8r-rYLUEx4FmUyDIbR/pub?gid=0&single=true&output=csv';
 var MNT_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbjRVEFXTG6nYfVcDip2xfyb7h6-0rx0cfnT8BKKG3ZbOmO5_25tAkV2exgXfMV0dw/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFyAXxMrcOPjSaUHFyykWXSMcJxN-yK2Q9yhGt_MTF8SrEaLETHFkMrqqLYJ4LQ-4/exec';
 
 // ── CATALOG ECHIPAMENTE ──
 var CATALOG = {
@@ -613,7 +510,8 @@ function getCategorie(eq) {
 }
 
 // ── STATE ──
-var allRows = [];       // raw CSV rows from ore sheet
+var allRows = [];       // body rows (wide) din ore sheet
+var oreHeader = [];     // header row (col 0 = ECHIPAMENT, restul = date)
 var mntRows = [];       // raw CSV rows from mentenanta sheet
 var latestOre = {};     // {eq: {ore, data, delta, regim}}
 var lastRevizii = {};   // {eq: {rev200: date, rev1500: date, rev8000: date}}
@@ -648,9 +546,10 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function parseDate(s){
   s=String(s||'').trim();
   if(!s)return null;
-  if(s.indexOf('/')>-1){var p=s.split('/');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
-  if(s.indexOf('.')>-1){var p=s.split('.');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
-  if(s.indexOf('-')>-1){var p=s.split('-');if(p.length>=3)return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+  function yr(y){y=parseInt(y);return (y>=0&&y<100)?2000+y:y;}
+  if(s.indexOf('/')>-1){var p=s.split('/');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+  if(s.indexOf('.')>-1){var p=s.split('.');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+  if(s.indexOf('-')>-1){var p=s.split('-');if(p.length>=3)return new Date(yr(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
   return null;
 }
 function fmtDate(d){
@@ -688,7 +587,9 @@ async function loadData(){
     var r1=await fetch(ORE_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
     if(!r1.ok)throw new Error('HTTP '+r1.status+' (Ore Functionare)');
     var t1=await r1.text();
-    allRows=parseCSV(t1).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
+    var parsedOre=parseCSV(t1).filter(function(r){return r.some(function(c){return c!=='';});});
+    oreHeader=parsedOre.length?parsedOre[0]:[];
+    allRows=parsedOre.slice(1);
 
     // Load mentenanta for last revizii dates
     var r2=await fetch(MNT_CSV_URL+'&t='+Date.now()+'&r='+Math.random(),{cache:'no-store'});
@@ -704,20 +605,48 @@ async function loadData(){
   }catch(err){
     document.getElementById('tbody').innerHTML=
       '<tr><td colspan="10" class="no-data" style="color:var(--red);">Eroare: '+esc(err.message)+
-      '<br><span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:400;">Verifica URL-ul Google Sheets din configuratia paginii.</span></td></tr>';
+      '<br><span style="color:#fff;font-size:11px;font-weight:400;">Verifica URL-ul Google Sheets din configuratia paginii.</span></td></tr>';
   }
 }
 
+// Rata h/zi: alege intre media ponderata (ultimele <=5 intervale) si Δ-ul curent.
+// Regula: prea putine date -> doar curentul; pauza punctuala (curent 0) -> media;
+// regim stabil (abatere <=40%) -> media (mai putin zgomot);
+// regim schimbat -> conservator (rata mai mare => revizie estimata mai devreme).
+function estimRate(arr){
+  if(!arr||arr.length<2)return null;
+  var DAY=1000*60*60*24, r2=function(x){return Math.round(x*100)/100;};
+  var last=arr[arr.length-1], prev=arr[arr.length-2];
+  var dCur=Math.max(1,Math.round((last.d-prev.d)/DAY));
+  var rateCur=(last.ore-prev.ore)/dCur;
+  var win=arr.slice(-6); // pana la 5 intervale
+  var w0=win[0], wDays=Math.max(1,Math.round((last.d-w0.d)/DAY));
+  var rateAvg=(last.ore-w0.ore)/wDays;
+  if(arr.length<3)return r2(rateCur);
+  if(rateCur<=0)return rateAvg>0?r2(rateAvg):null;
+  var dev=Math.abs(rateCur-rateAvg)/(rateAvg||1);
+  if(dev<=0.4)return r2(rateAvg);
+  return r2(Math.max(rateCur,rateAvg));
+}
 function processData(){
-  // Build latestOre: last reading per equipment
+  // Build latestOre: format WIDE (col 0 = echipament, header = date pe coloane)
   var history={};
+  var dateCols=[];
+  for(var ci=1;ci<oreHeader.length;ci++){
+    var dc=parseDate(oreHeader[ci]);
+    if(dc)dateCols.push({i:ci,d:dc});
+  }
   allRows.forEach(function(r){
-    var dt=r[0]||'', eq=(r[1]||'').trim(), ore=parseFloat(r[2]);
-    if(!eq||isNaN(ore))return;
-    var d=parseDate(dt);
-    if(!d)return;
-    if(!history[eq])history[eq]=[];
-    history[eq].push({d:d,ore:ore});
+    var eq=(r[0]||'').trim();
+    if(!eq)return;
+    dateCols.forEach(function(col){
+      var raw=r[col.i];
+      if(raw===undefined||raw==='')return;
+      var ore=parseFloat(raw);
+      if(isNaN(ore))return;
+      if(!history[eq])history[eq]=[];
+      history[eq].push({d:col.d,ore:ore});
+    });
   });
   // Sort by date, compute latest + delta + regim
   latestOre={};
@@ -726,19 +655,22 @@ function processData(){
     var last=arr[arr.length-1];
     var prev=arr.length>1?arr[arr.length-2]:null;
     var delta=prev?Math.round((last.ore-prev.ore)*10)/10:null;
+    var regimInterval=estimRate(arr);
     var first=arr[0];
     var daysDiff=Math.max(1,Math.round((last.d-first.d)/(1000*60*60*24)));
     var regim=Math.round((last.ore/daysDiff)*100)/100;
-    latestOre[eq]={ore:last.ore,data:last.d,delta:delta,regim:regim,first:first.d};
+    latestOre[eq]={ore:last.ore,data:last.d,delta:delta,regim:regim,regimInterval:regimInterval,first:first.d};
   });
 
   // Build lastRevizii from mentenanta sheet
   lastRevizii={};
   mntRows.forEach(function(r){
-    while(r.length<12)r.push('');
-    var motiv=(r[1]||'').toLowerCase();
-    var eq=(r[11]||'').trim();
-    var d=parseDate(r[2]);
+    while(r.length<11)r.push('');
+    // Coloane: 0=Motiv 1=DataInceput 2=OraInceput 3=DataFinal 4=OraFinal
+    //          5=Descriere 6=StatusUtilaj 7=PieseSchimb 8=Echipa 9=AdaugatDe 10=Echipament
+    var motiv=(r[0]||'').toLowerCase();
+    var eq=(r[10]||'').trim();
+    var d=parseDate(r[3])||parseDate(r[1]); // DataFinal, altfel DataInceput
     if(!eq||!d)return;
     if(motiv.indexOf('revizie 200')>-1||motiv.indexOf('200h')>-1){
       if(!lastRevizii[eq])lastRevizii[eq]={};
@@ -776,14 +708,28 @@ function processData(){
       return {oreDeAtunci:Math.round(oreDeAtunci*10)/10, ramase:Math.round(ramase*10)/10, regim:regim};
     }
 
-    var t200=calcThresh(200,rev.rev200);
-    var t1500=calcThresh(1500,rev.rev1500);
-    var t8000=calcThresh(8000,rev.rev8000);
+    // Reset in cascada: revizia mare include reviziile mici.
+    // 8000h reseteaza 1500h si 200h; 1500h reseteaza 200h.
+    function maxDate(){var m=null;for(var k=0;k<arguments.length;k++){var d=arguments[k];if(d&&(!m||d>m))m=d;}return m;}
+    var rev200d =maxDate(rev.rev200, rev.rev1500, rev.rev8000);
+    var rev1500d=maxDate(rev.rev1500, rev.rev8000);
+    var rev8000d=rev.rev8000;
+    var t200=calcThresh(200,rev200d);
+    var t1500=calcThresh(1500,rev1500d);
+    var t8000=calcThresh(8000,rev8000d);
+
+    var ri=info.regimInterval;
+    function zileToThresh(t){
+      if(!t||t.ramase<0||!ri||ri<=0)return null;
+      return Math.round((t.ramase/ri)*10)/10;
+    }
 
     return {
       nr:i+1, eq:eq, cod:CATALOG[eq]||'—',
       data:info.data, ore:info.ore, delta:info.delta, regim:info.regim,
+      regimInterval:ri,
       t200:t200, t1500:t1500, t8000:t8000,
+      z200:zileToThresh(t200), z1500:zileToThresh(t1500), z8000:zileToThresh(t8000),
       cat:getCategorie(eq)
     };
   });
@@ -795,7 +741,7 @@ function threshChip(thresh){
   var r=thresh.ramase;
   if(r<0){
     return '<span class="th-chip th-over">+'+Math.abs(r).toFixed(1)+'h</span>';
-  } else if(r<=20){
+  } else if(r<=24){
     return '<span class="th-chip th-warn">'+r.toFixed(1)+'h</span>';
   } else {
     return '<span class="th-chip th-ok">'+Math.round(r)+'h</span>';
@@ -804,27 +750,31 @@ function threshChip(thresh){
 
 // ── KPI ──
 function updateKPI(){
-  // Ore adaugate: sum of deltas
-  var totalDelta=0, topDelta=[];
+  // Revizie in 5 zile: estimat dupa regim interval (delta / zile interval)
+  var zileItems=[];
   tableData.forEach(function(row){
-    if(row.delta&&row.delta>0){totalDelta+=row.delta;topDelta.push({eq:row.eq,d:row.delta});}
+    [[row.z200,'200h'],[row.z1500,'1500h'],[row.z8000,'8000h']].forEach(function(tp){
+      var z=tp[0],label=tp[1];
+      if(z!==null&&z>=0&&z<=5)zileItems.push({eq:row.eq,label:label,zile:z});
+    });
   });
-  topDelta.sort(function(a,b){return b.d-a.d;});
-  document.getElementById('k-ore-total').textContent=Math.round(totalDelta*10)/10;
-  var list1=document.getElementById('k-ore-list');
-  if(topDelta.length){
-    list1.innerHTML=topDelta.map(function(x){
+  zileItems.sort(function(a,b){return a.zile-b.zile;});
+  document.getElementById('k-5zile-count').textContent=zileItems.length||'0';
+  var list1=document.getElementById('k-5zile-list');
+  if(zileItems.length){
+    list1.innerHTML=zileItems.map(function(x){
       return '<div class="kpi-pill"><span class="pill-eq">'+esc(x.eq)+'</span>'
-        +'<span class="pill-badge">+'+x.d.toFixed(1)+'h</span></div>';
+        +'<span class="pill-info">'+x.label+'</span>'
+        +'<span class="pill-badge">'+x.zile.toFixed(1)+' zile</span></div>';
     }).join('');
-  } else {list1.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Nicio citire noua</div>';}
+  } else {list1.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Nicio revizie in 5 zile</div>';}
 
   // Warn (in 20h de prag)
   var warnItems=[];
   tableData.forEach(function(row){
     [[row.t200,'200h'],[row.t1500,'1500h'],[row.t8000,'8000h']].forEach(function(tp){
       var t=tp[0],label=tp[1];
-      if(t&&t.ramase>=0&&t.ramase<=20)warnItems.push({eq:row.eq,label:label,ramase:t.ramase});
+      if(t&&t.ramase>=0&&t.ramase<=24)warnItems.push({eq:row.eq,label:label,ramase:t.ramase});
     });
   });
   document.getElementById('k-warn-count').textContent=warnItems.length||'0';
@@ -835,7 +785,7 @@ function updateKPI(){
         +'<span class="pill-info">'+x.label+'</span>'
         +'<span class="pill-badge">'+x.ramase.toFixed(1)+'h</span></div>';
     }).join('');
-  } else {list2.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Nicio revizie apropiata</div>';}
+  } else {list2.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Nicio revizie apropiata</div>';}
 
   // Over (depasit)
   var overItems=[];
@@ -853,7 +803,7 @@ function updateKPI(){
         +'<span class="pill-info">'+x.label+'</span>'
         +'<span class="pill-badge">+'+x.dep.toFixed(1)+'h</span></div>';
     }).join('');
-  } else {list3.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Nicio revizie depasita</div>';}
+  } else {list3.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Nicio revizie depasita</div>';}
 }
 
 // ── TABLE ──
@@ -882,11 +832,17 @@ function applyFilters(){
     if(revFilter==='200'){if(!row.t200||row.t200.ramase>200)return false;}
     else if(revFilter==='1500'){if(!row.t1500||row.t1500.ramase>1500)return false;}
     else if(revFilter==='8000'){if(!row.t8000||row.t8000.ramase>8000)return false;}
-    else if(revFilter==='warn'){
-      var w=(row.t200&&row.t200.ramase>=0&&row.t200.ramase<=20)||
-             (row.t1500&&row.t1500.ramase>=0&&row.t1500.ramase<=20)||
-             (row.t8000&&row.t8000.ramase>=0&&row.t8000.ramase<=20);
+    else if(revFilter==='warn24'){
+      var w=(row.t200&&row.t200.ramase>=0&&row.t200.ramase<=24)||
+             (row.t1500&&row.t1500.ramase>=0&&row.t1500.ramase<=24)||
+             (row.t8000&&row.t8000.ramase>=0&&row.t8000.ramase<=24);
       if(!w)return false;
+    }
+    else if(revFilter==='zile5'){
+      var z=(row.z200!==null&&row.z200>=0&&row.z200<=5)||
+             (row.z1500!==null&&row.z1500>=0&&row.z1500<=5)||
+             (row.z8000!==null&&row.z8000>=0&&row.z8000<=5);
+      if(!z)return false;
     }
     else if(revFilter==='over'){
       var o=(row.t200&&row.t200.ramase<0)||(row.t1500&&row.t1500.ramase<0)||(row.t8000&&row.t8000.ramase<0);
@@ -917,7 +873,7 @@ function renderTable(){
   });
   var tbody=document.getElementById('tbody');
   if(!rows.length){
-    tbody.innerHTML='<tr><td colspan="10" class="no-data" style="color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="10" class="no-data" style="color:#fff;">Nicio inregistrare gasita.</td></tr>';
     return;
   }
   var oreColor=function(ore){
@@ -1024,7 +980,7 @@ async function submitOre(){
     var result=await resp.json();
     if(result.status==='ok'){
       showMsg('Inregistrat cu succes!','ok');
-      resetFormOre();
+      clearFormOre();
       setTimeout(loadData,2000);
     }else throw new Error(result.error||'Eroare necunoscuta');
   }catch(err){showMsg('Eroare: '+err.message,'err');}
@@ -1035,7 +991,7 @@ function showMsg(text,type){
   el.textContent=text;el.className='form-msg '+type;el.style.display='';
   if(type==='ok')setTimeout(function(){el.style.display='none';},4000);
 }
-function resetFormOre(){
+function clearFormOre(){
   document.getElementById('f-echip').value='';
   document.getElementById('f-data').value='';
   document.getElementById('f-ore').value='';
@@ -1049,16 +1005,6 @@ function resetFormOre(){
   sortCol=4;sortDir=-1;
   loadData();
   setInterval(loadData,120000);
-  window.addEventListener('beforeprint', function() {
-    var now = new Date();
-    var d = String(now.getDate()).padStart(2,'0')+'/'
-          + String(now.getMonth()+1).padStart(2,'0')+'/'
-          + now.getFullYear();
-    var t = String(now.getHours()).padStart(2,'0')
-          + ':' + String(now.getMinutes()).padStart(2,'0');
-    var el = document.getElementById('print-date-text');
-    if (el) el.textContent = 'Data generarii: ' + d + ' ' + t;
-  });
 })();
 
 function updateClock(){var now=new Date();var days=['Duminica','Luni','Marti','Miercuri','Joi','Vineri','Sambata'];var months=['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];var te=document.getElementById('top-time');var de=document.getElementById('top-date');if(te)te.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');if(de)de.textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();}
