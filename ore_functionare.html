@@ -733,10 +733,15 @@ function processData(){
       return Math.round((t.ramase/ri)*10)/10;
     }
 
+    // urgenta = cele mai putine ore ramase pana la oricare revizie
+    // (negativ = depasit -> urca primul); fara prag valid -> jos
+    var urg=Infinity;
+    [t200,t1500,t8000].forEach(function(t){if(t&&isFinite(t.ramase))urg=Math.min(urg,t.ramase);});
+
     return {
       nr:i+1, eq:eq, cod:CATALOG[eq]||'—',
       data:info.data, ore:info.ore, delta:info.delta, regim:info.regim,
-      regimInterval:ri,
+      regimInterval:ri, urg:urg,
       t200:t200, t1500:t1500, t8000:t8000,
       z200:zileToThresh(t200), z1500:zileToThresh(t1500), z8000:zileToThresh(t8000),
       cat:getCategorie(eq)
@@ -876,6 +881,7 @@ function renderTable(){
     else if(sc===7){va=a.t200?a.t200.ramase:9999;vb=b.t200?b.t200.ramase:9999;}
     else if(sc===8){va=a.t1500?a.t1500.ramase:9999;vb=b.t1500?b.t1500.ramase:9999;}
     else if(sc===9){va=a.t8000?a.t8000.ramase:9999;vb=b.t8000?b.t8000.ramase:9999;}
+    else if(sc===99){va=isFinite(a.urg)?a.urg:1e9;vb=isFinite(b.urg)?b.urg:1e9;}
     else{va=a.ore;vb=b.ore;}
     if(typeof va==='string')return sortDir*va.localeCompare(vb);
     return sortDir*(va-vb);
@@ -1011,7 +1017,7 @@ function clearFormOre(){
 
 // ── INIT ──
 (function(){
-  sortCol=4;sortDir=-1;
+  sortCol=99;sortDir=1;
   loadData();
   setInterval(loadData,120000);
 })();
