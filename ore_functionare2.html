@@ -665,10 +665,12 @@ function processData(){
   // Build lastRevizii from mentenanta sheet
   lastRevizii={};
   mntRows.forEach(function(r){
-    while(r.length<12)r.push('');
-    var motiv=(r[1]||'').toLowerCase();
-    var eq=(r[11]||'').trim();
-    var d=parseDate(r[2]);
+    while(r.length<11)r.push('');
+    // Coloane: 0=Motiv 1=DataInceput 2=OraInceput 3=DataFinal 4=OraFinal
+    //          5=Descriere 6=StatusUtilaj 7=PieseSchimb 8=Echipa 9=AdaugatDe 10=Echipament
+    var motiv=(r[0]||'').toLowerCase();
+    var eq=(r[10]||'').trim();
+    var d=parseDate(r[3])||parseDate(r[1]); // DataFinal, altfel DataInceput
     if(!eq||!d)return;
     if(motiv.indexOf('revizie 200')>-1||motiv.indexOf('200h')>-1){
       if(!lastRevizii[eq])lastRevizii[eq]={};
