@@ -7,7 +7,6 @@
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -51,7 +50,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .add-form-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
-.form-label{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.form-label{font-family:var(--mono);font-size:12px;color:#fff;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
 .form-label.banda{color:var(--amber);}
 .form-label.fab{color:var(--purple);}
 .form-input{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
@@ -135,11 +134,28 @@ td:last-child{border-right:none;}
 @media(max-width:900px){.kpi-strip{grid-template-columns:1fr 1fr;}.filter-bar{flex-wrap:wrap;}}
 @media(max-width:600px){.kpi-strip{grid-template-columns:1fr;}.export-btns{margin-left:0;}}
 
+.print-header{display:none;}
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  .kronos-sidebar,.sb-overlay,.topbar,.filter-bar,.add-form-wrap,.export-btns,.modal-overlay,.trademark{display:none!important;}
-  .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;}
-  html,body{background:#fff!important;color:#000!important;padding:0!important;}
+  a[href]::after{content:none!important;display:none!important;}
+  html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;height:auto!important;overflow:visible!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.filter-bar,.add-form-wrap,.trademark,.kpi-strip,.add-toggle-btn,.modal-overlay{display:none!important;}
+  .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;min-height:0!important;}
+  .content{padding:0!important;}
+  .print-header{display:flex!important;align-items:center;justify-content:space-between;padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;background:#fff!important;}
+  .print-header-left{display:flex;align-items:center;gap:12px;}
+  .print-kronos-title{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:18px;font-weight:900;letter-spacing:.15em;color:#1a3a6e;}
+  .print-kronos-sub{font-family:'IBM Plex Sans',Arial,sans-serif;font-size:9px;color:#1a3a6e;letter-spacing:.2em;text-transform:uppercase;margin-top:2px;opacity:.7;}
+  .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;display:block!important;height:auto!important;max-height:none!important;}
+  table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  thead{display:table-header-group;}
+  thead .sec-row{display:none!important;}
+  thead .sub-row th{background:#1a3a6e!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;letter-spacing:.04em!important;text-align:center!important;border-right:1px solid #2a4a8e!important;white-space:normal!important;cursor:default!important;}
+  thead .sub-row th.sort-asc::after,thead .sub-row th.sort-desc::after{content:none!important;}
+  tbody tr{background:#fff!important;page-break-inside:avoid!important;}
+  tbody tr:nth-child(even){background:#f0f4fb!important;}
+  td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
 }
 </style>
 </head>
@@ -149,6 +165,20 @@ td:last-child{border-right:none;}
 <script src="sidebar.js" data-active="ELEVATOARE"></script>
 
 <div class="main">
+  <div class="print-header" id="print-header">
+    <div class="print-header-left">
+      <div>
+        <div class="print-kronos-title">KR<span style="color:#00dcb4;">O</span>NOS</div>
+        <div class="print-kronos-sub">Maintenance System</div>
+      </div>
+      <div style="width:1px;height:44px;background:#d0d8e8;margin:0 8px;"></div>
+      <div style="font-family:'IBM Plex Sans',Arial,sans-serif;font-size:11px;color:#1a3a6e;font-weight:600;">
+        Registru Elevatoare<br>
+        <span style="font-weight:400;font-size:10px;color:#555;">Terminal Cereale SOCEP &middot; Port Constanta</span><br>
+        <span id="print-date-inline" style="font-weight:400;font-size:9px;color:#888;"></span>
+      </div>
+    </div>
+  </div>
   <div class="topbar">
     <div style="display:none;cursor:pointer;padding:4px;" id="mobile-menu-btn" onclick="sbOpenMobile()">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -198,27 +228,27 @@ td:last-child{border-right:none;}
       <div class="form-group"><div class="form-label">Diametru tambur</div><input class="form-input" id="nf-3" placeholder="ex: 1000 mm"/></div>
       <div class="form-group"><div class="form-label">Latime tambur</div><input class="form-input" id="nf-4" placeholder="ex: 800 mm"/></div>
       <div class="form-group"><div class="form-label">Inaltime elevare</div><input class="form-input" id="nf-5" placeholder="ex: 45 m"/></div>
-      <div class="form-group"><div class="form-label">Serie</div><input class="form-input" id="nf-6" placeholder=""/></div>
+      <div class="form-group"><div class="form-label">Serie</div><input class="form-input" id="nf-6" placeholder="ex: 253777901"/></div>
       <div class="form-group"><div class="form-label">Putere motor principal</div><input class="form-input" id="nf-7" placeholder="ex: 110 kW"/></div>
       <div class="form-group"><div class="form-label">Putere motor auxiliar</div><input class="form-input" id="nf-8" placeholder="ex: 4 kW / -"/></div>
       <div class="form-group"><div class="form-label">Pozitie ax</div><input class="form-input" id="nf-22" placeholder="ex: orizontal"/></div>
       <div class="form-group"><div class="form-label">Lungime</div><input class="form-input" id="nf-17" placeholder="ex: 48 m"/></div>
-      <div class="form-group"><div class="form-label">Patrat</div><input class="form-input" id="nf-26" placeholder=""/></div>
+      <div class="form-group"><div class="form-label">Patrat</div><input class="form-input" id="nf-26" placeholder="ex: -"/></div>
 
       <div class="form-section-label banda">BANDA &amp; CUPE</div>
       <div class="form-group"><div class="form-label banda">Tip banda</div><input class="form-input" id="nf-9" placeholder="ex: EP 630/4"/></div>
       <div class="form-group"><div class="form-label banda">Forta de tractiune</div><input class="form-input" id="nf-10" placeholder="ex: 630 N/mm"/></div>
-      <div class="form-group"><div class="form-label banda">Imbinare</div><input class="form-input" id="nf-11" placeholder="ex: vulcanizata / mecanica"/></div>
+      <div class="form-group"><div class="form-label banda">Imbinare</div><input class="form-input" id="nf-11" placeholder="ex: vulcanizata"/></div>
       <div class="form-group"><div class="form-label banda">Cuplu de strangere</div><input class="form-input" id="nf-12" placeholder="ex: 120 Nm"/></div>
-      <div class="form-group"><div class="form-label banda">Config. gauri prindere cupe</div><input class="form-input" id="nf-18" placeholder="ex: 4x M10 / 140 mm"/></div>
-      <div class="form-group"><div class="form-label banda">Prima taiere</div><input class="form-input" id="nf-19" placeholder=""/></div>
-      <div class="form-group"><div class="form-label banda">Timp de asteptare</div><input class="form-input" id="nf-20" placeholder=""/></div>
-      <div class="form-group"><div class="form-label banda">A doua taiere</div><input class="form-input" id="nf-21" placeholder=""/></div>
+      <div class="form-group"><div class="form-label banda">Config. gauri prindere cupe</div><input class="form-input" id="nf-18" placeholder="ex: 4x M10 / 140mm"/></div>
+      <div class="form-group"><div class="form-label banda">Prima taiere</div><input class="form-input" id="nf-19" placeholder="ex: -"/></div>
+      <div class="form-group"><div class="form-label banda">Timp de asteptare</div><input class="form-input" id="nf-20" placeholder="ex: -"/></div>
+      <div class="form-group"><div class="form-label banda">A doua taiere</div><input class="form-input" id="nf-21" placeholder="ex: -"/></div>
 
       <div class="form-section-label fab">FABRICATIE &amp; GREUTATI</div>
-      <div class="form-group"><div class="form-label fab">Numar de referinta</div><input class="form-input" id="nf-13" placeholder=""/></div>
-      <div class="form-group"><div class="form-label fab">Data fabricatie</div><input class="form-input" id="nf-14" placeholder="ex: 06/2024"/></div>
-      <div class="form-group"><div class="form-label fab">Nr. unic identificare</div><input class="form-input" id="nf-15" placeholder=""/></div>
+      <div class="form-group"><div class="form-label fab">Numar de referinta</div><input class="form-input" id="nf-13" placeholder="ex: REF-E01"/></div>
+      <div class="form-group"><div class="form-label fab">Data fabricatie</div><input class="form-input" id="nf-14" placeholder="ex: 06/2018"/></div>
+      <div class="form-group"><div class="form-label fab">Nr. unic identificare</div><input class="form-input" id="nf-15" placeholder="ex: UID-E01"/></div>
       <div class="form-group"><div class="form-label fab">Standard tehnic fab.</div><input class="form-input" id="nf-16" placeholder="ex: EN 620"/></div>
       <div class="form-group"><div class="form-label fab">Greutate cap elevator</div><input class="form-input" id="nf-23" placeholder="ex: 850 Kg"/></div>
       <div class="form-group"><div class="form-label fab">Greutate carcasa</div><input class="form-input" id="nf-24" placeholder="ex: 2200 Kg"/></div>
@@ -236,12 +266,8 @@ td:last-child{border-right:none;}
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3"/><path d="M9.5 9.5l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       <input class="search-input" id="search-input" type="text" placeholder="Cauta elevator..." oninput="renderTable()"/>
     </div>
-    <button class="filter-btn active" data-f="all" onclick="setFilter(this)">Toate</button>
-    <button class="filter-btn" data-f="aux" onclick="setFilter(this)">Cu auxiliar</button>
-    <button class="filter-btn" data-f="noaux" onclick="setFilter(this)">Fara auxiliar</button>
     <div class="export-btns">
-      <button class="exp-btn pdf" onclick="exportPDF(false)">PDF Simplu</button>
-      <button class="exp-btn pdf" style="background:rgba(0,220,180,.08);border-color:rgba(0,220,180,.35);color:var(--teal);" onclick="exportPDF(true)">PDF Complex</button>
+      <button class="exp-btn pdf" onclick="exportPDF()">Export PDF</button>
       <button class="exp-btn xls" onclick="exportExcel()">Export Excel</button>
     </div>
   </div>
@@ -361,7 +387,6 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 
 /* ── DATA ── */
 var allData=[];
-var currentFilter='all';
 var sortCol=-1,sortDir=1;
 
 const FALLBACK=[
@@ -372,10 +397,6 @@ const FALLBACK=[
   ["E81","BE 600","250 t/h","630 mm","500 mm","32 m","202693177-700","37 kW","4 kW","EP 400/3","400 N/mm","mecanica","90 Nm","REF-E81","09/2019","UID-E81","EN 620","34 m","2x M8 / 110mm","-","-","-","orizontal","420 Kg","1100 Kg","560 Kg","-"],
 ];
 
-function setFilter(btn){
-  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');currentFilter=btn.dataset.f;renderTable();
-}
 function hasAux(row){var v=String(row[8]||'').trim();return v&&v!=='-'&&v!=='0'&&v.toLowerCase()!=='nu';}
 function num(v){var m=String(v||'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):0;}
 function updateKPI(data){
@@ -413,8 +434,6 @@ function renderTable(){
 }
 function getVisibleRows(){
   var rows=allData.slice();
-  if(currentFilter==='aux')rows=rows.filter(hasAux);
-  else if(currentFilter==='noaux')rows=rows.filter(function(r){return !hasAux(r);});
   var q=(document.getElementById('search-input')?.value||'').toLowerCase().trim();
   if(q)rows=rows.filter(function(r){return r.some(function(c){return String(c||'').toLowerCase().includes(q);});});
   if(sortCol>=0){
@@ -459,27 +478,52 @@ function sortBy(c){
   renderTable();
 }
 var HEADERS=['ID','Model','Capacitate','Diametru tambur','Latime tambur','Inaltime elevare','Serie','Mot. principal','Mot. auxiliar','Tip banda','Forta tractiune','Imbinare','Cuplu strangere','Nr. referinta','Data fab.','Nr. unic','Standard','Lungime','Config. gauri cupe','Prima taiere','Timp asteptare','A doua taiere','Pozitie ax','Greutate cap','Greutate carcasa','Greutate picior','Patrat'];
-function exportPDF(complex){
-  if(complex){
-    var rows=getVisibleRows();
-    var container=document.getElementById('complex-cards');
-    var html='';
-    rows.forEach(function(row){html+='<div class="complex-card"><div class="complex-card-id">'+f(row[0])+' &mdash; '+f(row[1])+'</div>'+buildDetailHTML(row)+'</div>';});
-    container.innerHTML=html;container.style.display='block';
-    document.body.setAttribute('data-pdf-complex','1');window.print();
-    document.body.removeAttribute('data-pdf-complex');container.innerHTML='';container.style.display='none';
-  } else {
-    document.body.setAttribute('data-pdf-simple','1');window.print();document.body.removeAttribute('data-pdf-simple');
-  }
+function exportPDF(){
+  var now=new Date();
+  var d=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
+  var t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var inl=document.getElementById('print-date-inline');
+  if(inl)inl.textContent='Data generarii: '+d+' '+t;
+  window.print();
 }
 function exportExcel(){
   var rows=getVisibleRows();
-  var wsData=[HEADERS].concat(rows.map(function(r){return HEADERS.map(function(_,i){return r[i]||'';});}));
-  var ws=XLSX.utils.aoa_to_sheet(wsData);
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Elevatoare');
   var now=new Date();
-  XLSX.writeFile(wb,'KRONOS_Elevatoare_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xlsx');
+  var dateStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
+  var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var th='background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  var tdC='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;white-space:nowrap;';
+  var nc=HEADERS.length;
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  var x='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+  x+='<head><meta charset="UTF-8">';
+  x+='<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+  x+='<x:Name>Elevatoare</x:Name>';
+  x+='<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  x+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+  x+='</head><body>';
+  x+='<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
+  x+='<tr><td colspan="'+nc+'" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS &mdash; Registru Elevatoare</td></tr>';
+  x+='<tr><td colspan="'+Math.ceil(nc/2)+'" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP &middot; Port Constanta</td>';
+  x+='<td colspan="'+(nc-Math.ceil(nc/2))+'" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
+  x+='<tr><td colspan="'+nc+'" style="height:8px;background:#ffffff;"></td></tr>';
+  x+='<tr>';HEADERS.forEach(function(h){x+='<td style="'+th+'">'+esc(h)+'</td>';});x+='</tr>';
+  rows.forEach(function(r,i){
+    var fill=i%2===0?'#f0f4fb':'#ffffff';
+    x+='<tr>';
+    HEADERS.forEach(function(_,c){
+      var bold=c===0?'color:#1a3a6e;font-weight:bold;':'';
+      x+='<td style="'+tdC+'background:'+fill+';'+bold+'">'+esc(r[c]||'')+'</td>';
+    });
+    x+='</tr>';
+  });
+  x+='</table></body></html>';
+  var blob=new Blob([x],{type:'application/vnd.ms-excel;charset=utf-8'});
+  var link=document.createElement('a');
+  link.href=URL.createObjectURL(blob);
+  link.download='KRONOS_Elevatoare_'+now.getDate()+'.'+(now.getMonth()+1)+'.'+now.getFullYear()+'.xls';
+  document.body.appendChild(link);link.click();document.body.removeChild(link);
+  setTimeout(function(){URL.revokeObjectURL(link.href);},1000);
 }
 function parseCSV(text){
   var rows=[];var cur=[],cell='',inQ=false;
