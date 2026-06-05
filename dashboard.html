@@ -8,14 +8,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>KRONOS — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --mono:'Roboto',sans-serif;--sans:'Roboto',sans-serif;--title:'Roboto',sans-serif;--raj:'Roboto',sans-serif;
   --sidebar:220px;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
@@ -272,7 +272,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 }
 .widget-green-border::before{background:var(--green);}
 .widget-green-border .kpi-val{color:var(--green);}
-.widget-green-border .kpi-lbl{color:rgba(255,255,255,.5);}
+.widget-green-border .kpi-lbl{color:#fff;}
 
 /* ── SURVEILLANCE TABLE ── */
 .surv-row:hover td{background:rgba(240,165,0,.04)!important;}
@@ -300,7 +300,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
   0%{background-position:200% 0}
   100%{background-position:-200% 0}
 }
-.avarii-alarm .kpi-lbl{color:rgba(255,255,255,.7)!important;}
+.avarii-alarm .kpi-lbl{color:#fff!important;}
 .avarii-alarm .kpi-val{color:var(--red)!important;}
 
 /* ── HOTSPOT ── */
@@ -336,7 +336,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-card.amber::before{background:linear-gradient(90deg,var(--amber),transparent);}
 .kpi-card.red::before{background:linear-gradient(90deg,var(--red),transparent);}
 .kpi-card.green::before{background:linear-gradient(90deg,var(--green),transparent);}
-.kpi-lbl{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+.kpi-lbl{font-family:var(--mono);font-size:10px;color:#fff;letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
 .kpi-val{font-family:var(--title);font-size:clamp(22px,3.5vw,32px);font-weight:900;line-height:1;margin-bottom:6px;}
 .kpi-card.teal .kpi-val{color:var(--teal);}
 .kpi-card.amber .kpi-val{color:var(--amber);}
@@ -392,7 +392,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .status-badge.ok{background:rgba(74,175,112,.12);color:var(--green);border:1px solid rgba(74,175,112,.25);}
 .status-badge.warn{background:rgba(240,165,0,.12);color:var(--amber);border:1px solid rgba(240,165,0,.25);}
 .status-badge.err{background:rgba(224,80,80,.12);color:var(--red);border:1px solid rgba(224,80,80,.25);}
-.status-badge.off{background:rgba(255,255,255,.06);color:rgba(255,255,255,.45);border:1px solid var(--border);}
+.status-badge.off{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--border);}
 .sdot{width:5px;height:5px;border-radius:50%;background:currentColor;}
 .next-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;}
 .next-soon{background:rgba(240,165,0,.1);color:var(--amber);}
@@ -529,7 +529,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
                 <div style="font-family:var(--sans);font-size:10px;color:#fff;font-weight:600;">avarii totale</div>
               </div>
               <div id="dash-avarii-rows" style="flex:1;overflow-y:auto;max-height:110px;display:flex;flex-direction:column;gap:4px;scrollbar-width:thin;scrollbar-color:rgba(224,80,80,.3) transparent;">
-                <div style="font-family:var(--sans);font-size:11px;color:rgba(255,255,255,.4);">Se incarca...</div>
+                <div style="font-family:var(--sans);font-size:11px;color:#fff;">Se incarca...</div>
               </div>
             </div>
 
@@ -555,17 +555,17 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
             </div>
 
             <!-- NEIMPLEMENTAT 1 -->
-            <div class="widget-card" style="height:100%;border-color:rgba(255,255,255,.08);opacity:.45;">
-              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
-              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:rgba(255,255,255,.2);line-height:1;">—</div>
-              <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">in curs de dezvoltare</div>
+            <div class="widget-card" style="height:100%;border-color:#fff;opacity:.45;">
+              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
+              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:#fff;line-height:1;">—</div>
+              <div style="font-family:var(--sans);font-size:10px;color:#fff;margin-top:6px;">in curs de dezvoltare</div>
             </div>
 
             <!-- NEIMPLEMENTAT 2 -->
-            <div class="widget-card" style="height:100%;border-color:rgba(255,255,255,.08);opacity:.45;">
-              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
-              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:rgba(255,255,255,.2);line-height:1;">—</div>
-              <div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">in curs de dezvoltare</div>
+            <div class="widget-card" style="height:100%;border-color:#fff;opacity:.45;">
+              <div style="font-family:var(--title);font-size:10px;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:8px;">NEIMPLEMENTAT</div>
+              <div style="font-family:var(--title);font-size:clamp(22px,2.5vw,28px);font-weight:900;color:#fff;line-height:1;">—</div>
+              <div style="font-family:var(--sans);font-size:10px;color:#fff;margin-top:6px;">in curs de dezvoltare</div>
             </div>
 
           </div>
@@ -663,7 +663,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
               DEPASIT PRAG REVIZIE <span id="dash-rev-over-count" style="background:rgba(224,80,80,.15);border-radius:4px;padding:1px 6px;">0</span>
             </div>
             <div id="dash-rev-over-list" style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;">
-              <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Se incarca...</div>
+              <div style="font-family:var(--mono);font-size:11px;color:#fff;">Se incarca...</div>
             </div>
             <!-- Urmeaza revizie -->
             <div style="font-family:var(--sans);font-size:14px;font-weight:700;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
@@ -671,7 +671,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
               ATENTIE — URMEAZA REVIZIE <span id="dash-rev-warn-count" style="background:rgba(240,165,0,.15);border-radius:4px;padding:1px 6px;">0</span>
             </div>
             <div id="dash-rev-warn-list" style="display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;">
-              <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Se incarca...</div>
+              <div style="font-family:var(--mono);font-size:11px;color:#fff;">Se incarca...</div>
             </div>
           </div>
 
@@ -684,7 +684,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
         <div style="background:var(--bg3);border:1px solid rgba(240,165,0,.3);border-radius:14px;max-width:480px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
             <div style="font-family:var(--title);font-size:14px;font-weight:900;color:var(--amber);letter-spacing:.1em;">SUPRAVEGHERE ECHIPAMENT</div>
-            <button onclick="document.getElementById('surv-modal').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:20px;line-height:1;">x</button>
+            <button onclick="document.getElementById('surv-modal').style.display='none'" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px;line-height:1;">x</button>
           </div>
           <div id="surv-modal-content"></div>
           <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
@@ -698,7 +698,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
       <div style="margin-top:32px;padding:16px 0 8px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;">
         <div style="font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;"><span style="color:var(--teal);">LEICA</span> <span style="color:#fff;">BOGDAN</span></div>
         <div style="font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;">leicabogdan@gmail.com</div>
-        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.45);letter-spacing:2px;font-weight:600;">2026 KRONOS - ALL RIGHTS RESERVED</div>
+        <div style="font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;">2026 KRONOS - ALL RIGHTS RESERVED</div>
       </div>
 
     </div><!-- /content -->
@@ -800,7 +800,7 @@ async function loadDashAvarii() {
         + '</div>';
     }).join('');
   } catch(err) {
-    document.getElementById('dash-avarii-rows').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);">Eroare incarcare date</div>';
+    document.getElementById('dash-avarii-rows').innerHTML = '<div style="font-family:var(--mono);font-size:11px;color:#fff;">Eroare incarcare date</div>';
   }
 }
 loadDashAvarii();
@@ -912,16 +912,16 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
       ol.innerHTML=overItems.slice(0,15).map(function(x){
         return '<div class="alert-item urgent" style="padding:6px 10px;"><div style="flex:1;min-width:0;"><div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div><div class="alert-sub">Depasit cu '+x.dep.toFixed(1)+'h</div></div><span class="alert-chip chip-red">+'+x.dep.toFixed(1)+'h</span></div>';
       }).join('');
-    } else { ol.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie depasita</div>'; }
+    } else { ol.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Nicio revizie depasita</div>'; }
 
     var wl=document.getElementById('dash-rev-warn-list');
     if(warnItems.length){
       wl.innerHTML=warnItems.slice(0,15).map(function(x){
         return '<div class="alert-item warn" style="padding:6px 10px;"><div style="flex:1;min-width:0;"><div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div><div class="alert-sub">Mai are '+x.ramase.toFixed(1)+'h</div></div><span class="alert-chip chip-amber">'+x.ramase.toFixed(1)+'h</span></div>';
       }).join('');
-    } else { wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie apropiata</div>'; }
+    } else { wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Nicio revizie apropiata</div>'; }
   }).catch(function(e){
-    document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Eroare: '+e.message+'</div>';
+    document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:#fff;">Eroare: '+e.message+'</div>';
     document.getElementById('dash-rev-warn-list').innerHTML='';
   });
 })();
@@ -972,7 +972,7 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
           + '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>'
           + '<span style="font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:700;">' + item.diff + 'z</span>'
           + '</div>';
-      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
+      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:#fff;padding:2px 4px;">—</div>';
     }
     var elD = document.getElementById('dash-ulei-depasit-list');
     if (elD) {
@@ -981,7 +981,7 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
           + '<span style="font-family:var(--sans);font-size:11px;font-weight:600;color:#fff;">' + item.echip + '</span>'
           + '<span style="font-family:var(--mono);font-size:10px;color:var(--red);font-weight:700;">-' + Math.abs(item.diff) + 'z</span>'
           + '</div>';
-      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:rgba(255,255,255,.35);padding:2px 4px;">—</div>';
+      }).join('') : '<div style="font-family:var(--sans);font-size:10px;color:#fff;padding:2px 4px;">—</div>';
     }
   }
   fetch(ULEI_CSV + '&t=' + Date.now(), {cache:'no-store'})
@@ -1088,7 +1088,7 @@ function openSurveillanceModal(idx){
   document.getElementById('surv-modal-content').innerHTML=`
     <div style="margin-bottom:12px;">
       <div style="font-family:var(--mono);font-size:16px;font-weight:700;color:#fff;">${d.eq}</div>
-      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;">${d.cod}</div>
+      <div style="font-family:var(--mono);font-size:11px;color:#fff;margin-top:3px;">${d.cod}</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
@@ -1097,7 +1097,7 @@ function openSurveillanceModal(idx){
       </div>
       <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;">
         <div style="font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;">Detalii / Parametri</div>
-        <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;">${d.details}</div>
+        <div style="font-family:var(--mono);font-size:11px;color:#fff;line-height:1.6;">${d.details}</div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
@@ -1215,7 +1215,7 @@ function survRender(){
   var tbody = document.getElementById('surv-tbody');
   if(!tbody) return;
   if(!survItems.length){
-    tbody.innerHTML = '<tr><td colspan="5" style="padding:20px 14px;font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.4);text-align:center;">Niciun echipament in supraveghere</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:20px 14px;font-family:var(--sans);font-size:13px;color:#fff;text-align:center;">Niciun echipament in supraveghere</td></tr>';
     return;
   }
   tbody.innerHTML = survItems.map(function(item, i){
