@@ -6,7 +6,7 @@
 <title>KRONOS — Motoare</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -14,8 +14,8 @@
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --mono:'Roboto',sans-serif;--sans:'Roboto',sans-serif;
+  --title:'Roboto',sans-serif;--raj:'Roboto',sans-serif;
   --sidebar:220px;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
@@ -51,7 +51,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .add-form-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 14px;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
-.form-label{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+.form-label{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
 .form-label.motor{color:var(--blue);}
 .form-label.reduct{color:var(--purple);}
 .form-input{background:var(--bg4);border:1.5px solid var(--border2);border-radius:7px;color:#fff;font-family:var(--sans);font-size:13px;padding:7px 10px;outline:none;transition:border-color .2s;width:100%;}
@@ -63,8 +63,8 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .form-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
 .btn-save{padding:9px 22px;border-radius:8px;background:rgba(0,220,180,.12);border:1.5px solid rgba(0,220,180,.4);color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;}
 .btn-save:hover{background:rgba(0,220,180,.22);border-color:var(--teal);}
-.btn-reset{padding:9px 18px;border-radius:8px;background:transparent;border:1.5px solid var(--border2);color:rgba(255,255,255,.5);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;}
-.btn-reset:hover{border-color:rgba(255,255,255,.3);color:#fff;}
+.btn-reset{padding:9px 18px;border-radius:8px;background:transparent;border:1.5px solid var(--border2);color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.08em;transition:all .18s;}
+.btn-reset:hover{border-color:#fff;color:#fff;}
 .add-toggle-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 16px;border-radius:8px;background:rgba(0,220,180,.08);border:1.5px solid rgba(0,220,180,.3);color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;letter-spacing:.06em;}
 .add-toggle-btn:hover{background:rgba(0,220,180,.15);border-color:var(--teal);}
 
@@ -104,7 +104,7 @@ tbody tr.data-row:hover{background:rgba(0,220,180,.05)!important;}
 tbody tr.data-row.expanded{background:rgba(0,220,180,.04)!important;border-left:2px solid var(--teal);}
 td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.04);vertical-align:middle;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;}
 td:last-child{border-right:none;}
-.load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.4);font-weight:700;letter-spacing:.1em;}
+.load-state{text-align:center;padding:48px 24px;font-family:var(--mono);font-size:13px;color:#fff;font-weight:700;letter-spacing:.1em;}
 
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:20px;}
@@ -127,7 +127,7 @@ td:last-child{border-right:none;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
-.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;margin-top:6px;}
 
 @media(max-width:900px){.kpi-strip{grid-template-columns:1fr 1fr;}.filter-bar{flex-wrap:wrap;}}
 @media(max-width:600px){.kpi-strip{grid-template-columns:1fr;}.export-btns{margin-left:0;}}
@@ -596,5 +596,10 @@ async function init(){
 }
 init();
 </script>
+<style id="kronos-font-override">
+/* Restul paginii = Roboto. Topbar pastreaza fonturile originale; sidebar e lasat pe sidebar.js. */
+.topbar .topbar-title, .topbar .topbar-time{ font-family:'Orbitron',sans-serif !important; }
+.topbar .topbar-sub, .topbar .topbar-date{ font-family:'IBM Plex Sans',sans-serif !important; }
+</style>
 </body>
 </html>

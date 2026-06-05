@@ -6,7 +6,7 @@
 <title>KRONOS — TO-DO List</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -14,8 +14,8 @@
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --mono:'Roboto',sans-serif;--sans:'Roboto',sans-serif;
+  --title:'Roboto',sans-serif;--raj:'Roboto',sans-serif;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
 .app{display:flex;height:100svh;overflow:hidden;}
@@ -55,7 +55,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-card.c-green::before{background:var(--green);}
 .kpi-card.c-red{border-color:rgba(224,80,80,.18);background:rgba(224,80,80,.03);}
 .kpi-card.c-red::before{background:var(--red);}
-.kpi-lbl{font-family:var(--title);font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;opacity:.7;}
+.kpi-lbl{font-family:var(--title);font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;}
 .kpi-card.c-teal .kpi-lbl{color:var(--teal);}
 .kpi-card.c-amber .kpi-lbl{color:var(--amber);}
 .kpi-card.c-green .kpi-lbl{color:var(--green);}
@@ -170,7 +170,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--bg3);border:1px solid rgba(0,220,180,.35);border-radius:14px;max-width:560px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.7);max-height:90vh;overflow-y:auto;}
 .modal-title{font-family:var(--title);font-size:13px;font-weight:900;color:var(--teal);letter-spacing:.1em;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
-.modal-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
+.modal-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;padding:0 4px;}
 .modal-close:hover{color:#fff;}
 
 /* ── TRADEMARK ── */
@@ -178,7 +178,7 @@ td.td-check{text-align:center;padding:10px 8px;width:40px;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
-.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;margin-top:6px;}
 
 /* ── PRINT ── */
 @media print{
@@ -587,7 +587,7 @@ function renderTable(){
       if(va<vb)return -sortDir;if(va>vb)return sortDir;return 0;
     });
   }
-  if(!rows.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;color:rgba(255,255,255,.35);">Nicio inregistrare gasita.</td></tr>';updateSelCount();return;}
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;font-weight:700;color:#fff;">Nicio inregistrare gasita.</td></tr>';updateSelCount();return;}
   var html='';
   rows.forEach(function(row,i){
     var uid=String(row[0]||'')+String(row[4]||'')+i;
@@ -599,7 +599,7 @@ function renderTable(){
       +'<td class="td-nr">'+(i+1)+'</td>'
       +'<td class="td-todo" style="text-align:left;padding-left:16px;" data-desc="'+esc(row[0]||'')+'">'+esc(row[0]||'')+'</td>'
       +'<td>'+stareChip(row[2])+'</td>'
-      +'<td class="td-termen'+(tc?' '+tc:'')+'" style="color:'+(row[1]?tcol:'rgba(255,255,255,.3)')+';">'+(row[1]?fmtDate(row[1]):'—')+'</td>'
+      +'<td class="td-termen'+(tc?' '+tc:'')+'" style="color:'+(row[1]?tcol:'#fff')+';">'+(row[1]?fmtDate(row[1]):'—')+'</td>'
       +'<td class="td-data-add">'+(row[3]?fmtDate(row[3]):'—')+'</td>'
       +'<td class="td-adaugat">'+esc(row[4]||'')+'</td>'
       +'<td><button onclick="openEdit('+i+')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;background:rgba(0,220,180,.08);border:1px solid rgba(0,220,180,.25);color:var(--teal);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);">'
@@ -821,5 +821,10 @@ function exportExcel(){
   if(window.innerWidth<=768){var btn=document.getElementById('mobile-menu-btn');if(btn)btn.style.display='flex';}
 })();
 </script>
+<style id="kronos-font-override">
+/* Restul paginii = Roboto. Topbar pastreaza fonturile originale; sidebar e lasat pe sidebar.js. */
+.topbar .topbar-title, .topbar .topbar-time{ font-family:'Orbitron',sans-serif !important; }
+.topbar .topbar-sub, .topbar .topbar-date{ font-family:'IBM Plex Sans',sans-serif !important; }
+</style>
 </body>
 </html>

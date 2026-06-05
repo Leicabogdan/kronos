@@ -6,15 +6,15 @@
 <title>KRONOS — Manual Mentenanta</title>
 <script>(function(){if(!sessionStorage.getItem('k_name'))window.location.replace('index.html');})();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#04050a;--bg2:#0d0f17;--bg3:#111420;--bg4:#161924;
   --border:#1a1d28;--border2:#252836;
   --teal:#00dcb4;--amber:#f0a500;--red:#e05050;--green:#4aaf70;--blue:#5090e0;--purple:#9b6dff;
-  --mono:'Share Tech Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-  --title:'Orbitron',sans-serif;--raj:'Rajdhani',sans-serif;
+  --mono:'Roboto',sans-serif;--sans:'Roboto',sans-serif;
+  --title:'Roboto',sans-serif;--raj:'Roboto',sans-serif;
 }
 html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;overflow:hidden;}
 .app{display:flex;height:100svh;overflow:hidden;}
@@ -106,7 +106,7 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .kpi-card.c-blue:hover,.kpi-card.c-blue.active{border-color:rgba(80,144,224,.45);box-shadow:0 6px 24px rgba(80,144,224,.12);}
 .kpi-card.c-amber:hover,.kpi-card.c-amber.active{border-color:rgba(240,165,0,.45);box-shadow:0 6px 24px rgba(240,165,0,.12);}
 .kpi-card.c-purple:hover,.kpi-card.c-purple.active{border-color:rgba(155,109,255,.45);box-shadow:0 6px 24px rgba(155,109,255,.12);}
-.kpi-lbl{font-family:var(--title);font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-bottom:8px;}
+.kpi-lbl{font-family:var(--title);font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;}
 .kpi-card.c-teal .kpi-lbl{color:var(--teal);}
 .kpi-card.c-blue .kpi-lbl{color:var(--blue);}
 .kpi-card.c-amber .kpi-lbl{color:var(--amber);}
@@ -125,13 +125,13 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 /* ── TOOLBAR ── */
 .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;width:100%;}
 .search-wrap{position:relative;flex:1;min-width:220px;max-width:420px;}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.35);pointer-events:none;}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#fff;pointer-events:none;}
 .search-input{width:100%;background:var(--bg3);border:1.5px solid rgba(0,220,180,.22);border-radius:8px;
   color:#fff;font-family:var(--sans);font-size:14px;padding:9px 14px 9px 38px;outline:none;transition:border-color .2s;}
 .search-input:focus{border-color:var(--teal);}
 .search-input::placeholder{color:rgba(255,255,255,.3);}
 .filter-tag{font-family:var(--sans);font-size:13px;font-weight:600;padding:7px 16px;border-radius:7px;
-  border:1.5px solid var(--border2);background:var(--bg3);color:rgba(255,255,255,.5);cursor:pointer;transition:all .18s;}
+  border:1.5px solid var(--border2);background:var(--bg3);color:#fff;cursor:pointer;transition:all .18s;}
 .filter-tag.active-teal,.filter-tag:hover{border-color:rgba(0,220,180,.4);color:var(--teal);background:rgba(0,220,180,.07);}
 .filter-tag.active-blue{border-color:rgba(80,144,224,.4);color:var(--blue);background:rgba(80,144,224,.07);}
 .filter-tag.active-amber{border-color:rgba(240,165,0,.4);color:var(--amber);background:rgba(240,165,0,.07);}
@@ -168,14 +168,14 @@ td:last-child{border-right:none;}
 .cat-amber{background:rgba(240,165,0,.1);color:var(--amber);border:1px solid rgba(240,165,0,.3);}
 .cat-purple{background:rgba(155,109,255,.1);color:var(--purple);border:1px solid rgba(155,109,255,.3);}
 .no-data{text-align:center;padding:60px 20px;font-family:var(--mono);font-size:14px;
-  font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.35);}
+  font-weight:700;letter-spacing:.1em;color:#fff;}
 
 /* ── TRADEMARK ── */
 .trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:8px;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
-.tm-copy{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.35);letter-spacing:2px;font-weight:600;margin-top:6px;}
+.tm-copy{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -435,5 +435,10 @@ checkMobile();window.addEventListener('resize',checkMobile);
 </div><!-- /main -->
 </div><!-- /app -->
 
+<style id="kronos-font-override">
+/* Restul paginii = Roboto. Topbar pastreaza fonturile originale; sidebar e lasat pe sidebar.js. */
+.topbar .topbar-title, .topbar .topbar-time{ font-family:'Orbitron',sans-serif !important; }
+.topbar .topbar-sub, .topbar .topbar-date{ font-family:'IBM Plex Sans',sans-serif !important; }
+</style>
 </body>
 </html>
