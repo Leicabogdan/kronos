@@ -221,6 +221,7 @@ td:last-child{border-right:none;}
 /* TRADEMARK */
 .trademark{text-align:center;padding:20px 0 10px;border-top:1px solid var(--border);margin-top:16px;}
 .tm-name{font-family:var(--title);font-size:13px;font-weight:900;letter-spacing:4px;}
+.trademark,.trademark *{font-family:'Roboto',sans-serif!important;}
 .tm-name .lc{color:var(--teal);}.tm-name .bg{color:#fff;}
 .tm-email{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:2px;font-weight:600;margin-top:4px;}
 .tm-copy{font-family:var(--mono);font-size:9px;color:#fff;letter-spacing:2px;font-weight:600;margin-top:6px;}
@@ -936,6 +937,7 @@ function renderChart(){
   });
   var ctx=document.getElementById('ore-chart').getContext('2d');
   if(oreChart)oreChart.destroy();
+  if(window.Chart){Chart.defaults.font.family="'Roboto', sans-serif";}
   oreChart=new Chart(ctx,{
     type:'bar',
     data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:colors,borderWidth:1,borderRadius:4}]},
@@ -943,9 +945,9 @@ function renderChart(){
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.raw.toFixed(1)+' h';},title:function(ctx){return ctx[0].label+' ('+CATALOG[ctx[0].label]+')';}}},},
       scales:{
-        x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#fff',font:{family:"'IBM Plex Sans'",size:12}}},
+        x:{grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#fff',font:{family:"'Roboto', sans-serif",size:12}}},
 
-        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#fff',font:{family:"'IBM Plex Sans'",size:13,weight:'600'}}},
+        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#fff',font:{family:"'Roboto', sans-serif",size:13,weight:'600'}}},
 
       },
       onClick:function(e,els){
