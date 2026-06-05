@@ -806,8 +806,8 @@ async function loadDashAvarii() {
 loadDashAvarii();
 setInterval(loadDashAvarii, 60000);
 
-/* REVIZII ACTIVE — from ore_functionare CSV */
-var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRdw5HHdw96G4lws543OACc-LheGGZXV669FZ1UvVw7NQN14Q5wTzjfwupGQjqt7muyFU158-qC9h5Z/pub?gid=0&single=true&output=csv';
+/* REVIZII ACTIVE — sincronizat cu ore_functionare.html */
+var ORE_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT31ixew8_v3TPJvGstjeu_VPSyx1NDy8FL5MenfPCwvm4Lgiyb_UzPuq9cdm8r-rYLUEx4FmUyDIbR/pub?gid=0&single=true&output=csv';
 var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVACRKH0rNQsay-g3WoVH2RH14gsi0_xtRKFdxzvR6wY7pvDaBp2l0L7inWrkYiBUQZsElA/pub?gid=0&single=true&output=csv';
 
 (function loadRevizii(){
@@ -822,9 +822,11 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
   }
   function parseDateRev(s){
     s=String(s||'').trim();if(!s)return null;
+    function yr(y){y=parseInt(y);return (y>=0&&y<100)?2000+y:y;}
     var p;
-    if(s.indexOf('/')>-1){p=s.split('/');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
-    if(s.indexOf('.')>-1){p=s.split('.');if(p.length>=3)return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+    if(s.indexOf('/')>-1){p=s.split('/');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+    if(s.indexOf('.')>-1){p=s.split('.');if(p.length>=3)return new Date(yr(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
+    if(s.indexOf('-')>-1){p=s.split('-');if(p.length>=3)return new Date(yr(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
     return null;
   }
   function esc2(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -833,54 +835,53 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
     fetch(ORE_DASH_CSV+'&t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}),
     fetch(MNT_DASH_CSV+'&t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();})
   ]).then(function(results){
-    var oreRows=parseCSVRev(results[0]).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
-    var mntRows=parseCSVRev(results[1]).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
+    // ── ORE: format WIDE (col 0 = echipament, header = date pe coloane) ──
+    var oreAll=parseCSVRev(results[0]).filter(function(r){return r.some(function(x){return x!=='';});});
+    var oreHeader=oreAll.length?oreAll[0]:[];
+    var oreBody=oreAll.slice(1);
+    var dateCols=[];
+    for(var ci=1;ci<oreHeader.length;ci++){var dc=parseDateRev(oreHeader[ci]);if(dc)dateCols.push({i:ci,d:dc});}
 
-    // Build history: eq -> [{d,ore}]
     var history={};
-    oreRows.forEach(function(r){
-      var dt=r[0]||'',eq=(r[1]||'').trim(),ore=parseFloat(r[2]);
-      if(!eq||isNaN(ore))return;
-      var d=parseDateRev(dt);if(!d)return;
-      if(!history[eq])history[eq]=[];
-      history[eq].push({d:d,ore:ore});
+    oreBody.forEach(function(r){
+      var eq=(r[0]||'').trim();if(!eq)return;
+      dateCols.forEach(function(col){
+        var raw=r[col.i];if(raw===undefined||raw==='')return;
+        var ore=parseFloat(raw);if(isNaN(ore))return;
+        if(!history[eq])history[eq]=[];
+        history[eq].push({d:col.d,ore:ore});
+      });
     });
 
-    // Build latestOre: eq -> ore (most recent)
+    // latestOre + reconstructie LIFETIME (reset contor => offset)
     var latestOre={};
     Object.keys(history).forEach(function(eq){
       var arr=history[eq].sort(function(a,b){return a.d-b.d;});
+      var ofs=0,pRaw=null;
+      arr.forEach(function(x){var raw=x.ore;if(pRaw!==null&&raw<pRaw)ofs+=pRaw;x.ore=Math.round((raw+ofs)*10)/10;pRaw=raw;});
       latestOre[eq]=arr[arr.length-1].ore;
     });
 
-    // Build lastRevizii from mentenanta
+    // ── MENTENANTA: 0=Motiv 1=DataInc 3=DataFin 10=Echipament ──
     var lastRevizii={};
+    var mntRows=parseCSVRev(results[1]).slice(1).filter(function(r){return r.some(function(x){return x!=='';});});
     mntRows.forEach(function(r){
-      while(r.length<12)r.push('');
-      var motiv=(r[1]||'').toLowerCase();
-      var eq=(r[11]||'').trim();
-      var d=parseDateRev(r[2]);
+      while(r.length<11)r.push('');
+      var motiv=(r[0]||'').toLowerCase();
+      var eq=(r[10]||'').trim();
+      var d=parseDateRev(r[3])||parseDateRev(r[1]);
       if(!eq||!d)return;
-      if(motiv.indexOf('revizie 200')>-1||motiv.indexOf('200h')>-1){
-        if(!lastRevizii[eq])lastRevizii[eq]={};
-        if(!lastRevizii[eq].rev200||d>lastRevizii[eq].rev200)lastRevizii[eq].rev200=d;
-      }
-      if(motiv.indexOf('revizie 1500')>-1||motiv.indexOf('1500h')>-1){
-        if(!lastRevizii[eq])lastRevizii[eq]={};
-        if(!lastRevizii[eq].rev1500||d>lastRevizii[eq].rev1500)lastRevizii[eq].rev1500=d;
-      }
-      if(motiv.indexOf('revizie 8000')>-1||motiv.indexOf('8000h')>-1){
-        if(!lastRevizii[eq])lastRevizii[eq]={};
-        if(!lastRevizii[eq].rev8000||d>lastRevizii[eq].rev8000)lastRevizii[eq].rev8000=d;
-      }
+      if(motiv.indexOf('revizie 200')>-1||motiv.indexOf('200h')>-1){if(!lastRevizii[eq])lastRevizii[eq]={};if(!lastRevizii[eq].rev200||d>lastRevizii[eq].rev200)lastRevizii[eq].rev200=d;}
+      if(motiv.indexOf('revizie 1500')>-1||motiv.indexOf('1500h')>-1){if(!lastRevizii[eq])lastRevizii[eq]={};if(!lastRevizii[eq].rev1500||d>lastRevizii[eq].rev1500)lastRevizii[eq].rev1500=d;}
+      if(motiv.indexOf('revizie 8000')>-1||motiv.indexOf('8000h')>-1){if(!lastRevizii[eq])lastRevizii[eq]={};if(!lastRevizii[eq].rev8000||d>lastRevizii[eq].rev8000)lastRevizii[eq].rev8000=d;}
     });
 
-    // Calculate thresholds
-    var overItems=[], warnItems=[];
+    function maxDate(){var m=null;for(var k=0;k<arguments.length;k++){var d=arguments[k];if(d&&(!m||d>m))m=d;}return m;}
+
+    var overItems=[],warnItems=[];
     Object.keys(latestOre).forEach(function(eq){
       var oreNow=latestOre[eq];
       var rev=lastRevizii[eq]||{};
-
       function oreAtDate(revDate){
         if(!revDate)return 0;
         var arr=(history[eq]||[]).filter(function(x){return x.d<=revDate;});
@@ -888,18 +889,18 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
         arr.sort(function(a,b){return a.d-b.d;});
         return arr[arr.length-1].ore;
       }
-
-      [[200,rev.rev200,'200h'],[1500,rev.rev1500,'1500h'],[8000,rev.rev8000,'8000h']].forEach(function(tp){
-        var thresh=tp[0], revDate=tp[1], label=tp[2];
-        var oreAtRev=oreAtDate(revDate);
-        var oreDeAtunci=oreNow-oreAtRev;
-        var ramase=thresh-oreDeAtunci;
-        if(ramase<0) overItems.push({eq:eq,label:label,dep:Math.abs(ramase)});
-        else if(ramase<=20) warnItems.push({eq:eq,label:label,ramase:ramase});
+      // reset in cascada: 8000 reseteaza 1500+200; 1500 reseteaza 200
+      var rev200d =maxDate(rev.rev200,rev.rev1500,rev.rev8000);
+      var rev1500d=maxDate(rev.rev1500,rev.rev8000);
+      var rev8000d=rev.rev8000;
+      [[200,rev200d,'200h'],[1500,rev1500d,'1500h'],[8000,rev8000d,'8000h']].forEach(function(tp){
+        var thresh=tp[0],revDate=tp[1],label=tp[2];
+        var ramase=thresh-(oreNow-oreAtDate(revDate));
+        if(ramase<0)overItems.push({eq:eq,label:label,dep:Math.abs(ramase)});
+        else if(ramase<=20)warnItems.push({eq:eq,label:label,ramase:ramase});
       });
     });
 
-    // Sort: over by dep desc, warn by ramase asc
     overItems.sort(function(a,b){return b.dep-a.dep;});
     warnItems.sort(function(a,b){return a.ramase-b.ramase;});
 
@@ -909,32 +910,16 @@ var MNT_DASH_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQAaYdlbaVAC
     var ol=document.getElementById('dash-rev-over-list');
     if(overItems.length){
       ol.innerHTML=overItems.slice(0,15).map(function(x){
-        return '<div class="alert-item urgent" style="padding:6px 10px;">'
-          +'<div style="flex:1;min-width:0;">'
-          +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
-          +'<div class="alert-sub">Depasit cu '+x.dep.toFixed(1)+'h</div>'
-          +'</div>'
-          +'<span class="alert-chip chip-red">+'+x.dep.toFixed(1)+'h</span>'
-          +'</div>';
+        return '<div class="alert-item urgent" style="padding:6px 10px;"><div style="flex:1;min-width:0;"><div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div><div class="alert-sub">Depasit cu '+x.dep.toFixed(1)+'h</div></div><span class="alert-chip chip-red">+'+x.dep.toFixed(1)+'h</span></div>';
       }).join('');
-    } else {
-      ol.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie depasita</div>';
-    }
+    } else { ol.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie depasita</div>'; }
 
     var wl=document.getElementById('dash-rev-warn-list');
     if(warnItems.length){
       wl.innerHTML=warnItems.slice(0,15).map(function(x){
-        return '<div class="alert-item warn" style="padding:6px 10px;">'
-          +'<div style="flex:1;min-width:0;">'
-          +'<div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div>'
-          +'<div class="alert-sub">Mai are '+x.ramase.toFixed(1)+'h</div>'
-          +'</div>'
-          +'<span class="alert-chip chip-amber">'+x.ramase.toFixed(1)+'h</span>'
-          +'</div>';
+        return '<div class="alert-item warn" style="padding:6px 10px;"><div style="flex:1;min-width:0;"><div class="alert-title">'+esc2(x.eq)+' &mdash; '+x.label+'</div><div class="alert-sub">Mai are '+x.ramase.toFixed(1)+'h</div></div><span class="alert-chip chip-amber">'+x.ramase.toFixed(1)+'h</span></div>';
       }).join('');
-    } else {
-      wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie apropiata</div>';
-    }
+    } else { wl.innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Nicio revizie apropiata</div>'; }
   }).catch(function(e){
     document.getElementById('dash-rev-over-list').innerHTML='<div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35);">Eroare: '+e.message+'</div>';
     document.getElementById('dash-rev-warn-list').innerHTML='';
