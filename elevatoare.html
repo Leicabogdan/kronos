@@ -29,8 +29,9 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .content{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(14px,2.5vw,28px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 
 /* KPI */
-.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
-@media(max-width:700px){.kpi-strip{grid-template-columns:1fr 1fr;}}
+.kpi-strip{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:22px;}
+.kpi-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:700px){.kpi-row4{grid-template-columns:1fr 1fr;}}
 .kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi-card.c-teal::before{background:var(--teal);}
@@ -221,10 +222,36 @@ td:last-child{border-right:none;}
 
   <!-- KPI -->
   <div class="kpi-strip">
-    <div class="kpi-card c-teal"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-total">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--teal);">TOTAL</div></div></div>
-    <div class="kpi-card c-blue"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-putere">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--blue);">kW INST.</div></div></div>
-    <div class="kpi-card c-amber"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-cap">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--amber);">t/h CUM.</div></div></div>
-    <div class="kpi-card c-green"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-aux">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--green);">CU AUX</div></div></div>
+    <!-- KPI informativ JET FLAM -->
+    <div class="kpi-card" style="border-color:var(--teal);background:linear-gradient(135deg,rgba(0,220,180,.07) 0%,var(--bg3) 60%);">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--teal);"></div>
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="flex-shrink:0;margin-top:2px;">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="15" stroke="var(--teal)" stroke-width="1.5" opacity=".4"/><path d="M16 8c0 0-5 4.5-5 8.5a5 5 0 0010 0C21 12.5 16 8 16 8z" fill="var(--teal)" opacity=".25"/><path d="M16 10.5c0 0-3 2.8-3 5.5a3 3 0 006 0c0-2.7-3-5.5-3-5.5z" fill="var(--teal)" opacity=".6"/><circle cx="16" cy="19" r="1.5" fill="var(--teal)"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--teal);margin-bottom:6px;">BANDA ELEVATOR — TIPOLOGIE</div>
+          <div style="font-family:var(--body);font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:.02em;">
+            JET FLAM = bandă elevator cu cauciuc NBR, auto-extingibilă (rezistentă la foc, conformă ISO 340)
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <div style="background:rgba(0,220,180,.12);border:1px solid rgba(0,220,180,.25);border-radius:6px;padding:5px 10px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--teal);">
+              ★ SUPER — rezistență crescută la grăsimi vegetale/animale (100% NBR)
+            </div>
+            <div style="background:rgba(80,144,224,.12);border:1px solid rgba(80,144,224,.25);border-radius:6px;padding:5px 10px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--blue);">
+              ★ VLE — Very Low Elongation · alungire 1,0% · elimină retensionările periodice
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- KPI numerice -->
+    <div class="kpi-row4">
+      <div class="kpi-card c-teal"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-total">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--teal);">TOTAL</div></div></div>
+      <div class="kpi-card c-blue"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-putere">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--blue);">kW INST.</div></div></div>
+      <div class="kpi-card c-amber"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-cap">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--amber);">t/h CUM.</div></div></div>
+      <div class="kpi-card c-green"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-aux">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--green);">CU AUX</div></div></div>
+    </div>
   </div>
 
   <!-- ADD EQUIPMENT BUTTON -->
@@ -257,7 +284,7 @@ td:last-child{border-right:none;}
       <div class="form-group"><div class="form-label">Lungime</div><input class="form-input" id="nf-17" placeholder="ex: 48 m"/></div>
       <div class="form-group"><div class="form-label">Patrat</div><input class="form-input" id="nf-26" placeholder="ex: -"/></div>
 
-      <div class="form-section-label banda">BANDA &amp; CUPE</div>
+      <div class="form-section-label banda">SPECIFICATII BANDA</div>
       <div class="form-group"><div class="form-label banda">Tip banda</div><input class="form-input" id="nf-9" placeholder="ex: EP 630/4"/></div>
       <div class="form-group"><div class="form-label banda">Forta de tractiune</div><input class="form-input" id="nf-10" placeholder="ex: 630 N/mm"/></div>
       <div class="form-group"><div class="form-label banda">Imbinare</div><input class="form-input" id="nf-11" placeholder="ex: vulcanizata"/></div>
@@ -274,7 +301,7 @@ td:last-child{border-right:none;}
       <div class="form-group"><div class="form-label fab">Standard tehnic fab.</div><input class="form-input" id="nf-16" placeholder="ex: EN 620"/></div>
       <div class="form-group"><div class="form-label fab">Greutate cap elevator</div><input class="form-input" id="nf-23" placeholder="ex: 850 Kg"/></div>
       <div class="form-group"><div class="form-label fab">Greutate carcasa</div><input class="form-input" id="nf-24" placeholder="ex: 2200 Kg"/></div>
-      <div class="form-group"><div class="form-label fab">Greutate picior</div><input class="form-input" id="nf-25" placeholder="ex: 980 Kg"/></div>
+      <div class="form-group"><div class="form-label fab">Greutate picior elevator</div><input class="form-input" id="nf-25" placeholder="ex: 980 Kg"/></div>
     </div>
     <div class="form-actions">
       <button class="btn-save" onclick="saveNewEquip()">SALVEAZA</button>
@@ -482,7 +509,7 @@ function buildDetailHTML(row){
     ['Config. gauri cupe',row[18],'#fff'],['Prima taiere',row[19],'#fff'],['Timp de asteptare',row[20],'#fff'],['A doua taiere',row[21],'#fff'],
   ];
   var greut=[
-    ['Greutate cap elevator',row[23],'green'],['Greutate carcasa',row[24],'green'],['Greutate picior',row[25],'green'],
+    ['Greutate cap elevator',row[23],'green'],['Greutate carcasa',row[24],'green'],['Greutate picior elevator',row[25],'green'],
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
@@ -491,9 +518,9 @@ function buildDetailHTML(row){
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
   function pair(left,right){return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;"><div style="display:flex;flex-direction:column;gap:6px;">'+col(left)+'</div><div style="display:flex;flex-direction:column;gap:6px;">'+col(right)+'</div></div>';}
   return '<div class="detail-grid">'+
-    '<div class="detail-section"><div class="detail-section-title motor">ELEVATOR '+f(row[0])+' &mdash; '+f(row[1])+'</div>'+pair(elevL,elevR)+'</div>'+
-    '<div class="detail-section"><div class="detail-section-title banda">BANDA &amp; CUPE</div>'+pair(bandaL,bandaR)+'</div>'+
-    '<div class="detail-section full"><div class="detail-section-title greut">GREUTATI</div>'+
+    '<div class="detail-section"><div class="detail-section-title motor">ELEVATOR '+f(row[0])+'<br><span style="font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+pair(elevL,elevR)+'</div>'+
+    '<div class="detail-section"><div class="detail-section-title banda">SPECIFICATII BANDA</div>'+pair(bandaL,bandaR)+'</div>'+
+    '<div class="detail-section full"><div class="detail-section-title greut">GREUTATE</div>'+
     '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px 28px;">'+col(greut)+'</div></div></div>';
 }
 function sortBy(c){
