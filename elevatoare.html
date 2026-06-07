@@ -336,7 +336,7 @@ checkMobile();window.addEventListener('resize',checkMobile);
    Lasat gol => salvare doar locala (optimista) in tabel. */
 var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxsaZJfFbAn5g84TI_10YA8Twod-lEVzoYni8UdssUXRCJo1ep1wqQjRaG2vSA0NS1g/exec';
 var CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vR_nla0i1ojMNaN_329AY5V7fj1-xVctDgrbyN4WbliLjHKRNy8ZQ0mrbKZG0EPSAcbnr5dPO9znbdF/pub?gid=0&single=true&output=csv';
-var NCOL=31;
+var NCOL=30;
 
 
 /* ── MODAL ── */
@@ -399,13 +399,14 @@ function getVisibleRows(){
   return rows;
 }
 function buildDetailHTML(row){
-  /* ELEVATOR col A-M */
+  /* ELEVATOR A-M: idx 0-12 */
   var elevL=[
     ['Capacitate nominala',row[2],'#fff'],
     ['Diametru tambur',row[3],'#fff'],
     ['Latime tambur',row[4],'#fff'],
     ['Inaltime elevare',row[5],'#fff'],
     ['Data fabricatiei',row[9],'#fff'],
+    ['Greutate picior elevator',row[12],'green'],
   ];
   var elevR=[
     ['Serie',row[6],'green'],
@@ -414,9 +415,11 @@ function buildDetailHTML(row){
     ['Greutate cap elevator',row[10],'green'],
     ['Greutate carcasa',row[11],'green'],
   ];
-  /* SPECIFICATII BANDA col N-AE
-     Stanga (8): Tip/RezRup/LatBanda/Lungime/FortaTract/Cuplu/GrBanda/Imbinare
-     Dreapta (9): NrRef/DataFab/NrUnic/Standard/ConfigGauri/PrimaTaiere/TimpAstep/ADouaTaiere/CursaSurub */
+  /* SPECIFICATII BANDA N-AD: idx 13-29
+     13:TipBanda 14:RezRup 15:LatBanda 16:Lungime 17:FortaTract
+     18:Imbinare 19:Cuplu 20:NrRef
+     21:DataFabBanda 22:NrUnic 23:Standard 24:ConfigGauri
+     25:GrBanda 26:PrimaTaiere 27:TimpAstep 28:ADouaTaiere 29:CursaSurub */
   var bandaL=[
     ['Tip banda',row[13],'amber'],
     ['Rezistenta la rupere',row[14],'amber'],
@@ -424,19 +427,19 @@ function buildDetailHTML(row){
     ['Lungime',row[16],'#fff'],
     ['Forta de tractiune',row[17],'amber'],
     ['Cuplu de strangere',row[19],'amber'],
-    ['Greutate banda',row[26],'#fff'],
+    ['Greutate banda',row[25],'#fff'],
     ['Imbinare',row[18],'#fff'],
   ];
   var bandaR=[
     ['Numar de referinta',row[20],'#fff'],
-    ['Data fabricatie banda',row[22],'#fff'],
-    ['Nr. unic identificare',row[23],'#fff'],
-    ['Standard tehnic',row[24],'#fff'],
-    ['Config. gauri prindere cupe',row[25],'#fff'],
-    ['Prima taiere',row[27],'#fff'],
-    ['Timp de asteptare',row[28],'#fff'],
-    ['A doua taiere',row[29],'#fff'],
-    ['CURSA SURUBULUI DE TENSIONARE DISPONIBILA RAMASA',row[30],'#fff'],
+    ['Data fabricatie banda',row[21],'#fff'],
+    ['Nr. unic identificare',row[22],'#fff'],
+    ['Standard tehnic',row[23],'#fff'],
+    ['Config. gauri prindere cupe',row[24],'#fff'],
+    ['Prima taiere',row[26],'#fff'],
+    ['Timp de asteptare',row[27],'#fff'],
+    ['A doua taiere',row[28],'#fff'],
+    ['CURSA SURUBULUI DE TENSIONARE DISPONIBILA RAMASA',row[29],'#fff'],
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
@@ -460,7 +463,7 @@ function sortBy(c){
   if(sortCol===c)sortDir*=-1;else{sortCol=c;sortDir=1;}
   renderTable();
 }
-var HEADERS=['ID','Model Elevator','Capacitate Nominala','Diametru Tambur','Latime Tambur','Inaltime Elevare','Serie','Putere Motor Principal','Putere Motor Auxiliar','Data Fabricatiei','Greutate Cap Elevator','Greutate Carcasa','Greutate Picior Elevator','Tip Banda','Rezistenta Rupere','Latime Banda','Lungime','Forta Tractiune','Imbinare','Cuplu Strangere','Nr. Referinta','—','Data Fab. Banda','Nr. Unic Identificare','Standard Tehnic','Config. Gauri Prindere Cupe','Greutate Banda','Prima Taiere','Timp Asteptare','A Doua Taiere','Cursa Surub Tensionare Disponibila Ramasa'];
+var HEADERS=['ID','Model Elevator','Capacitate Nominala','Diametru Tambur','Latime Tambur','Inaltime Elevare','Serie','Putere Motor Principal','Putere Motor Auxiliar','Data Fabricatiei','Greutate Cap Elevator','Greutate Carcasa','Greutate Picior Elevator','Tip Banda','Rezistenta Rupere','Latime Banda','Lungime','Forta Tractiune','Imbinare','Cuplu Strangere','Nr. Referinta','Data Fab. Banda','Nr. Unic Identificare','Standard Tehnic','Config. Gauri Prindere Cupe','Greutate Banda','Prima Taiere','Timp Asteptare','A Doua Taiere','Cursa Surub Tensionare Disponibila Ramasa'];
 function exportPDF(mode){
   var now=new Date();
   var d=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
