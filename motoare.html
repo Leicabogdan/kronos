@@ -148,7 +148,7 @@ td:last-child{border-right:none;}
   .table-wrap{border:1.5px solid #1a3a6e!important;border-radius:0!important;overflow:visible!important;display:block!important;height:auto!important;max-height:none!important;}
   table{min-width:0!important;width:100%!important;table-layout:fixed!important;border-collapse:collapse!important;}
   thead{display:table-header-group;}
-  thead .sub-row th{background:#1a3a6e!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;letter-spacing:.04em!important;text-align:center!important;border-right:1px solid #2a4a8e!important;white-space:normal!important;cursor:default!important;}
+  thead .sub-row th,thead .sub-row th.sec-id,thead .sub-row th.th-motor{background:#1a3a6e!important;color:#fff!important;font-size:9px!important;padding:7px 8px!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;font-weight:700!important;letter-spacing:.04em!important;text-align:center!important;border-right:1px solid #2a4a8e!important;border-bottom:none!important;white-space:normal!important;cursor:default!important;}
   thead .sub-row th.sort-asc::after,thead .sub-row th.sort-desc::after{content:none!important;}
   tbody tr{background:#fff!important;page-break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
@@ -323,7 +323,7 @@ td:last-child{border-right:none;}
       </colgroup>
       <thead>
         <tr class="sub-row">
-          <th class="chk-col" style="background:#081410;padding:8px 6px;border-right:1px solid rgba(255,255,255,.07);"><input type="checkbox" id="chk-all" title="Selecteaza tot" style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onclick="toggleAll(this)"/></th>
+          <th class="chk-col" style="background:#081410;padding:8px 6px;border-right:1px solid rgba(255,255,255,.07);border-bottom:2px solid var(--teal);"><input type="checkbox" id="chk-all" title="Selecteaza tot" style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onclick="toggleAll(this)"/></th>
           <th class="sec-id" onclick="sortBy(0)">ID</th>
           <th class="th-motor" onclick="sortBy(1)">Prod.</th>
           <th class="th-motor" onclick="sortBy(2)">Model</th>
