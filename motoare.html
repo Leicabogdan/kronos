@@ -641,35 +641,60 @@ function exportPDF(mode){
     hiddenTrs.forEach(function(tr){tr.removeAttribute('data-print-hide');});
   }
 }
-var HEADERS=['ID', 'Tip utilaj', 'M:Producator', 'M:Model', 'M:Curent nominal', 'M:Putere nominala', 'M:Turatie', 'M:Rulment DE', 'M:Rulment NE', 'M:Tip constructie', 'R:Producator', 'R:Model', 'R:Turatie intrare', 'M:Serie', 'M:Tensiune nominala', 'M:Frecventa', 'M:Factor putere', 'M:Randament', 'M:Clasa eficienta', 'M:Lubrifiant', 'M:Greutate', 'M:Grad protectie', 'M:Temp functionare', 'M:Standard', 'M:Clasa izolatie', 'M:Certificare ATEX', 'R:Serie', 'R:Tur arbore iesire', 'R:Cuplu arbore iesire', 'R:Putere maxima', 'R:Raport transmisie', 'R:Tip ulei', 'R:Cantitate ulei', 'R:Pozitie montaj', 'R:Data fabricatie', 'R:Greutate', 'R:Certificare ATEX', 'R:Temp functionare', 'R:Ore estimate'];
+var HEADERS=[
+  {l:'ID',i:0},
+  {l:'M: Producator',i:2},{l:'M: Model',i:3},{l:'M: Serie',i:13},
+  {l:'M: Curent nominal',i:4},{l:'M: Tensiune nominala',i:14},{l:'M: Frecventa',i:15},
+  {l:'M: Putere nominala',i:5},{l:'M: Factor putere (cos \u03c6)',i:16},{l:'M: Randament',i:17},{l:'M: Clasa eficienta',i:18},
+  {l:'M: Turatie',i:6},{l:'M: Tip constructie',i:9},
+  {l:'M: Rulment DE',i:7},{l:'M: Rulment NE',i:8},
+  {l:'M: Lubrifiant',i:19},{l:'M: Greutate',i:20},{l:'M: Grad protectie',i:21},
+  {l:'M: Clasa izolatie',i:24},{l:'M: Temp. functionare',i:22},{l:'M: Standard',i:23},{l:'M: Certificare ATEX',i:25},
+  {l:'R: Producator',i:10},{l:'R: Model',i:11},{l:'R: Serie',i:26},
+  {l:'R: Turatie intrare',i:12},{l:'R: Tur. arbore iesire',i:27},{l:'R: Cuplu arbore iesire',i:28},
+  {l:'R: Putere maxima',i:29},{l:'R: Raport transmisie',i:30},
+  {l:'R: Tip ulei',i:31},{l:'R: Cantitate ulei',i:32},{l:'R: Pozitie montaj',i:33},
+  {l:'R: Data fabricatie',i:34},{l:'R: Greutate',i:35},
+  {l:'R: Certificare ATEX',i:36},{l:'R: Temp. functionare',i:37},{l:'R: Ore estimate',i:38}
+];
 function exportExcel(){
   var rows=getExportRows();
   var now=new Date();
   var dateStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
   var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
   var nc=HEADERS.length;
+  var motorCols=HEADERS.filter(function(h){return h.l.startsWith('M:');}).length;
+  var reductCols=HEADERS.filter(function(h){return h.l.startsWith('R:');}).length;
   var th='background:#1a3a6e;color:#ffffff;font-weight:bold;padding:7px 9px;border:1px solid #2a4a8e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  var thM='background:#0a2a1e;color:#00dcb4;font-weight:bold;padding:7px 9px;border:1px solid #1a4a3e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
+  var thR='background:#0a1a2e;color:#5090e0;font-weight:bold;padding:7px 9px;border:1px solid #1a2a4e;text-align:center;font-family:Calibri,Arial,sans-serif;font-size:11pt;white-space:nowrap;';
   var tdC='padding:5px 7px;border:1px solid #b8caea;font-family:Calibri,Arial,sans-serif;font-size:10pt;vertical-align:top;text-align:center;white-space:nowrap;';
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   var x='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
-  x+='<head><meta charset="UTF-8">';
-  x+='<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
-  x+='<x:Name>Motoare</x:Name>';
-  x+='<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
-  x+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
-  x+='</head><body>';
+  x+='<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+  x+='<x:Name>Motoare</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>';
+  x+='</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>';
   x+='<table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;">';
-  x+='<tr><td colspan="'+nc+'" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;font-family:Calibri,Arial,sans-serif;letter-spacing:1px;">KRONOS — Registru Motoare</td></tr>';
-  x+='<tr><td colspan="'+Math.ceil(nc/2)+'" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;font-family:Calibri,Arial,sans-serif;">Terminal Cereale SOCEP · Port Constanta</td>';
-  x+='<td colspan="'+(nc-Math.ceil(nc/2))+'" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;font-family:Calibri,Arial,sans-serif;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
-  x+='<tr><td colspan="'+nc+'" style="height:8px;background:#ffffff;"></td></tr>';
-  x+='<tr>';HEADERS.forEach(function(h){x+='<td style="'+th+'">'+esc(h)+'</td>';});x+='</tr>';
+  x+='<tr><td colspan="'+nc+'" style="background:#1a3a6e;color:#00dcb4;font-weight:bold;font-size:15pt;padding:10px 14px;letter-spacing:1px;">KRONOS \u2014 Registru Motoare</td></tr>';
+  x+='<tr><td colspan="'+Math.ceil(nc/2)+'" style="background:#d6e8f7;color:#1a3a6e;font-weight:bold;font-size:11pt;padding:5px 12px;">Terminal Cereale SOCEP \u00b7 Port Constanta</td>';
+  x+='<td colspan="'+(nc-Math.ceil(nc/2))+'" style="background:#d6e8f7;color:#5090d0;font-size:10pt;padding:5px 12px;text-align:right;">Data generare: '+dateStr+' '+timeStr+'</td></tr>';
+  x+='<tr><td colspan="'+nc+'" style="height:6px;background:#ffffff;"></td></tr>';
+  x+='<tr>';
+  x+='<td style="'+th+'">ID</td>';
+  x+='<td colspan="'+motorCols+'" style="background:#0a2a1e;color:#00dcb4;font-weight:bold;font-size:12pt;padding:7px;border:1px solid #1a4a3e;text-align:center;letter-spacing:2px;">MOTOR</td>';
+  x+='<td colspan="'+reductCols+'" style="background:#0a1a2e;color:#5090e0;font-weight:bold;font-size:12pt;padding:7px;border:1px solid #1a2a4e;text-align:center;letter-spacing:2px;">REDUCTOR</td>';
+  x+='</tr><tr>';
+  HEADERS.forEach(function(h){
+    var s=h.l.startsWith('M:')?thM:h.l.startsWith('R:')?thR:th;
+    x+='<td style="'+s+'">'+esc(h.l.replace(/^[MR]: /,''))+'</td>';
+  });
+  x+='</tr>';
   rows.forEach(function(r,i){
     var fill=i%2===0?'#f0f4fb':'#ffffff';
     x+='<tr>';
-    HEADERS.forEach(function(_,c){
-      var bold=c===0?'color:#1a3a6e;font-weight:bold;':'';
-      x+='<td style="'+tdC+'background:'+fill+';'+bold+'">'+esc(r[c]||'')+'</td>';
+    HEADERS.forEach(function(h){
+      var bold=h.i===0?'color:#1a3a6e;font-weight:bold;':'';
+      x+='<td style="'+tdC+'background:'+fill+';'+bold+'">'+esc(r[h.i]||'')+'</td>';
     });
     x+='</tr>';
   });
