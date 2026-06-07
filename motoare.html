@@ -152,6 +152,7 @@ td:last-child{border-right:none;}
   tbody tr{background:#fff!important;page-break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
   td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  .chk-col{display:none!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
   /* PDF SIMPLU: ascunde cardurile */
   body[data-pdf="simple"] #complex-cards{display:none!important;}
@@ -309,6 +310,7 @@ td:last-child{border-right:none;}
   <div class="table-wrap">
     <table id="main-table">
       <colgroup>
+        <col class="chk-col" style="width:38px;"/>
         <col style="width:8%;"/>
         <col style="width:12%;"/>
         <col style="width:24%;"/>
@@ -319,10 +321,12 @@ td:last-child{border-right:none;}
       </colgroup>
       <thead>
         <tr class="sec-row">
+          <th class="chk-col" style="background:#081410;border:none;"></th>
           <th class="sec-id">ID</th>
-          <th class="sec-motor" colspan="6">Click pe rand pentru detalii Motor / Reductor</th>
+          <th class="sec-motor" colspan="7">Click pe rand pentru detalii Motor / Reductor</th>
         </tr>
         <tr class="sub-row">
+          <th class="chk-col" style="background:#081410;padding:8px 6px;border-right:1px solid rgba(255,255,255,.07);"><input type="checkbox" id="chk-all" title="Selecteaza tot" style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onclick="toggleAll(this)"/></th>
           <th onclick="sortBy(0)">ID</th>
           <th class="th-motor" onclick="sortBy(1)">Prod.</th>
           <th class="th-motor" onclick="sortBy(2)">Model</th>
@@ -452,6 +456,28 @@ function closeModalOutside(e){if(e.target===document.getElementById('detail-moda
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
 /* ── DATA ── */
+var selectedIds=new Set();
+function onRowChk(cb){
+  if(cb.checked)selectedIds.add(cb.dataset.id);
+  else selectedIds.delete(cb.dataset.id);
+  syncSelectAll();
+}
+function toggleAll(cb){
+  var rows=getVisibleRows();
+  rows.forEach(function(r){if(cb.checked)selectedIds.add(String(r[0]));else selectedIds.delete(String(r[0]));});
+  renderTable();
+}
+function syncSelectAll(){
+  var all=document.getElementById('chk-all');if(!all)return;
+  var vis=getVisibleRows();var total=vis.length;
+  var chkd=vis.filter(function(r){return selectedIds.has(String(r[0]));}).length;
+  all.checked=total>0&&chkd===total;
+  all.indeterminate=chkd>0&&chkd<total;
+}
+function getExportRows(){
+  if(selectedIds.size>0)return allData.filter(function(r){return selectedIds.has(String(r[0]));});
+  return getVisibleRows();
+}
 var allData=[];
 var currentFilter='all';
 var sortCol=-1,sortDir=1;
@@ -508,6 +534,8 @@ function renderTable(){
   rows.forEach(function(row){
     var id=String(row[0]||'');
     html+='<tr class="data-row" data-idx="'+allData.indexOf(row)+'">';
+    var chkd=selectedIds.has(String(row[0]));
+    html+='<td class="chk-col" style="text-align:center;padding:0;"><input type="checkbox" class="row-chk" data-id="'+String(row[0])+'" '+(chkd?'checked':'')+' style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onchange="onRowChk(this)"/></td>';
     html+='<td style="color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
     var prodColor=String(row[2]||'').toUpperCase().includes('SIEMENS')?'var(--blue)':String(row[2]||'').toUpperCase().includes('NORD')?'var(--amber)':String(row[2]||'').toUpperCase().includes('ABB')?'var(--green)':String(row[2]||'').toUpperCase().includes('ECHTOP')?'var(--red)':'var(--teal)';
     html+='<td style="color:'+prodColor+';font-weight:700;">'+f(row[2])+'</td>';
@@ -592,7 +620,7 @@ function exportPDF(mode){
   var inl=document.getElementById('print-date-inline');
   if(inl)inl.textContent='Data generarii: '+d+' '+t;
   if(mode==='complex'){
-    var rows=getVisibleRows();
+    var rows=getExportRows();
     var container=document.getElementById('complex-cards');
     var h='';
     rows.forEach(function(row){h+='<div class="pdf-card"><div class="pdf-card-id">'+f(row[0])+' &mdash; '+f(row[2])+'</div>'+buildDetailHTML(row)+'</div>';});
@@ -609,7 +637,7 @@ function exportPDF(mode){
 }
 var HEADERS=['ID', 'Tip utilaj', 'M:Producator', 'M:Model', 'M:Curent nominal', 'M:Putere nominala', 'M:Turatie', 'M:Rulment DE', 'M:Rulment NE', 'M:Tip constructie', 'R:Producator', 'R:Model', 'R:Turatie intrare', 'M:Serie', 'M:Tensiune nominala', 'M:Frecventa', 'M:Factor putere', 'M:Randament', 'M:Clasa eficienta', 'M:Lubrifiant', 'M:Greutate', 'M:Grad protectie', 'M:Temp functionare', 'M:Standard', 'M:Clasa izolatie', 'M:Certificare ATEX', 'R:Serie', 'R:Tur arbore iesire', 'R:Cuplu arbore iesire', 'R:Putere maxima', 'R:Raport transmisie', 'R:Tip ulei', 'R:Cantitate ulei', 'R:Pozitie montaj', 'R:Data fabricatie', 'R:Greutate', 'R:Certificare ATEX', 'R:Temp functionare', 'R:Ore estimate'];
 function exportExcel(){
-  var rows=getVisibleRows();
+  var rows=getExportRows();
   var now=new Date();
   var dateStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
   var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
