@@ -153,6 +153,7 @@ td:last-child{border-right:none;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
   td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
   .chk-col{display:none!important;}
+  tr[data-print-hide]{display:none!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
   /* PDF SIMPLU: ascunde cardurile */
   body[data-pdf="simple"] #complex-cards{display:none!important;}
@@ -535,7 +536,7 @@ function renderTable(){
     var id=String(row[0]||'');
     html+='<tr class="data-row" data-idx="'+allData.indexOf(row)+'">';
     var chkd=selectedIds.has(String(row[0]));
-    html+='<td class="chk-col" style="text-align:center;padding:0;"><input type="checkbox" class="row-chk" data-id="'+String(row[0])+'" '+(chkd?'checked':'')+' style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onchange="onRowChk(this)"/></td>';
+    html+='<td class="chk-col" style="text-align:center;padding:0;" onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" data-id="'+String(row[0])+'" '+(chkd?'checked':'')+' style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onchange="onRowChk(this)"/></td>';
     html+='<td style="color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
     var prodColor=String(row[2]||'').toUpperCase().includes('SIEMENS')?'var(--blue)':String(row[2]||'').toUpperCase().includes('NORD')?'var(--amber)':String(row[2]||'').toUpperCase().includes('ABB')?'var(--green)':String(row[2]||'').toUpperCase().includes('ECHTOP')?'var(--red)':'var(--teal)';
     html+='<td style="color:'+prodColor+';font-weight:700;">'+f(row[2])+'</td>';
@@ -548,7 +549,8 @@ function renderTable(){
   });
   tbody.innerHTML=html;
   tbody.querySelectorAll('tr.data-row').forEach(function(tr){
-    tr.addEventListener('click',function(){
+    tr.addEventListener('click',function(e){
+      if(e.target.closest('.chk-col'))return;
       var idx=parseInt(tr.dataset.idx);
       if(!isNaN(idx)&&allData[idx])openModal(allData[idx]);
     });
@@ -630,9 +632,17 @@ function exportPDF(mode){
     document.body.removeAttribute('data-pdf');
     container.innerHTML='';
   } else {
+    var hiddenTrs=[];
+    if(selectedIds.size>0){
+      document.querySelectorAll('#tbody tr.data-row').forEach(function(tr){
+        var chk=tr.querySelector('.row-chk');
+        if(chk&&!selectedIds.has(chk.dataset.id)){tr.setAttribute('data-print-hide','1');hiddenTrs.push(tr);}
+      });
+    }
     document.body.setAttribute('data-pdf','simple');
     window.print();
     document.body.removeAttribute('data-pdf');
+    hiddenTrs.forEach(function(tr){tr.removeAttribute('data-print-hide');});
   }
 }
 var HEADERS=['ID', 'Tip utilaj', 'M:Producator', 'M:Model', 'M:Curent nominal', 'M:Putere nominala', 'M:Turatie', 'M:Rulment DE', 'M:Rulment NE', 'M:Tip constructie', 'R:Producator', 'R:Model', 'R:Turatie intrare', 'M:Serie', 'M:Tensiune nominala', 'M:Frecventa', 'M:Factor putere', 'M:Randament', 'M:Clasa eficienta', 'M:Lubrifiant', 'M:Greutate', 'M:Grad protectie', 'M:Temp functionare', 'M:Standard', 'M:Clasa izolatie', 'M:Certificare ATEX', 'R:Serie', 'R:Tur arbore iesire', 'R:Cuplu arbore iesire', 'R:Putere maxima', 'R:Raport transmisie', 'R:Tip ulei', 'R:Cantitate ulei', 'R:Pozitie montaj', 'R:Data fabricatie', 'R:Greutate', 'R:Certificare ATEX', 'R:Temp functionare', 'R:Ore estimate'];
