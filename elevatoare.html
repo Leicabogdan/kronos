@@ -164,20 +164,42 @@ td:last-child{border-right:none;}
   /* PDF COMPLEX: ascunde tabelul, arata cardurile 2x2 = 4/pagina */
   body[data-pdf="complex"] .table-wrap{display:none!important;}
   body[data-pdf="complex"] #complex-cards{
-    display:grid!important;grid-template-columns:1fr 1fr;gap:6mm;align-content:start;
+    display:block!important;
   }
   #complex-cards{color:#000;font-family:'IBM Plex Sans',Arial,sans-serif;}
-  .pdf-card{border:1.5px solid #1a3a6e;border-radius:4px;padding:5px 7px;page-break-inside:avoid;break-inside:avoid;background:#fff!important;height:90mm;overflow:hidden;box-sizing:border-box;}
-  .pdf-card-id{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:#1a3a6e;text-align:center;border-bottom:1.5px solid #1a3a6e;padding-bottom:3px;margin-bottom:4px;}
-  /* override stiluri dark din modal pentru print */
-  .pdf-card .detail-grid{display:block!important;}
-  .pdf-card .detail-section{background:#f0f4fb!important;border:1px solid #b8caea!important;border-radius:3px;padding:4px 6px!important;margin-bottom:4px;}
-  .pdf-card .detail-section.full{margin-bottom:0;}
-  .pdf-card .detail-section-title{font-size:11px!important;letter-spacing:.05em!important;margin-bottom:3px!important;padding-bottom:2px!important;border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;}
-  .pdf-card .detail-field{padding:1px 4px!important;}
-  .pdf-card .detail-lbl{font-size:6.5px!important;color:#5a6b8a!important;letter-spacing:.02em!important;}
-  .pdf-card .detail-val{font-size:8.5px!important;color:#000!important;}
+  .pdf-card{
+    border:1.5px solid #1a3a6e;border-radius:4px;padding:8px 10px;
+    page-break-after:always;break-after:always;
+    page-break-inside:avoid;break-inside:avoid;
+    background:#fff!important;
+    box-sizing:border-box;
+    width:100%;
+  }
+  .pdf-card:last-child{page-break-after:auto;break-after:auto;}
+  .pdf-card-id{
+    font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;
+    font-size:14px;font-weight:900;letter-spacing:.06em;
+    color:#1a3a6e;text-align:center;
+    border-bottom:1.5px solid #1a3a6e;
+    padding-bottom:4px;margin-bottom:8px;
+  }
+  /* override dark → print */
+  .pdf-card .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
+  .pdf-card .detail-section{
+    background:#f0f4fb!important;border:1px solid #b8caea!important;
+    border-radius:3px;padding:6px 8px!important;margin-bottom:0;
+  }
+  .pdf-card .detail-section-title{
+    font-size:13px!important;letter-spacing:.06em!important;
+    margin-bottom:4px!important;padding-bottom:3px!important;
+    border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;
+    text-align:center!important;
+  }
+  .pdf-card .detail-field{padding:2px 4px!important;align-items:center!important;}
+  .pdf-card .detail-lbl{font-size:7.5px!important;color:#3a5a8a!important;letter-spacing:.03em!important;}
+  .pdf-card .detail-val{font-size:9.5px!important;color:#000!important;white-space:normal!important;}
   .pdf-card .detail-val[style]{color:#000!important;}
+  .pdf-card span[style]{color:#1a3a6e!important;opacity:1!important;}
 }
 </style>
 </head>
@@ -377,7 +399,7 @@ function getVisibleRows(){
   return rows;
 }
 function buildDetailHTML(row){
-  /* ELEVATOR — poza 1 col A-M */
+  /* ELEVATOR col A-M */
   var elevL=[
     ['Capacitate nominala',row[2],'#fff'],
     ['Diametru tambur',row[3],'#fff'],
@@ -392,41 +414,34 @@ function buildDetailHTML(row){
     ['Greutate cap elevator',row[10],'green'],
     ['Greutate carcasa',row[11],'green'],
   ];
-  /* SPECIFICATII BANDA — poza 1 col N-AE
-     N=13:Tip, O=14:RezRup, P=15:LatBanda, Q=16:Lungime,
-     R=17:FortaTractiune, S=18:Imbinare, T=19:Cuplu,
-     U=20:NrRef, W=22:DataFab, X=23:NrUnic, Y=24:Standard,
-     Z=25:ConfigGauri, AA=26:GrBanda,
-     AB=27:PrimaTaiere, AC=28:TimpAsteptare, AD=29:ADouaTaiere, AE=30:Cursa */
+  /* SPECIFICATII BANDA col N-AE
+     Stanga (8): Tip/RezRup/LatBanda/Lungime/FortaTract/Cuplu/GrBanda/Imbinare
+     Dreapta (9): NrRef/DataFab/NrUnic/Standard/ConfigGauri/PrimaTaiere/TimpAstep/ADouaTaiere/CursaSurub */
   var bandaL=[
     ['Tip banda',row[13],'amber'],
     ['Rezistenta la rupere',row[14],'amber'],
     ['Latime banda',row[15],'#fff'],
     ['Lungime',row[16],'#fff'],
     ['Forta de tractiune',row[17],'amber'],
+    ['Cuplu de strangere',row[19],'amber'],
+    ['Greutate banda',row[26],'#fff'],
     ['Imbinare',row[18],'#fff'],
   ];
   var bandaR=[
-    ['Cuplu de strangere',row[19],'amber'],
     ['Numar de referinta',row[20],'#fff'],
     ['Data fabricatie banda',row[22],'#fff'],
     ['Nr. unic identificare',row[23],'#fff'],
     ['Standard tehnic',row[24],'#fff'],
     ['Config. gauri prindere cupe',row[25],'#fff'],
-  ];
-  var bandaB=[
-    ['Greutate banda',row[26],'#fff'],
     ['Prima taiere',row[27],'#fff'],
     ['Timp de asteptare',row[28],'#fff'],
-  ];
-  var bandaBR=[
     ['A doua taiere',row[29],'#fff'],
-    ['CURSA ȘURUBULUI DE TENSIONARE DISPONIBILĂ RĂMASĂ',row[30],'#fff'],
-    ['Greutate picior elevator',row[12],'green'],
+    ['CURSA SURUBULUI DE TENSIONARE DISPONIBILA RAMASA',row[30],'#fff'],
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
-    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:15px;">'+f(val)+'</div></div>';
+    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div>'+
+      '<div class="detail-val" style="color:'+col2+';font-size:15px;">'+f(val)+'</div></div>';
   }
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
   function pair(left,right){
@@ -439,15 +454,13 @@ function buildDetailHTML(row){
     '<span style="font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+
     pair(elevL,elevR)+'</div>'+
     '<div class="detail-section"><div class="detail-section-title banda">SPECIFICATII BANDA</div>'+
-    pair(bandaL,bandaR)+
-    '<div style="margin-top:6px;border-top:1px solid rgba(255,255,255,.08);padding-top:4px;">'+
-    pair(bandaB,bandaBR)+'</div></div></div>';
+    pair(bandaL,bandaR)+'</div></div>';
 }
 function sortBy(c){
   if(sortCol===c)sortDir*=-1;else{sortCol=c;sortDir=1;}
   renderTable();
 }
-var HEADERS=['ID','Model Elevator','Capacitate Nominala','Diametru Tambur','Latime Tambur','Inaltime Elevare','Serie','Putere Motor Principal','Putere Motor Auxiliar','Data Fabricatiei','Greutate Cap Elevator','Greutate Carcasa','Greutate Picior Elevator','Tip Banda','Rezistenta Rupere','Latime Banda','Lungime','Forta Tractiune','Imbinare','Cuplu Strangere','Nr. Referinta','—','Data Fab. Banda','Nr. Unic Identificare','Standard Tehnic','Config. Gauri Cupe','Greutate Banda','Prima Taiere','Timp Asteptare','A Doua Taiere','Cursa Surub Tensionare'];
+var HEADERS=['ID','Model Elevator','Capacitate Nominala','Diametru Tambur','Latime Tambur','Inaltime Elevare','Serie','Putere Motor Principal','Putere Motor Auxiliar','Data Fabricatiei','Greutate Cap Elevator','Greutate Carcasa','Greutate Picior Elevator','Tip Banda','Rezistenta Rupere','Latime Banda','Lungime','Forta Tractiune','Imbinare','Cuplu Strangere','Nr. Referinta','—','Data Fab. Banda','Nr. Unic Identificare','Standard Tehnic','Config. Gauri Prindere Cupe','Greutate Banda','Prima Taiere','Timp Asteptare','A Doua Taiere','Cursa Surub Tensionare Disponibila Ramasa'];
 function exportPDF(mode){
   var now=new Date();
   var d=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
