@@ -29,9 +29,8 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 .content{flex:1;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(14px,2.5vw,28px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 
 /* KPI */
-.kpi-strip{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:22px;}
-.kpi-row4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-@media(max-width:700px){.kpi-row4{grid-template-columns:1fr 1fr;}}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+@media(max-width:700px){.kpi-strip{grid-template-columns:1fr 1fr;}}
 .kpi-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
 .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
 .kpi-card.c-teal::before{background:var(--teal);}
@@ -116,7 +115,7 @@ td:last-child{border-right:none;}
 @media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
 .detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
 .detail-section.full{grid-column:1/-1;}
-.detail-section-title{font-family:'Roboto',sans-serif;font-size:32px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
+.detail-section-title{font-family:var(--mono);font-size:32px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
 .detail-section-title.motor{color:var(--blue);}
 .detail-section-title.banda{color:var(--amber);}
 .detail-section-title.fab{color:var(--purple);}
@@ -140,7 +139,7 @@ td:last-child{border-right:none;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   a[href]::after{content:none!important;display:none!important;}
   html,body{background:#fff!important;color:#000!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;padding:0!important;margin:0!important;height:auto!important;overflow:visible!important;}
-  .kronos-sidebar,.sb-overlay,.topbar,.filter-bar,.add-form-wrap,.trademark,.kpi-strip,.add-toggle-btn,.modal-overlay,.kpi-card{display:none!important;}
+  .kronos-sidebar,.sb-overlay,.topbar,.filter-bar,.add-form-wrap,.trademark,.kpi-strip,.add-toggle-btn,.modal-overlay{display:none!important;}
   .app,.main,.content{display:block!important;overflow:visible!important;height:auto!important;max-height:none!important;width:100%!important;min-height:0!important;}
   .content{padding:0!important;}
   .print-header{display:flex!important;align-items:center;justify-content:space-between;padding:4px 6px 6px 4px;border-bottom:2px solid #1a3a6e;margin-bottom:10px;background:#fff!important;}
@@ -156,6 +155,8 @@ td:last-child{border-right:none;}
   tbody tr{background:#fff!important;page-break-inside:avoid!important;}
   tbody tr:nth-child(even){background:#f0f4fb!important;}
   td{padding:5px 6px!important;font-size:9px!important;color:#000!important;border-bottom:1px solid #d0d8e8!important;border-right:1px solid #d0d8e8!important;vertical-align:middle!important;white-space:nowrap!important;overflow:hidden!important;font-family:'IBM Plex Sans',Arial,sans-serif!important;text-align:center!important;}
+  .chk-col{display:none!important;}
+  tr[data-print-hide]{display:none!important;}
   @page{size:A4 landscape;margin:12mm 6mm 8mm 6mm;}
 
   /* PDF SIMPLU: ascunde cardurile, arata tabelul */
@@ -164,43 +165,20 @@ td:last-child{border-right:none;}
   /* PDF COMPLEX: ascunde tabelul, arata cardurile 2x2 = 4/pagina */
   body[data-pdf="complex"] .table-wrap{display:none!important;}
   body[data-pdf="complex"] #complex-cards{
-    display:block!important;
+    display:grid!important;grid-template-columns:1fr 1fr;gap:6mm;align-content:start;
   }
   #complex-cards{color:#000;font-family:'IBM Plex Sans',Arial,sans-serif;}
-  .pdf-card{
-    border:1.5px solid #1a3a6e;border-radius:4px;padding:8px 10px;
-    page-break-after:always;break-after:always;
-    page-break-inside:avoid;break-inside:avoid;
-    background:#fff!important;
-    box-sizing:border-box;
-    width:100%;
-  }
-  .pdf-card:last-child{page-break-after:auto;break-after:auto;}
-  .pdf-card-id{
-    font-family:'Roboto','IBM Plex Sans',Arial,sans-serif;
-    font-size:14px;font-weight:900;letter-spacing:.06em;
-    color:#1a3a6e;text-align:center;
-    border-bottom:1.5px solid #1a3a6e;
-    padding-bottom:4px;margin-bottom:8px;
-  }
-  /* override dark → print */
-  .pdf-card .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
-  .pdf-card .detail-section{
-    background:#f0f4fb!important;border:1px solid #b8caea!important;
-    border-radius:3px;padding:6px 8px!important;margin-bottom:0;
-  }
-  .pdf-card .detail-section-title{
-    font-family:'Roboto','IBM Plex Sans',Arial,sans-serif!important;
-    font-size:13px!important;letter-spacing:.06em!important;
-    margin-bottom:4px!important;padding-bottom:3px!important;
-    border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;
-    text-align:center!important;
-  }
-  .pdf-card .detail-field{padding:2px 4px!important;align-items:center!important;}
-  .pdf-card .detail-lbl{font-size:7.5px!important;color:#3a5a8a!important;letter-spacing:.03em!important;}
-  .pdf-card .detail-val{font-size:9.5px!important;color:#000!important;white-space:normal!important;}
+  .pdf-card{border:1.5px solid #1a3a6e;border-radius:4px;padding:5px 7px;page-break-inside:avoid;break-inside:avoid;background:#fff!important;height:90mm;overflow:hidden;box-sizing:border-box;}
+  .pdf-card-id{font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.06em;color:#1a3a6e;text-align:center;border-bottom:1.5px solid #1a3a6e;padding-bottom:3px;margin-bottom:4px;}
+  /* override stiluri dark din modal pentru print */
+  .pdf-card .detail-grid{display:block!important;}
+  .pdf-card .detail-section{background:#f0f4fb!important;border:1px solid #b8caea!important;border-radius:3px;padding:4px 6px!important;margin-bottom:4px;}
+  .pdf-card .detail-section.full{margin-bottom:0;}
+  .pdf-card .detail-section-title{font-size:11px!important;letter-spacing:.05em!important;margin-bottom:3px!important;padding-bottom:2px!important;border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;}
+  .pdf-card .detail-field{padding:1px 4px!important;}
+  .pdf-card .detail-lbl{font-size:6.5px!important;color:#5a6b8a!important;letter-spacing:.02em!important;}
+  .pdf-card .detail-val{font-size:8.5px!important;color:#000!important;}
   .pdf-card .detail-val[style]{color:#000!important;}
-  .pdf-card span[style]{color:#1a3a6e!important;opacity:1!important;}
 }
 </style>
 </head>
@@ -243,15 +221,66 @@ td:last-child{border-right:none;}
 
   <div class="content">
 
-  <!-- KPI INFORMATIV -->
-  <div class="kpi-card" id="kpi-info" style="border-color:rgba(0,220,180,.3);background:var(--bg3);margin-bottom:14px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--teal);"></div>
-    <div style="font-family:'Roboto',sans-serif;font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--teal);margin-bottom:10px;">BANDA ELEVATOR — TIPOLOGIE</div>
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div style="font-family:'Roboto',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:#fff;">JET FLAM = bandă elevator cu cauciuc NBR, ignifuă (rezistentă la foc, conformă ISO 340)</div>
-      <div style="font-family:'Roboto',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:var(--teal);">★ SUPER — versiunea superioară cu rezistență crescută la grăsimi vegetale/animale (100% NBR)</div>
-      <div style="font-family:'Roboto',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:700;color:var(--blue);">★ VLE — Very Low Elongation · alungire doar 1,0%, elimină practic retenșionările periodice</div>
-      <div style="font-family:'Roboto',sans-serif;font-size:clamp(12px,1.3vw,14px);font-weight:600;color:rgba(255,255,255,.5);">★ VLE: o singură tensionare la montaj — fără intervenții ulterioare de reglaj</div>
+  <!-- KPI -->
+  <div class="kpi-strip">
+    <div class="kpi-card c-teal"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-total">—</div><div style="font-family:var(--title);font-size:clamp(18px,2.5vw,26px);font-weight:900;opacity:.5;color:var(--teal);">TOTAL</div></div></div>
+    <div class="kpi-card c-blue"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-putere">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--blue);">kW INST.</div></div></div>
+    <div class="kpi-card c-amber"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-cap">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--amber);">t/h CUM.</div></div></div>
+    <div class="kpi-card c-green"><div style="display:flex;align-items:center;gap:12px;"><div class="kpi-val" id="k-aux">—</div><div style="font-family:var(--title);font-size:clamp(14px,2vw,20px);font-weight:900;opacity:.5;color:var(--green);">CU AUX</div></div></div>
+  </div>
+
+  <!-- ADD EQUIPMENT BUTTON -->
+  <div style="margin-bottom:12px;">
+    <button class="add-toggle-btn" onclick="toggleAddForm()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span id="add-toggle-label">ADAUGA ELEVATOR</span>
+    </button>
+  </div>
+
+  <!-- ADD FORM -->
+  <div class="add-form-wrap" id="add-form-wrap" style="display:none;">
+    <div class="add-form-title">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Adauga elevator nou
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><div class="form-label">ID Echipament *</div><input class="form-input" id="nf-0" placeholder="ex: E01"/></div>
+
+      <div class="form-section-label">ELEVATOR</div>
+      <div class="form-group"><div class="form-label">Model elevator</div><input class="form-input" id="nf-1" placeholder="ex: BE 1000"/></div>
+      <div class="form-group"><div class="form-label">Capacitate nominala</div><input class="form-input" id="nf-2" placeholder="ex: 500 t/h"/></div>
+      <div class="form-group"><div class="form-label">Diametru tambur</div><input class="form-input" id="nf-3" placeholder="ex: 1000 mm"/></div>
+      <div class="form-group"><div class="form-label">Latime tambur</div><input class="form-input" id="nf-4" placeholder="ex: 800 mm"/></div>
+      <div class="form-group"><div class="form-label">Inaltime elevare</div><input class="form-input" id="nf-5" placeholder="ex: 45 m"/></div>
+      <div class="form-group"><div class="form-label">Serie</div><input class="form-input" id="nf-6" placeholder="ex: 253777901"/></div>
+      <div class="form-group"><div class="form-label">Putere motor principal</div><input class="form-input" id="nf-7" placeholder="ex: 110 kW"/></div>
+      <div class="form-group"><div class="form-label">Putere motor auxiliar</div><input class="form-input" id="nf-8" placeholder="ex: 4 kW / -"/></div>
+      <div class="form-group"><div class="form-label">Pozitie ax</div><input class="form-input" id="nf-22" placeholder="ex: orizontal"/></div>
+      <div class="form-group"><div class="form-label">Lungime</div><input class="form-input" id="nf-17" placeholder="ex: 48 m"/></div>
+      <div class="form-group"><div class="form-label">Patrat</div><input class="form-input" id="nf-26" placeholder="ex: -"/></div>
+
+      <div class="form-section-label banda">BANDA &amp; CUPE</div>
+      <div class="form-group"><div class="form-label banda">Tip banda</div><input class="form-input" id="nf-9" placeholder="ex: EP 630/4"/></div>
+      <div class="form-group"><div class="form-label banda">Forta de tractiune</div><input class="form-input" id="nf-10" placeholder="ex: 630 N/mm"/></div>
+      <div class="form-group"><div class="form-label banda">Imbinare</div><input class="form-input" id="nf-11" placeholder="ex: vulcanizata"/></div>
+      <div class="form-group"><div class="form-label banda">Cuplu de strangere</div><input class="form-input" id="nf-12" placeholder="ex: 120 Nm"/></div>
+      <div class="form-group"><div class="form-label banda">Config. gauri prindere cupe</div><input class="form-input" id="nf-18" placeholder="ex: 4x M10 / 140mm"/></div>
+      <div class="form-group"><div class="form-label banda">Prima taiere</div><input class="form-input" id="nf-19" placeholder="ex: -"/></div>
+      <div class="form-group"><div class="form-label banda">Timp de asteptare</div><input class="form-input" id="nf-20" placeholder="ex: -"/></div>
+      <div class="form-group"><div class="form-label banda">A doua taiere</div><input class="form-input" id="nf-21" placeholder="ex: -"/></div>
+
+      <div class="form-section-label fab">FABRICATIE &amp; GREUTATI</div>
+      <div class="form-group"><div class="form-label fab">Numar de referinta</div><input class="form-input" id="nf-13" placeholder="ex: REF-E01"/></div>
+      <div class="form-group"><div class="form-label fab">Data fabricatie</div><input class="form-input" id="nf-14" placeholder="ex: 06/2018"/></div>
+      <div class="form-group"><div class="form-label fab">Nr. unic identificare</div><input class="form-input" id="nf-15" placeholder="ex: UID-E01"/></div>
+      <div class="form-group"><div class="form-label fab">Standard tehnic fab.</div><input class="form-input" id="nf-16" placeholder="ex: EN 620"/></div>
+      <div class="form-group"><div class="form-label fab">Greutate cap elevator</div><input class="form-input" id="nf-23" placeholder="ex: 850 Kg"/></div>
+      <div class="form-group"><div class="form-label fab">Greutate carcasa</div><input class="form-input" id="nf-24" placeholder="ex: 2200 Kg"/></div>
+      <div class="form-group"><div class="form-label fab">Greutate picior</div><input class="form-input" id="nf-25" placeholder="ex: 980 Kg"/></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-save" onclick="saveNewEquip()">SALVEAZA</button>
+      <button class="btn-reset" onclick="resetForm()">RESETEAZA</button>
     </div>
   </div>
 
@@ -272,6 +301,7 @@ td:last-child{border-right:none;}
   <div class="table-wrap">
     <table id="main-table">
       <colgroup>
+        <col class="chk-col" style="width:38px;"/>
         <col style="width:9%;"/>
         <col style="width:19%;"/>
         <col style="width:14%;"/>
@@ -283,10 +313,12 @@ td:last-child{border-right:none;}
       </colgroup>
       <thead>
         <tr class="sec-row">
+          <th class="chk-col" style="background:#081410;border:none;"></th>
           <th class="sec-id">ID</th>
-          <th class="sec-motor" colspan="7">Click pe rand pentru specificatii complete</th>
+          <th class="sec-motor" colspan="8">Click pe rand pentru specificatii complete</th>
         </tr>
         <tr class="sub-row">
+          <th class="chk-col" style="background:#081410;padding:8px 6px;border-right:1px solid rgba(255,255,255,.07);"><input type="checkbox" id="chk-all" title="Selecteaza tot" style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onclick="toggleAll(this)"/></th>
           <th onclick="sortBy(0)">ID</th>
           <th class="th-motor" onclick="sortBy(1)">Model</th>
           <th class="th-motor" onclick="sortBy(2)">Capacitate</th>
@@ -337,8 +369,40 @@ checkMobile();window.addEventListener('resize',checkMobile);
    Lasat gol => salvare doar locala (optimista) in tabel. */
 var APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxsaZJfFbAn5g84TI_10YA8Twod-lEVzoYni8UdssUXRCJo1ep1wqQjRaG2vSA0NS1g/exec';
 var CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vR_nla0i1ojMNaN_329AY5V7fj1-xVctDgrbyN4WbliLjHKRNy8ZQ0mrbKZG0EPSAcbnr5dPO9znbdF/pub?gid=0&single=true&output=csv';
-var NCOL=30;
+var NCOL=27;
 
+/* ── ADD FORM ── */
+var addFormOpen=false;
+function toggleAddForm(){
+  addFormOpen=!addFormOpen;
+  document.getElementById('add-form-wrap').style.display=addFormOpen?'block':'none';
+  document.getElementById('add-toggle-label').textContent=addFormOpen?'INCHIDE FORMULAR':'ADAUGA ELEVATOR';
+}
+function resetForm(){
+  document.querySelectorAll('#add-form-wrap .form-input').forEach(function(el){el.value='';});
+}
+function collectForm(){
+  var row=[];
+  for(var i=0;i<NCOL;i++){var el=document.getElementById('nf-'+i);row.push(el?el.value.trim():'');}
+  row[0]=row[0].toUpperCase();
+  return row;
+}
+function saveNewEquip(){
+  var row=collectForm();
+  if(!row[0]){alert('ID-ul este obligatoriu!');return;}
+  var btn=document.querySelector('.btn-save');btn.textContent='SE SALVEAZA...';btn.disabled=true;
+  function commitLocal(){
+    var existing=allData.findIndex(function(r){return String(r[0]).toUpperCase()===row[0];});
+    if(existing>=0)allData[existing]=row;else allData.push(row);
+    updateKPI(allData);renderTable();resetForm();toggleAddForm();
+    btn.textContent='SALVEAZA';btn.disabled=false;
+  }
+  if(!APPS_SCRIPT_URL){commitLocal();return;}
+  var payload={};for(var i=0;i<NCOL;i++)payload['c'+i]=row[i];
+  fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams(payload).toString(),{method:'GET',mode:'no-cors'})
+    .then(commitLocal)
+    .catch(function(err){alert('Eroare conexiune: '+err.message);btn.textContent='SALVEAZA';btn.disabled=false;});
+}
 
 /* ── MODAL ── */
 function openModal(row){
@@ -350,17 +414,47 @@ function closeModalOutside(e){if(e.target===document.getElementById('detail-moda
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
 /* ── DATA ── */
+var selectedIds=new Set();
+function onRowChk(cb){
+  if(cb.checked)selectedIds.add(cb.dataset.id);
+  else selectedIds.delete(cb.dataset.id);
+  syncSelectAll();
+}
+function toggleAll(cb){
+  var rows=getVisibleRows();
+  rows.forEach(function(r){if(cb.checked)selectedIds.add(String(r[0]));else selectedIds.delete(String(r[0]));});
+  renderTable();
+}
+function syncSelectAll(){
+  var all=document.getElementById('chk-all');if(!all)return;
+  var vis=getVisibleRows();var total=vis.length;
+  var chkd=vis.filter(function(r){return selectedIds.has(String(r[0]));}).length;
+  all.checked=total>0&&chkd===total;
+  all.indeterminate=chkd>0&&chkd<total;
+}
+function getExportRows(){
+  if(selectedIds.size>0)return allData.filter(function(r){return selectedIds.has(String(r[0]));});
+  return getVisibleRows();
+}
 var allData=[];
 var sortCol=-1,sortDir=1;
 
 const FALLBACK=[
-  ["E01","AHEL 800x800","400 t/h","800 mm","800 mm","64.5 m","700165585","110.0 kW","-","2019","1904 kg","61 kg/m","1395 kg","JET FLAM SUPER VLE","1600 N/mm","> 750 mm <","133.0 m","2500 Kg","12 Maxigrip2","150 Nm","CD044974-010","-","30/08/2019","49225069","UNT 13849-289","2x 3 Ø10 > 120 mm <","5.5 kg/m","560 mm","-","-","-"],
-  ["E02","AHEL 800x800","400 t/h","800 mm","800 mm","64.5 m","700165584","110.0 kW","9.2 kW","2019","1904 kg","61 kg/m","1395 kg","JET FLAM SUPER VLE","1600 N/mm","> 750 mm <","133.0 m","2500 Kg","12 Maxigrip2","150 Nm","CD044976-010","-","30/08/2019","49225073","UNT 13849-289","2x 3 Ø10 > 120 mm <","5.5 kg/m","560 mm","-","-","-"],
-  ["E03","AHEL 800x800","400 t/h","800 mm","800 mm","64.5 m","700165583","110.0 kW","-","2019","1904 kg","61 kg/m","1395 kg","JET FLAM SUPER VLE","1600 N/mm","> 750 mm <","133.0 m","2500 Kg","12 Maxigrip2","150 Nm","CD044978-090","-","30/08/2019","49225179","UNT 13849-289","2x 3 Ø10 > 120 mm <","5.5 kg/m","560 mm","-","-","-"],
-  ["E04","AHEL 800x800","400 t/h","800 mm","800 mm","65.0 m","-","110.0 kW","9.2 kW","-","1904 kg","61 kg/m","1395 kg","JET FLAM","1000 N/mm","> 750 mm <","90.5 m","1510 Kg","12 Maxigrip2","150 Nm","50868960-30","-","01/09/2024","3018597517","UHN 57741-026","2x 3 Ø10.5 > 120 mm <","5.5 kg/m","390 mm","24 h","390 mm","100 mm"],
-  ["E81","AHEL 800x800","400 t/h","800 mm","800 mm","25.2 m","700185582","55 kW","N/A","-","1904 kg","61 kg/m","1395 kg","JET FLAM SUPER","VLE 800 N/mm","> 750 mm <","55.0 m","1440 Kg","12 Maxigrip2","150 Nm","44690-10","-","21/08/2019","49216459","UNT 13849-217","2x 3 Ø10 > 120 mm <","5.5 kg/m","220 mm","-","-","-"],
+  ["E01","BE 1000","500 t/h","1000 mm","800 mm","45 m","253777901","110 kW","-","EP 630/4","630 N/mm","vulcanizata","120 Nm","REF-E01","06/2018","UID-E01","EN 620","48 m","4x M10 / 140mm","-","-","-","orizontal","850 Kg","2200 Kg","980 Kg","-"],
+  ["E02","BE 1000","500 t/h","1000 mm","800 mm","45 m","253777902","110 kW","-","EP 630/4","630 N/mm","vulcanizata","120 Nm","REF-E02","06/2018","UID-E02","EN 620","48 m","4x M10 / 140mm","-","-","-","orizontal","850 Kg","2200 Kg","980 Kg","-"],
+  ["E03","BE 1000","500 t/h","1000 mm","800 mm","45 m","253940901","110 kW","-","EP 630/4","630 N/mm","vulcanizata","120 Nm","REF-E03","06/2018","UID-E03","EN 620","48 m","4x M10 / 140mm","-","-","-","orizontal","850 Kg","2200 Kg","980 Kg","-"],
+  ["E04","BE 1000","500 t/h","1000 mm","800 mm","45 m","3472294401","110 kW","-","EP 630/4","630 N/mm","vulcanizata","120 Nm","REF-E04","06/2020","UID-E04","EN 620","48 m","4x M10 / 140mm","-","-","-","orizontal","850 Kg","2200 Kg","980 Kg","-"],
+  ["E81","BE 600","250 t/h","630 mm","500 mm","32 m","202693177-700","37 kW","4 kW","EP 400/3","400 N/mm","mecanica","90 Nm","REF-E81","09/2019","UID-E81","EN 620","34 m","2x M8 / 110mm","-","-","-","orizontal","420 Kg","1100 Kg","560 Kg","-"],
 ];
 
+function hasAux(row){var v=String(row[8]||'').trim();return v&&v!=='-'&&v!=='0'&&v.toLowerCase()!=='nu';}
+function num(v){var m=String(v||'').replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):0;}
+function updateKPI(data){
+  document.getElementById('k-total').textContent=data.length;
+  document.getElementById('k-putere').textContent=Math.round(data.reduce(function(s,r){return s+num(r[7]);},0));
+  document.getElementById('k-cap').textContent=Math.round(data.reduce(function(s,r){return s+num(r[2]);},0));
+  document.getElementById('k-aux').textContent=data.filter(hasAux).length;
+}
 function f(v){return v&&v!=='-'&&v!=='NaN'?v:'—';}
 function renderTable(){
   var tbody=document.getElementById('tbody');
@@ -370,19 +464,22 @@ function renderTable(){
   var html='';
   rows.forEach(function(row){
     html+='<tr class="data-row" data-idx="'+allData.indexOf(row)+'">';
+    var chkd=selectedIds.has(String(row[0]));
+    html+='<td class="chk-col" style="text-align:center;padding:0;" onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" data-id="'+String(row[0])+'" '+(chkd?'checked':'')+' style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal);" onchange="onRowChk(this)"/></td>';
     html+='<td style="color:var(--teal);font-weight:700;">'+f(row[0])+'</td>';
     html+='<td style="color:#fff;font-weight:700;">'+f(row[1])+'</td>';
-    html+='<td style="color:#fff;font-weight:700;">'+f(row[2])+'</td>';
+    html+='<td style="color:var(--amber);font-weight:700;">'+f(row[2])+'</td>';
     html+='<td>'+f(row[3])+'</td>';
     html+='<td>'+f(row[4])+'</td>';
-    html+='<td style="color:#fff;">'+f(row[5])+'</td>';
-    html+='<td style="color:var(--blue);font-weight:700;">'+f(row[7])+'</td>';
-    html+='<td style="color:var(--blue);">'+f(row[8])+'</td>';
+    html+='<td style="color:var(--blue);">'+f(row[5])+'</td>';
+    html+='<td style="color:var(--teal);font-weight:700;">'+f(row[7])+'</td>';
+    html+='<td style="color:'+(hasAux(row)?'var(--green)':'#fff')+';">'+f(row[8])+'</td>';
     html+='</tr>';
   });
   tbody.innerHTML=html;
   tbody.querySelectorAll('tr.data-row').forEach(function(tr){
-    tr.addEventListener('click',function(){
+    tr.addEventListener('click',function(e){
+      if(e.target.closest('.chk-col'))return;
       var idx=parseInt(tr.dataset.idx);
       if(!isNaN(idx)&&allData[idx])openModal(allData[idx]);
     });
@@ -400,71 +497,40 @@ function getVisibleRows(){
   return rows;
 }
 function buildDetailHTML(row){
-  /* ELEVATOR A-M: idx 0-12 */
   var elevL=[
-    ['Capacitate nominala',row[2],'#fff'],
-    ['Diametru tambur',row[3],'#fff'],
-    ['Latime tambur',row[4],'#fff'],
-    ['Inaltime elevare',row[5],'#fff'],
-    ['Data fabricatiei',row[9],'#fff'],
+    ['Capacitate nominala',row[2],'amber'],['Diametru tambur',row[3],'#fff'],['Latime tambur',row[4],'#fff'],
+    ['Inaltime elevare',row[5],'blue'],['Lungime',row[17],'#fff'],['Pozitie ax',row[22],'#fff'],['Patrat',row[26],'#fff'],
   ];
   var elevR=[
-    ['Serie',row[6],'green'],
-    ['Putere motor principal',row[7],'blue'],
-    ['Putere motor auxiliar',row[8],'blue'],
-    ['Greutate cap elevator',row[10],'green'],
-    ['Greutate carcasa',row[11],'green'],
-    ['Greutate picior elevator',row[12],'green'],
+    ['Serie',row[6],'green'],['Putere motor principal',row[7],'teal'],['Putere motor auxiliar',row[8],'green'],
+    ['Numar de referinta',row[13],'#fff'],['Data fabricatie',row[14],'amber'],['Nr. unic identificare',row[15],'#fff'],['Standard tehnic',row[16],'#fff'],
   ];
-  /* SPECIFICATII BANDA N-AD: idx 13-29
-     13:TipBanda 14:RezRup 15:LatBanda 16:Lungime 17:FortaTract
-     18:Imbinare 19:Cuplu 20:NrRef
-     21:DataFabBanda 22:NrUnic 23:Standard 24:ConfigGauri
-     25:GrBanda 26:PrimaTaiere 27:TimpAstep 28:ADouaTaiere 29:CursaSurub */
   var bandaL=[
-    ['Tip banda',row[13],'amber'],
-    ['Rezistenta la rupere',row[14],'amber'],
-    ['Latime banda',row[15],'#fff'],
-    ['Lungime',row[16],'#fff'],
-    ['Forta de tractiune',row[17],'amber'],
-    ['Cuplu de strangere',row[19],'amber'],
-    ['Greutate banda',row[25],'#fff'],
-    ['Imbinare',row[18],'#fff'],
+    ['Tip banda',row[9],'amber'],['Forta de tractiune',row[10],'amber'],['Imbinare',row[11],'#fff'],['Cuplu de strangere',row[12],'amber'],
   ];
   var bandaR=[
-    ['Numar de referinta',row[20],'#fff'],
-    ['Data fabricatie banda',row[21],'#fff'],
-    ['Nr. unic identificare',row[22],'#fff'],
-    ['Standard tehnic',row[23],'#fff'],
-    ['Config. gauri prindere cupe',row[24],'#fff'],
-    ['Prima taiere',row[26],'#fff'],
-    ['Timp de asteptare',row[27],'#fff'],
-    ['A doua taiere',row[28],'#fff'],
-    ['CURSA SURUBULUI DE TENSIONARE DISPONIBILA RAMASA',row[29],'#fff'],
+    ['Config. gauri cupe',row[18],'#fff'],['Prima taiere',row[19],'#fff'],['Timp de asteptare',row[20],'#fff'],['A doua taiere',row[21],'#fff'],
+  ];
+  var greut=[
+    ['Greutate cap elevator',row[23],'green'],['Greutate carcasa',row[24],'green'],['Greutate picior',row[25],'green'],
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
-    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div>'+
-      '<div class="detail-val" style="color:'+col2+';font-size:15px;">'+f(val)+'</div></div>';
+    return '<div class="detail-field"><div class="detail-lbl">'+lbl+'</div><div class="detail-val" style="color:'+col2+';font-size:18px;">'+f(val)+'</div></div>';
   }
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
-  function pair(left,right){
-    return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">'+
-      '<div style="display:flex;flex-direction:column;gap:2px;">'+col(left)+'</div>'+
-      '<div style="display:flex;flex-direction:column;gap:2px;">'+col(right)+'</div></div>';
-  }
+  function pair(left,right){return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;"><div style="display:flex;flex-direction:column;gap:6px;">'+col(left)+'</div><div style="display:flex;flex-direction:column;gap:6px;">'+col(right)+'</div></div>';}
   return '<div class="detail-grid">'+
-    '<div class="detail-section"><div class="detail-section-title motor" style="font-family:\'Roboto\',sans-serif;">ELEVATOR '+f(row[0])+'<br>'+
-    '<span style="font-family:\'Roboto\',sans-serif;font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+
-    pair(elevL,elevR)+'</div>'+
-    '<div class="detail-section"><div class="detail-section-title banda">SPECIFICATII BANDA</div>'+
-    pair(bandaL,bandaR)+'</div></div>';
+    '<div class="detail-section"><div class="detail-section-title motor">ELEVATOR '+f(row[0])+' &mdash; '+f(row[1])+'</div>'+pair(elevL,elevR)+'</div>'+
+    '<div class="detail-section"><div class="detail-section-title banda">BANDA &amp; CUPE</div>'+pair(bandaL,bandaR)+'</div>'+
+    '<div class="detail-section full"><div class="detail-section-title greut">GREUTATI</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px 28px;">'+col(greut)+'</div></div></div>';
 }
 function sortBy(c){
   if(sortCol===c)sortDir*=-1;else{sortCol=c;sortDir=1;}
   renderTable();
 }
-var HEADERS=['ID','Model Elevator','Capacitate Nominala','Diametru Tambur','Latime Tambur','Inaltime Elevare','Serie','Putere Motor Principal','Putere Motor Auxiliar','Data Fabricatiei','Greutate Cap Elevator','Greutate Carcasa','Greutate Picior Elevator','Tip Banda','Rezistenta Rupere','Latime Banda','Lungime','Forta Tractiune','Imbinare','Cuplu Strangere','Nr. Referinta','Data Fab. Banda','Nr. Unic Identificare','Standard Tehnic','Config. Gauri Prindere Cupe','Greutate Banda','Prima Taiere','Timp Asteptare','A Doua Taiere','Cursa Surub Tensionare Disponibila Ramasa'];
+var HEADERS=['ID','Model','Capacitate','Diametru tambur','Latime tambur','Inaltime elevare','Serie','Mot. principal','Mot. auxiliar','Tip banda','Forta tractiune','Imbinare','Cuplu strangere','Nr. referinta','Data fab.','Nr. unic','Standard','Lungime','Config. gauri cupe','Prima taiere','Timp asteptare','A doua taiere','Pozitie ax','Greutate cap','Greutate carcasa','Greutate picior','Patrat'];
 function exportPDF(mode){
   var now=new Date();
   var d=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
@@ -472,7 +538,7 @@ function exportPDF(mode){
   var inl=document.getElementById('print-date-inline');
   if(inl)inl.textContent='Data generarii: '+d+' '+t;
   if(mode==='complex'){
-    var rows=getVisibleRows();
+    var rows=getExportRows();
     var container=document.getElementById('complex-cards');
     var html='';
     rows.forEach(function(row){
@@ -486,13 +552,21 @@ function exportPDF(mode){
     document.body.removeAttribute('data-pdf');
     container.innerHTML='';
   } else {
+    var hiddenTrs=[];
+    if(selectedIds.size>0){
+      document.querySelectorAll('#tbody tr.data-row').forEach(function(tr){
+        var chk=tr.querySelector('.row-chk');
+        if(chk&&!selectedIds.has(chk.dataset.id)){tr.setAttribute('data-print-hide','1');hiddenTrs.push(tr);}
+      });
+    }
     document.body.setAttribute('data-pdf','simple');
     window.print();
     document.body.removeAttribute('data-pdf');
+    hiddenTrs.forEach(function(tr){tr.removeAttribute('data-print-hide');});
   }
 }
 function exportExcel(){
-  var rows=getVisibleRows();
+  var rows=getExportRows();
   var now=new Date();
   var dateStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
   var timeStr=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
@@ -540,22 +614,16 @@ function parseCSV(text){
   cur.push(cell.trim());if(cur.some(function(x){return x!=='';}))rows.push(cur);return rows;
 }
 async function init(){
-  // Afișează loading, nu FALLBACK
-  var tbody=document.getElementById('tbody');
-  if(tbody)tbody.innerHTML='<tr><td colspan="8" class="load-state" style="color:var(--teal);letter-spacing:.08em;">SE ÎNCARCĂ DATE DIN GOOGLESHEETS...</td></tr>';
+  updateKPI(FALLBACK);allData=FALLBACK.slice();renderTable();
   try{
     var resp=await fetch(CSV_URL+'&t='+Date.now(),{cache:'no-store'});
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     var rows=parseCSV(await resp.text()).slice(1).filter(function(r){return r.some(function(c){return c!=='';});});
     if(rows.length){
       allData=rows.map(function(r){while(r.length<NCOL)r.push('');return r.slice(0,NCOL);});
-      renderTable();
-      return;
+      updateKPI(allData);renderTable();
     }
-  }catch(e){console.warn('CSV fetch failed, FALLBACK:',e.message);}
-  // Fallback doar dacă CSV eșuează
-  allData=FALLBACK.slice();
-  renderTable();
+  }catch(e){console.warn('CSV fetch failed:',e.message);}
 }
 init();
 setInterval(init,600000);
