@@ -116,7 +116,7 @@ td:last-child{border-right:none;}
 @media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
 .detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
 .detail-section.full{grid-column:1/-1;}
-.detail-section-title{font-family:var(--mono);font-size:32px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
+.detail-section-title{font-family:'Roboto',sans-serif;font-size:32px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--border2);}
 .detail-section-title.motor{color:var(--blue);}
 .detail-section-title.banda{color:var(--amber);}
 .detail-section-title.fab{color:var(--purple);}
@@ -177,7 +177,7 @@ td:last-child{border-right:none;}
   }
   .pdf-card:last-child{page-break-after:auto;break-after:auto;}
   .pdf-card-id{
-    font-family:'Orbitron','IBM Plex Sans',Arial,sans-serif;
+    font-family:'Roboto','IBM Plex Sans',Arial,sans-serif;
     font-size:14px;font-weight:900;letter-spacing:.06em;
     color:#1a3a6e;text-align:center;
     border-bottom:1.5px solid #1a3a6e;
@@ -190,6 +190,7 @@ td:last-child{border-right:none;}
     border-radius:3px;padding:6px 8px!important;margin-bottom:0;
   }
   .pdf-card .detail-section-title{
+    font-family:'Roboto','IBM Plex Sans',Arial,sans-serif!important;
     font-size:13px!important;letter-spacing:.06em!important;
     margin-bottom:4px!important;padding-bottom:3px!important;
     border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;
@@ -406,7 +407,6 @@ function buildDetailHTML(row){
     ['Latime tambur',row[4],'#fff'],
     ['Inaltime elevare',row[5],'#fff'],
     ['Data fabricatiei',row[9],'#fff'],
-    ['Greutate picior elevator',row[12],'green'],
   ];
   var elevR=[
     ['Serie',row[6],'green'],
@@ -414,6 +414,7 @@ function buildDetailHTML(row){
     ['Putere motor auxiliar',row[8],'blue'],
     ['Greutate cap elevator',row[10],'green'],
     ['Greutate carcasa',row[11],'green'],
+    ['Greutate picior elevator',row[12],'green'],
   ];
   /* SPECIFICATII BANDA N-AD: idx 13-29
      13:TipBanda 14:RezRup 15:LatBanda 16:Lungime 17:FortaTract
@@ -453,8 +454,8 @@ function buildDetailHTML(row){
       '<div style="display:flex;flex-direction:column;gap:2px;">'+col(right)+'</div></div>';
   }
   return '<div class="detail-grid">'+
-    '<div class="detail-section"><div class="detail-section-title motor">ELEVATOR '+f(row[0])+'<br>'+
-    '<span style="font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+
+    '<div class="detail-section"><div class="detail-section-title motor" style="font-family:\'Roboto\',sans-serif;">ELEVATOR '+f(row[0])+'<br>'+
+    '<span style="font-family:\'Roboto\',sans-serif;font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+
     pair(elevL,elevR)+'</div>'+
     '<div class="detail-section"><div class="detail-section-title banda">SPECIFICATII BANDA</div>'+
     pair(bandaL,bandaR)+'</div></div>';
