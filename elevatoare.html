@@ -82,20 +82,22 @@ html,body{background:var(--bg);color:#fff;font-family:var(--sans);height:100%;ov
 input.row-chk,input#chk-all{
   appearance:none;-webkit-appearance:none;
   width:15px;height:15px;
-  background:var(--bg4);border:2px solid var(--teal);border-radius:3px;
+  background:#ffffff;border:2px solid #aab8cc;border-radius:3px;
   cursor:pointer;position:relative;vertical-align:middle;flex-shrink:0;
+  transition:border-color .15s;
 }
-input.row-chk:checked,input#chk-all:checked{background:var(--teal);}
+input.row-chk:hover,input#chk-all:hover{border-color:var(--teal);}
+input.row-chk:checked,input#chk-all:checked{background:#ffffff;border-color:var(--teal);}
 input.row-chk:checked::after,input#chk-all:checked::after{
   content:'';position:absolute;top:0px;left:3px;
-  width:4px;height:8px;
-  border:2px solid #04050a;border-top:none;border-left:none;
+  width:5px;height:9px;
+  border:2px solid #000;border-top:none;border-left:none;
   transform:rotate(45deg);
 }
-input#chk-all:indeterminate{background:rgba(0,220,180,.35);}
+input#chk-all:indeterminate{background:#ffffff;border-color:var(--teal);}
 input#chk-all:indeterminate::after{
-  content:'';position:absolute;top:4px;left:1px;
-  width:8px;height:2px;background:#04050a;
+  content:'';position:absolute;top:5px;left:1px;
+  width:9px;height:2px;background:#000;
 }
 .export-btns{margin-left:auto;display:flex;gap:8px;}
 .exp-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;white-space:nowrap;border:1.5px solid;}
@@ -133,7 +135,7 @@ td:last-child{border-right:none;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;max-width:1400px;width:100%;max-height:95vh;overflow-y:auto;padding:24px;position:relative;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
 .modal-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.06);border:1px solid var(--border2);color:#fff;width:42px;height:42px;border-radius:10px;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;transition:all .18s;}
 .modal-close:hover{background:rgba(224,80,80,.15);border-color:var(--red);color:var(--red);}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
 @media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
 .detail-section{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
 .detail-section.full{grid-column:1/-1;}
@@ -183,45 +185,43 @@ td:last-child{border-right:none;}
   /* PDF SIMPLU: ascunde cardurile, arata tabelul */
   body[data-pdf="simple"] #complex-cards{display:none!important;}
 
-  /* PDF COMPLEX: ascunde tabelul, arata cardurile 2x2 = 4/pagina */
+  /* PDF COMPLEX: 2 carduri pe pagina A4 landscape, 3 coloane per card */
   body[data-pdf="complex"] .table-wrap{display:none!important;}
-  body[data-pdf="complex"] #complex-cards{
-    display:block!important;
-  }
+  body[data-pdf="complex"] #complex-cards{display:block!important;}
   #complex-cards{color:#000;font-family:'IBM Plex Sans',Arial,sans-serif;}
   .pdf-card{
-    border:1.5px solid #1a3a6e;border-radius:4px;padding:8px 10px;
+    border:1.5px solid #1a3a6e;border-radius:4px;padding:8px 12px;
     page-break-after:always;break-after:always;
     page-break-inside:avoid;break-inside:avoid;
-    background:#fff!important;
-    box-sizing:border-box;
-    width:100%;
+    background:#fff!important;box-sizing:border-box;width:100%;
+    height:128mm;overflow:hidden;
   }
   .pdf-card:last-child{page-break-after:auto;break-after:auto;}
   .pdf-card-id{
     font-family:'Roboto','IBM Plex Sans',Arial,sans-serif;
-    font-size:14px;font-weight:900;letter-spacing:.06em;
+    font-size:13px;font-weight:900;letter-spacing:.06em;
     color:#1a3a6e;text-align:center;
     border-bottom:1.5px solid #1a3a6e;
-    padding-bottom:4px;margin-bottom:8px;
+    padding-bottom:3px;margin-bottom:6px;
   }
-  /* override dark → print */
-  .pdf-card .detail-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
+  /* 3-coloana layout: ELEVATOR | BANDA & CUPE | GREUTATI */
+  .pdf-card .detail-grid{display:grid!important;grid-template-columns:1fr 1fr 1fr!important;gap:5px!important;}
   .pdf-card .detail-section{
     background:#f0f4fb!important;border:1px solid #b8caea!important;
-    border-radius:3px;padding:6px 8px!important;margin-bottom:0;
+    border-radius:3px;padding:5px 7px!important;margin-bottom:0;
   }
+  .pdf-card .detail-section.full{grid-column:span 3!important;}
   .pdf-card .detail-section-title{
     font-family:'Roboto','IBM Plex Sans',Arial,sans-serif!important;
-    font-size:13px!important;letter-spacing:.06em!important;
-    margin-bottom:4px!important;padding-bottom:3px!important;
+    font-size:11px!important;font-weight:900!important;letter-spacing:.05em!important;
+    margin-bottom:3px!important;padding-bottom:2px!important;
     border-bottom:1px solid #b8caea!important;color:#1a3a6e!important;
     text-align:center!important;
   }
-  .pdf-card .detail-field{padding:2px 4px!important;align-items:center!important;}
-  .pdf-card .detail-lbl{font-size:7.5px!important;color:#3a5a8a!important;letter-spacing:.03em!important;}
-  .pdf-card .detail-val{font-size:9.5px!important;color:#000!important;white-space:normal!important;}
-  .pdf-card .detail-val[style]{color:#000!important;}
+  .pdf-card .detail-field{padding:1px 2px!important;align-items:flex-start!important;display:flex!important;flex-direction:column!important;}
+  .pdf-card .detail-lbl{font-size:6.5px!important;color:#3a5a8a!important;letter-spacing:.02em!important;line-height:1.2!important;}
+  .pdf-card .detail-val{font-size:8.5px!important;color:#000!important;white-space:normal!important;line-height:1.3!important;font-weight:600!important;}
+  .pdf-card .detail-val[style]{color:#000!important;font-size:8.5px!important;}
   .pdf-card span[style]{color:#1a3a6e!important;opacity:1!important;}
 }
 </style>
@@ -428,47 +428,43 @@ function getVisibleRows(){
   return rows;
 }
 function buildDetailHTML(row){
-  /* ELEVATOR A-M: idx 0-12 */
-  var elevL=[
-    ['Capacitate nominala',row[2],'#fff'],
+  /* col A: ELEVATOR */
+  var elevFields=[
+    ['Capacitate nominala',row[2],'amber'],
     ['Diametru tambur',row[3],'#fff'],
     ['Latime tambur',row[4],'#fff'],
-    ['Inaltime elevare',row[5],'#fff'],
-    ['Data fabricatiei',row[9],'#fff'],
-  ];
-  var elevR=[
+    ['Inaltime elevare',row[5],'blue'],
+    ['Lungime',row[16],'#fff'],
+    ['Pozitie ax',row[22],'#fff'],
     ['Serie',row[6],'green'],
-    ['Putere motor principal',row[7],'blue'],
-    ['Putere motor auxiliar',row[8],'blue'],
-    ['Greutate cap elevator',row[10],'green'],
-    ['Greutate carcasa',row[11],'green'],
-    ['Greutate picior elevator',row[12],'green'],
+    ['Putere motor principal',row[7],'teal'],
+    ['Putere motor auxiliar',row[8],'green'],
+    ['Nr. unic identificare',row[22],'#fff'],
+    ['Standard tehnic',row[23],'#fff'],
   ];
-  /* SPECIFICATII BANDA N-AD: idx 13-29
-     13:TipBanda 14:RezRup 15:LatBanda 16:Lungime 17:FortaTract
-     18:Imbinare 19:Cuplu 20:NrRef
-     21:DataFabBanda 22:NrUnic 23:Standard 24:ConfigGauri
-     25:GrBanda 26:PrimaTaiere 27:TimpAstep 28:ADouaTaiere 29:CursaSurub */
-  var bandaL=[
+  /* col B: BANDA & CUPE */
+  var bandaFields=[
     ['Tip banda',row[13],'amber'],
     ['Rezistenta la rupere',row[14],'amber'],
     ['Latime banda',row[15],'#fff'],
-    ['Lungime',row[16],'#fff'],
+    ['Lungime banda',row[16],'#fff'],
     ['Forta de tractiune',row[17],'amber'],
-    ['Cuplu de strangere',row[19],'amber'],
-    ['Greutate banda',row[25],'#fff'],
     ['Imbinare',row[18],'#fff'],
-  ];
-  var bandaR=[
+    ['Cuplu de strangere',row[19],'amber'],
     ['Numar de referinta',row[20],'#fff'],
-    ['Data fabricatie banda',row[21],'#fff'],
-    ['Nr. unic identificare',row[22],'#fff'],
-    ['Standard tehnic',row[23],'#fff'],
-    ['Config. gauri prindere cupe',row[24],'#fff'],
+    ['Data fabricatie',row[21],'#fff'],
+    ['Config. gauri cupe',row[24],'#fff'],
+    ['Greutate banda',row[25],'#fff'],
     ['Prima taiere',row[26],'#fff'],
     ['Timp de asteptare',row[27],'#fff'],
     ['A doua taiere',row[28],'#fff'],
-    ['CURSA SURUBULUI DE TENSIONARE DISPONIBILA RAMASA',row[29],'#fff'],
+    ['Cursa surub tensionare',row[29],'#fff'],
+  ];
+  /* col C: GREUTATI */
+  var greutFields=[
+    ['Greutate cap elevator',row[10],'green'],
+    ['Greutate carcasa',row[11],'green'],
+    ['Greutate picior elevator',row[12],'green'],
   ];
   function field(lbl,val,color){
     var col2=color.startsWith('#')?color:'var(--'+color+')';
@@ -476,17 +472,15 @@ function buildDetailHTML(row){
       '<div class="detail-val" style="color:'+col2+';font-size:15px;">'+f(val)+'</div></div>';
   }
   function col(fields){return fields.map(function(x){return field(x[0],x[1],x[2]);}).join('');}
-  function pair(left,right){
-    return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">'+
-      '<div style="display:flex;flex-direction:column;gap:2px;">'+col(left)+'</div>'+
-      '<div style="display:flex;flex-direction:column;gap:2px;">'+col(right)+'</div></div>';
-  }
   return '<div class="detail-grid">'+
     '<div class="detail-section"><div class="detail-section-title motor" style="font-family:\'Roboto\',sans-serif;">ELEVATOR '+f(row[0])+'<br>'+
     '<span style="font-family:\'Roboto\',sans-serif;font-size:0.7em;font-weight:600;opacity:.75;letter-spacing:.05em;">'+f(row[1])+'</span></div>'+
-    pair(elevL,elevR)+'</div>'+
-    '<div class="detail-section"><div class="detail-section-title banda">SPECIFICATII BANDA</div>'+
-    pair(bandaL,bandaR)+'</div></div>';
+    '<div style="display:flex;flex-direction:column;gap:4px;">'+col(elevFields)+'</div></div>'+
+    '<div class="detail-section"><div class="detail-section-title banda">BANDA &amp; CUPE</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px;">'+col(bandaFields)+'</div></div>'+
+    '<div class="detail-section"><div class="detail-section-title greut">GREUTATI</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px;">'+col(greutFields)+'</div></div>'+
+    '</div>';
 }
 function sortBy(c){
   if(sortCol===c)sortDir*=-1;else{sortCol=c;sortDir=1;}
